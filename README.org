@@ -1,0 +1,9 @@
+* Ukelonn: en webapplikasjon for ukelønn
+
+Tanken er at ungene skal kunne registrere jobber de gjør i hjemmet og at foreldrene kan registrere utbetalinger av ukelønn og andre måter lønna blir betalt på (f.eks. utlegg/lån og ekstra datapakker til mobil).
+
+Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/developer/architecture/][OSGi]] runtime, og er ment å være responsive slik at den er lett å kjøre på mobiltelefoner og nettbrett.
+
+* Lisens
+
+Lisensen er Eclipse Public License - v 1.0.  Jeg kunne tenkt meg GPL i en eller annen variant, men da måtte jeg passe på hvilke lisenser som var kompatible og det ble for mye jobb.

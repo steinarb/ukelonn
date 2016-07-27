@@ -1,0 +1,7 @@
+.classpath
+.project
+.settings/
+/README.md
+/ukelonn.gogoshell/runner/
+/ukelonn.tests/test.log
+target/
