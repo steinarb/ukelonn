@@ -71,13 +71,24 @@
      <!--
          | uncomment to auto-generate IDE files
          <execution>
-          <id>ide-support</id>
-          <goals>
-           <goal>eclipse</goal>
-          </goals>
+         <id>ide-support</id>
+         <goals>
+         <goal>eclipse</goal>
+         </goals>
          </execution>
-         -->
+     -->
     </executions>
+   </plugin>
+   <plugin>
+    <artifactId>maven-clean-plugin</artifactId>
+    <version>3.0.0</version>
+    <configuration>
+     <filesets>
+      <fileset>
+       <directory>runner</directory>
+      </fileset>
+     </filesets>
+    </configuration>
    </plugin>
   </plugins>
  </build>
