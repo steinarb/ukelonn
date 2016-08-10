@@ -10,8 +10,6 @@
  <artifactId>ukelonn.tests</artifactId>
 
  <properties>
-  <pax.exam.version>4.2.0</pax.exam.version>
-  <pax.url.version>2.1.0</pax.url.version>
   <logback.version>1.0.4</logback.version>
   <slf4j.version>1.7.4</slf4j.version>
  </properties>
@@ -20,56 +18,145 @@
   <dependency>
    <groupId>org.ops4j.pax.exam</groupId>
    <artifactId>pax-exam-junit4</artifactId>
-   <version>${pax.exam.version}</version>
-   <scope>test</scope>
   </dependency>
-
   <dependency>
    <groupId>org.ops4j.pax.exam</groupId>
    <artifactId>pax-exam-link-mvn</artifactId>
-   <version>${pax.exam.version}</version>
-   <scope>test</scope>
   </dependency>
-
-  <dependency>
-   <groupId>ch.qos.logback</groupId>
-   <artifactId>logback-core</artifactId>
-   <version>${logback.version}</version>
-   <scope>test</scope>
-  </dependency>
-
-  <dependency>
-   <groupId>ch.qos.logback</groupId>
-   <artifactId>logback-classic</artifactId>
-   <version>${logback.version}</version>
-   <scope>test</scope>
-  </dependency>
-
   <dependency>
    <groupId>org.apache.geronimo.specs</groupId>
    <artifactId>geronimo-atinject_1.0_spec</artifactId>
    <version>1.0</version>
    <scope>provided</scope>
   </dependency>
-
-  <dependency>
-   <groupId>org.osgi</groupId>
-   <artifactId>org.osgi.core</artifactId>
-   <version>4.3.1</version>
-   <scope>provided</scope>
-  </dependency>
-
   <dependency>
    <groupId>org.osgi</groupId>
    <artifactId>org.osgi.compendium</artifactId>
-   <version>4.3.1</version>
-   <scope>provided</scope>
   </dependency>
-
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.bundle</artifactId>
    <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.logging</groupId>
+   <artifactId>pax-logging-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.logging</groupId>
+   <artifactId>pax-logging-service</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.url</groupId>
+   <artifactId>pax-url-war</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-spi</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-extender-war</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-extender-whiteboard</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-runtime</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-jsp</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jdt.core.compiler</groupId>
+   <artifactId>ecj</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.xbean</groupId>
+   <artifactId>xbean-reflect</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.xbean</groupId>
+   <artifactId>xbean-finder</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.xbean</groupId>
+   <artifactId>xbean-bundleutils</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ow2.asm</groupId>
+   <artifactId>asm-all</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>commons-codec</groupId>
+   <artifactId>commons-codec</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.felix</groupId>
+   <artifactId>org.apache.felix.eventadmin</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.httpcomponents</groupId>
+   <artifactId>httpcore</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.httpcomponents</groupId>
+   <artifactId>httpmime</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.httpcomponents</groupId>
+   <artifactId>httpclient</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>javax.servlet</groupId>
+   <artifactId>javax.servlet-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.web</groupId>
+   <artifactId>pax-web-jetty</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-util</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-io</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-http</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-continuation</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-server</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-client</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-security</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-xml</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.eclipse.jetty</groupId>
+   <artifactId>jetty-servlet</artifactId>
   </dependency>
  </dependencies>
 
@@ -142,8 +229,6 @@
     <dependency>
      <groupId>org.ops4j.pax.exam</groupId>
      <artifactId>pax-exam-container-native</artifactId>
-     <version>${pax.exam.version}</version>
-     <scope>test</scope>
     </dependency>
    </dependencies>
   </profile>
@@ -158,16 +243,11 @@
     <dependency>
      <groupId>org.ops4j.pax.exam</groupId>
      <artifactId>pax-exam-container-forked</artifactId>
-     <version>${pax.exam.version}</version>
-     <scope>test</scope>
     </dependency>
-
     <dependency>
      <groupId>org.ops4j.pax.url</groupId>
      <artifactId>pax-url-reference</artifactId>
-     <version>${pax.url.version}</version>
     </dependency>
-
    </dependencies>
   </profile>
 
