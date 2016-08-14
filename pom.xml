@@ -327,6 +327,7 @@
 
  <modules>
   <module>ukelonn.rebundled</module>
+  <module>ukelonn.api</module>
   <module>ukelonn.bundle</module>
   <module>ukelonn.tests</module>
   <module>ukelonn.gogoshell</module>

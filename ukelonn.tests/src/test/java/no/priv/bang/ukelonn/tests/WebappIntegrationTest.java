@@ -75,6 +75,7 @@ public class WebappIntegrationTest extends WebappIntegrationtestBase {
                        mavenBundle("org.eclipse.jetty", "jetty-security", jettyVersion),
                        mavenBundle("org.eclipse.jetty", "jetty-xml", jettyVersion),
                        mavenBundle("org.eclipse.jetty", "jetty-servlet", jettyVersion),
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()));
     }
 

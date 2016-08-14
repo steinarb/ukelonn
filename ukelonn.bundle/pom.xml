@@ -14,6 +14,11 @@
 
  <dependencies>
   <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.api</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
    <groupId>org.apache.felix</groupId>
    <artifactId>org.osgi.core</artifactId>
    <version>1.4.0</version>
@@ -66,6 +71,7 @@
       <Bundle-SymbolicName>no.priv.bang.ukelonn</Bundle-SymbolicName>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Import-Package>
+       no.priv.bang.ukelonn,
        org.osgi.framework,
        org.osgi.service.http,
        org.osgi.framework.wiring,
@@ -82,7 +88,7 @@
        javax.servlet.jsp.tagext,
        !org.apache.tomcat
       </Import-Package>
-      <Export-Package>no.priv.bang.ukelonn</Export-Package>
+      <Export-Package>!*</Export-Package>
       <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
       <_removeheaders>
        Private-Package,
