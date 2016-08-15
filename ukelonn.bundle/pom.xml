@@ -8,7 +8,7 @@
  </parent>
 
  <artifactId>ukelonn.bundle</artifactId>
- <packaging>bundle</packaging>
+ <packaging>war</packaging>
 
  <name>ukelonn OSGi Bundle</name>
 
@@ -57,6 +57,14 @@
    <version>2.5</version>
    <scope>provided</scope>
   </dependency>
+  <dependency>
+   <groupId>org.apache.myfaces.core</groupId>
+   <artifactId>myfaces-api</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.myfaces.core</groupId>
+   <artifactId>myfaces-impl</artifactId>
+  </dependency>
  </dependencies>
 
  <build>
@@ -67,37 +75,62 @@
     <version>${maven.bundle.plugin.version}</version>
     <extensions>true</extensions>
     <configuration>
+     <supportedProjectTypes>
+      <supportedProjectType>jar</supportedProjectType>
+      <supportedProjectType>bundle</supportedProjectType>
+      <supportedProjectType>war</supportedProjectType>
+     </supportedProjectTypes>
      <instructions>
+      <_wab>src/main/webapp</_wab>
       <Bundle-SymbolicName>no.priv.bang.ukelonn</Bundle-SymbolicName>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
+      <Bundle-Version>${project.version}</Bundle-Version>
       <Import-Package>
        no.priv.bang.ukelonn,
-       org.osgi.framework,
-       org.osgi.service.http,
-       org.osgi.framework.wiring,
-       org.ops4j.pax.web.service,
-       org.ops4j.pax.web.jsp,
-       org.apache.jasper.el,
-       org.apache.jasper.runtime,
-       org.apache.jasper.compiler,
-       org.apache.taglibs.standard.tag.rt.core,
        javax.el,
-       javax.servlet,
-       javax.servlet.http,
-       javax.servlet.jsp,
-       javax.servlet.jsp.tagext,
-       !org.apache.tomcat
+       javax.faces.webapp,
+       javax.servlet.jsp;version="[2.2.0,3.0.0)",
+       javax.servlet.jsp.jstl.core;version="1.2",
+       javax.servlet.jsp.jstl.fmt;version="1.2",
+       javax.servlet.jsp.jstl.tlv;version="1.2",
+       javax.servlet;version="[2.6.0,4.0.0)",
+       javax.servlet.http;version="[2.6.0,4.0.0)",
+       org.apache.taglibs.standard.resources;version="1.1.2",
+       org.apache.taglibs.standard.tag.common.core;version="1.1.2",
+       org.apache.taglibs.standard.tag.rt.core;version="1.1.2",
+       org.apache.taglibs.standard.tei;version="1.1.2",
+       org.apache.taglibs.standard.tlv;version="1.1.2",
+       javax.faces.*,
+       org.apache.myfaces.webapp,
+       org.apache.myfaces.config,
+       org.apache.myfaces.config.impl,
+       org.apache.myfaces.config.impl.digester,
+       org.apache.myfaces.config.impl.digester.elements,
+       *
       </Import-Package>
       <Export-Package>!*</Export-Package>
       <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
+      <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
+      <Web-ContextPath>war-jsf-primefaces-sample</Web-ContextPath>
+      <Require-Bundle>
+       org.primefaces;visibility:=reexport
+      </Require-Bundle>
       <_removeheaders>
-       Private-Package,
        Include-Resource,
+       Private-Package,
        Embed-Dependency,
        Embed-Transitive
       </_removeheaders>
      </instructions>
     </configuration>
+    <executions>
+     <execution>
+      <id>bundle</id>
+      <goals>
+       <goal>bundle</goal>
+      </goals>
+     </execution>
+    </executions>
    </plugin>
   </plugins>
  </build>
