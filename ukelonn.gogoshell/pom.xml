@@ -44,7 +44,7 @@
   -->
   <org.osgi.service.http.port>8090</org.osgi.service.http.port>
   <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-  <org.apache.commons.digester.Digester.level>INFO</org.apache.commons.digester.Digester.level>
+  <org.ops4j.pax.logging.DefaultServiceLog.level>WARN</org.ops4j.pax.logging.DefaultServiceLog.level>
  </properties>
 
  <packaging>pom</packaging>
