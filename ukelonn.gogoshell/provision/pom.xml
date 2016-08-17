@@ -35,12 +35,6 @@
    <version>${project.version}</version>
    <type>war</type>
    <scope>provided</scope>
-   <exclusions>
-    <exclusion>
-     <groupId>javax.inject</groupId>
-     <artifactId>javax.inject</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.osgi</groupId>
@@ -53,34 +47,10 @@
   <dependency>
    <groupId>org.ops4j.pax.logging</groupId>
    <artifactId>pax-logging-service</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>log4j</groupId>
-     <artifactId>log4j</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.ops4j.pax.url</groupId>
    <artifactId>pax-url-war</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-net</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-optional-jcl</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-bnd</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.url</groupId>
-     <artifactId>pax-url-commons</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.ops4j.pax.web</groupId>
@@ -93,58 +63,10 @@
   <dependency>
    <groupId>org.ops4j.pax.web</groupId>
    <artifactId>pax-web-extender-war</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-lang</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-util-xml</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-spi</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-lifecycle</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-extender</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-optional-jcl</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-tracker</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-core</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.ops4j.pax.web</groupId>
    <artifactId>pax-web-extender-whiteboard</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-lang</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-core</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-optional-jcl</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.ops4j.pax.web</groupId>
@@ -153,20 +75,6 @@
   <dependency>
    <groupId>org.ops4j.pax.web</groupId>
    <artifactId>pax-web-jsp</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-util-xml</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.apache.geronimo.bundles</groupId>
-     <artifactId>jstl</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.apache.tomcat.embed</groupId>
-     <artifactId>tomcat-embed-jasper</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.eclipse.jdt.core.compiler</groupId>
@@ -183,10 +91,6 @@
     <exclusion>
      <groupId>org.slf4j</groupId>
      <artifactId>slf4j-api</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.apache.xbean</groupId>
-     <artifactId>xbean-asm-util</artifactId>
     </exclusion>
    </exclusions>
   </dependency>
@@ -223,64 +127,14 @@
   <dependency>
    <groupId>org.apache.httpcomponents</groupId>
    <artifactId>httpclient</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>commons-logging</groupId>
-     <artifactId>commons-logging</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>javax.servlet</groupId>
    <artifactId>javax.servlet-api</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-util-xml</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-optional-jcl</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-core</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-tracker</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.apache.commons</groupId>
-     <artifactId>commons-lang3</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.ops4j.pax.web</groupId>
    <artifactId>pax-web-jetty</artifactId>
-   <exclusions>
-    <exclusion>
-     <groupId>org.ops4j.base</groupId>
-     <artifactId>ops4j-base-util-xml</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-optional-jcl</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-core</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.ops4j.pax.swissbox</groupId>
-     <artifactId>pax-swissbox-tracker</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.apache.commons</groupId>
-     <artifactId>commons-lang3</artifactId>
-    </exclusion>
-   </exclusions>
   </dependency>
   <dependency>
    <groupId>org.eclipse.jetty</groupId>
