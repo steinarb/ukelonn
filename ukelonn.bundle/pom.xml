@@ -111,7 +111,7 @@
       <Export-Package>!*</Export-Package>
       <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
       <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
-      <Web-ContextPath>war-jsf-primefaces-sample</Web-ContextPath>
+      <Web-ContextPath>ukelonn</Web-ContextPath>
       <Require-Bundle>
        org.primefaces;visibility:=reexport
       </Require-Bundle>
