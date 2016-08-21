@@ -27,7 +27,7 @@
 
  <!-- Welcome files -->
  <welcome-file-list>
-  <welcome-file>helloWorld.xhtml</welcome-file>
+  <welcome-file>ukelonn.xhtml</welcome-file>
  </welcome-file-list>
 
  <!-- FIXME This should not be required, but Jetty does not pick up the
