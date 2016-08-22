@@ -1,11 +1,11 @@
 package no.priv.bang.ukelonn;
 
 /**
- * An interface that defines the access to all {@link Propertyset} instances
- * in memory.
+ * This is the service exposed by the ukelonn.bundle
+ * after it gets all of its injections, and activates.
  *
- * This interface can be used to create new propertysets, and it can be used
- * to retrieve existing propertysets.
+ * The plan is to make this interface a place to access various
+ * aspects of the web application, e.g. JDBC storage.
  *
  * @author Steinar Bang
  *
