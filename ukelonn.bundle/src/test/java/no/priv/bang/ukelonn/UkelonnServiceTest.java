@@ -25,10 +25,10 @@ public class UkelonnServiceTest {
      * Test fetching a {@link UkelonnService}.
      */
     @Test
-    public void testGetWebapp() {
-        UkelonnService webapp = new UkelonnServiceProvider().get();
-        assertNotNull(webapp);
-        assertEquals("Hello world!", webapp.getMessage());
+    public void testGetUkelonnServices() {
+        UkelonnService ukelonnService = new UkelonnServiceProvider().get();
+        assertNotNull(ukelonnService);
+        assertEquals("Hello world!", ukelonnService.getMessage());
     }
 
 }

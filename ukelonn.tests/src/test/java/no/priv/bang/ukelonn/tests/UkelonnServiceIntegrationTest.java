@@ -40,8 +40,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Inject
     private BundleContext bundleContext;
 
-    private UkelonnService webappService;
-    private ServiceListener webappListener;
+    private UkelonnService ukelonnService;
+    private ServiceListener ukelonnServiceListener;
 
     @Configuration
     public Option[] config() {
@@ -109,7 +109,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     	// before the tests start.
     	//
     	// Creating a service listener instead.
-        webappListener = new ServiceListener() {
+        ukelonnServiceListener = new ServiceListener() {
 
         	@Override
                 public void serviceChanged(ServiceEvent event) {
@@ -119,14 +119,14 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                         UkelonnService service = (UkelonnService) bundleContext.getService(sr);
                     switch(event.getType()) {
                       case ServiceEvent.REGISTERED:
-                	webappService = service;
+                	ukelonnService = service;
                         break;
                       default:
                         break;
                     }
                 }
             };
-        bundleContext.addServiceListener(webappListener);
+        bundleContext.addServiceListener(ukelonnServiceListener);
 
         // The war bundle has to be manually started or it won't work
         final String bundlePath = "mvn:no.priv.bang.ukelonn/ukelonn.bundle/" + getMavenProjectVersion() + "/war";
@@ -140,10 +140,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     }
 
     @Test
-    public void modelstoreIntegrationTest() {
+    public void ukelonnServiceIntegrationTest() {
     	// Verify that the service could be injected
-    	assertNotNull(webappService);
-    	assertEquals("Hello world!", webappService.getMessage());
+    	assertNotNull(ukelonnService);
+    	assertEquals("Hello world!", ukelonnService.getMessage());
     }
 
 }
