@@ -12,9 +12,21 @@
  <properties>
   <logback.version>1.0.4</logback.version>
   <slf4j.version>1.7.4</slf4j.version>
+  <pax.exam.framework>equinox</pax.exam.framework>
+  <pax.exam.container>native</pax.exam.container>
  </properties>
 
  <dependencies>
+  <dependency>
+   <groupId>org.eclipse.tycho</groupId>
+   <artifactId>org.eclipse.osgi</artifactId>
+   <version>3.7.0.v20110613</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.exam</groupId>
+   <artifactId>pax-exam-container-native</artifactId>
+  </dependency>
   <dependency>
    <groupId>org.ops4j.pax.exam</groupId>
    <artifactId>pax-exam-junit4</artifactId>
@@ -213,100 +225,6 @@
    <artifactId>primefaces</artifactId>
   </dependency>
  </dependencies>
-
- <profiles>
-  <profile>
-   <id>felix</id>
-   <activation>
-   </activation>
-   <properties>
-    <pax.exam.framework>felix</pax.exam.framework>
-   </properties>
-   <dependencies>
-    <dependency>
-     <groupId>org.apache.felix</groupId>
-     <artifactId>org.apache.felix.framework</artifactId>
-     <version>4.0.2</version>
-     <scope>test</scope>
-    </dependency>
-   </dependencies>
-  </profile>
-  <profile>
-   <id>equinox</id>
-   <activation>
-    <activeByDefault>true</activeByDefault>
-   </activation>
-   <properties>
-    <pax.exam.framework>equinox</pax.exam.framework>
-   </properties>
-   <dependencies>
-    <dependency>
-     <groupId>org.eclipse.tycho</groupId>
-     <artifactId>org.eclipse.osgi</artifactId>
-     <version>3.7.0.v20110613</version>
-     <scope>test</scope>
-    </dependency>
-   </dependencies>
-  </profile>
-  <profile>
-   <id>knopflerfish</id>
-   <activation>
-   </activation>
-   <properties>
-    <pax.exam.framework>knopflerfish</pax.exam.framework>
-   </properties>
-   <repositories>
-    <repository>
-     <id>knopflerfish-releases</id>
-     <url>http://www.knopflerfish.org/maven2</url>
-    </repository>
-   </repositories>
-   <dependencies>
-    <dependency>
-     <groupId>org.knopflerfish</groupId>
-     <artifactId>framework</artifactId>
-     <version>6.0.4</version>
-     <scope>test</scope>
-    </dependency>
-   </dependencies>
-  </profile>
-
-  <profile>
-   <id>native</id>
-   <activation>
-    <activeByDefault>true</activeByDefault>
-   </activation>
-   <properties>
-    <pax.exam.container>native</pax.exam.container>
-   </properties>
-   <dependencies>
-    <dependency>
-     <groupId>org.ops4j.pax.exam</groupId>
-     <artifactId>pax-exam-container-native</artifactId>
-    </dependency>
-   </dependencies>
-  </profile>
-  <profile>
-   <id>forked</id>
-   <activation>
-   </activation>
-   <properties>
-    <pax.exam.container>forked</pax.exam.container>
-   </properties>
-   <dependencies>
-    <dependency>
-     <groupId>org.ops4j.pax.exam</groupId>
-     <artifactId>pax-exam-container-forked</artifactId>
-    </dependency>
-    <dependency>
-     <groupId>org.ops4j.pax.url</groupId>
-     <artifactId>pax-url-reference</artifactId>
-    </dependency>
-   </dependencies>
-  </profile>
-
- </profiles>
-
 
  <build>
   <testResources>
