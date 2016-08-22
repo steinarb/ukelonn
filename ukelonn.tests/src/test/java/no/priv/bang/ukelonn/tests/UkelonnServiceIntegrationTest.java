@@ -24,11 +24,11 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import no.priv.bang.ukelonn.Webapp;
+import no.priv.bang.ukelonn.UkelonnService;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class WebappIntegrationTest extends WebappIntegrationtestBase {
+public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
     private Bundle installWarBundle;
     String paxSwissboxVersion = "1.8.2";
     String paxWebVersion = "4.2.7";
@@ -40,7 +40,7 @@ public class WebappIntegrationTest extends WebappIntegrationtestBase {
     @Inject
     private BundleContext bundleContext;
 
-    private Webapp webappService;
+    private UkelonnService webappService;
     private ServiceListener webappListener;
 
     @Configuration
@@ -116,7 +116,7 @@ public class WebappIntegrationTest extends WebappIntegrationtestBase {
                     @SuppressWarnings("rawtypes")
                         ServiceReference sr = event.getServiceReference();
                     @SuppressWarnings("unchecked")
-                        Webapp service = (Webapp) bundleContext.getService(sr);
+                        UkelonnService service = (UkelonnService) bundleContext.getService(sr);
                     switch(event.getType()) {
                       case ServiceEvent.REGISTERED:
                 	webappService = service;

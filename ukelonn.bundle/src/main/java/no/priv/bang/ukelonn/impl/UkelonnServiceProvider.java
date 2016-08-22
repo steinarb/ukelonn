@@ -15,18 +15,18 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
 
-import no.priv.bang.ukelonn.Webapp;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
 
 /**
- * A thin wrapper around {@link WebappBase} that will
+ * A thin wrapper around {@link UkelonnServiceBase} that will
  * be picked up by the {@link Jsr330Activator} and be presented
- * in OSGi as a {@link Webapp} service.
+ * in OSGi as a {@link UkelonnService} service.
  *
  * @author Steinar Bang
  *
  */
-public class WebappProvider extends WebappBase implements Provider<Webapp> {
+public class UkelonnServiceProvider extends UkelonnServiceBase implements Provider<UkelonnService> {
     private static final String JSP = "/ukelonn/jsp";
     private static final String JSPC = JSP + 'c';
     private static final String DEFAULT_PACKAGE = "org.apache.jsp.";
@@ -68,7 +68,7 @@ public class WebappProvider extends WebappBase implements Provider<Webapp> {
         return path;
     }
 
-    public Webapp get() {
+    public UkelonnService get() {
         return this;
     }
 

@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class WebappIntegrationtestBase {
+public class UkelonnServiceIntegrationTestBase {
 
     private String mavenProjectVersion;
 
-    public WebappIntegrationtestBase() {
+    public UkelonnServiceIntegrationTestBase() {
     	try {
             Properties examProperties = new Properties();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("exam.properties");

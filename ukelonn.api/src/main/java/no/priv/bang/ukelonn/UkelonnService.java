@@ -10,7 +10,7 @@ package no.priv.bang.ukelonn;
  * @author Steinar Bang
  *
  */
-public interface Webapp {
+public interface UkelonnService {
 
     String getMessage();
 

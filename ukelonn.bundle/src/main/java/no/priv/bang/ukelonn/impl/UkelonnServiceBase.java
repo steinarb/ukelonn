@@ -1,8 +1,8 @@
 package no.priv.bang.ukelonn.impl;
 
-import no.priv.bang.ukelonn.Webapp;
+import no.priv.bang.ukelonn.UkelonnService;
 
-public class WebappBase implements Webapp {
+public class UkelonnServiceBase implements UkelonnService {
 
     public String getMessage() {
         return "Hello world!";
