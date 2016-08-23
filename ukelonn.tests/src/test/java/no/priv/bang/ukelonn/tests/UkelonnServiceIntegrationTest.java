@@ -1,10 +1,8 @@
 package no.priv.bang.ukelonn.tests;
 
 import static org.junit.Assert.*;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.exam.MavenUtils.*;
 
 import javax.inject.Inject;
 
@@ -20,12 +18,6 @@ import no.priv.bang.ukelonn.UkelonnService;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
-    String paxSwissboxVersion = "1.8.2";
-    String paxWebVersion = "4.2.7";
-    String xbeanVersion = "4.1";
-    String httpcomponentsVersion = "4.3.3";
-    String jettyVersion = "9.2.17.v20160517";
-    String myFacesVersion = "2.2.6";
 
     @Inject
     private UkelonnService ukelonnService;
@@ -45,36 +37,36 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        systemProperty("org.ops4j.pax.web.log.ncsa.directory").value("target/logs"),
                        systemProperty("org.ops4j.pax.web.jsp.scratch.dir").value("target/paxexam/scratch-dir"),
                        systemProperty("org.ops4j.pax.url.mvn.certificateCheck").value("false"),
-                       mavenBundle("org.ops4j.pax.logging", "pax-logging-api", paxSwissboxVersion),
-                       mavenBundle("org.ops4j.pax.logging", "pax-logging-service", paxSwissboxVersion),
-                       mavenBundle("org.ops4j.pax.url", "pax-url-war", "2.4.7").type("jar").classifier("uber"),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-spi", paxWebVersion),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-api", paxWebVersion),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-extender-war", paxWebVersion),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard", paxWebVersion),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-runtime", paxWebVersion),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-jsp", paxWebVersion),
-                       mavenBundle("org.eclipse.jdt.core.compiler", "ecj", "4.4"),
-                       mavenBundle("org.apache.xbean", "xbean-reflect", xbeanVersion),
-                       mavenBundle("org.apache.xbean", "xbean-finder", xbeanVersion),
-                       mavenBundle("org.apache.xbean", "xbean-bundleutils", xbeanVersion),
-                       mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
-                       mavenBundle("commons-codec", "commons-codec", "1.10"),
-                       mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
-                       mavenBundle("org.apache.httpcomponents", "httpcore", httpcomponentsVersion),
-                       mavenBundle("org.apache.httpcomponents", "httpmime", httpcomponentsVersion),
-                       mavenBundle("org.apache.httpcomponents", "httpclient", httpcomponentsVersion),
-                       mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
-                       mavenBundle("org.ops4j.pax.web", "pax-web-jetty", paxWebVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-util", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-io", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-http", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-continuation", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-server", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-client", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-security", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-xml", jettyVersion),
-                       mavenBundle("org.eclipse.jetty", "jetty-servlet", jettyVersion),
+                       mavenBundle("org.ops4j.pax.logging", "pax-logging-api").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.logging", "pax-logging-service").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.url", "pax-url-war").version(asInProject()).type("jar").classifier("uber"),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-api").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(asInProject()),
+                       mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version(asInProject()),
+                       mavenBundle("org.apache.xbean", "xbean-reflect").version(asInProject()),
+                       mavenBundle("org.apache.xbean", "xbean-finder").version(asInProject()),
+                       mavenBundle("org.apache.xbean", "xbean-bundleutils").version(asInProject()),
+                       mavenBundle("org.ow2.asm", "asm-all").version(asInProject()),
+                       mavenBundle("commons-codec", "commons-codec").version(asInProject()),
+                       mavenBundle("org.apache.felix", "org.apache.felix.eventadmin").version(asInProject()),
+                       mavenBundle("org.apache.httpcomponents", "httpcore").version(asInProject()),
+                       mavenBundle("org.apache.httpcomponents", "httpmime").version(asInProject()),
+                       mavenBundle("org.apache.httpcomponents", "httpclient").version(asInProject()),
+                       mavenBundle("javax.servlet", "javax.servlet-api").version(asInProject()),
+                       mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-util").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-io").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-http").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-continuation").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-server").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-client").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-security").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-xml").version(asInProject()),
+                       mavenBundle("org.eclipse.jetty", "jetty-servlet").version(asInProject()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()));
     }
