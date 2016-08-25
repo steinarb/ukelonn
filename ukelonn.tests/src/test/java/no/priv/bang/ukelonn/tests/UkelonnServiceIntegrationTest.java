@@ -19,7 +19,7 @@ import no.priv.bang.ukelonn.UkelonnService;
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
 
-    @Inject
+    //@Inject
     private UkelonnService ukelonnService;
 
     @Configuration
@@ -67,6 +67,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.eclipse.jetty", "jetty-security").version(asInProject()),
                        mavenBundle("org.eclipse.jetty", "jetty-xml").version(asInProject()),
                        mavenBundle("org.eclipse.jetty", "jetty-servlet").version(asInProject()),
+                       mavenBundle("org.rendersnake", "rendersnake").version(asInProject()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()));
     }
