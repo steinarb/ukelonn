@@ -6,7 +6,6 @@ import static org.ops4j.pax.exam.MavenUtils.*;
 
 import javax.inject.Inject;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -14,18 +13,11 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-
 import no.priv.bang.ukelonn.UkelonnService;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
-    @Inject
-    private BundleContext bundleContext;
-
     @Inject
     private UkelonnService ukelonnService;
 
@@ -77,27 +69,6 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.rendersnake", "rendersnake").version(asInProject()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()));
-    }
-
-    @Before
-    public void start() throws BundleException {
-    	for (Bundle bundle : bundleContext.getBundles()) {
-            System.out.println("location: " + bundle.getLocation());
-        }
-    	final String rendersnakeBundlePath = "mvn:org.rendersnake/rendersnake/1.8";
-        Bundle rendersnakeBundle = bundleContext.getBundle(rendersnakeBundlePath);
-        try {
-            rendersnakeBundle.start();
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-    	final String paxurlwarBundlePath = "mvn:org.ops4j.pax.url/pax-url-war/2.4.7/jar/uber";
-        Bundle paxwarBundle = bundleContext.getBundle(paxurlwarBundlePath);
-        try {
-            paxwarBundle.start();
-        } catch(Exception e) {
-            System.out.println(e);
-        }
     }
 
     @Test
