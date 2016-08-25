@@ -91,6 +91,13 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         } catch(Exception e) {
             System.out.println(e);
         }
+    	final String paxurlwarBundlePath = "mvn:org.ops4j.pax.url/pax-url-war/2.4.7/jar/uber";
+        Bundle paxwarBundle = bundleContext.getBundle(paxurlwarBundlePath);
+        try {
+            paxwarBundle.start();
+        } catch(Exception e) {
+            System.out.println(e);
+        }
     }
 
     @Test
