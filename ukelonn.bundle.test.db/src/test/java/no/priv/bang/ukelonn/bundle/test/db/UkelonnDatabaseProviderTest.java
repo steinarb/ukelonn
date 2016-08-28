@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.bundle.test.db.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
 
@@ -28,6 +29,7 @@ public class UkelonnDatabaseProviderTest {
     @Test
     public void testCreateDatabase() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         setPrivateField(provider, "dataSourceFactory", dataSourceFactory); // Avoid side effects of the public setter
         provider.createConnection();
@@ -58,6 +60,7 @@ public class UkelonnDatabaseProviderTest {
     @Test
     public void testThatActivatorCreatesDatabase() throws SQLException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
 

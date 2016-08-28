@@ -12,12 +12,19 @@ import javax.inject.Provider;
 import javax.sql.DataSource;
 
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
 public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<UkelonnDatabase> {
+    private LogService logService;
     private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
+
+    @Inject
+    public void setLogService(LogService logService) {
+    	this.logService = logService;
+    }
 
     @Inject
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
@@ -36,7 +43,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<Ukelon
             DataSource dataSource = dataSourceFactory.createDataSource(properties);
             connect = dataSource.getConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Derby mock database failed to create connection", e);
         }
     }
 
@@ -58,7 +65,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<Ukelon
             result |= createSchema.execute(getResourceAsString("/sql/views/work_done_view.sql"));
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Derby mock database failed to create schema", e);
             return false;
         }
     }
@@ -84,10 +91,16 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<Ukelon
             ResultSet result = statement.executeQuery(sqlQuery);
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Derby mock database query failed", e);
         }
 
         return null;
+    }
+
+    private void logError(String message, Exception exception) {
+        if (logService != null) {
+            logService.log(LogService.LOG_ERROR, message, exception);
+        }
     }
 
     private int[] insertRows(String resourceName) {
@@ -104,7 +117,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<Ukelon
             statement.clearBatch();
             return insertedRows;
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Derby mock database failed to create insert mock data", e);
         }
 
         return null;
@@ -129,7 +142,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<Ukelon
 
             return resource.toString("UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Derby mock database read resource \"" + resourceName + "\"", e);
         }
 
         return null;
