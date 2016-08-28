@@ -3,12 +3,42 @@ package no.priv.bang.ukelonn.bundle.test.db;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
-public class UkelonnDatabaseProvider implements UkelonnDatabase {
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.sql.DataSource;
+
+import org.osgi.service.jdbc.DataSourceFactory;
+
+import no.priv.bang.ukelonn.UkelonnDatabase;
+
+public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<UkelonnDatabase> {
     private Connection connect = null;
+    private DataSourceFactory dataSourceFactory;
+
+    @Inject
+    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
+    	this.dataSourceFactory = dataSourceFactory;
+    	if (this.dataSourceFactory != null) {
+            createConnection();
+            createSchema();
+            insertMockData();
+    	}
+    }
+
+    void createConnection() {
+        Properties properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
+        try {
+            DataSource dataSource = dataSourceFactory.createDataSource(properties);
+            connect = dataSource.getConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public UkelonnDatabase get() {
         return this;
@@ -16,8 +46,6 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     public boolean createSchema() {
         try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
-            connect = DriverManager.getConnection("jdbc:derby:memory:ukelonn;create=true");
             Statement createSchema = connect.createStatement();
             boolean result = false;
             result |= createSchema.execute(getResourceAsString("/sql/tables/users.sql"));

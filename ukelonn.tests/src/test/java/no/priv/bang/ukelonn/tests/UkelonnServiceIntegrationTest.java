@@ -99,7 +99,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.apache.myfaces.core", "myfaces-api", myFacesVersion),
                        mavenBundle("org.apache.myfaces.core", "myfaces-impl", myFacesVersion),
                        mavenBundle("org.primefaces", "primefaces", "5.1"),
-                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()));
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db", getMavenProjectVersion()));
     }
 
     @Before

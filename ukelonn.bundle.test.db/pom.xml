@@ -43,14 +43,17 @@
    <artifactId>junit</artifactId>
   </dependency>
   <dependency>
-   <groupId>org.apache.derby</groupId>
-   <artifactId>derby</artifactId>
-   <version>10.10.1.1</version>
+   <groupId>org.ops4j.pax.jdbc</groupId>
+   <artifactId>pax-jdbc</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.jdbc</groupId>
+   <artifactId>pax-jdbc-derby</artifactId>
+   <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>org.apache.derby</groupId>
-   <artifactId>derbyclient</artifactId>
-   <version>10.10.1.1</version>
+   <artifactId>derby</artifactId>
   </dependency>
  </dependencies>
 

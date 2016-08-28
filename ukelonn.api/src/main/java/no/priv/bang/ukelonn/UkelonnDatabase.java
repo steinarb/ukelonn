@@ -1,12 +1,8 @@
-package no.priv.bang.ukelonn.bundle.test.db;
+package no.priv.bang.ukelonn;
 
 import java.sql.ResultSet;
 
 public interface UkelonnDatabase {
-
-    boolean createSchema();
-
-    int[] insertMockData();
 
     ResultSet query(String string);
 

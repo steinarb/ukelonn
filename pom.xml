@@ -18,10 +18,12 @@
   <dependency.pax.swissbox.version>1.8.2</dependency.pax.swissbox.version>
   <dependency.pax.exam.version>4.5.0</dependency.pax.exam.version>
   <dependency.pax.url.version>2.4.7</dependency.pax.url.version>
+  <dependency.pax.jdbc.version>0.9.0</dependency.pax.jdbc.version>
   <dependency.jetty.version>9.2.17.v20160517</dependency.jetty.version>
   <dependency.xbean.version>4.1</dependency.xbean.version>
   <dependency.httpcomponents.version>4.3.3</dependency.httpcomponents.version>
   <dependency.myfaces.version>2.2.6</dependency.myfaces.version>
+  <derby.version>10.11.1.1</derby.version>
  </properties>
 
  <dependencyManagement>
@@ -317,6 +319,24 @@
     <groupId>org.primefaces</groupId>
     <artifactId>primefaces</artifactId>
     <version>5.1</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.ops4j.pax.jdbc</groupId>
+    <artifactId>pax-jdbc</artifactId>
+    <version>${dependency.pax.jdbc.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.ops4j.pax.jdbc</groupId>
+    <artifactId>pax-jdbc-derby</artifactId>
+    <version>${dependency.pax.jdbc.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.derby</groupId>
+    <artifactId>derby</artifactId>
+    <version>${derby.version}</version>
     <scope>provided</scope>
    </dependency>
   </dependencies>
