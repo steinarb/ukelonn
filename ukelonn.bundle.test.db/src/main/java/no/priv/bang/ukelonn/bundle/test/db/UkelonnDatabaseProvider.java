@@ -64,7 +64,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     private int[] insertRows(String resourceName) {
         String sql = getResourceAsString(resourceName);
-        String[] insertStatements = sql.split(";\r\n");
+        String[] insertStatements = sql.split(";\r?\n");
         try {
             Statement statement = connect.createStatement();
             statement.clearBatch();
