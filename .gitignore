@@ -2,6 +2,7 @@
 .project
 .settings/
 /README.md
+/ukelonn.bundle.test.db/derby.log
 /ukelonn.gogoshell/runner/
 /ukelonn.tests/test.log
 target/
