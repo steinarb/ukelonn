@@ -16,7 +16,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
-public class UkelonnDatabaseProvider implements UkelonnDatabase, Provider<UkelonnDatabase> {
+public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
     private LogService logService;
     private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
