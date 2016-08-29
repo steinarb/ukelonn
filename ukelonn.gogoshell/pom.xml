@@ -59,7 +59,6 @@
    <plugin>
     <groupId>org.ops4j</groupId>
     <artifactId>maven-pax-plugin</artifactId>
-    <version>1.5</version>
     <configuration>
      <!--
          | some example Pax-Runner settings
@@ -82,7 +81,6 @@
    </plugin>
    <plugin>
     <artifactId>maven-clean-plugin</artifactId>
-    <version>3.0.0</version>
     <configuration>
      <filesets>
       <fileset>
