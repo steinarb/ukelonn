@@ -24,6 +24,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 
 @RunWith(PaxExam.class)
@@ -36,6 +37,9 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     String httpcomponentsVersion = "4.3.3";
     String jettyVersion = "9.2.17.v20160517";
     String myFacesVersion = "2.2.6";
+
+    @Inject
+    private UkelonnDatabase database;
 
     @Inject
     private BundleContext bundleContext;
