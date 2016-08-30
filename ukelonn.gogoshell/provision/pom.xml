@@ -199,6 +199,14 @@
    <artifactId>commons-collections</artifactId>
   </dependency>
   <dependency>
+   <groupId>org.apache.derby</groupId>
+   <artifactId>derby</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.jdbc</groupId>
+   <artifactId>pax-jdbc-derby</artifactId>
+  </dependency>
+  <dependency>
    <groupId>org.apache.servicemix.bundles</groupId>
    <artifactId>org.apache.servicemix.bundles.commons-digester</artifactId>
   </dependency>

@@ -20,7 +20,7 @@
   <dependency>
    <groupId>org.eclipse.tycho</groupId>
    <artifactId>org.eclipse.osgi</artifactId>
-   <version>3.7.0.v20110613</version>
+   <version>3.11.0.v20160603-1336</version>
    <scope>test</scope>
   </dependency>
   <dependency>
@@ -193,6 +193,14 @@
   <dependency>
    <groupId>commons-collections</groupId>
    <artifactId>commons-collections</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.jdbc</groupId>
+   <artifactId>pax-jdbc-derby</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.derby</groupId>
+   <artifactId>derby</artifactId>
   </dependency>
   <dependency>
    <groupId>org.apache.servicemix.bundles</groupId>

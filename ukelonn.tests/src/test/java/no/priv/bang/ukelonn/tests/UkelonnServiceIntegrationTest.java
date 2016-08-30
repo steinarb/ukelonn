@@ -20,17 +20,18 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
 
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
+
+import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
-    private Bundle installWarBundle;
+    Bundle installWarBundle;
     String paxSwissboxVersion = "1.8.2";
     String paxWebVersion = "4.2.7";
     String xbeanVersion = "4.1";
@@ -41,11 +42,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Inject
     private UkelonnDatabase database;
 
-    @Inject
-    private BundleContext bundleContext;
+    @Inject BundleContext bundleContext;
 
-    private UkelonnService ukelonnService;
-    private ServiceListener ukelonnServiceListener;
+    UkelonnService ukelonnService;
+    ServiceListener ukelonnServiceListener;
 
     @Configuration
     public Option[] config() {
@@ -94,6 +94,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.eclipse.jetty", "jetty-servlet", jettyVersion),
                        mavenBundle("commons-beanutils", "commons-beanutils", "1.8.3"),
                        mavenBundle("commons-collections", "commons-collections", "3.2.1"),
+                       mavenBundle("org.apache.derby", "derby"),
+                       mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"),
                        mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-digester", "1.8_4"),
                        mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr303-api-1.0.0", "1.8.0"),
                        mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr250-1.0", "2.0.0"),
@@ -108,15 +110,20 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     }
 
     @Before
-    public void setup() throws BundleException{
-    	// Can't use injection for the Webapp service since the bundle isn't
-    	// started until setUp and all injections are resolved
-    	// before the tests start.
-    	//
-    	// Creating a service listener instead.
+    public void setup() throws BundleException {
+        printBundleLocations(bundleContext, false);
+
+        final String testDbBundlePath = "mvn:no.priv.bang.ukelonn/ukelonn.bundle.test.db/" + getMavenProjectVersion();
+        tryStartingBundleAndPrintErrorTrace(bundleContext, testDbBundlePath);
+
+        // Can't use injection for the Webapp service since the bundle isn't
+        // started until setUp and all injections are resolved
+        // before the tests start.
+        //
+        // Creating a service listener instead.
         ukelonnServiceListener = new ServiceListener() {
 
-        	@Override
+	    	@Override
                 public void serviceChanged(ServiceEvent event) {
                     @SuppressWarnings("rawtypes")
                         ServiceReference sr = event.getServiceReference();
@@ -124,7 +131,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                         UkelonnService service = (UkelonnService) bundleContext.getService(sr);
                     switch(event.getType()) {
                       case ServiceEvent.REGISTERED:
-                	ukelonnService = service;
+	            	ukelonnService = service;
                         break;
                       default:
                         break;
