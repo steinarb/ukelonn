@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.MavenUtils.*;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -14,12 +17,17 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
+
     @Inject
     private UkelonnService ukelonnService;
+
+    @Inject
+    private UkelonnDatabase database;
 
     @Configuration
     public Option[] config() {
@@ -65,17 +73,38 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.eclipse.jetty", "jetty-security").version(asInProject()),
                        mavenBundle("org.eclipse.jetty", "jetty-xml").version(asInProject()),
                        mavenBundle("org.eclipse.jetty", "jetty-servlet").version(asInProject()),
+                       mavenBundle("org.apache.derby", "derby"),
+                       mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"),
                        mavenBundle("org.apache.commons", "commons-lang3", "3.3.2"),
                        mavenBundle("org.rendersnake", "rendersnake").version(asInProject()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
-                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()));
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()),
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db", getMavenProjectVersion()));
     }
 
     @Test
     public void ukelonnServiceIntegrationTest() {
-    	// Verify that the service could be injected
-    	assertNotNull(ukelonnService);
-    	assertEquals("Hello world!", ukelonnService.getMessage());
+        // Verify that the service could be injected
+        assertNotNull(ukelonnService);
+        assertEquals("Hello world!", ukelonnService.getMessage());
+    }
+
+    @Test
+    public void testDerbyTestDatabase() throws SQLException {
+        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
+        assertNotNull(onAccount);
+        while (onAccount.next()) {
+            int account_id = onAccount.getInt("account_id");
+            int user_id = onAccount.getInt("user_id");
+            String username = onAccount.getString("username");
+            String first_name = onAccount.getString("first_name");
+            String last_name = onAccount.getString("last_name");
+            assertEquals(3, account_id);
+            assertEquals(3, user_id);
+            assertEquals("jad", username);
+            assertEquals("Jane", first_name);
+            assertEquals("Doe", last_name);
+        }
     }
 
 }

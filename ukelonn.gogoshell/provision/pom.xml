@@ -36,6 +36,12 @@
    <scope>provided</scope>
   </dependency>
   <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.bundle.test.db</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
    <groupId>org.osgi</groupId>
    <artifactId>org.osgi.compendium</artifactId>
   </dependency>
@@ -182,6 +188,14 @@
   <dependency>
    <groupId>org.eclipse.jetty</groupId>
    <artifactId>jetty-servlet</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.derby</groupId>
+   <artifactId>derby</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.jdbc</groupId>
+   <artifactId>pax-jdbc-derby</artifactId>
   </dependency>
   <dependency>
    <groupId>org.rendersnake</groupId>

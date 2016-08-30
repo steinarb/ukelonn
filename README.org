@@ -4,6 +4,32 @@ Tanken er at ungene skal kunne registrere jobber de gjør i hjemmet og at foreld
 
 Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/developer/architecture/][OSGi]] runtime, og er ment å være responsive slik at den er lett å kjøre på mobiltelefoner og nettbrett.
 
+* Utsjekk og bygg
+
+Dette trengs for å laste og kjøre programvaren
+ 1. Installer det som trengs:
+    - git: https://git-scm.com/download/win
+    - Java SDK 1.8 (funker forsåvidt med 1.7 også om man allerede har den): http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    - Apache maven:
+      - Download: https://maven.apache.org/download.cgi
+      - Install: https://maven.apache.org/install.html
+      - Run: https://maven.apache.org/run.html
+ 2. Gjør en klon av git-repositoriet
+    #+BEGIN_EXAMPLE
+      mkdir %HOME%\git
+      cd %HOME%\git
+      git clone https://github.com/steinarb/ukelonn.git
+    #+END_EXAMPLE
+ 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+    #+BEGIN_EXAMPLE
+      cd %HOME%\git\ukelonn
+      git checkout using-primefaces
+      mvn clean install
+      cd ukelonn.gogoshell
+      mvn install pax:provision
+    #+END_EXAMPLE
+ 4. Åpne en nettleser på http://localhost:8090
+
 * Lisens
 
 Lisensen er Eclipse Public License - v 1.0.  Jeg kunne tenkt meg GPL i en eller annen variant, men da måtte jeg passe på hvilke lisenser som var kompatible og det ble for mye jobb.
