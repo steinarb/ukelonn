@@ -6,6 +6,9 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.inject.Inject;
 
 import org.junit.After;
@@ -25,7 +28,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
 
 import no.priv.bang.ukelonn.UkelonnService;
-
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @RunWith(PaxExam.class)
@@ -156,6 +158,24 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     	// Verify that the service could be injected
     	assertNotNull(ukelonnService);
     	assertEquals("Hello world!", ukelonnService.getMessage());
+    }
+
+    @Test
+    public void testDerbyTestDatabase() throws SQLException {
+        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
+        assertNotNull(onAccount);
+        while (onAccount.next()) {
+            int account_id = onAccount.getInt("account_id");
+            int user_id = onAccount.getInt("user_id");
+            String username = onAccount.getString("username");
+            String first_name = onAccount.getString("first_name");
+            String last_name = onAccount.getString("last_name");
+            assertEquals(3, account_id);
+            assertEquals(3, user_id);
+            assertEquals("jad", username);
+            assertEquals("Jane", first_name);
+            assertEquals("Doe", last_name);
+        }
     }
 
 }
