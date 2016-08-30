@@ -16,7 +16,7 @@
   <dependency.osgi.version>5.0.0</dependency.osgi.version>
   <dependency.pax.web.version>4.2.7</dependency.pax.web.version>
   <dependency.pax.swissbox.version>1.8.2</dependency.pax.swissbox.version>
-  <dependency.pax.exam.version>4.5.0</dependency.pax.exam.version>
+  <dependency.pax.exam.version>4.9.1</dependency.pax.exam.version>
   <dependency.pax.url.version>2.4.7</dependency.pax.url.version>
   <dependency.pax.jdbc.version>0.9.0</dependency.pax.jdbc.version>
   <dependency.jetty.version>9.2.17.v20160517</dependency.jetty.version>
