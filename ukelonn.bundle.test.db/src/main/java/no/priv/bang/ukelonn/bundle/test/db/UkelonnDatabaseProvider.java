@@ -16,7 +16,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
-public class UkelonnDatabaseProvider extends UkelonnDatabaseBase implements Provider<UkelonnDatabase> {
+public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
     private LogService logService;
     private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
@@ -85,7 +85,6 @@ public class UkelonnDatabaseProvider extends UkelonnDatabaseBase implements Prov
         return insertedRowCounts;
     }
 
-    @Override
     public ResultSet query(String sqlQuery) {
         try {
             Statement statement = connect.createStatement();
