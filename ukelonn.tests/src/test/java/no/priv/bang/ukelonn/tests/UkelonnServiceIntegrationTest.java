@@ -113,11 +113,6 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Before
     public void setup() throws BundleException {
-        printBundleLocations(bundleContext, false);
-
-        final String testDbBundlePath = "mvn:no.priv.bang.ukelonn/ukelonn.bundle.test.db/" + getMavenProjectVersion();
-        tryStartingBundleAndPrintErrorTrace(bundleContext, testDbBundlePath);
-
         // Can't use injection for the Webapp service since the bundle isn't
         // started until setUp and all injections are resolved
         // before the tests start.
