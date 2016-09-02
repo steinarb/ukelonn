@@ -2,7 +2,6 @@ package no.priv.bang.ukelonn.bundle.test.db;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
