@@ -1,16 +1,10 @@
 package no.priv.bang.ukelonn.impl;
 
-import java.net.URL;
-import java.util.Enumeration;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.jasper.compiler.JspUtil;
 import org.ops4j.pax.web.service.WebContainer;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
 
