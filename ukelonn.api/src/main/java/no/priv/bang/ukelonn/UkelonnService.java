@@ -14,4 +14,6 @@ public interface UkelonnService {
 
     String getMessage();
 
+    UkelonnDatabase getDatabase();
+
 }

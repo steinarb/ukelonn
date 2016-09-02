@@ -9,7 +9,8 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.sql.DataSource;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.PooledConnection;
 
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
@@ -18,7 +19,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 
 public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
     private LogService logService;
-    private Connection connect = null;
+    private PooledConnection connect = null;
     private DataSourceFactory dataSourceFactory;
 
     @Inject
@@ -40,8 +41,8 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         try {
-            DataSource dataSource = dataSourceFactory.createDataSource(properties);
-            connect = dataSource.getConnection();
+            ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
+            connect = dataSource.getPooledConnection();
         } catch (Exception e) {
             logError("Derby mock database failed to create connection", e);
         }
@@ -53,7 +54,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
 
     public boolean createSchema() {
         try {
-            Statement createSchema = connect.createStatement();
+            Statement createSchema = connect.getConnection().createStatement();
             boolean result = false;
             result |= createSchema.execute(getResourceAsString("/sql/tables/users.sql"));
             result |= createSchema.execute(getResourceAsString("/sql/tables/accounts.sql"));
@@ -87,7 +88,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
 
     public ResultSet query(String sqlQuery) {
         try {
-            Statement statement = connect.createStatement();
+            Statement statement = connect.getConnection().createStatement();
             ResultSet result = statement.executeQuery(sqlQuery);
             return result;
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         String sql = getResourceAsString(resourceName);
         String[] insertStatements = sql.split(";\r?\n");
         try {
-            Statement statement = connect.createStatement();
+            Statement statement = connect.getConnection().createStatement();
             statement.clearBatch();
             for (String insertStatement : insertStatements) {
                 statement.addBatch(insertStatement);

@@ -11,6 +11,7 @@ import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
 
+import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
 
@@ -25,6 +26,18 @@ import no.steria.osgi.jsr330activator.Jsr330Activator;
 public class UkelonnServiceProvider extends UkelonnServiceBase implements Provider<UkelonnService> {
 
     private WebContainer webContainer;
+    private HttpContext httpContext;
+    private UkelonnDatabase database;
+
+    @Inject
+    public void setUkelonnDatabase(UkelonnDatabase database) {
+    	this.database = database;
+    }
+
+    @Override
+    public UkelonnDatabase getDatabase() {
+        return database;
+    }
 
     @Inject
     public void setWebContainer(WebContainer webcontainer) {
