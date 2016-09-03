@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 
 public interface UkelonnDatabase {
 
-    ResultSet query(String string);
+    ResultSet query(String sql);
+
+    int update(String sql);
 
 }
