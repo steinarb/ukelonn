@@ -97,6 +97,18 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         return null;
     }
 
+    public int update(String sql) {
+        try {
+            Statement statement = connect.getConnection().createStatement();
+            int result = statement.executeUpdate(sql);
+            return result;
+        } catch (Exception e) {
+            logError("Derby mock database query failed", e);
+        }
+
+        return 0;
+    }
+
     private void logError(String message, Exception exception) {
         if (logService != null) {
             logService.log(LogService.LOG_ERROR, message, exception);

@@ -1,38 +1,79 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnService;
+
 @ManagedBean(name = "ukelonn")
 @SessionScoped
 public class UkelonnController {
 
     // properties
-    private double balanse = 120;
-    private String fornavn = "Ola";
-    List<TransactionType> transactionTypes;
+    private String username;
+    private int userId = 0;
+    private int accountId = 0;
+    private double balanse = 0;
+    private String fornavn = "";
+    private String etternavn = "";
+    Map<Integer, TransactionType> transactionTypes;
     List<Transaction> transactions;
     TransactionType newJobType;
     double newJobWages;
 
     public UkelonnController() {
-    	transactionTypes = new ArrayList<TransactionType>();
-    	transactionTypes.add(new TransactionType(1, "Støvsuging 1. etasje", 45.0, true, false));
-    	transactionTypes.add(new TransactionType(2, "Støvsuging kjeller", 45.0, true, false));
-    	transactionTypes.add(new TransactionType(3, "Gå med resirk", 35.0, true, false));
-    	transactionTypes.add(new TransactionType(4, "Inn på konto", null, false, true));
+        super();
+        setUsername("jad"); // TODO: Get the username set in the template somewhere.
+    }
 
-    	transactions = new ArrayList<Transaction>();
-    	transactions.add(new Transaction(transactionTypes.get(0), new Date(), 45.0));
-    	transactions.add(new Transaction(transactionTypes.get(1), new Date(), 45.0));
-    	transactions.add(new Transaction(transactionTypes.get(2), new Date(), 35.0));
-    	transactions.add(new Transaction(transactionTypes.get(3), new Date(), -125.0));
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        getAccountInfoFromDatabase(username);
+    	transactionTypes = getTransactionTypesFromUkelonnDatabase();
+    	transactions = getTransactionsFromUkelonnDatabase(getAccountId());
+    }
+
+    private void getAccountInfoFromDatabase(String username) {
+        UkelonnDatabase database = connectionCheck();
+        StringBuffer sql = new StringBuffer("select * from accounts_view where username='");
+        sql.append(username);
+        sql.append("'");
+        ResultSet resultset = database.query(sql.toString());
+        if (resultset != null) {
+            try {
+                if (resultset.next()) {
+                    userId = resultset.getInt("user_id");
+                    accountId = resultset.getInt("account_id");
+                    balanse = resultset.getDouble("balance");
+                    fornavn = resultset.getString("first_name");
+                    etternavn = resultset.getString("last_name");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String getFornavn() {
@@ -41,6 +82,14 @@ public class UkelonnController {
 
     public void setFornavn(String fornavn) {
         this.fornavn = fornavn;
+    }
+
+    public String getEtternavn() {
+        return etternavn;
+    }
+
+    public void setEtternavn(String etternavn) {
+        this.etternavn = etternavn;
     }
 
     public Double getBalanse() {
@@ -53,7 +102,7 @@ public class UkelonnController {
 
     public List<TransactionType> getJobTypes() {
         ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
-        for (TransactionType transactionType : transactionTypes) {
+        for (TransactionType transactionType : transactionTypes.values()) {
             if (transactionType.isTransactionIsWork()) {
                 jobTypes.add(transactionType);
             }
@@ -84,29 +133,116 @@ public class UkelonnController {
         return payments;
     }
 
-	public TransactionType getNewJobType() {
-		return newJobType;
-	}
+    public TransactionType getNewJobType() {
+        return newJobType;
+    }
 
-	public void setNewJobType(TransactionType newJobType) {
-		this.newJobType = newJobType;
-	}
-	
-	public void newJobTypeSelected(final AjaxBehaviorEvent event) {
-		if (newJobType != null && newJobType.getTransactionAmount() != null) {
-			newJobWages = newJobType.getTransactionAmount();
-		}
-	}
+    public void setNewJobType(TransactionType newJobType) {
+        this.newJobType = newJobType;
+    }
 
-	public double getNewJobWages() {
-		return newJobWages;
-	}
+    public void newJobTypeSelected(final AjaxBehaviorEvent event) {
+        if (newJobType != null && newJobType.getTransactionAmount() != null) {
+            newJobWages = newJobType.getTransactionAmount();
+        }
+    }
 
-	public void setNewJobWages(double newJobWages) {
-		this.newJobWages = newJobWages;
-	}
-	
-	public void registerNewJob(ActionEvent event) {
-		transactions.add(new Transaction(newJobType, new Date(), newJobWages));
-	}
+    public double getNewJobWages() {
+        return newJobWages;
+    }
+
+    public void setNewJobWages(double newJobWages) {
+        this.newJobWages = newJobWages;
+    }
+
+    public void registerNewJob(ActionEvent event) {
+        StringBuffer sql = new StringBuffer("insert into transactions (account_id,transaction_type_id,transaction_amount) values (");
+        sql.append(getAccountId());
+        sql.append(",");
+        sql.append(getNewJobType().getId());
+        sql.append(",");
+        sql.append(getNewJobWages());
+        sql.append(")");
+
+        UkelonnDatabase database = connectionCheck();
+        database.update(sql.toString());
+
+        // Update the list of jobs and the updated balance from the DB
+        getAccountInfoFromDatabase(username);
+    	transactions = getTransactionsFromUkelonnDatabase(getAccountId());
+    }
+
+    private Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase() {
+        Map<Integer, TransactionType> transactiontypes = new Hashtable<Integer, TransactionType>();
+        UkelonnDatabase database = connectionCheck();
+        ResultSet resultSet = database.query("select * from transaction_types");
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    TransactionType transactiontype = mapTransactionType(resultSet);
+                    transactiontypes.put(transactiontype.getId(), transactiontype);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return transactiontypes;
+    }
+
+    private TransactionType mapTransactionType(ResultSet resultset) throws SQLException {
+        TransactionType transactionType =
+            new TransactionType(
+                                resultset.getInt("transaction_type_id"),
+                                resultset.getString("transaction_type_name"),
+                                resultset.getDouble("transaction_amount"),
+                                resultset.getBoolean("transaction_is_work"),
+                                resultset.getBoolean("transaction_is_wage_payment")
+                                );
+        return transactionType;
+    }
+
+    private List<Transaction> getTransactionsFromUkelonnDatabase(int accountid) {
+        List<Transaction> transactions = new ArrayList<Transaction>();
+        UkelonnDatabase database = connectionCheck();
+        StringBuffer sql = new StringBuffer("select * from transactions where account_id=");
+        sql.append(accountid);
+        ResultSet resultSet = database.query(sql.toString());
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    transactions.add(mapTransaction(resultSet));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return transactions;
+    }
+
+    private Transaction mapTransaction(ResultSet resultset) throws SQLException {
+        Transaction transaction =
+            new Transaction(
+                            resultset.getInt("transaction_id"),
+                            transactionTypes.get(resultset.getInt("transaction_type_id")),
+                            resultset.getDate("transaction_time"),
+                            resultset.getDouble("transaction_amount")
+                            );
+        return transaction;
+    }
+
+    private UkelonnDatabase connectionCheck() {
+        UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
+        if (ukelonnService == null) {
+            throw new RuntimeException("UkelonnController bean unable to find OSGi service Ukelonnservice, giving up");
+        }
+
+        UkelonnDatabase database = ukelonnService.getDatabase();
+        if (database == null) {
+            throw new RuntimeException("UkelonnController bean unable to find OSGi service UkelonnDatabase, giving up");
+        }
+
+        return database;
+    }
 }
