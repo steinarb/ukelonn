@@ -48,7 +48,7 @@
       <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
      </p:selectOneMenu>
      <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true"/>
-     <p:commandButton value="Registrer jobb" update=":balanse:jobs" actionListener="#{ukelonn.registerNewJob}" />
+     <p:commandButton value="Registrer jobb" update=":balanse:balanse :balanse:jobs" actionListener="#{ukelonn.registerNewJob}" />
     </p:panelGrid>
    </h:form>
   </f:view>
