@@ -19,6 +19,8 @@
   <dependency.pax.exam.version>4.9.1</dependency.pax.exam.version>
   <dependency.pax.url.version>2.4.7</dependency.pax.url.version>
   <dependency.pax.jdbc.version>0.9.0</dependency.pax.jdbc.version>
+  <dependency.pax.shiro.version>0.1.0</dependency.pax.shiro.version>
+  <dependency.shiro.version>1.3.1</dependency.shiro.version>
   <dependency.jetty.version>9.2.17.v20160517</dependency.jetty.version>
   <dependency.xbean.version>4.1</dependency.xbean.version>
   <dependency.httpcomponents.version>4.3.3</dependency.httpcomponents.version>
@@ -343,6 +345,24 @@
     <groupId>org.apache.derby</groupId>
     <artifactId>derby</artifactId>
     <version>${derby.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.ops4j.pax.shiro</groupId>
+    <artifactId>pax-shiro-faces</artifactId>
+    <version>${dependency.pax.shiro.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.shiro</groupId>
+    <artifactId>shiro-core</artifactId>
+    <version>${dependency.shiro.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.shiro</groupId>
+    <artifactId>shiro-web</artifactId>
+    <version>${dependency.shiro.version}</version>
     <scope>provided</scope>
    </dependency>
   </dependencies>

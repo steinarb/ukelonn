@@ -242,5 +242,29 @@
    <groupId>org.primefaces</groupId>
    <artifactId>primefaces</artifactId>
   </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.shiro</groupId>
+   <artifactId>pax-shiro-faces</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-web</artifactId>
+   <exclusions>
+    <exclusion>
+     <groupId>org.slf4j</groupId>
+     <artifactId>slf4j-api</artifactId>
+    </exclusion>
+   </exclusions>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-core</artifactId>
+   <exclusions>
+    <exclusion>
+     <groupId>org.slf4j</groupId>
+     <artifactId>slf4j-api</artifactId>
+    </exclusion>
+   </exclusions>
+  </dependency>
  </dependencies>
 </project>
