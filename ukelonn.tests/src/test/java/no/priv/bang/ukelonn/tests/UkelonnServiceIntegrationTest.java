@@ -34,12 +34,8 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
     Bundle installWarBundle;
-    String paxSwissboxVersion = "1.8.2";
-    String paxWebVersion = "4.2.7";
-    String xbeanVersion = "4.1";
-    String httpcomponentsVersion = "4.3.3";
-    String jettyVersion = "9.2.17.v20160517";
-    String myFacesVersion = "2.2.6";
+    private String paxWebVersion = "4.2.7";
+    private String jettyVersion = "9.2.17.v20160517";
 
     @Inject
     private UkelonnDatabase database;
@@ -64,8 +60,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        systemProperty("org.ops4j.pax.web.log.ncsa.directory").value("target/logs"),
                        systemProperty("org.ops4j.pax.web.jsp.scratch.dir").value("target/paxexam/scratch-dir"),
                        systemProperty("org.ops4j.pax.url.mvn.certificateCheck").value("false"),
-                       mavenBundle("org.ops4j.pax.logging", "pax-logging-api", paxSwissboxVersion),
-                       mavenBundle("org.ops4j.pax.logging", "pax-logging-service", paxSwissboxVersion),
+                       mavenBundle("org.ops4j.pax.logging", "pax-logging-api"),
+                       mavenBundle("org.ops4j.pax.logging", "pax-logging-service"),
                        mavenBundle("org.ops4j.pax.url", "pax-url-war", "2.4.7").type("jar").classifier("uber"),
                        mavenBundle("org.ops4j.pax.web", "pax-web-spi", paxWebVersion),
                        mavenBundle("org.ops4j.pax.web", "pax-web-api", paxWebVersion),
@@ -73,16 +69,16 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard", paxWebVersion),
                        mavenBundle("org.ops4j.pax.web", "pax-web-runtime", paxWebVersion),
                        mavenBundle("org.ops4j.pax.web", "pax-web-jsp", paxWebVersion),
-                       mavenBundle("org.eclipse.jdt.core.compiler", "ecj", "4.4"),
-                       mavenBundle("org.apache.xbean", "xbean-reflect", xbeanVersion),
-                       mavenBundle("org.apache.xbean", "xbean-finder", xbeanVersion),
-                       mavenBundle("org.apache.xbean", "xbean-bundleutils", xbeanVersion),
+                       mavenBundle("org.eclipse.jdt.core.compiler", "ecj"),
+                       mavenBundle("org.apache.xbean", "xbean-reflect"),
+                       mavenBundle("org.apache.xbean", "xbean-finder"),
+                       mavenBundle("org.apache.xbean", "xbean-bundleutils"),
                        mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
-                       mavenBundle("commons-codec", "commons-codec", "1.10"),
-                       mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
-                       mavenBundle("org.apache.httpcomponents", "httpcore", httpcomponentsVersion),
-                       mavenBundle("org.apache.httpcomponents", "httpmime", httpcomponentsVersion),
-                       mavenBundle("org.apache.httpcomponents", "httpclient", httpcomponentsVersion),
+                       mavenBundle("commons-codec", "commons-codec"),
+                       mavenBundle("org.apache.felix", "org.apache.felix.eventadmin"),
+                       mavenBundle("org.apache.httpcomponents", "httpcore"),
+                       mavenBundle("org.apache.httpcomponents", "httpmime"),
+                       mavenBundle("org.apache.httpcomponents", "httpclient"),
                        mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
                        mavenBundle("org.ops4j.pax.web", "pax-web-jetty", paxWebVersion),
                        mavenBundle("org.eclipse.jetty", "jetty-util", jettyVersion),
@@ -98,20 +94,20 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("commons-collections", "commons-collections", "3.2.1"),
                        mavenBundle("org.apache.derby", "derby"),
                        mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"),
-                       mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-digester", "1.8_4"),
-                       mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr303-api-1.0.0", "1.8.0"),
-                       mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr250-1.0", "2.0.0"),
-                       mavenBundle("org.apache.geronimo.bundles", "commons-discovery", "0.4_1"),
-                       mavenBundle("javax.enterprise", "cdi-api", "1.2"),
-                       mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
-                       mavenBundle("org.apache.myfaces.core", "myfaces-api", myFacesVersion),
-                       mavenBundle("org.apache.myfaces.core", "myfaces-impl", myFacesVersion),
+                       mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-digester"),
+                       mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr303-api-1.0.0"),
+                       mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr250-1.0"),
+                       mavenBundle("org.apache.geronimo.bundles", "commons-discovery"),
+                       mavenBundle("javax.enterprise", "cdi-api"),
+                       mavenBundle("javax.interceptor", "javax.interceptor-api"),
+                       mavenBundle("org.apache.myfaces.core", "myfaces-api"),
+                       mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
                        mavenBundle("org.primefaces", "primefaces", "5.1"),
                        mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
                        mavenBundle("org.apache.shiro", "shiro-core"),
                        mavenBundle("org.apache.shiro", "shiro-web"),
-                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
-                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db", getMavenProjectVersion()));
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.api"),
+                       mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db"));
     }
 
     @Before
