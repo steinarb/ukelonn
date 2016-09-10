@@ -82,6 +82,33 @@ public class UkelonnDatabaseProviderTest {
         }
     }
 
+    @Test
+    public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        provider.setLogService(new MockLogService());
+        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+
+        UkelonnDatabase database = provider.get();
+        // Test that the administrators_view is present
+        ResultSet allUsers = database.query("select * from users");
+        int allUserCount = 0;
+        while (allUsers.next()) { ++allUserCount; }
+        assertEquals(4, allUserCount);
+
+        // Test that the administrators_view is present
+        ResultSet allAdministrators = database.query("select * from administrators");
+        int allAdminstratorsCount = 0;
+        while (allAdministrators.next()) { ++allAdminstratorsCount; }
+        assertEquals(2, allAdminstratorsCount);
+
+        // Test that the administrators_view is present
+        ResultSet allAdministratorsView = database.query("select * from administrators_view");
+        int allAdminstratorsViewCount = 0;
+        while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
+        assertEquals(2, allAdminstratorsViewCount);
+    }
+
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Field field = object.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
