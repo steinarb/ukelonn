@@ -7,20 +7,14 @@ import javax.faces.event.ActionEvent;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
-import org.osgi.service.jdbc.DataSourceFactory;
 
-import no.priv.bang.ukelonn.bundle.test.db.UkelonnDatabaseProvider;
+import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 public class UkelonnControllerTest {
 
     @BeforeClass
-    public static void setupFakeOsgiServices() {
-        UkelonnServiceProvider ukelonnServiceSingleton = new UkelonnServiceProvider();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
-        ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+    public static void setupForAllTests() {
+        setupFakeOsgiServices();
     }
 
     @Test
