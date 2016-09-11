@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 
 import javax.faces.event.ActionEvent;
 
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,6 +17,8 @@ public class UkelonnControllerTest {
     @BeforeClass
     public static void setupForAllTests() {
         setupFakeOsgiServices();
+        Subject mockSubject = mock(Subject.class);
+        ThreadContext.put(ThreadContext.SUBJECT_KEY, mockSubject);
     }
 
     @Test

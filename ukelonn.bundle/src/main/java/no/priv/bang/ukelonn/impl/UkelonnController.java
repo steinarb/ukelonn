@@ -12,6 +12,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.apache.shiro.SecurityUtils;
+
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 
@@ -33,7 +35,8 @@ public class UkelonnController {
 
     public UkelonnController() {
         super();
-        setUsername("jad"); // TODO: Get the username set in the template somewhere.
+        String principal = (String) SecurityUtils.getSubject().getPrincipal();
+        setUsername(principal);
     }
 
     public int getUserId() {
