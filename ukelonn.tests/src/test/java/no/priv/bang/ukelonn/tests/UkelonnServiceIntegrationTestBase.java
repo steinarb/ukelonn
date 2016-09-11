@@ -66,4 +66,21 @@ public class UkelonnServiceIntegrationTestBase {
         }
     }
 
+    /***
+     * Debug method: Find a bundle using its location and then try to start the bundle
+     * and print the error message from the start operation to the standard out.
+     *
+     * @param bundleContext where the bundle is located
+     * @param location the location of the bundle in the bundleContext
+     */
+    public void printBundleExportedPackages(BundleContext bundleContext, final String location) {
+        Bundle bundle = bundleContext.getBundle(location);
+        System.out.println("Printing exported packages of: " + bundle.getLocation());
+        BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+        List<BundleCapability> capabilities = bundleWiring.getCapabilities("osgi.wiring.package");
+        for (BundleCapability capability : capabilities) {
+            System.out.println("   " + capability.getAttributes().get("osgi.wiring.package") + ";" + capability.getAttributes().get("version"));
+        }
+    }
+
 }
