@@ -5,7 +5,6 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,6 +12,7 @@ import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -20,13 +20,13 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.web.itest.base.HttpTestClient;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
-
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
@@ -34,6 +34,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
     Bundle installWarBundle;
+    String httpcomponentsVersion = "4.3.3";
     private String paxWebVersion = "4.2.7";
     private String jettyVersion = "9.2.17.v20160517";
 
@@ -69,6 +70,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard", paxWebVersion),
                        mavenBundle("org.ops4j.pax.web", "pax-web-runtime", paxWebVersion),
                        mavenBundle("org.ops4j.pax.web", "pax-web-jsp", paxWebVersion),
+                       mavenBundle("org.ops4j.pax.web.itest", "pax-web-itest-base", paxWebVersion),
                        mavenBundle("org.eclipse.jdt.core.compiler", "ecj"),
                        mavenBundle("org.apache.xbean", "xbean-reflect"),
                        mavenBundle("org.apache.xbean", "xbean-finder"),
@@ -76,9 +78,9 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
                        mavenBundle("commons-codec", "commons-codec"),
                        mavenBundle("org.apache.felix", "org.apache.felix.eventadmin"),
-                       mavenBundle("org.apache.httpcomponents", "httpcore"),
+                       mavenBundle("org.apache.httpcomponents", "httpcore-osgi"),
                        mavenBundle("org.apache.httpcomponents", "httpmime"),
-                       mavenBundle("org.apache.httpcomponents", "httpclient"),
+                       mavenBundle("org.apache.httpcomponents", "httpclient-osgi"),
                        mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
                        mavenBundle("org.ops4j.pax.web", "pax-web-jetty", paxWebVersion),
                        mavenBundle("org.eclipse.jetty", "jetty-util", jettyVersion),
@@ -124,13 +126,16 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                     @SuppressWarnings("rawtypes")
                         ServiceReference sr = event.getServiceReference();
                     @SuppressWarnings("unchecked")
-                        UkelonnService service = (UkelonnService) bundleContext.getService(sr);
-                    switch(event.getType()) {
-                      case ServiceEvent.REGISTERED:
-	            	ukelonnService = service;
-                        break;
-                      default:
-                        break;
+                        Object rawService = bundleContext.getService(sr);
+                    if (rawService instanceof UkelonnService) {
+                        UkelonnService service = (UkelonnService) rawService;
+                        switch(event.getType()) {
+                          case ServiceEvent.REGISTERED:
+                            ukelonnService = service;
+                            break;
+                          default:
+                            break;
+                        }
                     }
                 }
             };
@@ -170,6 +175,20 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             assertEquals("Jane", first_name);
             assertEquals("Doe", last_name);
         }
+    }
+
+    @Ignore
+    @Test
+    public void webappAccessTest() throws Exception {
+    	Thread.sleep(20*1000);
+        HttpTestClient testclient = new HttpTestClient();
+    	try {
+            String response = testclient.testWebPath("http://localhost:8081/ukelonn/", 404);
+            assertEquals("", response);
+    	} finally {
+            testclient.close();
+            testclient = null;
+    	}
     }
 
 }
