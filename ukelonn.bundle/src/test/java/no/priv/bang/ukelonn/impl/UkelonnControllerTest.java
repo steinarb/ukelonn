@@ -5,8 +5,6 @@ import static org.mockito.Mockito.*;
 
 import javax.faces.event.ActionEvent;
 
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,8 +15,23 @@ public class UkelonnControllerTest {
     @BeforeClass
     public static void setupForAllTests() {
         setupFakeOsgiServices();
-        Subject mockSubject = mock(Subject.class);
-        ThreadContext.put(ThreadContext.SUBJECT_KEY, mockSubject);
+    }
+
+    /**
+     * Verify what happens when no username can be retrieved
+     * from Shiro.
+     */
+    @Test
+    public void testNoUsername() {
+        UkelonnController ukelonn = new UkelonnController();
+    	assertNull(ukelonn.getUsername());
+    	assertEquals(0, ukelonn.getUserId());
+    	assertEquals("Ikke innlogget!", ukelonn.getFornavn());
+    	assertEquals("", ukelonn.getEtternavn());
+    	assertEquals(Double.valueOf(0.0), ukelonn.getBalanse());
+    	assertEquals(0, ukelonn.getAccountId());
+    	assertEquals(0, ukelonn.getJobTypes().size());
+    	assertEquals(0, ukelonn.getJobs().size());
     }
 
     @Test

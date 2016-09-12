@@ -3,6 +3,7 @@ package no.priv.bang.ukelonn.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,21 @@ public class UkelonnController {
     private int userId = 0;
     private int accountId = 0;
     private double balanse = 0;
-    private String fornavn = "";
+    private String fornavn = "Ikke innlogget!";
     private String etternavn = "";
-    Map<Integer, TransactionType> transactionTypes;
-    List<Transaction> transactions;
+    Map<Integer, TransactionType> transactionTypes = Collections.emptyMap();
+    List<Transaction> transactions = Collections.emptyList();
     TransactionType newJobType;
     double newJobWages;
 
     public UkelonnController() {
         super();
-        String principal = (String) SecurityUtils.getSubject().getPrincipal();
-        setUsername(principal);
+        try {
+            String principal = (String) SecurityUtils.getSubject().getPrincipal();
+            setUsername(principal);
+        } catch (Exception e) {
+            // Nothing, just proceed without a user name
+        }
     }
 
     public int getUserId() {
