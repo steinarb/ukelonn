@@ -88,4 +88,36 @@ public class UkelonnRealmTest {
         assertEquals(1, authInfo.getPrincipals().asList().size());
     }
 
+    /***
+     * Test that a user gets the correct roles.
+     */
+    @Test
+    public void testGetRolesForUsers() {
+        UkelonnRealm realm = new UkelonnRealm();
+        AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
+        AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);
+
+        boolean jadHasRoleUser = realm.hasRole(authenticationInfoForUser.getPrincipals(), "user");
+        assertTrue(jadHasRoleUser);
+
+        boolean jadHasRoleAdministrator = realm.hasRole(authenticationInfoForUser.getPrincipals(), "administrator");
+        assertFalse(jadHasRoleAdministrator);
+    }
+
+    /***
+     * Test that an administrator gets the correct roles.
+     */
+    @Test
+    public void testGetRolesForAdministrators() {
+        UkelonnRealm realm = new UkelonnRealm();
+        AuthenticationToken token = new UsernamePasswordToken("on", "ola12".toCharArray());
+        AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);
+
+        boolean onHasRoleUser = realm.hasRole(authenticationInfoForUser.getPrincipals(), "user");
+        assertTrue(onHasRoleUser);
+
+        boolean onHasRoleAdministrator = realm.hasRole(authenticationInfoForUser.getPrincipals(), "administrator");
+        assertTrue(onHasRoleAdministrator);
+    }
+
 }
