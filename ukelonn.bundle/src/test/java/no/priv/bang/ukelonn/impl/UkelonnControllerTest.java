@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import javax.faces.event.ActionEvent;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,6 +16,11 @@ public class UkelonnControllerTest {
     @BeforeClass
     public static void setupForAllTests() {
         setupFakeOsgiServices();
+    }
+
+    @AfterClass
+    public static void teardownForAllTests() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    	releaseFakeOsgiServices();
     }
 
     /**
@@ -61,15 +67,19 @@ public class UkelonnControllerTest {
 
     @Test
     public void testAddJob() {
-        UkelonnController ukelonn = new UkelonnController();
-        ukelonn.setUsername("jod");
-        assertEquals(Double.valueOf(0), ukelonn.getBalanse());
-        assertEquals(2, ukelonn.getJobs().size());
-        TransactionType newJobType = ukelonn.getJobTypes().get(0);
-        ukelonn.setNewJobType(newJobType);
-        ukelonn.setNewJobWages(newJobType.getTransactionAmount());
-        ukelonn.registerNewJob(mock(ActionEvent.class));
-        assertEquals(Double.valueOf(35), ukelonn.getBalanse());
-        assertEquals(3, ukelonn.getJobs().size());
+    	try {
+            UkelonnController ukelonn = new UkelonnController();
+            ukelonn.setUsername("jod");
+            assertEquals(Double.valueOf(0), ukelonn.getBalanse());
+            assertEquals(2, ukelonn.getJobs().size());
+            TransactionType newJobType = ukelonn.getJobTypes().get(0);
+            ukelonn.setNewJobType(newJobType);
+            ukelonn.setNewJobWages(newJobType.getTransactionAmount());
+            ukelonn.registerNewJob(mock(ActionEvent.class));
+            assertEquals(Double.valueOf(35), ukelonn.getBalanse());
+            assertEquals(3, ukelonn.getJobs().size());
+    	} finally {
+            dropTestDatabase();
+    	}
     }
 }
