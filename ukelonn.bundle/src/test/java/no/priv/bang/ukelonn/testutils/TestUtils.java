@@ -3,6 +3,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -57,6 +59,16 @@ public class TestUtils {
             Field ukelonnServiceInstanceField = UkelonnServiceProvider.class.getDeclaredField("instance");
             ukelonnServiceInstanceField.setAccessible(true);
             ukelonnServiceInstanceField.set(null, null);
+        }
+
+        dropTestDatabase();
+    }
+
+    public static void dropTestDatabase() {
+        try {
+            DriverManager.getConnection("jdbc:derby:memory:ukelonn;drop=true");
+        } catch (SQLException e) {
+            // Just eat any exceptions quietly. The database will be cleaned up
         }
     }
 
