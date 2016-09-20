@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+ <h:head>
+  <title>Ukelønn administrasjon</title>
+ </h:head>
+ <h:body>
+  <h1>Hei #{ukelonnAdmin.administratorFornavn}!</h1>
+
+  <f:view>
+   <h:form id="selectUser">
+    <p:selectOneMenu id="selectedAccount" value="#{ukelonnAdmin.account}" converter="accountConverter">
+     <f:selectItem itemLabel="Velg bruker" itemValue="" noSelectionOption="true" />
+     <f:selectItems value="#{ukelonnAdmin.accounts}" var="account2" itemValue="#{account2}" itemLabel="#{account2.fullName}"/>
+     <p:ajax event="change" update=":balanse" listener="#{ukelonnAdmin.newAccountSelected}"/>
+    </p:selectOneMenu>
+   </h:form>
+   <h:form id="balanse">
+    <p:panelGrid columns="2">
+     <h:outputLabel for="balanse" value="Til gode: " />
+     <h:inputText id="balanse" value="#{ukelonnAdmin.balanse}" required="true"/>
+     <h:outputLabel for="sistejobb" value="Siste jobber: " />
+     <p:dataTable id="jobs" var="job" value="#{ukelonnAdmin.jobs}">
+      <p:columnGroup type="header">
+       <p:column headerText="Dato" />
+       <p:column headerText="Type jobb" />
+       <p:column headerText="Beløp" />
+      </p:columnGroup>
+      <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
+      <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
+      <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
+     </p:dataTable>
+     <h:outputLabel for="sisteutbetaling" value="Siste utbetalinger: " />
+     <p:dataTable var="payment" value="#{ukelonnAdmin.payments}">
+      <p:columnGroup type="header">
+       <p:column headerText="Dato" />
+       <p:column headerText="Type utbetaling" />
+       <p:column headerText="Beløp" />
+      </p:columnGroup>
+      <p:column><h:outputText value="#{payment.transactionTime}"/></p:column>
+      <p:column><h:outputText value="#{payment.transactionType.transactionTypeName}"/></p:column>
+      <p:column><h:outputText value="#{payment.transactionAmount}"/></p:column>
+     </p:dataTable>
+    </p:panelGrid>
+   </h:form>
+  </f:view>
+ </h:body>
+</html>
