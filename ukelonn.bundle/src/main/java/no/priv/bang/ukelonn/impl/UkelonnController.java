@@ -1,5 +1,6 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -69,12 +72,38 @@ public class UkelonnController {
         sql.append(username);
         sql.append("'");
         ResultSet resultset = database.query(sql.toString());
+        boolean noAccount = true;
+        if (resultset != null) {
+            try {
+                if (resultset.next()) {
+                    noAccount = false;
+                    userId = resultset.getInt("user_id");
+                    accountId = resultset.getInt("account_id");
+                    balanse = resultset.getDouble("balance");
+                    fornavn = resultset.getString("first_name");
+                    etternavn = resultset.getString("last_name");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (noAccount) {
+            // Fallback for no-account administrators
+            getUserInfoFromDatabase(username);
+        }
+    }
+
+    private void getUserInfoFromDatabase(String username) {
+        UkelonnDatabase database = connectionCheck();
+        StringBuffer sql = new StringBuffer("select * from administrators_view where username='");
+        sql.append(username);
+        sql.append("'");
+        ResultSet resultset = database.query(sql.toString());
         if (resultset != null) {
             try {
                 if (resultset.next()) {
                     userId = resultset.getInt("user_id");
-                    accountId = resultset.getInt("account_id");
-                    balanse = resultset.getDouble("balance");
                     fornavn = resultset.getString("first_name");
                     etternavn = resultset.getString("last_name");
                 }
@@ -98,6 +127,17 @@ public class UkelonnController {
 
     public void setEtternavn(String etternavn) {
         this.etternavn = etternavn;
+    }
+
+    public void redirectAdministratorsToAdminPage() throws IOException {
+    	if (isAdministrator()) {
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            ec.redirect(ec.getRequestContextPath() + "/admin/index.xhtml");
+    	}
+    }
+
+    private boolean isAdministrator() {
+    	return FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
     }
 
     public Double getBalanse() {
