@@ -72,4 +72,11 @@ public class TestUtils {
         }
     }
 
+    public static void restoreTestDatabase() {
+    	dropTestDatabase();
+    	UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
+        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+        ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
+    }
+
 }
