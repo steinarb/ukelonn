@@ -16,7 +16,7 @@
     <p:selectOneMenu id="selectedAccount" value="#{ukelonnAdmin.account}" converter="accountConverter">
      <f:selectItem itemLabel="Velg bruker" itemValue="" noSelectionOption="true" />
      <f:selectItems value="#{ukelonnAdmin.accounts}" var="account2" itemValue="#{account2}" itemLabel="#{account2.fullName}"/>
-     <p:ajax event="change" update=":balanse" listener="#{ukelonnAdmin.newAccountSelected}"/>
+     <p:ajax event="change" update=":balanse:balanse :balanse:jobs :balanse:payments"/>
     </p:selectOneMenu>
    </h:form>
    <h:form id="balanse">
@@ -35,7 +35,7 @@
       <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
      </p:dataTable>
      <h:outputLabel for="sisteutbetaling" value="Siste utbetalinger: " />
-     <p:dataTable var="payment" value="#{ukelonnAdmin.payments}">
+     <p:dataTable id="payments" var="payment" value="#{ukelonnAdmin.payments}">
       <p:columnGroup type="header">
        <p:column headerText="Dato" />
        <p:column headerText="Type utbetaling" />
@@ -45,6 +45,18 @@
       <p:column><h:outputText value="#{payment.transactionType.transactionTypeName}"/></p:column>
       <p:column><h:outputText value="#{payment.transactionAmount}"/></p:column>
      </p:dataTable>
+    </p:panelGrid>
+   </h:form>
+   <h:form id="utbetal">
+    <p:panelGrid columns="4">
+     <h:outputLabel value="Registrere utbetaling: " />
+     <p:selectOneMenu id="jobtype" value="#{ukelonnAdmin.newPaymentType}" converter="transactionTypeConverter">
+      <f:selectItem itemLabel="Registrer utbetaling" itemValue="" noSelectionOption="true" />
+      <f:selectItems value="#{ukelonnAdmin.paymentTypes}" var="payment2" itemValue="#{payment2}" itemLabel="#{payment2.transactionTypeName}"/>
+      <p:ajax event="change" update="amount" listener="#{ukelonnAdmin.newPaymentTypeSelected}"/>
+     </p:selectOneMenu>
+     <h:inputText id="amount" value="#{ukelonnAdmin.newPayment}" required="true"/>
+     <p:commandButton value="Registrer betaling" update="jobtype amount :balanse:balanse :balanse:payments" actionListener="#{ukelonnAdmin.registerNewPayment}" />
     </p:panelGrid>
    </h:form>
   </f:view>

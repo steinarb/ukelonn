@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.shiro.SecurityUtils;
@@ -28,7 +29,9 @@ public class UkelonnAdminController {
     private String administratorEtternavn = "";
     private Account account;
     private List<Transaction> transactions = Collections.emptyList();
-    private Map<Integer, TransactionType> transactionTypes;
+    private Map<Integer, TransactionType> transactionTypes = Collections.emptyMap();
+    private double newPayment;
+    private TransactionType paymentType;
 
     public UkelonnAdminController() {
         super();
@@ -58,6 +61,8 @@ public class UkelonnAdminController {
                     setAdministratorFornavn(resultset.getString("first_name"));
                     setAdministratorEtternavn(resultset.getString("last_name"));
                 }
+
+                transactionTypes = getTransactionTypesFromUkelonnDatabase();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -93,38 +98,6 @@ public class UkelonnAdminController {
         this.administratorEtternavn = administratorEtternavn;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-        transactions = new ArrayList<Transaction>();
-        updateBalanseFromDatabase(account);
-        transactionTypes = getTransactionTypesFromUkelonnDatabase();
-        transactions = getTransactionsFromUkelonnDatabase(transactionTypes, account.getAccountId());
-    }
-
-    public void updateBalanseFromDatabase(Account account) {
-        UkelonnDatabase connection = connectionCheck();
-        StringBuffer sql = new StringBuffer("select * from accounts_view where account_id=");
-        sql.append(account.getAccountId());
-        ResultSet results = connection.query(sql.toString());
-        if (results != null) {
-            try {
-                while (results.next()) {
-                    double balance = results.getDouble("balance");
-                    account.setBalance(balance);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void newAccountSelected(final AjaxBehaviorEvent event) {
-    }
-
     public List<Account> getAccounts() {
         ArrayList<Account> accounts = new ArrayList<Account>();
         UkelonnDatabase connection = connectionCheck();
@@ -151,10 +124,19 @@ public class UkelonnAdminController {
         return accounts;
     }
 
-    public double getBalanse() {
-        return 0.0;
+    public Account getAccount() {
+        return account;
     }
 
+    public void setAccount(Account account) {
+        this.account = account;
+        transactions = new ArrayList<Transaction>();
+        refreshAccount(account);
+    }
+
+    public double getBalanse() {
+        return account != null ? account.getBalance() : 0.0;
+    }
 
     public List<Transaction> getJobs() {
         ArrayList<Transaction> jobs = new ArrayList<Transaction>();
@@ -178,6 +160,47 @@ public class UkelonnAdminController {
         return payments;
     }
 
+    public ArrayList<TransactionType> getPaymentTypes() {
+        ArrayList<TransactionType> paymentTypes = new ArrayList<TransactionType>();
+        for (TransactionType transactionType : transactionTypes.values()) {
+            if (transactionType.isTransactionIsWagePayment()) {
+                paymentTypes.add(transactionType);
+            }
+        }
+
+        return paymentTypes;
+    }
+
+    public void newPaymentTypeSelected(final AjaxBehaviorEvent event) {
+    }
+
+    public TransactionType getNewPaymentType() {
+        return paymentType;
+    }
+
+    public void setNewPaymentType(TransactionType paymentType) {
+        // TODO Auto-generated method stub
+        this.paymentType = paymentType;
+    }
+
+    public double getNewPayment() {
+        return newPayment;
+    }
+
+    public void setNewPayment(double newAmount) {
+        newPayment = Math.abs(newAmount);
+    }
+
+    public void registerNewPayment(ActionEvent event) {
+        if (account != null && getNewPaymentType() != null && getNewPayment() > 0.0) {
+            addNewPaymentToAccount(getAccount(), getNewPaymentType(), getNewPayment());
+            refreshAccount(account);
+        }
+
+        setNewPaymentType(null);
+        setNewPayment(0.0);
+    }
+
     private UkelonnDatabase connectionCheck() {
         UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
         if (ukelonnService == null) {
@@ -190,6 +213,29 @@ public class UkelonnAdminController {
         }
 
         return database;
+    }
+
+    public void refreshAccount(Account account) {
+        updateBalanseFromDatabase(account);
+        transactionTypes = getTransactionTypesFromUkelonnDatabase();
+        transactions = getTransactionsFromUkelonnDatabase(transactionTypes, account.getAccountId());
+    }
+
+    public void updateBalanseFromDatabase(Account account) {
+        UkelonnDatabase connection = connectionCheck();
+        StringBuffer sql = new StringBuffer("select * from accounts_view where account_id=");
+        sql.append(account.getAccountId());
+        ResultSet results = connection.query(sql.toString());
+        if (results != null) {
+            try {
+                while (results.next()) {
+                    double balance = results.getDouble("balance");
+                    account.setBalance(balance);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase() {
@@ -250,6 +296,22 @@ public class UkelonnAdminController {
                             resultset.getDouble("transaction_amount")
                             );
         return transaction;
+    }
+
+    private void addNewPaymentToAccount(Account account, TransactionType paymentType, double payment) {
+        int accountId = account.getAccountId();
+        int transactionTypeId = paymentType.getId();
+        double amount = 0 - payment;
+        StringBuffer sql = new StringBuffer("insert into transactions (account_id,transaction_type_id,transaction_amount) values (");
+        sql.append(accountId);
+        sql.append(",");
+        sql.append(transactionTypeId);
+        sql.append(",");
+        sql.append(amount);
+        sql.append(")");
+
+        UkelonnDatabase database = connectionCheck();
+        database.update(sql.toString());
     }
 
 }
