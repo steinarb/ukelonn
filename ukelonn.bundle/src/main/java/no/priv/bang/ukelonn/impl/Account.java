@@ -1,5 +1,7 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.util.List;
+
 public class Account {
     int accountId;
     int userId;
@@ -7,6 +9,7 @@ public class Account {
     String firstName;
     String lastName;
     double balance;
+    private List<Transaction> transactions;
 
     public Account(int accountId, int userId, String username, String firstName, String lastName, double balance) {
         super();
@@ -70,6 +73,14 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     @Override
