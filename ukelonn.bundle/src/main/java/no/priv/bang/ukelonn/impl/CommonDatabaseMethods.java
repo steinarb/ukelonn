@@ -127,6 +127,26 @@ public class CommonDatabaseMethods {
         return transactionTypes;
     }
 
+    public static Account getAccountInfoFromDatabase(Class<?> clazz, String username) {
+        UkelonnDatabase database = connectionCheck(clazz);
+        StringBuffer sql = new StringBuffer("select * from accounts_view where username='");
+        sql.append(username);
+        sql.append("'");
+        ResultSet resultset = database.query(sql.toString());
+        if (resultset != null) {
+            try {
+                if (resultset.next()) {
+                    Account newaccount = MapAccount(resultset);
+                    return newaccount;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
     public static List<Account> getAccounts(Class<?> clazz) {
         ArrayList<Account> accounts = new ArrayList<Account>();
         UkelonnDatabase connection = connectionCheck(clazz);
@@ -134,14 +154,7 @@ public class CommonDatabaseMethods {
         if (results != null) {
             try {
                 while(results.next()) {
-                    Account newaccount = new Account(
-                                                     results.getInt("account_id"),
-                                                     results.getInt("user_id"),
-                                                     results.getString("username"),
-                                                     results.getString("first_name"),
-                                                     results.getString("last_name"),
-                                                     results.getDouble("balance")
-                                                     );
+                    Account newaccount = MapAccount(results);
                     accounts.add(newaccount);
                 }
             } catch (SQLException e) {
@@ -151,6 +164,34 @@ public class CommonDatabaseMethods {
         }
 
         return accounts;
+    }
+
+    public static Account MapAccount(ResultSet results) throws SQLException {
+        return new Account(
+                           results.getInt("account_id"),
+                           results.getInt("user_id"),
+                           results.getString("username"),
+                           results.getString("first_name"),
+                           results.getString("last_name"),
+                           results.getDouble("balance")
+                           );
+    }
+
+    public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
+        StringBuffer sql = new StringBuffer("insert into transactions (account_id,transaction_type_id,transaction_amount) values (");
+        sql.append(account.getAccountId());
+        sql.append(",");
+        sql.append(newJobTypeId);
+        sql.append(",");
+        sql.append(newJobWages);
+        sql.append(")");
+
+        UkelonnDatabase database = connectionCheck(clazz);
+        database.update(sql.toString());
+
+        // Update the list of jobs and the updated balance from the DB
+        Map<Integer, TransactionType> transactionTypes = refreshAccount(clazz, account);
+        return transactionTypes;
     }
 
 }

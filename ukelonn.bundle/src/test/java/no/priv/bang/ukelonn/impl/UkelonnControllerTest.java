@@ -32,7 +32,7 @@ public class UkelonnControllerTest {
         UkelonnController ukelonn = new UkelonnController();
     	assertNull(ukelonn.getUsername());
     	assertEquals(0, ukelonn.getUserId());
-    	assertEquals("Ikke innlogget!", ukelonn.getFornavn());
+    	assertEquals("Ikke innlogget", ukelonn.getFornavn());
     	assertEquals("", ukelonn.getEtternavn());
     	assertEquals(Double.valueOf(0.0), ukelonn.getBalanse());
     	assertEquals(0, ukelonn.getAccountId());
