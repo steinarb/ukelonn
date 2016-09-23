@@ -171,6 +171,9 @@ public class CommonDatabaseMethods {
         if (account != null) {
             for (Transaction transaction : account.getTransactions()) {
                 if (transaction.getTransactionType().isTransactionIsWagePayment()) {
+                    // Make the displayed amounts be positive
+                    double amount = Math.abs(transaction.getTransactionAmount());
+                    transaction.setTransactionAmount(amount);
                     payments.add(transaction);
                 }
             }
