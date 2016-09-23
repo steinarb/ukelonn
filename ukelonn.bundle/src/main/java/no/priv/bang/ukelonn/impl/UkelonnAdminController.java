@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -18,7 +18,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
 @ManagedBean(name = "ukelonnAdmin")
-@SessionScoped
+@ViewScoped
 public class UkelonnAdminController {
     // properties
     private String administratorUsername;
