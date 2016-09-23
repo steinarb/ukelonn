@@ -166,6 +166,32 @@ public class CommonDatabaseMethods {
         return accounts;
     }
 
+    public static List<Transaction> getPaymentsFromAccount(Account account) {
+        ArrayList<Transaction> payments = new ArrayList<Transaction>();
+        if (account != null) {
+            for (Transaction transaction : account.getTransactions()) {
+                if (transaction.getTransactionType().isTransactionIsWagePayment()) {
+                    payments.add(transaction);
+                }
+            }
+        }
+
+        return payments;
+    }
+
+    public static List<Transaction> getJobsFromAccount(Account account) {
+        ArrayList<Transaction> jobs = new ArrayList<Transaction>();
+        if (account != null) {
+            for (Transaction transaction : account.getTransactions()) {
+                if (transaction.getTransactionType().isTransactionIsWork()) {
+                    jobs.add(transaction);
+                }
+            }
+        }
+
+        return jobs;
+    }
+
     public static Account MapAccount(ResultSet results) throws SQLException {
         return new Account(
                            results.getInt("account_id"),

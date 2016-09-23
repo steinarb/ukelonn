@@ -102,27 +102,11 @@ public class UkelonnController {
     }
 
     public List<Transaction> getJobs() {
-        ArrayList<Transaction> jobs = new ArrayList<Transaction>();
-        if (account != null) {
-            for (Transaction transaction : account.getTransactions()) {
-                if (transaction.getTransactionType().isTransactionIsWork()) {
-                    jobs.add(transaction);
-                }
-            }
-        }
-
-        return jobs;
+        return getJobsFromAccount(account);
     }
 
     public List<Transaction> getPayments() {
-        ArrayList<Transaction> payments = new ArrayList<Transaction>();
-        for (Transaction transaction : account.getTransactions()) {
-            if (transaction.getTransactionType().isTransactionIsWagePayment()) {
-                payments.add(transaction);
-            }
-        }
-
-        return payments;
+        return getPaymentsFromAccount(account);
     }
 
     public TransactionType getNewJobType() {
