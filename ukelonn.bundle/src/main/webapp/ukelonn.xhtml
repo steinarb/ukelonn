@@ -15,44 +15,53 @@
   <f:view>
    <h:form id="balanse">
     <p:panelGrid columns="2">
-     <h:outputLabel for="balanse" value="Til gode: " />
+     <h:outputLabel for="balanse" value="Til gode:" />
      <h:inputText id="balanse" value="#{ukelonn.balanse}" required="true"/>
-     <h:outputLabel for="sistejobb" value="Siste jobber: " />
-     <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}">
-      <p:columnGroup type="header">
-       <p:column headerText="Dato" />
-       <p:column headerText="Type jobb" />
-       <p:column headerText="Beløp" />
-      </p:columnGroup>
-      <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
-      <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
-      <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
-     </p:dataTable>
-     <h:outputLabel for="sisteutbetaling" value="Siste utbetalinger: " />
-     <p:dataTable var="payment" value="#{ukelonn.payments}">
-      <p:columnGroup type="header">
-       <p:column headerText="Dato" />
-       <p:column headerText="Type utbetaling" />
-       <p:column headerText="Beløp" />
-      </p:columnGroup>
-      <p:column><h:outputText value="#{payment.transactionTime}"/></p:column>
-      <p:column><h:outputText value="#{payment.transactionType.transactionTypeName}"/></p:column>
-      <p:column><h:outputText value="#{payment.transactionAmount}"/></p:column>
-     </p:dataTable>
     </p:panelGrid>
    </h:form>
-   <h:form id="registrerjobb">
-    <p:panelGrid columns="4">
-     <h:outputLabel value="Registrere jobb: " />
-     <p:selectOneMenu id="jobtype" value="#{ukelonn.newJobType}" converter="transactionTypeConverter">
-      <f:selectItem itemLabel="Velg jobb" itemValue="" noSelectionOption="true" />
-      <f:selectItems value="#{ukelonn.jobTypes}" var="jobtype2" itemValue="#{jobtype2}" itemLabel="#{jobtype2.transactionTypeName}"/>
-      <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
-     </p:selectOneMenu>
-     <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true"/>
-     <p:commandButton value="Registrer jobb" update=":balanse:balanse :balanse:jobs" actionListener="#{ukelonn.registerNewJob}" />
-    </p:panelGrid>
-   </h:form>
+   <p:accordionPanel id="userinfo" multiple="true">
+    <p:tab title="Registrere jobb">
+     <h:form id="registrerjobb">
+      <p:panelGrid columns="3">
+       <p:selectOneMenu id="jobtype" value="#{ukelonn.newJobType}" converter="transactionTypeConverter">
+        <f:selectItem itemLabel="Velg jobb" itemValue="" noSelectionOption="true" />
+        <f:selectItems value="#{ukelonn.jobTypes}" var="jobtype2" itemValue="#{jobtype2}" itemLabel="#{jobtype2.transactionTypeName}"/>
+        <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
+       </p:selectOneMenu>
+       <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true"/>
+       <p:commandButton value="Registrer jobb" update=":balanse:balanse :userinfo:jobs:jobs :userinfo:payments:payments" actionListener="#{ukelonn.registerNewJob}" />
+      </p:panelGrid>
+     </h:form>
+    </p:tab>
+    <p:tab title="Siste jobber:">
+     <h:form id="jobs">
+      <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}">
+       <p:columnGroup type="header">
+        <p:column headerText="Dato" />
+        <p:column headerText="Jobbtype" />
+        <p:column headerText="Beløp" />
+       </p:columnGroup>
+       <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
+       <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
+       <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
+      </p:dataTable>
+     </h:form>
+    </p:tab>
+    <p:tab title="Siste utbetalinger">
+     <h:form id="payments">
+      <p:dataTable id="payments" var="payment" value="#{ukelonn.payments}">
+       <p:columnGroup type="header">
+        <p:column headerText="Dato" />
+        <p:column headerText="Type utbetaling" />
+        <p:column headerText="Beløp" />
+       </p:columnGroup>
+       <p:column><h:outputText value="#{payment.transactionTime}"/></p:column>
+       <p:column><h:outputText value="#{payment.transactionType.transactionTypeName}"/></p:column>
+       <p:column><h:outputText value="#{payment.transactionAmount}"/></p:column>
+      </p:dataTable>
+     </h:form>
+    </p:tab>
+   </p:accordionPanel>
   </f:view>
  </h:body>
 </html>
