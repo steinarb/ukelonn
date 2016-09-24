@@ -28,7 +28,7 @@
         <f:selectItems value="#{ukelonn.jobTypes}" var="jobtype2" itemValue="#{jobtype2}" itemLabel="#{jobtype2.transactionTypeName}"/>
         <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
        </p:selectOneMenu>
-       <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true"/>
+       <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true" readonly="#{facesContext.currentPhaseId.ordinal eq 6}"/>
        <p:commandButton value="Registrer jobb" update=":balanse:balanse :userinfo:jobs:jobs :userinfo:payments:payments" actionListener="#{ukelonn.registerNewJob}" />
       </p:panelGrid>
      </h:form>
