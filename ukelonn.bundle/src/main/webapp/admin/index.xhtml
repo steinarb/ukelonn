@@ -19,7 +19,7 @@
        <p:selectOneMenu id="selectedAccount" value="#{ukelonnAdmin.account}" converter="accountConverter">
         <f:selectItem itemLabel="Velg hvem det skal betales til" itemValue="" noSelectionOption="true" />
         <f:selectItems value="#{ukelonnAdmin.accounts}" var="account2" itemValue="#{account2}" itemLabel="#{account2.fullName}"/>
-        <p:ajax event="change" update=":tabs:balanse:balanse :tabs:userinfo:jobs:jobs :tabs:userinfo:payments:payments"/>
+        <p:ajax event="change" update=":tabs:balanse:balanse :tabs:utbetal:jobtype :tabs:utbetal:amount :tabs:userinfo:jobs:jobs :tabs:userinfo:payments:payments"/>
        </p:selectOneMenu>
       </h:form>
       <h:form id="balanse">

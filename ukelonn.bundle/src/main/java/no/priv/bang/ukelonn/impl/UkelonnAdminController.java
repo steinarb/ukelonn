@@ -20,6 +20,7 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 @ManagedBean(name = "ukelonnAdmin")
 @ViewScoped
 public class UkelonnAdminController {
+    static final Integer PAY_TO_BANK_ID = 4;
     // properties
     private String administratorUsername;
     private int administratorUserId = 0;
@@ -103,6 +104,24 @@ public class UkelonnAdminController {
     public void setAccount(Account account) {
         this.account = account;
         transactionTypes = refreshAccount(getClass(), account);
+        setBankAsDefaultPaymentTypeWithBalanceAsAmount();
+    }
+
+    private void setBankAsDefaultPaymentTypeWithBalanceAsAmount() {
+    	TransactionType payToBank = findPayToBank(getPaymentTypes());
+    	setNewPaymentType(payToBank);
+    	setNewPayment(getBalanse());
+    }
+
+    TransactionType findPayToBank(List<TransactionType> paymentTypes) {
+        // TODO Auto-generated method stub
+        for (TransactionType transactionType : paymentTypes) {
+            if (transactionType.getId() == PAY_TO_BANK_ID) {
+                return transactionType;
+            }
+        }
+
+        return null;
     }
 
     public List<Account> getAccounts() {
