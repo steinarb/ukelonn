@@ -37,7 +37,7 @@ public class UkelonnDatabaseProviderTest {
         assertFalse("Expected no update results on schema creation", createSchemaStatementsReturnedUpdateResults);
 
         int[] numberOfRowsmodifiedAfterInsertOfMockData = provider.insertMockData();
-        assertEquals(22, numberOfRowsmodifiedAfterInsertOfMockData.length);
+        assertEquals(62, numberOfRowsmodifiedAfterInsertOfMockData.length);
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
