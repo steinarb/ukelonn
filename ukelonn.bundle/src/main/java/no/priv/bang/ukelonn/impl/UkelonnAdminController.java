@@ -31,6 +31,8 @@ public class UkelonnAdminController {
     private Map<Integer, TransactionType> transactionTypes = Collections.emptyMap();
     private double newPayment;
     private TransactionType paymentType;
+    private String newJobTypeName;
+    private double amount;
 
     public UkelonnAdminController() {
         super();
@@ -179,6 +181,39 @@ public class UkelonnAdminController {
 
         setNewPaymentType(null);
         setNewPayment(0.0);
+    }
+
+    public String getNewJobTypeName() {
+        return newJobTypeName;
+    }
+
+    public void setNewJobTypeName(String newJobTypeName) {
+        this.newJobTypeName = newJobTypeName;
+    }
+
+    public double getNewJobTypeAmount() {
+        return amount;
+    }
+
+    public void setNewJobTypeAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void registerNewJobType(ActionEvent event) {
+        if (getNewJobTypeName() != null && getNewJobTypeName().length() > 0 && getNewJobTypeAmount() > 0.0) {
+            addJobTypeToDatabase(getClass(), getNewJobTypeName(), getNewJobTypeAmount());
+            clearNewJobTypeValues();
+            transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        }
+    }
+
+    private void clearNewJobTypeValues() {
+        setNewJobTypeName(null);
+        setNewJobTypeAmount(0.0);
+    }
+
+    public List<TransactionType> getJobtypes() {
+        return getJobTypesFromTransactionTypes(transactionTypes.values());
     }
 
 }

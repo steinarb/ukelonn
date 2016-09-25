@@ -79,6 +79,15 @@
     <p:tab title="Administrere jobbtyper">
      <p:accordionPanel id="jobtypes" multiple="true">
       <p:tab title="Lag ny jobbtype">
+       <h:form id="newjobtype">
+        <p:panelGrid columns="2">
+         <h:outputLabel for="name" value="Navn på ny jobbtype:" />
+         <h:inputText id="name" value="#{ukelonnAdmin.newJobTypeName}" required="true"/>
+         <h:outputLabel for="amount" value="Beløp for ny jobbtype:" />
+         <h:inputText id="amount" value="#{ukelonnAdmin.newJobTypeAmount}" required="true"/>
+         <p:commandButton value="Lag jobbtype" update="name amount" actionListener="#{ukelonnAdmin.registerNewJobType}" />
+        </p:panelGrid>
+       </h:form>
       </p:tab>
       <p:tab title="Endre jobbtyper">
       </p:tab>

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
@@ -238,6 +239,18 @@ public class CommonDatabaseMethods {
         // Update the list of jobs and the updated balance from the DB
         Map<Integer, TransactionType> transactionTypes = refreshAccount(clazz, account);
         return transactionTypes;
+    }
+
+    public static void addJobTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
+        String sql = String.format(
+                                   Locale.US, // Format the double correctly for SQL
+                                   getResourceAsString("/sql/query/insert_new_job_type.sql"),
+                                   newPaymentTypeName,
+                                   newPaymentTypeAmount
+                                   );
+
+        UkelonnDatabase database = connectionCheck(clazz);
+        database.update(sql);
     }
 
     private static String getResourceAsString(String resourceName) {

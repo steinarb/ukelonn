@@ -202,4 +202,75 @@ public class UkelonnAdminControllerTest {
         }
     }
 
+    @Test
+    public void testCreateNewJobType() {
+        try {
+            UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+
+            // Set administrator user
+            ukelonnAdmin.setAdministratorUsername("on");
+
+            // Verify expected initial state
+            assertNull(ukelonnAdmin.getNewJobTypeName());
+            assertEquals(0.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
+            int initialNumberOfJobTypes = 3;
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+
+            // Try registering an new job type without a name and an amount (should fail)
+            ActionEvent event = mock(ActionEvent.class);
+            ukelonnAdmin.registerNewJobType(event);
+
+            // Verify that no new job type has been created
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+
+            // Try registering a new job with a name, without an amount (should fail)
+            String newJobTypeName = "Rydde på kjøkkenet";
+            ukelonnAdmin.setNewJobTypeName(newJobTypeName);
+            ukelonnAdmin.registerNewJobType(event);
+
+            // Verify that no new JobType has been created
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+
+            // Verify that the name hasn't been reset
+            assertEquals(newJobTypeName, ukelonnAdmin.getNewJobTypeName());
+
+            // Corner case: Set a negative amount and verify that no new job type is created
+            ukelonnAdmin.setNewJobTypeAmount(-1.0);
+            ukelonnAdmin.registerNewJobType(event);
+
+            // Verify that no new JobType has been created
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+
+            // Verify that the name hasn't been reset
+            assertEquals(newJobTypeName, ukelonnAdmin.getNewJobTypeName());
+
+            // Verify that the negative amount hasn't been touched
+            assertEquals(-1.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
+
+            // Regular case: has name and amount -> create a new payment type
+            ukelonnAdmin.setNewJobTypeAmount(15);
+            ukelonnAdmin.registerNewJobType(event);
+
+            // Verify that a new JobType has been created
+            assertEquals(initialNumberOfJobTypes + 1, ukelonnAdmin.getJobtypes().size());
+
+            // Verify that the new type name and amount has been cleared
+            assertNull(ukelonnAdmin.getNewJobTypeName());
+            assertEquals(0.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
+
+            // Finally just checking that having no name for a new job type is
+            // enough to stop it from being created.
+            ukelonnAdmin.setNewJobTypeAmount(11.0);
+            ukelonnAdmin.registerNewJobType(event);
+
+            // Verify that no new JobType has been created
+            assertEquals(initialNumberOfJobTypes + 1, ukelonnAdmin.getJobtypes().size());
+
+            // Verify that the amount wasn't blanked
+            assertEquals(11.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
 }
