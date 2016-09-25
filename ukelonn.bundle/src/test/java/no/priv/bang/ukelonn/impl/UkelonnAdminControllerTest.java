@@ -75,8 +75,8 @@ public class UkelonnAdminControllerTest {
             Account selectedAccount = ukelonnAdmin.getAccounts().get(0);
             ukelonnAdmin.setAccount(selectedAccount);
             assertEquals(673.0, ukelonnAdmin.getBalanse(), .1);
-            assertEquals(33, ukelonnAdmin.getJobs().size());
-            assertEquals(11, ukelonnAdmin.getPayments().size());
+            assertEquals(10, ukelonnAdmin.getJobs().size());
+            assertEquals(10, ukelonnAdmin.getPayments().size());
             assertEquals(2, ukelonnAdmin.getPaymentTypes().size());
             TransactionType payToBank = ukelonnAdmin.findPayToBank(ukelonnAdmin.getPaymentTypes());
             assertEquals(payToBank, ukelonnAdmin.getNewPaymentType());
@@ -99,8 +99,8 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.setAccount(selectedAccount);
             double initialBalance = 673.0;
             assertEquals(initialBalance, ukelonnAdmin.getBalanse(), .1);
-            assertEquals(33, ukelonnAdmin.getJobs().size());
-            int initialNumberOfPayments = 11;
+            assertEquals(10, ukelonnAdmin.getJobs().size());
+            int initialNumberOfPayments = 10;
             assertEquals(initialNumberOfPayments, ukelonnAdmin.getPayments().size());
             assertEquals(2, ukelonnAdmin.getPaymentTypes().size());
 
@@ -114,7 +114,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewPayment(event);
 
             // Verify that a payment has been made and that balance has been set to 0.0
-            assertEquals(initialNumberOfPayments + 1, ukelonnAdmin.getPayments().size());
+            assertEquals(initialNumberOfPayments, ukelonnAdmin.getPayments().size());
             assertEquals(0.0, ukelonnAdmin.getBalanse(), .1);
 
             // Register a payment with a payment type but without an amount
@@ -123,7 +123,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewPayment(event);
 
             // Verify that no new payment has been made (payment and balance unchanged)
-            assertEquals(initialNumberOfPayments + 1, ukelonnAdmin.getPayments().size());
+            assertEquals(initialNumberOfPayments, ukelonnAdmin.getPayments().size());
             assertEquals(0.0, ukelonnAdmin.getBalanse(), .1);
 
             // Set an payment type and an amount
@@ -133,7 +133,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewPayment(event);
 
             // Verify updated values
-            assertEquals(initialNumberOfPayments + 2, ukelonnAdmin.getPayments().size());
+            assertEquals(initialNumberOfPayments, ukelonnAdmin.getPayments().size());
             assertEquals(0.0 - newAmount, ukelonnAdmin.getBalanse(), .1);
 
             // Verify that the new payment type and amount have been nulled
@@ -167,7 +167,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewPayment(event);
 
             // Verify that setting a negative amount has the same effect as a positive amount
-            assertEquals(initialNumberOfPayments + 1, ukelonnAdmin.getPayments().size());
+            assertEquals("Expected only 10 returned values", initialNumberOfPayments, ukelonnAdmin.getPayments().size());
             assertEquals(initialBalance + newAmount, ukelonnAdmin.getBalanse(), .1);
         } finally {
             restoreTestDatabase();

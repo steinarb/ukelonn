@@ -1,5 +1,7 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,8 +62,11 @@ public class CommonDatabaseMethods {
     public static List<Transaction> getTransactionsFromUkelonnDatabase(Class<?> clazz, Map<Integer, TransactionType> transactionTypes, int accountid) {
         List<Transaction> transactions = new ArrayList<Transaction>();
         UkelonnDatabase database = connectionCheck(clazz);
-        StringBuffer sql = new StringBuffer("select * from transactions where account_id=");
-        sql.append(accountid);
+        String sql = String.format(
+                                   getResourceAsString("/sql/query/transactions_last10.sql"),
+                                   accountid,
+                                   accountid
+                                   );
         ResultSet resultSet = database.query(sql.toString());
         if (resultSet != null) {
             try {
@@ -221,6 +226,23 @@ public class CommonDatabaseMethods {
         // Update the list of jobs and the updated balance from the DB
         Map<Integer, TransactionType> transactionTypes = refreshAccount(clazz, account);
         return transactionTypes;
+    }
+
+    private static String getResourceAsString(String resourceName) {
+        ByteArrayOutputStream resource = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        InputStream resourceStream = CommonDatabaseMethods.class.getResourceAsStream(resourceName);
+        try {
+            while ((length = resourceStream.read(buffer)) != -1) {
+                resource.write(buffer, 0, length);
+            }
+
+            return resource.toString("UTF-8");
+        } catch (Exception e) {
+        }
+
+        return null;
     }
 
 }

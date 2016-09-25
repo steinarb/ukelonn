@@ -62,7 +62,7 @@ public class UkelonnControllerTest {
     public void testJobs() {
         UkelonnController ukelonn = new UkelonnController();
         ukelonn.setUsername("jad");
-        assertEquals(33, ukelonn.getJobs().size());
+        assertEquals(10, ukelonn.getJobs().size());
     }
 
     @Test
