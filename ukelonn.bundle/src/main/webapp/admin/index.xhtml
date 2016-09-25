@@ -29,8 +29,7 @@
        </p:panelGrid>
       </h:form>
       <h:form id="utbetal">
-       <p:panelGrid columns="4">
-        <h:outputLabel value="Registrere utbetaling: " />
+       <p:panelGrid columns="3">
         <p:selectOneMenu id="jobtype" value="#{ukelonnAdmin.newPaymentType}" converter="transactionTypeConverter">
          <f:selectItem itemLabel="Registrer utbetaling" itemValue="" noSelectionOption="true" />
          <f:selectItems value="#{ukelonnAdmin.paymentTypes}" var="payment2" itemValue="#{payment2}" itemLabel="#{payment2.transactionTypeName}"/>
