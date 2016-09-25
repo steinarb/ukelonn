@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,17 @@ public class CommonDatabaseMethods {
                                 resultset.getBoolean("transaction_is_wage_payment")
                                 );
         return transactionType;
+    }
+
+    public static List<TransactionType> getJobTypesFromTransactionTypes(Collection<TransactionType> transactionTypes) {
+        ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
+        for (TransactionType transactionType : transactionTypes) {
+            if (transactionType.isTransactionIsWork()) {
+                jobTypes.add(transactionType);
+            }
+        }
+
+        return jobTypes;
     }
 
     public static List<Transaction> getTransactionsFromUkelonnDatabase(Class<?> clazz, Map<Integer, TransactionType> transactionTypes, int accountid) {

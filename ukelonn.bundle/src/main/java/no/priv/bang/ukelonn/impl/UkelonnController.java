@@ -1,7 +1,6 @@
 package no.priv.bang.ukelonn.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -91,14 +90,7 @@ public class UkelonnController {
     }
 
     public List<TransactionType> getJobTypes() {
-        ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
-        for (TransactionType transactionType : transactionTypes.values()) {
-            if (transactionType.isTransactionIsWork()) {
-                jobTypes.add(transactionType);
-            }
-        }
-
-        return jobTypes;
+        return getJobTypesFromTransactionTypes(transactionTypes.values());
     }
 
     public List<Transaction> getJobs() {
