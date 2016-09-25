@@ -69,15 +69,28 @@ public class UkelonnControllerTest {
     public void testAddJob() {
     	try {
             UkelonnController ukelonn = new UkelonnController();
+
+            // Simulate logging in as a non-admin user
             ukelonn.setUsername("jod");
-            assertEquals(Double.valueOf(0), ukelonn.getBalanse());
+
+            // Check that the initial values are as expected
+            assertEquals(0.0, ukelonn.getBalanse(), 0.1);
             assertEquals(2, ukelonn.getJobs().size());
+
+            // Register a new job
             TransactionType newJobType = ukelonn.getJobTypes().get(0);
             ukelonn.setNewJobType(newJobType);
             ukelonn.setNewJobWages(newJobType.getTransactionAmount());
             ukelonn.registerNewJob(mock(ActionEvent.class));
+
+            // Verify that balance and the job list is modified
             assertEquals(Double.valueOf(35), ukelonn.getBalanse());
             assertEquals(3, ukelonn.getJobs().size());
+
+            // Verify that the job registration form is blanked when
+            // the job has been registered
+            assertNull(ukelonn.getNewJobType());
+            assertEquals(0.0, ukelonn.getNewJobWages(), 0.1);
     	} finally {
             dropTestDatabase();
     	}

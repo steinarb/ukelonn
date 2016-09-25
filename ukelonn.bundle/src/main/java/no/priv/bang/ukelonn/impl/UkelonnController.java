@@ -125,5 +125,11 @@ public class UkelonnController {
 
     public void registerNewJob(ActionEvent event) {
         transactionTypes = registerNewJobInDatabase(getClass(), account, getNewJobType().getId(), getNewJobWages());
+        clearNewJobValues();
+    }
+
+    private void clearNewJobValues() {
+        setNewJobType(null);
+        setNewJobWages(0.0);
     }
 }
