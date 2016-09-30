@@ -12,7 +12,7 @@
   <h1>Hei #{ukelonnAdmin.administratorFornavn}!</h1>
 
   <f:view>
-   <p:accordionPanel id="tabs" multiple="true">
+   <p:accordionPanel id="tabs">
     <p:tab title="Registrere utbetaling">
      <p:panelGrid columns="1">
       <h:form id="selectUser">
@@ -39,7 +39,7 @@
         <p:commandButton value="Registrer betaling" update="jobtype amount :tabs:balanse:balanse :tabs:userinfo:payments:payments" actionListener="#{ukelonnAdmin.registerNewPayment}" />
        </p:panelGrid>
       </h:form>
-      <p:accordionPanel id="userinfo" multiple="true" activeIndex="-1">
+      <p:accordionPanel id="userinfo" activeIndex="-1">
        <p:tab title="Siste jobber">
         <h:form id="jobs">
          <p:panelGrid columns="1">
@@ -77,7 +77,7 @@
      </p:panelGrid>
     </p:tab>
     <p:tab title="Administrere jobbtyper">
-     <p:accordionPanel id="jobtypes" multiple="true">
+     <p:accordionPanel id="jobtypes">
       <p:tab title="Lag ny jobbtype">
        <h:form id="newjobtype">
         <p:panelGrid columns="2">
@@ -115,7 +115,7 @@
      </p:accordionPanel>
     </p:tab>
     <p:tab title="Administrere typer av utbetaling">
-     <p:accordionPanel id="paymenttypeadmin" multiple="true">
+     <p:accordionPanel id="paymenttypeadmin">
       <p:tab title="Lag ny utbetalingstype">
       </p:tab>
       <p:tab title="Endre utbetalingstyper">
