@@ -253,6 +253,21 @@ public class CommonDatabaseMethods {
         database.update(sql);
     }
 
+    public static void updateTransactionTypeInDatabase(Class<?> clazz, TransactionType modifiedJobType) {
+        String sql = String.format(
+                                   Locale.US, // Format the double correctly for SQL
+                                   getResourceAsString("/sql/query/update_transaction_type.sql"),
+                                   modifiedJobType.getTransactionTypeName(),
+                                   modifiedJobType.getTransactionAmount(),
+                                   modifiedJobType.isTransactionIsWork() ? "true" : "false",
+                                   modifiedJobType.isTransactionIsWagePayment() ? "true" : "false",
+                                   modifiedJobType.getId()
+                                   );
+
+        UkelonnDatabase database = connectionCheck(clazz);
+        database.update(sql);
+    }
+
     private static String getResourceAsString(String resourceName) {
         ByteArrayOutputStream resource = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
