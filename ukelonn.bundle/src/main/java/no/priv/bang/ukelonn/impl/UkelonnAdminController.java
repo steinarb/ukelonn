@@ -13,6 +13,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.shiro.SecurityUtils;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.CellEditEvent;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
@@ -212,8 +214,26 @@ public class UkelonnAdminController {
         setNewJobTypeAmount(0.0);
     }
 
-    public List<TransactionType> getJobtypes() {
+    public List<TransactionType> getJobTypes() {
         return getJobTypesFromTransactionTypes(transactionTypes.values());
+    }
+
+    public void onJobTypeCellEdit(CellEditEvent event) {
+        /*    	if (event.getNewValue() == event.getOldValue()) {
+    		return; // No value change means no updates done
+                }
+        */
+    	DataTable dataTable = (DataTable) event.getComponent();
+    	TransactionType editedJobType = (TransactionType) dataTable.getRowData();
+        /*    	String headerText = event.getColumn().getHeaderText();
+                String newValue = (String) event.getNewValue();
+                if (headerText == "Navn") {
+    		editedJobType.setTransactionTypeName(newValue);
+                } else if (headerText == "Beløp") {
+    		editedJobType.setTransactionAmount(Double.valueOf(newValue));
+                }
+        */
+        updateTransactionTypeInDatabase(getClass(), editedJobType);
     }
 
 }

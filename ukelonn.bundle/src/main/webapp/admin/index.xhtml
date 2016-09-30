@@ -85,11 +85,32 @@
          <h:inputText id="name" value="#{ukelonnAdmin.newJobTypeName}" required="true"/>
          <h:outputLabel for="amount" value="Beløp for ny jobbtype:" />
          <h:inputText id="amount" value="#{ukelonnAdmin.newJobTypeAmount}" required="true"/>
-         <p:commandButton value="Lag jobbtype" update="name amount" actionListener="#{ukelonnAdmin.registerNewJobType}" />
+         <p:commandButton value="Lag jobbtype" update="name amount :tabs:jobtypes:jobtypesform:editjobtypes" actionListener="#{ukelonnAdmin.registerNewJobType}" />
         </p:panelGrid>
        </h:form>
       </p:tab>
       <p:tab title="Endre jobbtyper">
+       <h:form id="jobtypesform">
+        <p:dataTable id="editjobtypes" var="jobType" value="#{ukelonnAdmin.jobTypes}" editable="true" editMode="cell" widgetVar="cellJobTypes">
+         <f:facet name="header">Klikk i celle for å endre verdi</f:facet>
+
+         <p:ajax event="cellEdit" listener="#{ukelonnAdmin.onJobTypeCellEdit}" update="" immediate="true" />
+
+         <p:column headerText="Navn">
+          <p:cellEditor>
+           <f:facet name="output"><h:outputText value="#{jobType.transactionTypeName}" /></f:facet>
+           <f:facet name="input"><p:inputText value="#{jobType.transactionTypeName}" style="width:96%" label="Navn"/></f:facet>
+          </p:cellEditor>
+         </p:column>
+
+         <p:column headerText="Beløp">
+          <p:cellEditor>
+           <f:facet name="output"><h:outputText value="#{jobType.transactionAmount}" /></f:facet>
+           <f:facet name="input"><p:inputText value="#{jobType.transactionAmount}" style="width:96%" label="Navn"/></f:facet>
+          </p:cellEditor>
+         </p:column>
+        </p:dataTable>
+       </h:form>
       </p:tab>
      </p:accordionPanel>
     </p:tab>

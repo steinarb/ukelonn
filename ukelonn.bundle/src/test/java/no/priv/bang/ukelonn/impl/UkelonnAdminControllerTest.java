@@ -4,11 +4,19 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
+
+import java.util.List;
+import java.util.Map;
+
 import javax.faces.event.ActionEvent;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.primefaces.component.api.UIColumn;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.CellEditEvent;
 
 public class UkelonnAdminControllerTest {
 
@@ -214,14 +222,14 @@ public class UkelonnAdminControllerTest {
             assertNull(ukelonnAdmin.getNewJobTypeName());
             assertEquals(0.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
             int initialNumberOfJobTypes = 3;
-            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobTypes().size());
 
             // Try registering an new job type without a name and an amount (should fail)
             ActionEvent event = mock(ActionEvent.class);
             ukelonnAdmin.registerNewJobType(event);
 
             // Verify that no new job type has been created
-            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobTypes().size());
 
             // Try registering a new job with a name, without an amount (should fail)
             String newJobTypeName = "Rydde på kjøkkenet";
@@ -229,7 +237,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewJobType(event);
 
             // Verify that no new JobType has been created
-            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobTypes().size());
 
             // Verify that the name hasn't been reset
             assertEquals(newJobTypeName, ukelonnAdmin.getNewJobTypeName());
@@ -239,7 +247,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewJobType(event);
 
             // Verify that no new JobType has been created
-            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobtypes().size());
+            assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobTypes().size());
 
             // Verify that the name hasn't been reset
             assertEquals(newJobTypeName, ukelonnAdmin.getNewJobTypeName());
@@ -252,7 +260,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewJobType(event);
 
             // Verify that a new JobType has been created
-            assertEquals(initialNumberOfJobTypes + 1, ukelonnAdmin.getJobtypes().size());
+            assertEquals(initialNumberOfJobTypes + 1, ukelonnAdmin.getJobTypes().size());
 
             // Verify that the new type name and amount has been cleared
             assertNull(ukelonnAdmin.getNewJobTypeName());
@@ -264,10 +272,53 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewJobType(event);
 
             // Verify that no new JobType has been created
-            assertEquals(initialNumberOfJobTypes + 1, ukelonnAdmin.getJobtypes().size());
+            assertEquals(initialNumberOfJobTypes + 1, ukelonnAdmin.getJobTypes().size());
 
             // Verify that the amount wasn't blanked
             assertEquals(11.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test
+    public void testEditJobType() {
+        try {
+            UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+
+            // Set administrator user
+            ukelonnAdmin.setAdministratorUsername("on");
+
+            // Verify expected initial state
+            assertNull(ukelonnAdmin.getNewJobTypeName());
+            assertEquals(0.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
+            int initialNumberOfJobTypes = 3;
+            List<TransactionType> jobTypes = ukelonnAdmin.getJobTypes();
+            assertEquals(initialNumberOfJobTypes, jobTypes.size());
+
+            // Mock an edit event changing the jobType name
+            // and call the function listening to cell edit events
+            TransactionType jobType = jobTypes.get(0);
+            Integer editedJobTypeId = jobType.getId();
+            DataTable mockedDataTable = mock(DataTable.class);
+            when(mockedDataTable.getRowData()).thenReturn(ukelonnAdmin.getJobTypes().get(0));
+            UIColumn column = mock(UIColumn.class);
+            when(column.getHeaderText()).thenReturn("Navn");
+            CellEditEvent event = mock(CellEditEvent.class);
+            when(event.getComponent()).thenReturn(mockedDataTable);
+            when(event.getColumn()).thenReturn(column);
+            String oldValue = jobType.getTransactionTypeName();
+            when(event.getOldValue()).thenReturn(oldValue);
+            String newValue = "New value";
+            when(event.getNewValue()).thenReturn(newValue);
+            jobType.setTransactionTypeName(newValue);
+            ukelonnAdmin.onJobTypeCellEdit(event);
+
+            // Verify that the jobType read back from the database
+            // has the modified value for the jobType name
+            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+            TransactionType jobTypeFromDatabase = transactionTypes.get(editedJobTypeId);
+            assertEquals(newValue, jobTypeFromDatabase.getTransactionTypeName());
         } finally {
             restoreTestDatabase();
         }

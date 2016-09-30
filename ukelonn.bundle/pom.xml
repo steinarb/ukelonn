@@ -75,6 +75,10 @@
    <artifactId>myfaces-impl</artifactId>
   </dependency>
   <dependency>
+   <groupId>org.primefaces</groupId>
+   <artifactId>primefaces</artifactId>
+  </dependency>
+  <dependency>
    <groupId>org.ops4j.pax.jdbc</groupId>
    <artifactId>pax-jdbc-derby</artifactId>
    <scope>test</scope>
