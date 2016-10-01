@@ -297,4 +297,62 @@ public class CommonDatabaseMethods {
         return null;
     }
 
+    public static void addUserToDatabase(
+                                         Class<?> clazz,
+                                         String newUserUsername,
+                                         String newUserPassword,
+                                         String newUserEmail,
+                                         String newUserFirstname,
+                                         String newUserLastname
+                                         )
+    {
+        String insertUserSql = String.format(
+                                             getResourceAsString("/sql/query/insert_new_user.sql"),
+                                             newUserUsername,
+                                             newUserPassword,
+                                             newUserEmail,
+                                             newUserFirstname,
+                                             newUserLastname
+                                             );
+
+        String findUserIdFromUsernameSql = String.format(
+                                                         getResourceAsString("/sql/query/find_user_id_from_username.sql"),
+                                                         newUserUsername
+                                                         );
+
+        UkelonnDatabase database = connectionCheck(clazz);
+        database.update(insertUserSql);
+        ResultSet userIdResultSet = database.query(findUserIdFromUsernameSql);
+        try {
+            if (userIdResultSet.next()) {
+                int userId = userIdResultSet.getInt("user_id");
+                String insertAccountSql = String.format(
+                                                        getResourceAsString("/sql/query/insert_new_account.sql"),
+                                                        userId
+                                                        );
+                database.update(insertAccountSql);
+                addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, userId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Hack!
+     * Because of the sum() column of accounts_view, accounts without transactions
+     * won't appear in the accounts list, so all accounts are created with a
+     * payment of 0 kroner.
+     * @param database The {@link UkelonnDatabase} to register the payment in
+     * @param userId Used as the key to do the update to the account
+     */
+    private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
+        String sql = String.format(
+                                   getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
+                                   userId
+                                   );
+
+        database.update(sql);
+    }
+
 }

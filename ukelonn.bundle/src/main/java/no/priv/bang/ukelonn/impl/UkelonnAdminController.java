@@ -18,6 +18,7 @@ import org.primefaces.event.CellEditEvent;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
+import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 @ManagedBean(name = "ukelonnAdmin")
 @ViewScoped
@@ -37,7 +38,12 @@ public class UkelonnAdminController {
     private double amount;
     private String newPaymentTypeName;
     private double newPaymentTypeAmount;
-
+    private String newUserUsername;
+    private String newUserPassword1;
+    private String newUserPassword2;
+    private String newUserEmail;
+    private String newUserFirstname;
+    private String newUserLastname;
     public UkelonnAdminController() {
         super();
         try {
@@ -265,6 +271,84 @@ public class UkelonnAdminController {
     private void clearNewPaymentTypeValues() {
         newPaymentTypeName = null;
         newPaymentTypeAmount = 0.0;
+    }
+
+    public String getNewUserUsername() {
+        return newUserUsername;
+    }
+
+    public void setNewUserUsername(String username) {
+    	newUserUsername = safeTrim(username);
+    }
+
+    public String getNewUserPassword1() {
+        return newUserPassword1;
+    }
+
+    public void setNewUserPassword1(String password) {
+        newUserPassword1 = safeTrim(password);
+    }
+
+    public String getNewUserPassword2() {
+        return newUserPassword2;
+    }
+
+    public void setNewUserPassword2(String password) {
+        newUserPassword2 = safeTrim(password);
+    }
+
+    public String getNewUserEmail() {
+        return newUserEmail;
+    }
+
+    public void setNewUserEmail(String emailAddress) {
+        newUserEmail = safeTrim(emailAddress);
+    }
+
+    public String getNewUserFirstname() {
+        return newUserFirstname;
+    }
+
+    public void setNewUserFirstname(String firstname) {
+    	newUserFirstname = safeTrim(firstname);
+    }
+
+    public String getNewUserLastname() {
+        return newUserLastname;
+    }
+
+    public void setNewUserLastname(String lastname) {
+    	newUserLastname = safeTrim(lastname);
+    }
+
+    public void registerNewUser(ActionEvent event) {
+        if (!isNullEmptyOrBlank(getNewUserUsername()) &&
+            !isNullEmptyOrBlank(getNewUserEmail()) &&
+            !isNullEmptyOrBlank(getNewUserPassword1()) &&
+            !isNullEmptyOrBlank(getNewUserPassword2()) &&
+            getNewUserPassword1().equals(getNewUserPassword2()) &&
+            !isNullEmptyOrBlank(getNewUserFirstname()) &&
+            !isNullEmptyOrBlank(getNewUserLastname()))
+        {
+            addUserToDatabase(
+                              getClass(),
+                              getNewUserUsername(),
+                              getNewUserPassword1(),
+                              getNewUserEmail(),
+                              getNewUserFirstname(),
+                              getNewUserLastname()
+                              );
+            clearNewUserValues();
+        }
+    }
+
+    private void clearNewUserValues() {
+        newUserUsername = null;
+        newUserPassword1 = null;
+        newUserPassword2 = null;
+        newUserEmail = null;
+        newUserFirstname = null;
+        newUserLastname = null;
     }
 
 }

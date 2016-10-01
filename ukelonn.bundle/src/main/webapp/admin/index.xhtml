@@ -151,6 +151,26 @@
     <p:tab title="Administrere brukere">
      <p:accordionPanel id="useradmin" multiple="true">
       <p:tab title="Legg til ny bruker">
+       <h:form id="newuser">
+        <p:messages id="messages" showDetail="true" autoUpdate="true" />
+        <p:panelGrid columns="2">
+         <h:outputLabel for="username" value="Brukernavn:" />
+         <h:inputText id="username" value="#{ukelonnAdmin.newUserUsername}" required="true"/>
+         <h:outputLabel for="password1" value="Passord:" />
+         <p:password id="password1" value="#{ukelonnAdmin.newUserPassword1}" label="Passord 1" required="true" feedback="true" inline="true"/>
+         <h:outputLabel for="password2" value="Gjenta passord:" />
+         <p:password id="password2" value="#{ukelonnAdmin.newUserPassword2}" label="Passord 2" required="true" feedback="true" inline="true"/>
+         <h:outputLabel for="email" value="Epostadresse:" />
+         <h:inputText id="email" value="#{ukelonnAdmin.newUserEmail}" required="true">
+          <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+         </h:inputText>
+         <h:outputLabel for="firstname" value="Fornavn:" />
+         <h:inputText id="firstname" value="#{ukelonnAdmin.newUserFirstname}" required="true"/>
+         <h:outputLabel for="lastname" value="Fornavn:" />
+         <h:inputText id="lastname" value="#{ukelonnAdmin.newUserLastname}" required="true"/>
+         <p:commandButton value="Lag bruker" update="username password1 password2 email firstname lastname" actionListener="#{ukelonnAdmin.registerNewUser}" />
+        </p:panelGrid>
+       </h:form>
       </p:tab>
       <p:tab title="Endre brukere">
       </p:tab>

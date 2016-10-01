@@ -387,6 +387,125 @@ public class UkelonnAdminControllerTest {
         }
     }
 
+    @Test
+    public void testCreateNewUser() {
+        try {
+            UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+
+            // Set administrator user
+            ukelonnAdmin.setAdministratorUsername("on");
+
+            // Verify expected initial state
+            assertNull(ukelonnAdmin.getNewUserUsername());
+            assertNull(ukelonnAdmin.getNewUserPassword1());
+            assertNull(ukelonnAdmin.getNewUserPassword2());
+            assertNull(ukelonnAdmin.getNewUserEmail());
+            assertNull(ukelonnAdmin.getNewUserFirstname());
+            assertNull(ukelonnAdmin.getNewUserLastname());
+            int initialNumberOfUses = 2;
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Try registering a new user type without a name values (should fail)
+            ActionEvent event = mock(ActionEvent.class);
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user with no new values ends up in no new user being created
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set a username and leave the other name values unset
+            ukelonnAdmin.setNewUserUsername("aa");
+
+            // Try registering a new user type with a username value but firstname and lastname unset (should fail)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user with a username value but firstname and lastname unset
+            // ends up in no new user being created
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set a first name, leave the last name unset
+            ukelonnAdmin.setNewUserFirstname("Adny");
+
+            // Try registering a new user type with a username and a firstname value but lastname unset (should fail)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user with a username and a firstname values but lastname unset
+            // ends up in no new user being created
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set a last name
+            ukelonnAdmin.setNewUserLastname("Adnysson");
+
+            // Try registering a new user type all name values set
+            // (should fail since email and password is still missing)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user still fails because email and password is still unset
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set an email address
+            ukelonnAdmin.setNewUserEmail("aa234567@gmail.com");
+
+            // Try registering a new user type all name values set
+            // (should fail since password is still missing)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user still fails because password is still unset
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set one password value, leave the other unset
+            ukelonnAdmin.setNewUserPassword1("zecret");
+
+            // Try registering a new user type all name values set
+            // (should fail since only one of the two required password values is set)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user still failed because only one password was set
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Blank first password value, and set the other
+            ukelonnAdmin.setNewUserPassword1("");
+            ukelonnAdmin.setNewUserPassword2("zecret");
+
+            // Try registering a new user type all name values set
+            // (should fail since only one of the two required password values is set)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user still failed because only one password was set
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set passwords that aren't the same
+            ukelonnAdmin.setNewUserPassword1("secret");
+            ukelonnAdmin.setNewUserPassword2("zecret");
+
+            // Try registering a new user type all name values set
+            // (should fail since the passwords aren't identical)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user still failed because the passwords aren't identical
+            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+
+            // Set identical passwords
+            ukelonnAdmin.setNewUserPassword1("zupersecret");
+            ukelonnAdmin.setNewUserPassword2("zupersecret");
+
+            // Try registering a new user type with all values correctly set (this time it should work)
+            ukelonnAdmin.registerNewUser(event);
+
+            // Verify that trying to create a user with all name values set ends up in creating a new user
+            assertEquals(initialNumberOfUses + 1, ukelonnAdmin.getAccounts().size());
+
+            // Verify that a successfully creating a user will null the values
+            assertNull(ukelonnAdmin.getNewUserUsername());
+            assertNull(ukelonnAdmin.getNewUserPassword1());
+            assertNull(ukelonnAdmin.getNewUserPassword2());
+            assertNull(ukelonnAdmin.getNewUserEmail());
+            assertNull(ukelonnAdmin.getNewUserFirstname());
+            assertNull(ukelonnAdmin.getNewUserLastname());
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
     private TransactionType findTransactionTypeWithName(ArrayList<TransactionType> transactionTypes, String name) {
         for (TransactionType transactionType : transactionTypes) {
             if (name.equals(transactionType.getTransactionTypeName())) {
