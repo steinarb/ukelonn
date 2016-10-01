@@ -123,11 +123,28 @@
          <h:inputText id="name" value="#{ukelonnAdmin.newPaymentTypeName}" required="true"/>
          <h:outputLabel for="amount" value="Beløp for ny betalingstype (kan være tomt):" />
          <h:inputText id="amount" value="#{ukelonnAdmin.newPaymentTypeAmount}" required="false"/>
-         <p:commandButton value="Lag betalingstype" update="name amount :tabs:utbetal:paymenttype" actionListener="#{ukelonnAdmin.registerNewPaymentType}" />
+         <p:commandButton value="Lag betalingstype" update="name amount :tabs:utbetal:paymenttype :tabs:paymenttypeadmin:paymenttypesform" actionListener="#{ukelonnAdmin.registerNewPaymentType}" />
         </p:panelGrid>
        </h:form>
       </p:tab>
       <p:tab title="Endre utbetalingstyper">
+       <h:form id="paymenttypesform">
+        <p:dataTable id="editpaymenttypes" var="paymentType" value="#{ukelonnAdmin.paymentTypes}" widgetVar="cellPaymentTypes">
+         <p:column headerText="Navn">
+          <p:cellEditor>
+           <f:facet name="output"><h:outputText value="#{paymentType.transactionTypeName}" /></f:facet>
+           <f:facet name="input"><p:inputText value="#{paymentType.transactionTypeName}" style="width:96%" label="Navn"/></f:facet>
+          </p:cellEditor>
+         </p:column>
+
+         <p:column headerText="Beløp">
+          <p:cellEditor>
+           <f:facet name="output"><h:outputText value="#{paymentType.transactionAmount}" /></f:facet>
+           <f:facet name="input"><p:inputText value="#{paymentType.transactionAmount}" style="width:96%" label="Navn"/></f:facet>
+          </p:cellEditor>
+         </p:column>
+        </p:dataTable>
+       </h:form>
       </p:tab>
      </p:accordionPanel>
     </p:tab>
