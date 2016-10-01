@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -322,6 +323,78 @@ public class UkelonnAdminControllerTest {
         } finally {
             restoreTestDatabase();
         }
+    }
+
+    @Test
+    public void testCreateNewPaymentType() {
+        try {
+            UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+
+            // Set administrator user
+            ukelonnAdmin.setAdministratorUsername("on");
+
+            // Verify expected initial state
+            assertNull(ukelonnAdmin.getNewPaymentTypeName());
+            assertEquals(0.0, ukelonnAdmin.getNewPaymentTypeAmount(), 0.1);
+            int initialNumberOfPaymentTypes = 2;
+            assertEquals(initialNumberOfPaymentTypes, ukelonnAdmin.getPaymentTypes().size());
+
+            // Try registering an new payment type without a name and an amount (should fail)
+            ActionEvent event = mock(ActionEvent.class);
+            ukelonnAdmin.registerNewPaymentType(event);
+
+            // Verify that no new payment type has been created
+            assertEquals(initialNumberOfPaymentTypes, ukelonnAdmin.getPaymentTypes().size());
+
+            // Try registering a new payment type with an empty string name, should not work
+            ukelonnAdmin.setNewPaymentTypeName("");
+            ukelonnAdmin.registerNewPaymentType(event);
+
+            // Verify that no new payment type has been created
+            assertEquals(initialNumberOfPaymentTypes, ukelonnAdmin.getPaymentTypes().size());
+
+            // Try registering a new payment type with a name, without an amount (should work)
+            String newJobTypeName = "Kontanter";
+            ukelonnAdmin.setNewPaymentTypeName(newJobTypeName);
+            ukelonnAdmin.registerNewPaymentType(event);
+
+            // Verify that a new payment type has been created
+            assertEquals(initialNumberOfPaymentTypes + 1, ukelonnAdmin.getPaymentTypes().size());
+
+            // Verify that the new payment values have been blanked after creating the new payment type
+            assertNull(ukelonnAdmin.getNewPaymentTypeName());
+            assertEquals(0.0, ukelonnAdmin.getNewPaymentTypeAmount(), 0.1);
+
+            // Try registering a new payment type with a name, and an amount (should also work)
+            String anotherNewJobTypeName = "Påfyll reisekort";
+            ukelonnAdmin.setNewPaymentTypeName(anotherNewJobTypeName);
+            double amountForAnotherNewJobTypeName = 100.0;
+            ukelonnAdmin.setNewPaymentTypeAmount(amountForAnotherNewJobTypeName);
+            ukelonnAdmin.registerNewPaymentType(event);
+
+            // Verify that another new payment type has been created
+            assertEquals(initialNumberOfPaymentTypes + 2, ukelonnAdmin.getPaymentTypes().size());
+
+            // Verify that the last payment type with th new name has the expected amount
+            TransactionType lastPaymentType = findTransactionTypeWithName(ukelonnAdmin.getPaymentTypes(), anotherNewJobTypeName);
+            assertEquals(amountForAnotherNewJobTypeName, lastPaymentType.getTransactionAmount(), 0.1);
+
+            // Verify that the new payment values have been blanked after creating the new payment type
+            assertNull(ukelonnAdmin.getNewPaymentTypeName());
+            assertEquals(0.0, ukelonnAdmin.getNewPaymentTypeAmount(), 0.1);
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    private TransactionType findTransactionTypeWithName(ArrayList<TransactionType> transactionTypes, String name) {
+        for (TransactionType transactionType : transactionTypes) {
+            if (name.equals(transactionType.getTransactionTypeName())) {
+                return transactionType;
+            }
+        }
+
+        return null;
     }
 
 }

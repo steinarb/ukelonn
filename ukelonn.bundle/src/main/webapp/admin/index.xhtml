@@ -19,7 +19,7 @@
        <p:selectOneMenu id="selectedAccount" value="#{ukelonnAdmin.account}" converter="accountConverter">
         <f:selectItem itemLabel="Velg hvem det skal betales til" itemValue="" noSelectionOption="true" />
         <f:selectItems value="#{ukelonnAdmin.accounts}" var="account2" itemValue="#{account2}" itemLabel="#{account2.fullName}"/>
-        <p:ajax event="change" update=":tabs:balanse:balanse :tabs:utbetal:jobtype :tabs:utbetal:amount :tabs:userinfo:jobs:jobs :tabs:userinfo:payments:payments"/>
+        <p:ajax event="change" update=":tabs:balanse:balanse :tabs:utbetal:paymenttype :tabs:utbetal:amount :tabs:userinfo:jobs:jobs :tabs:userinfo:payments:payments"/>
        </p:selectOneMenu>
       </h:form>
       <h:form id="balanse">
@@ -30,13 +30,13 @@
       </h:form>
       <h:form id="utbetal">
        <p:panelGrid columns="3">
-        <p:selectOneMenu id="jobtype" value="#{ukelonnAdmin.newPaymentType}" converter="transactionTypeConverter">
+        <p:selectOneMenu id="paymenttype" value="#{ukelonnAdmin.newPaymentType}" converter="transactionTypeConverter">
          <f:selectItem itemLabel="Registrer utbetaling" itemValue="" noSelectionOption="true" />
          <f:selectItems value="#{ukelonnAdmin.paymentTypes}" var="payment2" itemValue="#{payment2}" itemLabel="#{payment2.transactionTypeName}"/>
          <p:ajax event="change" update="amount" listener="#{ukelonnAdmin.newPaymentTypeSelected}"/>
         </p:selectOneMenu>
         <h:inputText id="amount" value="#{ukelonnAdmin.newPayment}" required="true"/>
-        <p:commandButton value="Registrer betaling" update="jobtype amount :tabs:balanse:balanse :tabs:userinfo:payments:payments" actionListener="#{ukelonnAdmin.registerNewPayment}" />
+        <p:commandButton value="Registrer betaling" update="paymenttype amount :tabs:balanse:balanse :tabs:userinfo:payments:payments" actionListener="#{ukelonnAdmin.registerNewPayment}" />
        </p:panelGrid>
       </h:form>
       <p:accordionPanel id="userinfo" activeIndex="-1">
@@ -117,6 +117,15 @@
     <p:tab title="Administrere typer av utbetaling">
      <p:accordionPanel id="paymenttypeadmin">
       <p:tab title="Lag ny utbetalingstype">
+       <h:form id="newpaymenttype">
+        <p:panelGrid columns="2">
+         <h:outputLabel for="name" value="Navn på ny betalingstype:" />
+         <h:inputText id="name" value="#{ukelonnAdmin.newPaymentTypeName}" required="true"/>
+         <h:outputLabel for="amount" value="Beløp for ny betalingstype (kan være tomt):" />
+         <h:inputText id="amount" value="#{ukelonnAdmin.newPaymentTypeAmount}" required="false"/>
+         <p:commandButton value="Lag betalingstype" update="name amount :tabs:utbetal:paymenttype" actionListener="#{ukelonnAdmin.registerNewPaymentType}" />
+        </p:panelGrid>
+       </h:form>
       </p:tab>
       <p:tab title="Endre utbetalingstyper">
       </p:tab>

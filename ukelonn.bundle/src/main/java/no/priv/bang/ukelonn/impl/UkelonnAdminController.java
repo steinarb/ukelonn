@@ -35,6 +35,8 @@ public class UkelonnAdminController {
     private TransactionType paymentType;
     private String newJobTypeName;
     private double amount;
+    private String newPaymentTypeName;
+    private double newPaymentTypeAmount;
 
     public UkelonnAdminController() {
         super();
@@ -234,6 +236,35 @@ public class UkelonnAdminController {
                 }
         */
         updateTransactionTypeInDatabase(getClass(), editedJobType);
+    }
+
+    public String getNewPaymentTypeName() {
+        return newPaymentTypeName;
+    }
+
+    public void setNewPaymentTypeName(String newPaymentTypeName) {
+        this.newPaymentTypeName = newPaymentTypeName;
+    }
+
+    public double getNewPaymentTypeAmount() {
+        return newPaymentTypeAmount;
+    }
+
+    public void setNewPaymentTypeAmount(double amount) {
+        this.newPaymentTypeAmount = amount;
+    }
+
+    public void registerNewPaymentType(ActionEvent event) {
+        if (getNewPaymentTypeName() != null && getNewPaymentTypeName().length() > 0) {
+            addPaymentTypeToDatabase(getClass(), getNewPaymentTypeName(), getNewPaymentTypeAmount());
+            clearNewPaymentTypeValues();
+            transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        }
+    }
+
+    private void clearNewPaymentTypeValues() {
+        newPaymentTypeName = null;
+        newPaymentTypeAmount = 0.0;
     }
 
 }

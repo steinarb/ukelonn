@@ -268,6 +268,18 @@ public class CommonDatabaseMethods {
         database.update(sql);
     }
 
+    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
+        String sql = String.format(
+                                   Locale.US, // Format the double correctly for SQL
+                                   getResourceAsString("/sql/query/insert_new_payment_type.sql"),
+                                   newPaymentTypeName,
+                                   newPaymentTypeAmount
+                                   );
+
+        UkelonnDatabase database = connectionCheck(clazz);
+        database.update(sql);
+    }
+
     private static String getResourceAsString(String resourceName) {
         ByteArrayOutputStream resource = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
