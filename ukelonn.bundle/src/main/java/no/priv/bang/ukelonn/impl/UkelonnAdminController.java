@@ -351,4 +351,8 @@ public class UkelonnAdminController {
         newUserLastname = null;
     }
 
+    public List<User> getUsers() {
+        return CommonDatabaseMethods.getUsers(getClass());
+    }
+
 }

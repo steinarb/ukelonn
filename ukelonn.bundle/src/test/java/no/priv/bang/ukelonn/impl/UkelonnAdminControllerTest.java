@@ -506,6 +506,18 @@ public class UkelonnAdminControllerTest {
         }
     }
 
+    @Test
+    public void testGetUsers() {
+        UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+
+        // Set administrator user
+        ukelonnAdmin.setAdministratorUsername("on");
+
+        // Verify that the list of users have the expected number of items
+        List<User> users = ukelonnAdmin.getUsers();
+        assertEquals(4, users.size());
+    }
+
     private TransactionType findTransactionTypeWithName(ArrayList<TransactionType> transactionTypes, String name) {
         for (TransactionType transactionType : transactionTypes) {
             if (name.equals(transactionType.getTransactionTypeName())) {

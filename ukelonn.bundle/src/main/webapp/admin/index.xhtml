@@ -168,11 +168,27 @@
          <h:inputText id="firstname" value="#{ukelonnAdmin.newUserFirstname}" required="true"/>
          <h:outputLabel for="lastname" value="Fornavn:" />
          <h:inputText id="lastname" value="#{ukelonnAdmin.newUserLastname}" required="true"/>
-         <p:commandButton value="Lag bruker" update="username password1 password2 email firstname lastname" actionListener="#{ukelonnAdmin.registerNewUser}" />
+         <p:commandButton value="Lag bruker" update="username password1 password2 email firstname lastname :tabs:useradmin:users:usertable" actionListener="#{ukelonnAdmin.registerNewUser}" />
         </p:panelGrid>
        </h:form>
       </p:tab>
       <p:tab title="Endre brukere">
+       <h:form id="users">
+        <p:dataTable id="usertable" var="user" value="#{ukelonnAdmin.users}">
+         <p:columnGroup type="header">
+          <p:column headerText="Id" />
+          <p:column headerText="Brukernavn" />
+          <p:column headerText="Epost" />
+          <p:column headerText="Fornavn" />
+          <p:column headerText="Etternavn" />
+         </p:columnGroup>
+         <p:column><h:outputText value="#{user.userId}"/></p:column>
+         <p:column><h:outputText value="#{user.username}"/></p:column>
+         <p:column><h:outputText value="#{user.email}"/></p:column>
+         <p:column><h:outputText value="#{user.firstname}"/></p:column>
+         <p:column><h:outputText value="#{user.lastname}"/></p:column>
+        </p:dataTable>
+       </h:form>
       </p:tab>
      </p:accordionPanel>
     </p:tab>

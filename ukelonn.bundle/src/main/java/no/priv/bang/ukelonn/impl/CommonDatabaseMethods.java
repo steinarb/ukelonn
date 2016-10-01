@@ -355,4 +355,37 @@ public class CommonDatabaseMethods {
         database.update(sql);
     }
 
+    public static List<User> getUsers(Class<?> clazz) {
+        ArrayList<User> users = new ArrayList<User>();
+        String sql = "select * from users order by user_id";
+        UkelonnDatabase database = connectionCheck(clazz);
+        ResultSet resultSet = database.query(sql);
+        try {
+            while (resultSet.next()) {
+                User user = mapUser(resultSet);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return users;
+    }
+
+    private static User mapUser(ResultSet resultSet) {
+        User user = new User();
+        try {
+            user.setUserId(resultSet.getInt("user_id"));
+            user.setUsername(resultSet.getString("username"));
+            user.setPassword(resultSet.getString("password"));
+            user.setEmail(resultSet.getString("email"));
+            user.setFirstname(resultSet.getString("first_name"));
+            user.setLastname(resultSet.getString("last_name"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return user;
+    }
+
 }
