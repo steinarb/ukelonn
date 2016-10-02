@@ -19,8 +19,6 @@ public class Account {
         this.firstName = firstName;
         this.lastName = lastName;
         this.balance = balance;
-
-        AccountConverter.registerAccount(this);
     }
 
     public int getAccountId() {

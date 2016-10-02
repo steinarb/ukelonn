@@ -13,8 +13,6 @@ public class TransactionType {
         setTransactionAmount(transactionAmount);
         setTransactionIsWork(transactionIsWork);
         setTransactionIsWagePayment(transactionIsWagePayment);
-
-        TransactionTypeConverter.registerTransactionType(this);
     }
 
     @Override
