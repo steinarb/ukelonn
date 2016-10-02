@@ -60,6 +60,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
             result |= createSchema.execute(getResourceAsString("/sql/tables/transaction_types.sql"));
             result |= createSchema.execute(getResourceAsString("/sql/tables/transactions.sql"));
             result |= createSchema.execute(getResourceAsString("/sql/tables/administrators.sql"));
+            result |= createSchema.execute(getResourceAsString("/sql/views/administrators_view.sql"));
             result |= createSchema.execute(getResourceAsString("/sql/views/accounts_view.sql"));
             result |= createSchema.execute(getResourceAsString("/sql/views/wage_payments_view.sql"));
             result |= createSchema.execute(getResourceAsString("/sql/views/work_done_view.sql"));
