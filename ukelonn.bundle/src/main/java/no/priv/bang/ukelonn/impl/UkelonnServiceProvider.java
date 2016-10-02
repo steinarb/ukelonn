@@ -25,9 +25,19 @@ import no.steria.osgi.jsr330activator.Jsr330Activator;
  */
 public class UkelonnServiceProvider extends UkelonnServiceBase implements Provider<UkelonnService> {
 
+    private static UkelonnService instance;
     private WebContainer webContainer;
     private HttpContext httpContext;
     private UkelonnDatabase database;
+
+    public static UkelonnService getInstance() {
+        return instance;
+    }
+
+    public UkelonnServiceProvider() {
+        super();
+        instance = this;
+    }
 
     @Inject
     public void setUkelonnDatabase(UkelonnDatabase database) {
