@@ -53,9 +53,6 @@
   <dependency>
    <groupId>org.postgresql</groupId>
    <artifactId>postgresql</artifactId>
-   <version>9.4.1211.jre7</version>
-   <type>bundle</type>
-   <scope>provided</scope>
   </dependency>
  </dependencies>
 
