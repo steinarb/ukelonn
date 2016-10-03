@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.postgresql.osgi.PGDataSourceFactory;
@@ -26,6 +27,7 @@ public class PGUkelonnDatabaseProviderTest {
         assertEquals("Ukelonn PostgreSQL database", databaseName);
     }
 
+    @Ignore
     @Test
     public void testDatabase() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -52,6 +54,7 @@ public class PGUkelonnDatabaseProviderTest {
         }
     }
 
+    @Ignore
     @Test
     public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
