@@ -18,6 +18,15 @@ import no.priv.bang.ukelonn.bundle.postgresql.db.mocks.MockLogService;
 public class PGUkelonnDatabaseProviderTest {
 
     @Test
+    public void testGetName() {
+        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
+        UkelonnDatabase database = provider.get();
+
+        String databaseName = database.getName();
+        assertEquals("Ukelonn PostgreSQL database", databaseName);
+    }
+
+    @Test
     public void testDatabase() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());

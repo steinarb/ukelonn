@@ -47,6 +47,11 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
         return this;
     }
 
+    @Override
+    public String getName() {
+        return "Ukelonn PostgreSQL database";
+    }
+
     public ResultSet query(String sqlQuery) {
         try {
             Statement statement = connect.getConnection().createStatement();
