@@ -499,6 +499,7 @@
   <module>ukelonn.bundle.test.db</module>
   <module>ukelonn.bundle.postgresql.db</module>
   <module>ukelonn.gogoshell</module>
+  <module>ukelonn.karaf</module>
  </modules>
 
 </project>
