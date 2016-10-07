@@ -64,6 +64,87 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    - =ukelonn.rebundled/pom.xml=
      Hver gang man trenger en avhengighet som ikke er en OSGi-bundle kan man "rebundle" avhengigheten ved å lage et nytt underprosjekt av dette prosjektet
 
+* Kjøring på apache karaf
+** Kjøring på apache karaf med testdatabasen
+Framgangsmåte:
+ 1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
+    #+BEGIN_EXAMPLE
+      mkdir %HOME%\git
+      cd %HOME%\git
+      git clone https://github.com/steinarb/ukelonn.git
+      cd %HOME%\git\ukelonn
+      git checkout using-primefaces
+      mvn clean install
+    #+END_EXAMPLE
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 3. Gjør pax-web (servlet-kontainer-støtte for OSGi) tilgjengelig som "karaf features", hentet fra maven:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:org.ops4j.pax.web/pax-web-features/4.2.7/xml/features
+    #+END_EXAMPLE
+ 4. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+    #+END_EXAMPLE
+ 5. Installer avhengighetene:
+    #+BEGIN_EXAMPLE
+      feature:install pax-jsf-support
+      feature:install pax-jdbc
+      feature:install pax-jdbc-derby
+    #+END_EXAMPLE
+ 6. Installer webapplikasjonen:
+    #+BEGIN_EXAMPLE
+      feature:install ukelonn.api
+      feature:install ukelonn.bundle.test.db
+      feature:install ukelonn.bundle
+    #+END_EXAMPLE
+ 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+    - For en vanlig bruker, brukernavn/passord: jad/1ad
+      - Vanlig bruker kan registrere nye jobber og sjekke saldo
+    - For en administrator-bruker, brukernavn/passord: on/ola12
+      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+** Kjøring på apache karaf med PostgreSQL
+Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstillinger:
+ 1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter
+ 2. Følgende tabeller må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/tables
+ 3. Følgende views må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/views
+
+Framgangsmåte:
+ 1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
+    #+BEGIN_EXAMPLE
+      mkdir %HOME%\git
+      cd %HOME%\git
+      git clone https://github.com/steinarb/ukelonn.git
+      cd %HOME%\git\ukelonn
+      git checkout using-primefaces
+      mvn clean install
+    #+END_EXAMPLE
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 3. Gjør pax-web (servlet-kontainer-støtte for OSGi) tilgjengelig som "karaf features", hentet fra maven:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:org.ops4j.pax.web/pax-web-features/4.2.7/xml/features
+    #+END_EXAMPLE
+ 4. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+    #+END_EXAMPLE
+ 5. Installer avhengighetene:
+    #+BEGIN_EXAMPLE
+      feature:install pax-jsf-support
+      feature:install pax-jdbc
+      feature:install pax-jdbc-derby
+    #+END_EXAMPLE
+ 6. Installer webapplikasjonen:
+    #+BEGIN_EXAMPLE
+      feature:install ukelonn.api
+      feature:install postgresql
+      feature:install ukelonn.bundle.postgresql.db
+      feature:install ukelonn.bundle
+    #+END_EXAMPLE
+ 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+    - For en vanlig bruker, brukernavn/passord: jad/1ad
+      - Vanlig bruker kan registrere nye jobber og sjekke saldo
+    - For en administrator-bruker, brukernavn/passord: on/ola12
+      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
 * Lisens
 
 Lisensen er Eclipse Public License - v 1.0.  Jeg kunne tenkt meg GPL i en eller annen variant, men da måtte jeg passe på hvilke lisenser som var kompatible og det ble for mye jobb.
