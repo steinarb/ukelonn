@@ -53,7 +53,7 @@ public class UkelonnControllerTest {
     public void testBalanse() {
         UkelonnController ukelonn = new UkelonnController();
         ukelonn.setUsername("jad");
-        assertEquals(Double.valueOf(673.0), ukelonn.getBalanse());
+        assertEquals(673.0, ukelonn.getBalanse(), 0.1);
         ukelonn.setBalanse(Double.valueOf(-1));
         assertEquals(Double.valueOf(-1), ukelonn.getBalanse());
     }

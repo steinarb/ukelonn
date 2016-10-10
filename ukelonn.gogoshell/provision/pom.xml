@@ -37,12 +37,6 @@
    <scope>provided</scope>
   </dependency>
   <dependency>
-   <groupId>no.priv.bang.ukelonn</groupId>
-   <artifactId>ukelonn.bundle.test.db</artifactId>
-   <version>${project.version}</version>
-   <scope>provided</scope>
-  </dependency>
-  <dependency>
    <groupId>org.osgi</groupId>
    <artifactId>org.osgi.compendium</artifactId>
   </dependency>
@@ -199,14 +193,6 @@
    <artifactId>commons-collections</artifactId>
   </dependency>
   <dependency>
-   <groupId>org.apache.derby</groupId>
-   <artifactId>derby</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>org.ops4j.pax.jdbc</groupId>
-   <artifactId>pax-jdbc-derby</artifactId>
-  </dependency>
-  <dependency>
    <groupId>org.apache.servicemix.bundles</groupId>
    <artifactId>org.apache.servicemix.bundles.commons-digester</artifactId>
   </dependency>
@@ -267,4 +253,45 @@
    </exclusions>
   </dependency>
  </dependencies>
+
+ <profiles>
+  <profile>
+   <id>use-derby-test-database</id>
+   <activation>
+    <activeByDefault>true</activeByDefault>
+   </activation>
+   <dependencies>
+    <dependency>
+     <groupId>org.apache.derby</groupId>
+     <artifactId>derby</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.ops4j.pax.jdbc</groupId>
+     <artifactId>pax-jdbc-derby</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>no.priv.bang.ukelonn</groupId>
+     <artifactId>ukelonn.bundle.test.db</artifactId>
+     <version>${project.version}</version>
+     <scope>provided</scope>
+    </dependency>
+   </dependencies>
+  </profile>
+  <profile>
+   <id>use-postgresql-database</id>
+   <dependencies>
+    <dependency>
+     <groupId>org.postgresql</groupId>
+     <artifactId>postgresql</artifactId>
+     <scope>provided</scope>
+    </dependency>
+    <dependency>
+     <groupId>no.priv.bang.ukelonn</groupId>
+     <artifactId>ukelonn.bundle.postgresql.db</artifactId>
+     <version>${project.version}</version>
+     <scope>provided</scope>
+    </dependency>
+   </dependencies>
+  </profile>
+ </profiles>
 </project>

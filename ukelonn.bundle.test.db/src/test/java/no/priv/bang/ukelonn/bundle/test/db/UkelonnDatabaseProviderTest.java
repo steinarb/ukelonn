@@ -27,6 +27,15 @@ public class UkelonnDatabaseProviderTest {
     }
 
     @Test
+    public void testGetName() {
+        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        UkelonnDatabase database = provider.get();
+
+        String databaseName = database.getName();
+        assertEquals("Ukelonn Derby test database", databaseName);
+    }
+
+    @Test
     public void testCreateDatabase() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());

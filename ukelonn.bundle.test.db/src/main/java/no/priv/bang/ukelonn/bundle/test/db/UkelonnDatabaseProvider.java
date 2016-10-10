@@ -86,6 +86,11 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         return insertedRowCounts;
     }
 
+    @Override
+    public String getName() {
+        return "Ukelonn Derby test database";
+    }
+
     public ResultSet query(String sqlQuery) {
         try {
             Statement statement = connect.getConnection().createStatement();
