@@ -19,7 +19,7 @@ Jeg har også plan om å lage en branch med en versjon som bruker [[https://vaad
 Dette trengs for å laste og kjøre programvaren
  1. Installer det som trengs:
     - git: https://git-scm.com/download/win
-    - Java SDK 1.8 (funker forsåvidt med 1.7 også om man allerede har den): http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    - Java SDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
     - Apache maven:
       - Download: https://maven.apache.org/download.cgi
       - Install: https://maven.apache.org/install.html
