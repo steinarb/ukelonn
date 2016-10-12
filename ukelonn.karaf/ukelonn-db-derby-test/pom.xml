@@ -8,38 +8,12 @@
  </parent>
 
  <groupId>no.priv.bang.ukelonn.karaf</groupId>
- <artifactId>ukelonn</artifactId>
+ <artifactId>ukelonn-db-derby-test</artifactId>
  <packaging>feature</packaging>
 
- <name>Generate a karaf feature file for the ukelonn webapp</name>
+ <name>Generate a karaf feature file for the derby test database of the ukelonn webapp</name>
 
  <dependencies>
-  <dependency>
-   <groupId>no.priv.bang.ukelonn</groupId>
-   <artifactId>ukelonn.api</artifactId>
-   <version>${project.version}</version>
-  </dependency>
-  <dependency>
-   <groupId>no.priv.bang.ukelonn</groupId>
-   <artifactId>ukelonn.bundle</artifactId>
-   <version>${project.version}</version>
-   <type>war</type>
-  </dependency>
-  <dependency>
-   <groupId>org.primefaces</groupId>
-   <artifactId>primefaces</artifactId>
-   <scope>compile</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.postgresql</groupId>
-   <artifactId>postgresql</artifactId>
-   <scope>compile</scope>
-  </dependency>
-  <dependency>
-   <groupId>no.priv.bang.ukelonn</groupId>
-   <artifactId>ukelonn.bundle.postgresql.db</artifactId>
-   <version>${project.version}</version>
-  </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.bundle.test.db</artifactId>
