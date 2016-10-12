@@ -30,6 +30,20 @@
    <artifactId>primefaces</artifactId>
    <scope>compile</scope>
   </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn.karaf</groupId>
+   <artifactId>ukelonn-db-derby-test</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn.karaf</groupId>
+   <artifactId>ukelonn-db-postgresql</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
+  </dependency>
  </dependencies>
 
  <build>
@@ -37,6 +51,9 @@
    <plugin>
     <groupId>org.apache.karaf.tooling</groupId>
     <artifactId>karaf-maven-plugin</artifactId>
+    <configuration>
+     <aggregateFeatures>true</aggregateFeatures>
+    </configuration>
    </plugin>
   </plugins>
  </build>
