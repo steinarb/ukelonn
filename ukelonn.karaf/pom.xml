@@ -8,17 +8,11 @@
  </parent>
 
  <artifactId>ukelonn.karaf</artifactId>
- <packaging>pom</packaging>
+ <packaging>feature</packaging>
 
  <name>Generate a karaf feature file for the ukelonn webapp</name>
 
  <dependencies>
-  <dependency>
-   <groupId>org.apache.karaf</groupId>
-   <artifactId>apache-karaf</artifactId>
-   <version>4.0.7</version>
-   <type>pom</type>
-  </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.api</artifactId>
@@ -56,51 +50,15 @@
   <plugins>
    <plugin>
     <groupId>org.apache.karaf.tooling</groupId>
-    <artifactId>features-maven-plugin</artifactId>
-    <version>2.4.4</version>
-    <executions>
-     <execution>
-      <id>generate</id>
-      <phase>generate-resources</phase>
-      <goals>
-       <goal>generate-features-xml</goal>
-      </goals>
-      <configuration>
-       <outputFile>target/features.xml</outputFile>
-      </configuration>
-     </execution>
-    </executions>
+    <artifactId>karaf-maven-plugin</artifactId>
+    <version>${karaf.version}</version>
+    <extensions>true</extensions>
+    <configuration>
+     <startLevel>80</startLevel>
+     <includeTransitiveDependency>false</includeTransitiveDependency>
+    </configuration>
    </plugin>
   </plugins>
-  <pluginManagement>
-   <plugins>
-    <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    <plugin>
-     <groupId>org.eclipse.m2e</groupId>
-     <artifactId>lifecycle-mapping</artifactId>
-     <version>1.0.0</version>
-     <configuration>
-      <lifecycleMappingMetadata>
-       <pluginExecutions>
-   	<pluginExecution>
-   	 <pluginExecutionFilter>
-   	  <groupId>org.apache.karaf.tooling</groupId>
-   	  <artifactId>features-maven-plugin</artifactId>
-   	  <versionRange>[2.4.4,)</versionRange>
-   	  <goals>
-   	   <goal>generate-features-xml</goal>
-   	  </goals>
-   	 </pluginExecutionFilter>
-   	 <action>
-   	  <ignore></ignore>
-   	 </action>
-   	</pluginExecution>
-       </pluginExecutions>
-      </lifecycleMappingMetadata>
-     </configuration>
-    </plugin>
-   </plugins>
-  </pluginManagement>
  </build>
 
 </project>
