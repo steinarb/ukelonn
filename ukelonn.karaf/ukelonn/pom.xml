@@ -2,12 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <parent>
-  <artifactId>parent</artifactId>
+  <artifactId>ukelonn.karaf</artifactId>
   <groupId>no.priv.bang.ukelonn</groupId>
   <version>1.0.0-SNAPSHOT</version>
  </parent>
 
- <artifactId>ukelonn.karaf</artifactId>
+ <groupId>no.priv.bang.ukelonn.karaf</groupId>
+ <artifactId>ukelonn</artifactId>
  <packaging>feature</packaging>
 
  <name>Generate a karaf feature file for the ukelonn webapp</name>
@@ -51,12 +52,6 @@
    <plugin>
     <groupId>org.apache.karaf.tooling</groupId>
     <artifactId>karaf-maven-plugin</artifactId>
-    <version>${karaf.version}</version>
-    <extensions>true</extensions>
-    <configuration>
-     <startLevel>80</startLevel>
-     <includeTransitiveDependency>false</includeTransitiveDependency>
-    </configuration>
    </plugin>
   </plugins>
  </build>
