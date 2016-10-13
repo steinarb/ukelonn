@@ -11,7 +11,7 @@
  <artifactId>ukelonn</artifactId>
  <packaging>feature</packaging>
 
- <name>Generate a karaf feature file for the ukelonn webapp</name>
+ <name>A karaf feature for the ukelonn webapp</name>
 
  <dependencies>
   <dependency>

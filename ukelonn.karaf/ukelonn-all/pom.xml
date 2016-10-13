@@ -11,7 +11,8 @@
  <artifactId>ukelonn-all</artifactId>
  <packaging>feature</packaging>
 
- <name>Generate a karaf feature file for the ukelonn webapp</name>
+ <name>A master karaf feature for the ukelonn webapp</name>
+ <description>Do not install this feature! It will pull in both database features, which will provide the same OSGi service and create confusion</description>
 
  <dependencies>
   <dependency>

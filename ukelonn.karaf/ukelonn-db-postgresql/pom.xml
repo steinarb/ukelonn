@@ -11,7 +11,7 @@
  <artifactId>ukelonn-db-postgresql</artifactId>
  <packaging>feature</packaging>
 
- <name>Generate a karaf feature file for the PostgreSQL database for the ukelonn webapp</name>
+ <name>A karaf feature for the PostgreSQL database for the ukelonn webapp</name>
 
  <dependencies>
   <dependency>
