@@ -33,6 +33,7 @@
   <module>ukelonn</module>
   <module>ukelonn-db-derby-test</module>
   <module>ukelonn-db-postgresql</module>
+  <module>ukelonn-all</module>
  </modules>
 
 </project>
