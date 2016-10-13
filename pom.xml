@@ -27,6 +27,7 @@
   <dependency.myfaces.version>2.2.6</dependency.myfaces.version>
   <derby.version>10.11.1.1</derby.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
+  <karaf.version>4.0.7</karaf.version>
  </properties>
 
  <dependencyManagement>
