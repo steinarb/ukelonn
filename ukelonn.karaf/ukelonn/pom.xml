@@ -32,6 +32,21 @@
    <artifactId>primefaces</artifactId>
    <scope>compile</scope>
   </dependency>
+  <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-core</artifactId>
+   <scope>compile</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-web</artifactId>
+   <scope>compile</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.shiro</groupId>
+   <artifactId>pax-shiro-faces</artifactId>
+   <scope>compile</scope>
+  </dependency>
  </dependencies>
 
  <build>
