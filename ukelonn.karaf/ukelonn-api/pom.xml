@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <parent>
+  <artifactId>ukelonn.karaf</artifactId>
+  <groupId>no.priv.bang.ukelonn</groupId>
+  <version>1.0.0-SNAPSHOT</version>
+ </parent>
+
+ <groupId>no.priv.bang.ukelonn.karaf</groupId>
+ <artifactId>ukelonn-api</artifactId>
+ <packaging>feature</packaging>
+
+ <name>A karaf feature for the ukelonn OSGi service declarations</name>
+
+ <dependencies>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.api</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+ </dependencies>
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.karaf.tooling</groupId>
+    <artifactId>karaf-maven-plugin</artifactId>
+   </plugin>
+  </plugins>
+ </build>
+
+</project>
