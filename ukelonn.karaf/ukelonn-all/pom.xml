@@ -17,6 +17,13 @@
  <dependencies>
   <dependency>
    <groupId>no.priv.bang.ukelonn.karaf</groupId>
+   <artifactId>ukelonn-api</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn.karaf</groupId>
    <artifactId>ukelonn</artifactId>
    <version>${project.version}</version>
    <type>xml</type>

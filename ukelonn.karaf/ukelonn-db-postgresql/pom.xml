@@ -15,6 +15,13 @@
 
  <dependencies>
   <dependency>
+   <groupId>no.priv.bang.ukelonn.karaf</groupId>
+   <artifactId>ukelonn-api</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
+  </dependency>
+  <dependency>
    <groupId>org.postgresql</groupId>
    <artifactId>postgresql</artifactId>
    <scope>compile</scope>

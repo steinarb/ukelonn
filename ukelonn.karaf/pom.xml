@@ -23,6 +23,7 @@
      <configuration>
       <startLevel>80</startLevel>
       <includeTransitiveDependency>false</includeTransitiveDependency>
+      <aggregateFeatures>true</aggregateFeatures>
      </configuration>
     </plugin>
    </plugins>
@@ -30,6 +31,7 @@
  </build>
 
  <modules>
+  <module>ukelonn-api</module>
   <module>ukelonn</module>
   <module>ukelonn-db-derby-test</module>
   <module>ukelonn-db-postgresql</module>

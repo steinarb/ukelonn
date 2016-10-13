@@ -15,9 +15,11 @@
 
  <dependencies>
   <dependency>
-   <groupId>no.priv.bang.ukelonn</groupId>
-   <artifactId>ukelonn.api</artifactId>
+   <groupId>no.priv.bang.ukelonn.karaf</groupId>
+   <artifactId>ukelonn-api</artifactId>
    <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
   </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
@@ -37,9 +39,6 @@
    <plugin>
     <groupId>org.apache.karaf.tooling</groupId>
     <artifactId>karaf-maven-plugin</artifactId>
-    <configuration>
-     <aggregateFeatures>true</aggregateFeatures>
-    </configuration>
    </plugin>
   </plugins>
  </build>
