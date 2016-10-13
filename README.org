@@ -83,7 +83,7 @@ Framgangsmåte:
     #+END_EXAMPLE
  4. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn.karaf/ukelonn-all/LATEST/xml/features
     #+END_EXAMPLE
  5. Installer avhengighetene:
     #+BEGIN_EXAMPLE
@@ -125,7 +125,7 @@ Framgangsmåte:
     #+END_EXAMPLE
  4. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn.karaf/ukelonn-all/LATEST/xml/features
     #+END_EXAMPLE
  5. Installer avhengighetene:
     #+BEGIN_EXAMPLE
