@@ -78,7 +78,7 @@ public class UkelonnController {
     }
 
     private boolean isAdministrator() {
-    	return FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin");
+    	return FacesContext.getCurrentInstance().getExternalContext().isUserInRole("administrator");
     }
 
     public Double getBalanse() {
