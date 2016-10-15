@@ -61,9 +61,7 @@ public class UkelonnRealm extends AuthorizingRealm {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         Object principal = usernamePasswordToken.getPrincipal();
         String username = usernamePasswordToken.getUsername();
-        StringBuffer passwordQuery = new StringBuffer("select * from users where username='");
-        passwordQuery.append(username);
-        passwordQuery.append("'");
+        StringBuilder passwordQuery = new StringBuilder("select * from users where username='").append(username).append("'");
         UkelonnDatabase ukelonnDatabase = connectionCheck();
         ResultSet passwordResultSet = ukelonnDatabase.query(passwordQuery.toString());
         if (passwordResultSet == null) {

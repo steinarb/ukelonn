@@ -107,8 +107,7 @@ public class CommonDatabaseMethods {
 
     public static void updateBalanseFromDatabase(Class<?> clazz, Account account) {
         UkelonnDatabase connection = connectionCheck(clazz);
-        StringBuffer sql = new StringBuffer("select * from accounts_view where account_id=");
-        sql.append(account.getAccountId());
+        StringBuilder sql = new StringBuilder("select * from accounts_view where account_id=").append(account.getAccountId());
         ResultSet results = connection.query(sql.toString());
         if (results != null) {
             try {
@@ -126,13 +125,10 @@ public class CommonDatabaseMethods {
         int accountId = account.getAccountId();
         int transactionTypeId = paymentType.getId();
         double amount = 0 - payment;
-        StringBuffer sql = new StringBuffer("insert into transactions (account_id,transaction_type_id,transaction_amount) values (");
-        sql.append(accountId);
-        sql.append(",");
-        sql.append(transactionTypeId);
-        sql.append(",");
-        sql.append(amount);
-        sql.append(")");
+        StringBuilder sql = new StringBuilder("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
+            append(accountId).append(",").
+            append(transactionTypeId).append(",").
+            append(amount).append(")");
 
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(sql.toString());
@@ -147,9 +143,7 @@ public class CommonDatabaseMethods {
 
     public static Account getAccountInfoFromDatabase(Class<?> clazz, String username) {
         UkelonnDatabase database = connectionCheck(clazz);
-        StringBuffer sql = new StringBuffer("select * from accounts_view where username='");
-        sql.append(username);
-        sql.append("'");
+        StringBuilder sql = new StringBuilder("select * from accounts_view where username='").append(username).append("'");
         ResultSet resultset = database.query(sql.toString());
         if (resultset != null) {
             try {
@@ -225,13 +219,10 @@ public class CommonDatabaseMethods {
     }
 
     public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
-        StringBuffer sql = new StringBuffer("insert into transactions (account_id,transaction_type_id,transaction_amount) values (");
-        sql.append(account.getAccountId());
-        sql.append(",");
-        sql.append(newJobTypeId);
-        sql.append(",");
-        sql.append(newJobWages);
-        sql.append(")");
+        StringBuilder sql = new StringBuilder("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
+            append(account.getAccountId()).append(",").
+            append(newJobTypeId).append(",").
+            append(newJobWages).append(")");
 
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(sql.toString());
