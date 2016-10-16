@@ -18,14 +18,11 @@ import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 public class CommonDatabaseMethods {
 
     public static UkelonnDatabase connectionCheck(Class<?> clazz) {
-        String className = clazz.getSimpleName();
-        UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
-        if (ukelonnService == null) {
-            throw new RuntimeException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
-        }
+        UkelonnService ukelonnService = CommonServiceMethods.connectionCheck(clazz);
 
         UkelonnDatabase database = ukelonnService.getDatabase();
         if (database == null) {
+            String className = clazz.getSimpleName();
             throw new RuntimeException(className + " bean unable to find OSGi service UkelonnDatabase, giving up");
         }
 
