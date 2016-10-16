@@ -7,7 +7,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.util.ByteSource.Util;
 import org.junit.After;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
@@ -116,6 +126,48 @@ public class UkelonnDatabaseProviderTest {
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
         assertEquals(2, allAdminstratorsViewCount);
+    }
+
+    /**
+     * Not a real unit test, just a way to hash cleartext passwords for
+     * the test database and generate salt.
+     */
+    @Test
+    public void testCreateHashedPasswords() {
+    	String[] usernames = { "on", "kn", "jad", "jod" };
+    	String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
+    	RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+    	System.out.println("username, password, salt");
+    	for (int i=0; i<usernames.length; ++i) {
+            // First hash the password
+            String username = usernames[i];
+            String password = unhashedPasswords[i];
+            String salt = randomNumberGenerator.nextBytes().toBase64();
+            Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
+            String hashedPassword = new Sha256Hash(password, decodedSaltUsedWhenHashing, 1024).toBase64();
+
+            // Check the cleartext password against the hashed password
+            UsernamePasswordToken usenamePasswordToken = new UsernamePasswordToken(username, password.toCharArray());
+            SimpleAuthenticationInfo saltedAuthenticationInfo = createAuthenticationInfo(usernames[i], hashedPassword, salt);
+            CredentialsMatcher credentialsMatcher = createSha256HashMatcher(1024);
+            assertTrue(credentialsMatcher.doCredentialsMatch(usenamePasswordToken, saltedAuthenticationInfo));
+
+            // Print out the username, hashed password, and salt
+            System.out.println(String.format("'%s', '%s', '%s'", username, hashedPassword, salt));
+    	}
+    }
+
+    private CredentialsMatcher createSha256HashMatcher(int iterations) {
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
+        credentialsMatcher.setHashIterations(iterations);
+        return credentialsMatcher;
+    }
+
+    private SimpleAuthenticationInfo createAuthenticationInfo(String principal, String hashedPassword, String salt) {
+        Object decodedPassword = Sha256Hash.fromBase64String(hashedPassword);
+        ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
+        return authenticationInfo;
     }
 
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
