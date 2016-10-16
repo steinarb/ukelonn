@@ -20,6 +20,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
+import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class UkelonnRealm extends AuthorizingRealm {
 
@@ -61,7 +62,7 @@ public class UkelonnRealm extends AuthorizingRealm {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         Object principal = usernamePasswordToken.getPrincipal();
         String username = usernamePasswordToken.getUsername();
-        StringBuilder passwordQuery = new StringBuilder("select * from users where username='").append(username).append("'");
+        StringBuilder passwordQuery = sql("select * from users where username='").append(username).append("'");
         UkelonnDatabase ukelonnDatabase = connectionCheck();
         ResultSet passwordResultSet = ukelonnDatabase.query(passwordQuery.toString());
         if (passwordResultSet == null) {

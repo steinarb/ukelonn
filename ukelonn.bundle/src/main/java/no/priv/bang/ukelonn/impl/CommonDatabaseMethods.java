@@ -13,6 +13,7 @@ import java.util.Map;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
+import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class CommonDatabaseMethods {
 
@@ -107,8 +108,8 @@ public class CommonDatabaseMethods {
 
     public static void updateBalanseFromDatabase(Class<?> clazz, Account account) {
         UkelonnDatabase connection = connectionCheck(clazz);
-        StringBuilder sql = new StringBuilder("select * from accounts_view where account_id=").append(account.getAccountId());
-        ResultSet results = connection.query(sql.toString());
+        StringBuilder query = sql("select * from accounts_view where account_id=").append(account.getAccountId());
+        ResultSet results = connection.query(query.toString());
         if (results != null) {
             try {
                 while (results.next()) {
@@ -125,13 +126,13 @@ public class CommonDatabaseMethods {
         int accountId = account.getAccountId();
         int transactionTypeId = paymentType.getId();
         double amount = 0 - payment;
-        StringBuilder sql = new StringBuilder("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
+        StringBuilder query = sql("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
             append(accountId).append(",").
             append(transactionTypeId).append(",").
             append(amount).append(")");
 
         UkelonnDatabase database = connectionCheck(clazz);
-        database.update(sql.toString());
+        database.update(query.toString());
     }
 
     public static Map<Integer, TransactionType> refreshAccount(Class<?> clazz, Account account) {
@@ -143,8 +144,8 @@ public class CommonDatabaseMethods {
 
     public static Account getAccountInfoFromDatabase(Class<?> clazz, String username) {
         UkelonnDatabase database = connectionCheck(clazz);
-        StringBuilder sql = new StringBuilder("select * from accounts_view where username='").append(username).append("'");
-        ResultSet resultset = database.query(sql.toString());
+        StringBuilder query = sql("select * from accounts_view where username='").append(username).append("'");
+        ResultSet resultset = database.query(query.toString());
         if (resultset != null) {
             try {
                 if (resultset.next()) {
@@ -219,13 +220,13 @@ public class CommonDatabaseMethods {
     }
 
     public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
-        StringBuilder sql = new StringBuilder("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
+        StringBuilder query = sql("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
             append(account.getAccountId()).append(",").
             append(newJobTypeId).append(",").
             append(newJobWages).append(")");
 
         UkelonnDatabase database = connectionCheck(clazz);
-        database.update(sql.toString());
+        database.update(query.toString());
 
         // Update the list of jobs and the updated balance from the DB
         Map<Integer, TransactionType> transactionTypes = refreshAccount(clazz, account);

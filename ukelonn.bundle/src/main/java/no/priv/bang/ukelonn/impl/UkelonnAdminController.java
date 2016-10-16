@@ -60,8 +60,8 @@ public class UkelonnAdminController {
 
     private void getAdministratorUserInfoFromDatabase(String username) {
         UkelonnDatabase database = connectionCheck(getClass());
-        StringBuilder sql = new StringBuilder("select * from administrators_view where username='").append(username).append("'");
-        ResultSet resultset = database.query(sql.toString());
+        StringBuilder query = sql("select * from administrators_view where username='").append(username).append("'");
+        ResultSet resultset = database.query(query.toString());
         if (resultset != null) {
             try {
                 if (resultset.next()) {
