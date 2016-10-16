@@ -16,14 +16,14 @@ public class CommonServiceMethods {
         return ukelonnService;
     }
 
-    public static void errorLog(Class<?> clazz, String message) {
+    public static void logError(Class<?> clazz, String message) {
         LogService logservice = logserviceConnectionCheck(clazz);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message);
         }
     }
 
-    public static void errorLog(Class<?> clazz, String message, Throwable exception) {
+    public static void logError(Class<?> clazz, String message, Throwable exception) {
         LogService logservice = logserviceConnectionCheck(clazz);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message, exception);
