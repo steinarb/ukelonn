@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
+import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -25,6 +26,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     private WebContainer webContainer;
     private HttpContext httpContext;
     private UkelonnDatabase database;
+    private LogService logservice;
 
     public UkelonnServiceProvider() {
         super();
@@ -39,6 +41,16 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     @Override
     public UkelonnDatabase getDatabase() {
         return database;
+    }
+
+    @Inject
+    public void setLogservice(LogService logservice) {
+    	this.logservice = logservice;
+    }
+
+    @Override
+    public LogService getLogservice() {
+        return logservice;
     }
 
     @Inject

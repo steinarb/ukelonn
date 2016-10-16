@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.mocks.MockLogService;
+
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 public class CommonServiceMethodsTest {
@@ -32,6 +34,25 @@ public class CommonServiceMethodsTest {
         setupFakeOsgiServices();
         UkelonnService service = CommonServiceMethods.connectionCheck(getClass());
         assertNotNull(service);
+    }
+
+    @Test
+    public void testLogError() {
+    	// First log when there are noe services available
+    	MockLogService logservice = new MockLogService();
+        CommonServiceMethods.errorLog(getClass(), "This is an error");
+        assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
+
+        // Test the case where there is an UkelonnService but is no logservice
+        setupFakeOsgiServices();
+        CommonServiceMethods.errorLog(getClass(), "This is another error");
+        assertEquals("Still expected nothing logged", 0, logservice.getLogmessages().size());
+
+        // Test the case where there is an UkelonnService with an injected logservice
+        UkelonnServiceProvider ukelonnService = (UkelonnServiceProvider) UkelonnServiceProvider.getInstance();
+        ukelonnService.setLogservice(logservice);
+        CommonServiceMethods.errorLog(getClass(), "This is yet another error");
+        assertEquals("Expected a single message to have been logged", 1, logservice.getLogmessages().size());
     }
 
 }
