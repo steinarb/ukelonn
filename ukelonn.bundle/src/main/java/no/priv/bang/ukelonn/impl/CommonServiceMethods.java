@@ -23,6 +23,13 @@ public class CommonServiceMethods {
         }
     }
 
+    public static void errorLog(Class<?> clazz, String message, Throwable exception) {
+        LogService logservice = logserviceConnectionCheck(clazz);
+        if (logservice != null) {
+            logservice.log(LogService.LOG_ERROR, message, exception);
+        }
+    }
+
     private static LogService logserviceConnectionCheck(Class<?> clazz) {
         try {
             UkelonnService ukelonnService = connectionCheck(clazz);
