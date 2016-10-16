@@ -13,6 +13,7 @@ import java.util.Map;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
+import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class CommonDatabaseMethods {
@@ -40,7 +41,7 @@ public class CommonDatabaseMethods {
                     transactiontypes.put(transactiontype.getId(), transactiontype);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logError(CommonDatabaseMethods.class, "Error getting transaction types from the database", e);
             }
         }
 
@@ -85,7 +86,7 @@ public class CommonDatabaseMethods {
                     transactions.add(mapTransaction(transactionTypes, resultSet));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logError(CommonDatabaseMethods.class, "Error getting transactions from the database", e);
             }
         }
 
@@ -114,7 +115,7 @@ public class CommonDatabaseMethods {
                     account.setBalance(balance);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logError(CommonDatabaseMethods.class, "Error getting a user's account balance from the database", e);
             }
         }
     }
@@ -150,7 +151,7 @@ public class CommonDatabaseMethods {
                     return newaccount;
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logError(CommonDatabaseMethods.class, "Error getting a single account from the database", e);
             }
         }
 
@@ -168,8 +169,8 @@ public class CommonDatabaseMethods {
                     accounts.add(newaccount);
                 }
             } catch (SQLException e) {
-                // Skip and continue
-                e.printStackTrace();
+                // Log and continue
+                logError(CommonDatabaseMethods.class, "Error when getting all accounts from the database", e);
             }
         }
 
@@ -281,6 +282,7 @@ public class CommonDatabaseMethods {
 
             return resource.toString("UTF-8");
         } catch (Exception e) {
+            logError(CommonDatabaseMethods.class, "Error getting resource \"" + resource + "\" from the classpath", e);
         }
 
         return null;

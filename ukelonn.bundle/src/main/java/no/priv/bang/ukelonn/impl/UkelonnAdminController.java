@@ -17,6 +17,7 @@ import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
@@ -59,7 +60,7 @@ public class UkelonnAdminController {
     }
 
     private void getAdministratorUserInfoFromDatabase(String username) {
-        UkelonnDatabase database = connectionCheck(getClass());
+        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getClass());
         StringBuilder query = sql("select * from administrators_view where username='").append(username).append("'");
         ResultSet resultset = database.query(query.toString());
         if (resultset != null) {
@@ -73,7 +74,7 @@ public class UkelonnAdminController {
 
                 transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
             } catch (SQLException e) {
-                e.printStackTrace();
+                logError(UkelonnAdminController.class, "Error getting administrator user info from the database", e);
             }
         }
     }
