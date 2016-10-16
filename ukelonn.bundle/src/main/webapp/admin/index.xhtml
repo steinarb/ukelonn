@@ -168,7 +168,7 @@
          <h:inputText id="firstname" value="#{ukelonnAdmin.newUserFirstname}" required="true"/>
          <h:outputLabel for="lastname" value="Fornavn:" />
          <h:inputText id="lastname" value="#{ukelonnAdmin.newUserLastname}" required="true"/>
-         <p:commandButton value="Lag bruker" update="username password1 password2 email firstname lastname :tabs:useradmin:users:usertable" actionListener="#{ukelonnAdmin.registerNewUser}" />
+         <p:commandButton value="Lag bruker" update="username password1 password2 email firstname lastname :tabs:useradmin:users:usertable :tabs:selectUser:selectedAccount" actionListener="#{ukelonnAdmin.registerNewUser}" />
         </p:panelGrid>
        </h:form>
       </p:tab>
