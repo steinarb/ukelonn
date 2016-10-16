@@ -8,9 +8,11 @@ import java.sql.SQLException;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.bundle.test.db.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
+import no.priv.bang.ukelonn.mocks.MockLogService;
 
 /**
  * Contains static methods used in more than one unit test.
@@ -39,6 +41,8 @@ public class TestUtils {
         UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
+        LogService logservice = new MockLogService();
+        ukelonnDatabaseProvider.setLogService(logservice);
         ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
     }
 
