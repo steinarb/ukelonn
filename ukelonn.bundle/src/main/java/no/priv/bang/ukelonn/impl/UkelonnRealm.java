@@ -2,6 +2,7 @@ package no.priv.bang.ukelonn.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,8 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.util.ByteSource.Util;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -72,7 +75,9 @@ public class UkelonnRealm extends AuthorizingRealm {
         try {
             if (passwordResultSet.next()) {
                 String password = passwordResultSet.getString("password");
-                return new SimpleAuthenticationInfo(principal, password, getName());
+                String salt = passwordResultSet.getString("salt");
+                ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
+                return new SimpleAuthenticationInfo(principal, password, decodedSalt, getName());
             } else {
                 throw new IncorrectCredentialsException("Username \"" + username + "\" not found");
             }
