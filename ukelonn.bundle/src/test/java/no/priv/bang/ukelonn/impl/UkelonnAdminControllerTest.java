@@ -402,15 +402,15 @@ public class UkelonnAdminControllerTest {
             assertNull(ukelonnAdmin.getNewUserEmail());
             assertNull(ukelonnAdmin.getNewUserFirstname());
             assertNull(ukelonnAdmin.getNewUserLastname());
-            int initialNumberOfUses = 2;
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            int initialNumberOfUsers = 2;
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Try registering a new user type without a name values (should fail)
             ActionEvent event = mock(ActionEvent.class);
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user with no new values ends up in no new user being created
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set a username and leave the other name values unset
             ukelonnAdmin.setNewUserUsername("aa");
@@ -420,7 +420,7 @@ public class UkelonnAdminControllerTest {
 
             // Verify that trying to create a user with a username value but firstname and lastname unset
             // ends up in no new user being created
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set a first name, leave the last name unset
             ukelonnAdmin.setNewUserFirstname("Adny");
@@ -430,7 +430,7 @@ public class UkelonnAdminControllerTest {
 
             // Verify that trying to create a user with a username and a firstname values but lastname unset
             // ends up in no new user being created
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set a last name
             ukelonnAdmin.setNewUserLastname("Adnysson");
@@ -440,7 +440,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user still fails because email and password is still unset
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set an email address
             ukelonnAdmin.setNewUserEmail("aa234567@gmail.com");
@@ -450,7 +450,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user still fails because password is still unset
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set one password value, leave the other unset
             ukelonnAdmin.setNewUserPassword1("zecret");
@@ -460,7 +460,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user still failed because only one password was set
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Blank first password value, and set the other
             ukelonnAdmin.setNewUserPassword1("");
@@ -471,7 +471,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user still failed because only one password was set
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set passwords that aren't the same
             ukelonnAdmin.setNewUserPassword1("secret");
@@ -482,7 +482,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user still failed because the passwords aren't identical
-            assertEquals(initialNumberOfUses, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers, ukelonnAdmin.getAccounts().size());
 
             // Set identical passwords
             ukelonnAdmin.setNewUserPassword1("zupersecret");
@@ -492,7 +492,7 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.registerNewUser(event);
 
             // Verify that trying to create a user with all name values set ends up in creating a new user
-            assertEquals(initialNumberOfUses + 1, ukelonnAdmin.getAccounts().size());
+            assertEquals(initialNumberOfUsers + 1, ukelonnAdmin.getAccounts().size());
 
             // Verify that a successfully creating a user will null the values
             assertNull(ukelonnAdmin.getNewUserUsername());
