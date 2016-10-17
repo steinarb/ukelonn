@@ -9,6 +9,9 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +42,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfo() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo authInfo = realm.getAuthenticationInfo(token);
         assertEquals(1, authInfo.getPrincipals().asList().size());
@@ -50,6 +54,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongPassword() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1add".toCharArray());
 
         exception.expect(IncorrectCredentialsException.class);
@@ -64,6 +69,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongUsername() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jadd", "1ad".toCharArray());
 
         exception.expect(IncorrectCredentialsException.class);
@@ -77,6 +83,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongTokenType() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = mock(AuthenticationToken.class);
         String username = "jad";
         String password = "1ad";
@@ -94,6 +101,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetRolesForUsers() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);
 
@@ -110,6 +118,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetRolesForAdministrators() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("on", "ola12".toCharArray());
         AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);
 
@@ -118,6 +127,13 @@ public class UkelonnRealmTest {
 
         boolean onHasRoleAdministrator = realm.hasRole(authenticationInfoForUser.getPrincipals(), "administrator");
         assertTrue(onHasRoleAdministrator);
+    }
+
+    private CredentialsMatcher createSha256HashMatcher(int iterations) {
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
+        credentialsMatcher.setStoredCredentialsHexEncoded(false);
+        credentialsMatcher.setHashIterations(iterations);
+        return credentialsMatcher;
     }
 
 }
