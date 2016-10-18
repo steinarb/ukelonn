@@ -12,6 +12,9 @@ import java.util.Map;
 
 import javax.faces.event.ActionEvent;
 
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -501,6 +504,12 @@ public class UkelonnAdminControllerTest {
             assertNull(ukelonnAdmin.getNewUserEmail());
             assertNull(ukelonnAdmin.getNewUserFirstname());
             assertNull(ukelonnAdmin.getNewUserLastname());
+
+            // Check that the hashed password stored in the database works
+            // (if authentication fails, an AuthenticationException will be thrown)
+            IniSecurityManagerFactory factory = new IniSecurityManagerFactory("classpath:shiro.ini");
+            AuthenticationToken tokenWithCorrectPassword = new UsernamePasswordToken("aa", "zupersecret".toCharArray());
+            factory.getInstance().authenticate(tokenWithCorrectPassword);
         } finally {
             restoreTestDatabase();
         }
