@@ -5,11 +5,17 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.apache.shiro.util.ByteSource.Util;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -297,10 +303,16 @@ public class CommonDatabaseMethods {
                                          String newUserLastname
                                          )
     {
+      	RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        String salt = randomNumberGenerator.nextBytes().toBase64();
+        Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
+        String hashedPassword = new Sha256Hash(newUserPassword, decodedSaltUsedWhenHashing, 1024).toBase64();
+
         String insertUserSql = String.format(
                                              getResourceAsString("/sql/query/insert_new_user.sql"),
                                              newUserUsername,
-                                             newUserPassword,
+                                             hashedPassword,
+                                             salt,
                                              newUserEmail,
                                              newUserFirstname,
                                              newUserLastname
