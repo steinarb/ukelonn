@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.faces.event.ActionEvent;
 
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.junit.AfterClass;
@@ -507,9 +508,7 @@ public class UkelonnAdminControllerTest {
 
             // Check that the hashed password stored in the database works
             // (if authentication fails, an AuthenticationException will be thrown)
-            IniSecurityManagerFactory factory = new IniSecurityManagerFactory("classpath:shiro.ini");
-            AuthenticationToken tokenWithCorrectPassword = new UsernamePasswordToken("aa", "zupersecret".toCharArray());
-            factory.getInstance().authenticate(tokenWithCorrectPassword);
+            assertTrue("Expected correct password", isCorrectPasswordForUser("aa", "zupersecret"));
         } finally {
             restoreTestDatabase();
         }
@@ -525,6 +524,127 @@ public class UkelonnAdminControllerTest {
         // Verify that the list of users have the expected number of items
         List<User> users = ukelonnAdmin.getUsers();
         assertEquals(4, users.size());
+    }
+
+    @Test
+    public void testChangeUserPassword() {
+    	try {
+            UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+
+            User jad = findUserWithUsername(ukelonnAdmin.getUsers(), "jad");
+
+            // Check precondition: current password is the original password "1ad"
+            String originalPassword = "1ad";
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+
+            // Try changing password without any values set, nothing should happen
+            ActionEvent event = mock(ActionEvent.class);
+            ukelonnAdmin.changeUserPassword(event);
+
+            // Verify that the password hasn't changed
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+
+            // Set the user but as yet no password values
+            ukelonnAdmin.setChangePasswordForUser(jad);
+            // Try changing password, again nothing should happen
+            ukelonnAdmin.changeUserPassword(event);
+            // Verify that the password hasn't changed
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+
+            // Set one password
+            String newPassword = "zuperzekret";
+            ukelonnAdmin.setChangePasswordForUserPassword1(newPassword);
+            // Try changing password, again nothing should happen
+            ukelonnAdmin.changeUserPassword(event);
+            // Verify that the password hasn't changed
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+
+            // Set the other password and blank the first
+            ukelonnAdmin.setChangePasswordForUserPassword2(newPassword);
+            ukelonnAdmin.setChangePasswordForUserPassword1(null);
+            // Try changing password, again nothing should happen
+            ukelonnAdmin.changeUserPassword(event);
+            // Verify that the password hasn't changed
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+
+            // Set the passwords to different values
+            ukelonnAdmin.setChangePasswordForUserPassword1(newPassword + "extraText");
+            // Try changing password, again nothing should happen
+            ukelonnAdmin.changeUserPassword(event);
+            // Verify that the password hasn't changed
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+
+            // Verify that setting a different user will blank the password values
+            assertEquals(jad, ukelonnAdmin.getChangePasswordForUser());
+            assertEquals(newPassword + "extraText", ukelonnAdmin.getChangePasswordForUserPassword1());
+            assertEquals(newPassword, ukelonnAdmin.getChangePasswordForUserPassword2());
+            User on = findUserWithUsername(ukelonnAdmin.getUsers(), "on");
+            ukelonnAdmin.setChangePasswordForUser(on);
+            assertEquals(on, ukelonnAdmin.getChangePasswordForUser());
+            assertNull(ukelonnAdmin.getChangePasswordForUserPassword1());
+            assertNull(ukelonnAdmin.getChangePasswordForUserPassword2());
+
+            // Set user and both passwords to the same value, the password will be changed
+            ukelonnAdmin.setChangePasswordForUser(jad);
+            ukelonnAdmin.setChangePasswordForUserPassword1(newPassword);
+            ukelonnAdmin.setChangePasswordForUserPassword2(newPassword);
+            // Try changing password, this time it should be changed
+            ukelonnAdmin.changeUserPassword(event);
+            // Verify that the password has been changed and that the new password works
+            assertFalse("Expected incorrect password", isCorrectPasswordForUser(jad.getUsername(), originalPassword));
+            assertTrue("Expected correct password", isCorrectPasswordForUser(jad.getUsername(), newPassword));
+
+            // Check that the values have been nulled after successfully setting a new password
+            assertNull(ukelonnAdmin.getChangePasswordForUser());
+            assertNull(ukelonnAdmin.getChangePasswordForUserPassword1());
+            assertNull(ukelonnAdmin.getChangePasswordForUserPassword2());
+    	} finally {
+            restoreTestDatabase();
+    	}
+    }
+
+    /***
+     * Unit test for a method used to test if two users are the same or
+     * identical, handling the corner case of either user being null.
+     */
+    @Test
+    public void testIsTheSameUser() {
+        UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
+        List<User> users = ukelonnAdmin.getUsers();
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        // Get a set of the same users with different object identity
+        List<User> equalToUsers = ukelonnAdmin.getUsers();
+        User equalToUser1 = equalToUsers.get(0);
+
+        assertFalse(UkelonnAdminController.isTheSameUser(user1, user2));
+        assertTrue(UkelonnAdminController.isTheSameUser(user1, user1));
+        assertTrue(UkelonnAdminController.isTheSameUser(user1, equalToUser1));
+        assertFalse(UkelonnAdminController.isTheSameUser(null, user2));
+        assertFalse(UkelonnAdminController.isTheSameUser(user1, null));
+        assertTrue(UkelonnAdminController.isTheSameUser(null, null));
+    }
+
+    private User findUserWithUsername(List<User> users, String username) {
+    	for (User user : users) {
+            if (username.equals(user.getUsername())) {
+                return user;
+            }
+        }
+
+    	return null;
+    }
+
+    private boolean isCorrectPasswordForUser(String username, String password) {
+        try {
+            IniSecurityManagerFactory factory = new IniSecurityManagerFactory("classpath:shiro.ini");
+            AuthenticationToken tokenWithCorrectPassword = new UsernamePasswordToken(username, password.toCharArray());
+            factory.getInstance().authenticate(tokenWithCorrectPassword);
+            return true;
+        } catch (IncorrectCredentialsException e) {
+            return false;
+        }
     }
 
     private TransactionType findTransactionTypeWithName(ArrayList<TransactionType> transactionTypes, String name) {

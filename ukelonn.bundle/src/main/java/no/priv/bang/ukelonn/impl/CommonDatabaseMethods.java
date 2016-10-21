@@ -276,24 +276,6 @@ public class CommonDatabaseMethods {
         database.update(sql);
     }
 
-    private static String getResourceAsString(String resourceName) {
-        ByteArrayOutputStream resource = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        InputStream resourceStream = CommonDatabaseMethods.class.getResourceAsStream(resourceName);
-        try {
-            while ((length = resourceStream.read(buffer)) != -1) {
-                resource.write(buffer, 0, length);
-            }
-
-            return resource.toString("UTF-8");
-        } catch (Exception e) {
-            logError(CommonDatabaseMethods.class, "Error getting resource \"" + resource + "\" from the classpath", e);
-        }
-
-        return null;
-    }
-
     public static void addUserToDatabase(
                                          Class<?> clazz,
                                          String newUserUsername,
@@ -303,10 +285,8 @@ public class CommonDatabaseMethods {
                                          String newUserLastname
                                          )
     {
-      	RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
-        String salt = randomNumberGenerator.nextBytes().toBase64();
-        Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
-        String hashedPassword = new Sha256Hash(newUserPassword, decodedSaltUsedWhenHashing, 1024).toBase64();
+      	String salt = getNewSalt();
+        String hashedPassword = hashPassword(newUserPassword, salt);
 
         String insertUserSql = String.format(
                                              getResourceAsString("/sql/query/insert_new_user.sql"),
@@ -341,23 +321,6 @@ public class CommonDatabaseMethods {
         }
     }
 
-    /**
-     * Hack!
-     * Because of the sum() column of accounts_view, accounts without transactions
-     * won't appear in the accounts list, so all accounts are created with a
-     * payment of 0 kroner.
-     * @param database The {@link UkelonnDatabase} to register the payment in
-     * @param userId Used as the key to do the update to the account
-     */
-    private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
-        String sql = String.format(
-                                   getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
-                                   userId
-                                   );
-
-        database.update(sql);
-    }
-
     public static List<User> getUsers(Class<?> clazz) {
         ArrayList<User> users = new ArrayList<User>();
         String sql = "select * from users order by user_id";
@@ -375,20 +338,81 @@ public class CommonDatabaseMethods {
         return users;
     }
 
+    public static int changePasswordForUser(String username, String password, Class<?> clazz) {
+      	String salt = getNewSalt();
+        String hashedPassword = hashPassword(password, salt);
+        StringBuilder update = sql("update users set password='").append(hashedPassword).append("', salt='").append(salt).append("' where username='").append(username).append("'");
+        UkelonnDatabase database = connectionCheck(clazz);
+        return database.update(update.toString());
+    }
+
+    private static String hashPassword(String newUserPassword, String salt) {
+        Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
+        String hashedPassword = new Sha256Hash(newUserPassword, decodedSaltUsedWhenHashing, 1024).toBase64();
+        return hashedPassword;
+    }
+
+    private static String getNewSalt() {
+        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        String salt = randomNumberGenerator.nextBytes().toBase64();
+        return salt;
+    }
+
+    /**
+     * Hack!
+     * Because of the sum() column of accounts_view, accounts without transactions
+     * won't appear in the accounts list, so all accounts are created with a
+     * payment of 0 kroner.
+     * @param database The {@link UkelonnDatabase} to register the payment in
+     * @param userId Used as the key to do the update to the account
+     */
+    private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
+        String sql = String.format(
+                                   getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
+                                   userId
+                                   );
+
+        database.update(sql);
+    }
+
     private static User mapUser(ResultSet resultSet) {
-        User user = new User();
+        int userId;
+        String username;
+        String password;
+        String email;
+        String firstname;
+        String lastname;
         try {
-            user.setUserId(resultSet.getInt("user_id"));
-            user.setUsername(resultSet.getString("username"));
-            user.setPassword(resultSet.getString("password"));
-            user.setEmail(resultSet.getString("email"));
-            user.setFirstname(resultSet.getString("first_name"));
-            user.setLastname(resultSet.getString("last_name"));
+            userId = resultSet.getInt("user_id");
+            username = resultSet.getString("username");
+            password = resultSet.getString("password");
+            email = resultSet.getString("email");
+            firstname = resultSet.getString("first_name");
+            lastname = resultSet.getString("last_name");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
+        User user = new User(userId, username, password, email, firstname, lastname);
         return user;
+    }
+
+    private static String getResourceAsString(String resourceName) {
+        ByteArrayOutputStream resource = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        InputStream resourceStream = CommonDatabaseMethods.class.getResourceAsStream(resourceName);
+        try {
+            while ((length = resourceStream.read(buffer)) != -1) {
+                resource.write(buffer, 0, length);
+            }
+
+            return resource.toString("UTF-8");
+        } catch (Exception e) {
+            logError(CommonDatabaseMethods.class, "Error getting resource \"" + resource + "\" from the classpath", e);
+        }
+
+        return null;
     }
 
 }

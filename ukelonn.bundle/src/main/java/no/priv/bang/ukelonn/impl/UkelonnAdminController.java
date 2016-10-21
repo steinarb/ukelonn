@@ -45,6 +45,10 @@ public class UkelonnAdminController {
     private String newUserEmail;
     private String newUserFirstname;
     private String newUserLastname;
+    private User changePasswordForUser;
+    private String changePasswordForUserPassword1;
+    private String changePasswordForUserPassword2;
+
     public UkelonnAdminController() {
         super();
         try {
@@ -352,6 +356,62 @@ public class UkelonnAdminController {
 
     public List<User> getUsers() {
         return CommonDatabaseMethods.getUsers(getClass());
+    }
+
+    public User getChangePasswordForUser() {
+        return changePasswordForUser;
+    }
+
+    public void setChangePasswordForUser(User user) {
+    	if (!isTheSameUser(changePasswordForUser, user))
+    	{
+            this.changePasswordForUser = user;
+            blankPasswords();
+    	}
+    }
+
+    private void blankPasswords() {
+        setChangePasswordForUserPassword1(null);
+        setChangePasswordForUserPassword2(null);
+    }
+
+    public String getChangePasswordForUserPassword1() {
+        return changePasswordForUserPassword1;
+    }
+
+    public void setChangePasswordForUserPassword1(String password) {
+        this.changePasswordForUserPassword1 = password;
+    }
+
+    public String getChangePasswordForUserPassword2() {
+        return changePasswordForUserPassword2;
+    }
+
+    public void setChangePasswordForUserPassword2(String password) {
+        this.changePasswordForUserPassword2 = password;
+    }
+
+    public void changeUserPassword(ActionEvent event) {
+        if (getChangePasswordForUser() != null &&
+            getChangePasswordForUserPassword1() != null &&
+            getChangePasswordForUserPassword2() != null &&
+            getChangePasswordForUserPassword1().equals(getChangePasswordForUserPassword2()))
+        {
+            CommonDatabaseMethods.changePasswordForUser(getChangePasswordForUser().getUsername(), getChangePasswordForUserPassword1(), getClass());
+            setChangePasswordForUser(null); // Null user and passwords
+        }
+    }
+
+    public static boolean isTheSameUser(User user1, User user2) {
+        if  (user1 == user2) {
+            return true;
+        }
+
+        if (user1 != null && user1.equals(user2)) {
+            return true;
+        }
+
+        return false;
     }
 
 }

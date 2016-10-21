@@ -149,7 +149,7 @@
      </p:accordionPanel>
     </p:tab>
     <p:tab title="Administrere brukere">
-     <p:accordionPanel id="useradmin" multiple="true">
+     <p:accordionPanel id="useradmin">
       <p:tab title="Legg til ny bruker">
        <h:form id="newuser">
         <p:messages id="messages" showDetail="true" autoUpdate="true" />
@@ -169,6 +169,23 @@
          <h:outputLabel for="lastname" value="Fornavn:" />
          <h:inputText id="lastname" value="#{ukelonnAdmin.newUserLastname}" required="true"/>
          <p:commandButton value="Lag bruker" update="username password1 password2 email firstname lastname :tabs:useradmin:users:usertable :tabs:selectUser:selectedAccount" actionListener="#{ukelonnAdmin.registerNewUser}" />
+        </p:panelGrid>
+       </h:form>
+      </p:tab>
+      <p:tab title="Bytt passord på bruker">
+       <h:form id="changeuserpassword">
+        <p:panelGrid columns="2">
+         <h:outputLabel for="username" value="Velg bruker:" />
+         <p:selectOneMenu id="selectedUser" value="#{ukelonnAdmin.changePasswordForUser}" converter="userConverter">
+          <f:selectItem itemLabel="Velg bruker" itemValue="" noSelectionOption="true" />
+          <f:selectItems value="#{ukelonnAdmin.users}" var="user2" itemValue="#{user2}" itemLabel="#{user2.fullname}"/>
+          <p:ajax event="change" update="password1 password2"/>
+         </p:selectOneMenu>
+         <h:outputLabel for="password1" value="Passord:" />
+         <p:password id="password1" value="#{ukelonnAdmin.changePasswordForUserPassword1}" label="Passord 1" required="true" feedback="true" inline="true"/>
+         <h:outputLabel for="password2" value="Gjenta passord:" />
+         <p:password id="password2" value="#{ukelonnAdmin.changePasswordForUserPassword2}" label="Passord 2" required="true" feedback="true" inline="true"/>
+         <p:commandButton value="Endre passord" update="selectedUser password1 password2" actionListener="#{ukelonnAdmin.changeUserPassword}" />
         </p:panelGrid>
        </h:form>
       </p:tab>
