@@ -148,11 +148,11 @@ public class UkelonnAdminController {
     }
 
     public List<Transaction> getJobs() {
-        return getJobsFromAccount(account);
+        return getJobsFromAccount(account, getClass());
     }
 
     public List<Transaction> getPayments() {
-        return getPaymentsFromAccount(account);
+        return getPaymentsFromAccount(account, getClass());
     }
 
     public ArrayList<TransactionType> getPaymentTypes() {

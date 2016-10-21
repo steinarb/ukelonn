@@ -77,39 +77,6 @@ public class CommonDatabaseMethods {
         return jobTypes;
     }
 
-    public static List<Transaction> getTransactionsFromUkelonnDatabase(Class<?> clazz, Map<Integer, TransactionType> transactionTypes, int accountid) {
-        List<Transaction> transactions = new ArrayList<Transaction>();
-        UkelonnDatabase database = connectionCheck(clazz);
-        String sql = String.format(
-                                   getResourceAsString("/sql/query/transactions_last10.sql"),
-                                   accountid,
-                                   accountid
-                                   );
-        ResultSet resultSet = database.query(sql.toString());
-        if (resultSet != null) {
-            try {
-                while (resultSet.next()) {
-                    transactions.add(mapTransaction(transactionTypes, resultSet));
-                }
-            } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, "Error getting transactions from the database", e);
-            }
-        }
-
-        return transactions;
-    }
-
-    private static Transaction mapTransaction(Map<Integer, TransactionType> transactionTypes, ResultSet resultset) throws SQLException {
-        Transaction transaction =
-            new Transaction(
-                            resultset.getInt("transaction_id"),
-                            transactionTypes.get(resultset.getInt("transaction_type_id")),
-                            resultset.getDate("transaction_time"),
-                            resultset.getDouble("transaction_amount")
-                            );
-        return transaction;
-    }
-
     public static void updateBalanseFromDatabase(Class<?> clazz, Account account) {
         UkelonnDatabase connection = connectionCheck(clazz);
         StringBuilder query = sql("select * from accounts_view where account_id=").append(account.getAccountId());
@@ -142,7 +109,6 @@ public class CommonDatabaseMethods {
     public static Map<Integer, TransactionType> refreshAccount(Class<?> clazz, Account account) {
         updateBalanseFromDatabase(clazz, account);
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(clazz);
-        account.setTransactions(getTransactionsFromUkelonnDatabase(clazz, transactionTypes, account.getAccountId()));
         return transactionTypes;
     }
 
@@ -183,33 +149,56 @@ public class CommonDatabaseMethods {
         return accounts;
     }
 
-    public static List<Transaction> getPaymentsFromAccount(Account account) {
-        ArrayList<Transaction> payments = new ArrayList<Transaction>();
-        if (account != null) {
-            for (Transaction transaction : account.getTransactions()) {
-                if (transaction.getTransactionType().isTransactionIsWagePayment()) {
-                    // Make the displayed amounts be positive
-                    double amount = Math.abs(transaction.getTransactionAmount());
-                    transaction.setTransactionAmount(amount);
-                    payments.add(transaction);
-                }
-            }
-        }
-
+    public static List<Transaction> getPaymentsFromAccount(Account account, Class<?> clazz) {
+        List<Transaction> payments = getTransactionsFromAccount(account, clazz, "/sql/query/payments_last10.sql", "payments");
+        makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
 
-    public static List<Transaction> getJobsFromAccount(Account account) {
-        ArrayList<Transaction> jobs = new ArrayList<Transaction>();
-        if (account != null) {
-            for (Transaction transaction : account.getTransactions()) {
-                if (transaction.getTransactionType().isTransactionIsWork()) {
-                    jobs.add(transaction);
+    private static void makePaymentAmountsPositive(List<Transaction> payments) {
+    	for (Transaction payment : payments) {
+            double amount = Math.abs(payment.getTransactionAmount());
+            payment.setTransactionAmount(amount);
+        }
+    }
+
+    public static List<Transaction> getJobsFromAccount(Account account, Class<?> clazz) {
+        return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last10.sql", "job");
+    }
+
+    private static List<Transaction> getTransactionsFromAccount(Account account,
+                                                                Class<?> clazz,
+                                                                String sqlTemplate,
+                                                                String transactionType)
+    {
+        List<Transaction> transactions = new ArrayList<Transaction>();
+        if (null != account) {
+            UkelonnDatabase database = connectionCheck(clazz);
+            String sql = String.format(getResourceAsString(sqlTemplate), account.getAccountId());
+            ResultSet resultSet = database.query(sql.toString());
+            if (resultSet != null) {
+                try {
+                    while (resultSet.next()) {
+                        transactions.add(mapTransaction(resultSet));
+                    }
+                } catch (SQLException e) {
+                    logError(CommonDatabaseMethods.class, "Error getting "+transactionType+"s from the database", e);
                 }
             }
         }
 
-        return jobs;
+        return transactions;
+    }
+
+    private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
+        Transaction transaction =
+            new Transaction(
+                            resultset.getInt("transaction_id"),
+                            mapTransactionType(resultset),
+                            resultset.getDate("transaction_time"),
+                            resultset.getDouble("transaction_amount")
+                            );
+        return transaction;
     }
 
     public static Account MapAccount(ResultSet results) throws SQLException {

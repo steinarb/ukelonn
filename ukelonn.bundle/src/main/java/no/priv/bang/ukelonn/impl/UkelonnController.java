@@ -51,7 +51,6 @@ public class UkelonnController {
     public void setUsername(String username) {
         account = getAccountInfoFromDatabase(getClass(), username);
     	transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-    	account.setTransactions(getTransactionsFromUkelonnDatabase(getClass(), transactionTypes, getAccountId()));
     }
 
     public String getFornavn() {
@@ -94,11 +93,11 @@ public class UkelonnController {
     }
 
     public List<Transaction> getJobs() {
-        return getJobsFromAccount(account);
+        return getJobsFromAccount(account, getClass());
     }
 
     public List<Transaction> getPayments() {
-        return getPaymentsFromAccount(account);
+        return getPaymentsFromAccount(account, getClass());
     }
 
     public TransactionType getNewJobType() {
