@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -333,6 +334,31 @@ public class CommonDatabaseMethods {
         StringBuilder update = sql("update users set password='").append(hashedPassword).append("', salt='").append(salt).append("' where username='").append(username).append("'");
         UkelonnDatabase database = connectionCheck(clazz);
         return database.update(update.toString());
+    }
+
+    public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
+    	StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
+        UkelonnDatabase database = connectionCheck(clazz);
+        database.update(deleteQuery.toString());
+    }
+
+    private static StringBuilder joinIds(List<Transaction> transactions) {
+        StringBuilder commaList = new StringBuilder();
+        if (transactions == null) {
+            return commaList;
+        }
+
+        Iterator<Transaction> iterator = transactions.iterator();
+        if (!iterator.hasNext()) {
+            return commaList; // Return an empty string builder instead of a null
+        }
+
+        commaList.append(iterator.next().getId());
+        while(iterator.hasNext()) {
+            commaList.append(", ").append(iterator.next().getId());
+        }
+
+        return commaList;
     }
 
     private static String hashPassword(String newUserPassword, String salt) {

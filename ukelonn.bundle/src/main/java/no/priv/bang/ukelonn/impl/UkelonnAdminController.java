@@ -48,6 +48,7 @@ public class UkelonnAdminController {
     private User changePasswordForUser;
     private String changePasswordForUserPassword1;
     private String changePasswordForUserPassword2;
+    private List<Transaction> jobsSelectedForDelete;
 
     public UkelonnAdminController() {
         super();
@@ -412,6 +413,26 @@ public class UkelonnAdminController {
         }
 
         return false;
+    }
+
+    public void setJobsSelectedForDelete(List<Transaction> jobsWithCheckboxChecked) {
+        this.jobsSelectedForDelete = jobsWithCheckboxChecked;
+    }
+
+    public List<Transaction> getJobsSelectedForDelete() {
+        return jobsSelectedForDelete;
+    }
+
+    public void deleteSelectedJobs(ActionEvent event) {
+        CommonDatabaseMethods.deleteTransactions(getClass(), getJobsSelectedForDelete());
+        transactionTypes = refreshAccount(getClass(), account);
+        if (jobsSelectedForDelete != null) {
+            try {
+            	jobsSelectedForDelete.clear();
+            } catch(UnsupportedOperationException e) {
+                // The list of jobs to delete was unmodifiable, skip and continue
+            }
+        }
     }
 
 }
