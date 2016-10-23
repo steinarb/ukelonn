@@ -1,4 +1,6 @@
 package no.priv.bang.ukelonn.testutils;
+
+import static org.mockito.Mockito.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
@@ -7,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
@@ -43,6 +46,13 @@ public class TestUtils {
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
         LogService logservice = new MockLogService();
         ukelonnDatabaseProvider.setLogService(logservice);
+        WebContainer mockContainer = mock(WebContainer.class);
+        try {
+            ukelonnServiceSingleton.setWebContainer(mockContainer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
     }
 
