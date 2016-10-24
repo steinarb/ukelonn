@@ -708,7 +708,7 @@ public class UkelonnAdminControllerTest {
         }
     }
 
-    private static List<Transaction> copyOf(List<Transaction> original) {
+    static List<Transaction> copyOf(List<Transaction> original) {
     	List<Transaction> copy = new ArrayList<Transaction>(original);
         return copy;
     }

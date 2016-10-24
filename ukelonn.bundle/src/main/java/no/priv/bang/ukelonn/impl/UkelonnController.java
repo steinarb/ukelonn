@@ -25,6 +25,7 @@ public class UkelonnController {
     Map<Integer, TransactionType> transactionTypes = Collections.emptyMap();
     TransactionType newJobType;
     double newJobWages;
+    private List<Transaction> jobsSelectedForDelete;
 
     public UkelonnController() {
         super();
@@ -130,5 +131,25 @@ public class UkelonnController {
     private void clearNewJobValues() {
         setNewJobType(null);
         setNewJobWages(0.0);
+    }
+
+    public void setJobsSelectedForDelete(List<Transaction> jobsWithCheckboxChecked) {
+        this.jobsSelectedForDelete = jobsWithCheckboxChecked;
+    }
+
+    public List<Transaction> getJobsSelectedForDelete() {
+        return jobsSelectedForDelete;
+    }
+
+    public void deleteSelectedJobs(ActionEvent event) {
+        CommonDatabaseMethods.deleteTransactions(getClass(), getJobsSelectedForDelete());
+        transactionTypes = refreshAccount(getClass(), account);
+        if (jobsSelectedForDelete != null) {
+            try {
+                jobsSelectedForDelete.clear();
+            } catch(UnsupportedOperationException e) {
+                // The list of jobs to delete was unmodifiable, skip and continue
+            }
+        }
     }
 }

@@ -1,7 +1,12 @@
 package no.priv.bang.ukelonn.impl;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.faces.event.ActionEvent;
 
@@ -10,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
+import static no.priv.bang.ukelonn.impl.UkelonnAdminControllerTest.*;
 
 public class UkelonnControllerTest {
 
@@ -94,5 +100,83 @@ public class UkelonnControllerTest {
     	} finally {
             dropTestDatabase();
     	}
+    }
+
+    @Test
+    public void testDeleteJobsForUser() {
+        try {
+            UkelonnController ukelonn = new UkelonnController();
+
+            ukelonn.setUsername("jad");
+
+            // Simulate two checkboxes checked in the jobs data table
+            double balanseBeforeDelete = ukelonn.getBalanse();
+            List<Transaction> jadJobs = ukelonn.getJobs();
+            List<Transaction> jobsWithCheckboxChecked = new ArrayList<Transaction>();
+            jobsWithCheckboxChecked.add(jadJobs.get(0));
+            jobsWithCheckboxChecked.add(jadJobs.get(3));
+            ukelonn.setJobsSelectedForDelete(copyOf(jobsWithCheckboxChecked));
+
+            // Delete the two selected jobs
+            ActionEvent event = mock(ActionEvent.class);
+            ukelonn.deleteSelectedJobs(event);
+
+            // Expect the same number of jobs after the delete since the total number of jobs is more than 10
+            double balanseAfterDelete = ukelonn.getBalanse();
+            List<Transaction> jadJobsAfterDelete = ukelonn.getJobs();
+
+            assertNotEquals(balanseBeforeDelete, balanseAfterDelete);
+            assertEquals(jadJobs.size(), jadJobsAfterDelete.size());
+            // Expected the deleted jobs not to be present in the current jobs list
+            assertThat(jadJobsAfterDelete, not(hasItems(jobsWithCheckboxChecked.get(0), jobsWithCheckboxChecked.get(1))));
+
+            // Verify that the delete selection list has been emptied
+            assertEquals(0, ukelonn.getJobsSelectedForDelete().size());
+
+            // Corner case: try deleting non-existing transactions (the two transactions already deleted)
+            ukelonn.setJobsSelectedForDelete(copyOf(jobsWithCheckboxChecked));
+            ukelonn.deleteSelectedJobs(event);
+
+            // Expected the jobs list to be unchanged
+            List<Transaction> jadJobsAfterAttemptedDelete = ukelonn.getJobs();
+            assertEquals(jadJobsAfterDelete, jadJobsAfterAttemptedDelete);
+
+            // Corner case: setting the selection list to null
+            ukelonn.setJobsSelectedForDelete(null);
+            ukelonn.deleteSelectedJobs(event);
+
+            // Expected the jobs list to be unchanged
+            jadJobsAfterAttemptedDelete = ukelonn.getJobs();
+            assertEquals(jadJobsAfterDelete, jadJobsAfterAttemptedDelete);
+
+            // Corner case: setting the selection list to an empty list
+            ukelonn.setJobsSelectedForDelete(new ArrayList<Transaction>());
+            ukelonn.deleteSelectedJobs(event);
+
+            // Expected the jobs list to be unchanged
+            jadJobsAfterAttemptedDelete = ukelonn.getJobs();
+            assertEquals(jadJobsAfterDelete, jadJobsAfterAttemptedDelete);
+
+            // Corner case: setting the selection list to an immutable list
+            ukelonn.setJobsSelectedForDelete(Collections.unmodifiableList(jobsWithCheckboxChecked));
+            ukelonn.deleteSelectedJobs(event);
+
+            // Expected the jobs list to be unchanged (the contents of the immutable list is already deleted
+            jadJobsAfterAttemptedDelete = ukelonn.getJobs();
+            assertEquals(jadJobsAfterDelete, jadJobsAfterAttemptedDelete);
+
+            // Corner case: selection list combined of non-existing and existing jobs
+            Transaction existingJob = jadJobsAfterDelete.get(jadJobsAfterDelete.size() - 1);
+            List<Transaction> nonExistingJobsWithExistingJob = copyOf(jobsWithCheckboxChecked);
+            nonExistingJobsWithExistingJob.add(existingJob);
+            ukelonn.setJobsSelectedForDelete(nonExistingJobsWithExistingJob);
+            ukelonn.deleteSelectedJobs(event);
+
+            // Expected the deleted job to be gone from the job list
+            jadJobsAfterDelete = ukelonn.getJobs();
+            assertThat(jadJobsAfterDelete, not(hasItem(existingJob)));
+        } finally {
+            restoreTestDatabase();
+        }
     }
 }

@@ -35,16 +35,19 @@
     </p:tab>
     <p:tab title="Siste jobber:">
      <h:form id="jobs">
-      <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}">
+      <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}" selection="${ukelonn.jobsSelectedForDelete}" rowKey="${job.id}">
        <p:columnGroup type="header">
+        <p:column headerText=" " />
         <p:column headerText="Dato" />
         <p:column headerText="Jobbtype" />
         <p:column headerText="Beløp" />
        </p:columnGroup>
+       <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
        <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
        <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
        <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
       </p:dataTable>
+      <p:commandButton value="Slett valgte jobber" update="jobs :balanse:balanse" actionListener="#{ukelonn.deleteSelectedJobs}" />
      </h:form>
     </p:tab>
     <p:tab title="Siste utbetalinger">
