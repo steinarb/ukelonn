@@ -7,14 +7,6 @@
       xmlns:p="http://primefaces.org/ui">
  <h:head>
   <title>Ukelønn</title>
-  <style type="text/css">
-   .ui-widget {
-    font-size: 300%;
-   }
-   .ui-widget .ui-widget {
-     font-size: 100%;
-   }
-  </style>
  </h:head>
  <h:body>
   <f:event type="preRenderView" listener="#{ukelonn.redirectAdministratorsToAdminPage}" />
@@ -30,27 +22,27 @@
    <p:accordionPanel id="userinfo" multiple="true">
     <p:tab title="Registrere jobb">
      <h:form id="registrerjobb">
-      <p:panelGrid columns="2">
-       <p:selectOneMenu id="jobtype" value="#{ukelonn.newJobType}" converter="transactionTypeConverter" style="width:500px">
+      <p:panelGrid columns="3">
+       <p:selectOneMenu id="jobtype" value="#{ukelonn.newJobType}" converter="transactionTypeConverter">
         <f:selectItem itemLabel="Velg jobb" itemValue="" noSelectionOption="true" />
         <f:selectItems value="#{ukelonn.jobTypes}" var="jobtype2" itemValue="#{jobtype2}" itemLabel="#{jobtype2.transactionTypeName}"/>
         <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
        </p:selectOneMenu>
-       <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true" readonly="#{facesContext.currentPhaseId.ordinal eq 6}" style="width:auto"/>
+       <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true" readonly="#{facesContext.currentPhaseId.ordinal eq 6}"/>
        <p:commandButton value="Registrer jobb" update="jobtype amount :balanse:balanse :userinfo:jobs:jobs :userinfo:payments:payments" actionListener="#{ukelonn.registerNewJob}" />
       </p:panelGrid>
      </h:form>
     </p:tab>
     <p:tab title="Siste jobber:">
      <h:form id="jobs">
-      <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}" selection="${ukelonn.jobsSelectedForDelete}" rowKey="${job.id}" width="auto">
+      <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}" selection="${ukelonn.jobsSelectedForDelete}" rowKey="${job.id}">
        <p:columnGroup type="header">
-        <p:column style="width:16px;text-align:center" />
+        <p:column headerText=" " />
         <p:column headerText="Dato" />
         <p:column headerText="Jobbtype" />
         <p:column headerText="Beløp" />
        </p:columnGroup>
-       <p:column selectionMode="multiple" />
+       <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
        <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
        <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
        <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
