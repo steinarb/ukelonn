@@ -93,9 +93,8 @@ Framgangsmåte:
     #+END_EXAMPLE
  6. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:install ukelonn.api
-      feature:install ukelonn.bundle.test.db
-      feature:install ukelonn.bundle
+      feature:install ukelonn-db-derby-test
+      feature:install ukelonn
     #+END_EXAMPLE
  7. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
@@ -131,14 +130,11 @@ Framgangsmåte:
     #+BEGIN_EXAMPLE
       feature:install pax-jsf-support
       feature:install pax-jdbc
-      feature:install pax-jdbc-derby
     #+END_EXAMPLE
  6. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:install ukelonn.api
-      feature:install postgresql
-      feature:install ukelonn.bundle.postgresql.db
-      feature:install ukelonn.bundle
+      feature:install ukelonn-db-postgresql
+      feature:install ukelonn
     #+END_EXAMPLE
  7. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
