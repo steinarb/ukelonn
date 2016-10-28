@@ -104,7 +104,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("javax.interceptor", "javax.interceptor-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
-                       mavenBundle("org.primefaces", "primefaces", "5.3"),
+                       mavenBundle("org.primefaces", "primefaces", "6.0"),
                        mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
                        mavenBundle("org.apache.shiro", "shiro-core"),
                        mavenBundle("org.apache.shiro", "shiro-web"),
