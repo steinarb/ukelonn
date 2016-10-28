@@ -35,7 +35,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
     Bundle installWarBundle;
     String httpcomponentsVersion = "4.3.3";
-    private String paxWebVersion = "4.2.7";
+    private String paxWebVersion = "4.3.0";
     private String jettyVersion = "9.2.17.v20160517";
 
     @Inject

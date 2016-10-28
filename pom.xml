@@ -14,7 +14,7 @@
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <maven.bundle.plugin.version>2.5.3</maven.bundle.plugin.version>
   <dependency.osgi.version>5.0.0</dependency.osgi.version>
-  <dependency.pax.web.version>4.2.7</dependency.pax.web.version>
+  <dependency.pax.web.version>4.3.0</dependency.pax.web.version>
   <dependency.pax.swissbox.version>1.8.2</dependency.pax.swissbox.version>
   <dependency.pax.exam.version>4.9.1</dependency.pax.exam.version>
   <dependency.pax.url.version>2.4.7</dependency.pax.url.version>
