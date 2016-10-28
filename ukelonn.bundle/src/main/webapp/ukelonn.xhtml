@@ -4,67 +4,74 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+ <f:view renderKitId="PRIMEFACES_MOBILE" />
+
  <h:head>
-  <title>Ukelønn</title>
  </h:head>
+
  <h:body>
   <f:event type="preRenderView" listener="#{ukelonn.redirectAdministratorsToAdminPage}" />
-  <h1>Hei #{ukelonn.fornavn}!</h1>
+  <pm:page id="page">
+   <pm:header title="Ukelønn"></pm:header>
 
-  <f:view>
-   <h:form id="balanse">
-    <p:panelGrid columns="2">
-     <h:outputLabel for="balanse" value="Til gode:" />
-     <h:inputText id="balanse" value="#{ukelonn.balanse}" required="true"/>
-    </p:panelGrid>
-   </h:form>
-   <p:accordionPanel id="userinfo" multiple="true">
-    <p:tab title="Registrere jobb">
-     <h:form id="registrerjobb">
-      <p:panelGrid columns="3">
-       <p:selectOneMenu id="jobtype" value="#{ukelonn.newJobType}" converter="transactionTypeConverter">
-        <f:selectItem itemLabel="Velg jobb" itemValue="" noSelectionOption="true" />
-        <f:selectItems value="#{ukelonn.jobTypes}" var="jobtype2" itemValue="#{jobtype2}" itemLabel="#{jobtype2.transactionTypeName}"/>
-        <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
-       </p:selectOneMenu>
-       <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true" readonly="#{facesContext.currentPhaseId.ordinal eq 6}"/>
-       <p:commandButton value="Registrer jobb" update="jobtype amount :balanse:balanse :userinfo:jobs:jobs :userinfo:payments:payments" actionListener="#{ukelonn.registerNewJob}" />
-      </p:panelGrid>
-     </h:form>
-    </p:tab>
-    <p:tab title="Siste jobber:">
-     <h:form id="jobs">
-      <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}" selection="${ukelonn.jobsSelectedForDelete}" rowKey="${job.id}">
-       <p:columnGroup type="header">
-        <p:column headerText=" " />
-        <p:column headerText="Dato" />
-        <p:column headerText="Jobbtype" />
-        <p:column headerText="Beløp" />
-       </p:columnGroup>
-       <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
-       <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
-       <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
-       <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
-      </p:dataTable>
-      <p:commandButton value="Slett valgte jobber" update="jobs :balanse:balanse" actionListener="#{ukelonn.deleteSelectedJobs}" />
-     </h:form>
-    </p:tab>
-    <p:tab title="Siste utbetalinger">
-     <h:form id="payments">
-      <p:dataTable id="payments" var="payment" value="#{ukelonn.payments}">
-       <p:columnGroup type="header">
-        <p:column headerText="Dato" />
-        <p:column headerText="Type utbetaling" />
-        <p:column headerText="Beløp" />
-       </p:columnGroup>
-       <p:column><h:outputText value="#{payment.transactionTime}"/></p:column>
-       <p:column><h:outputText value="#{payment.transactionType.transactionTypeName}"/></p:column>
-       <p:column><h:outputText value="#{payment.transactionAmount}"/></p:column>
-      </p:dataTable>
-     </h:form>
-    </p:tab>
-   </p:accordionPanel>
-  </f:view>
+   <pm:content>
+
+    <h:form id="balanse">
+     <pm:field>
+      <h:outputLabel for="balanse" value="Til gode:" />
+      <h:inputText id="balanse" value="#{ukelonn.balanse}" required="true"/>
+     </pm:field>
+    </h:form>
+    <p:accordionPanel id="userinfo" multiple="true">
+     <p:tab title="Registrere jobb">
+      <h:form id="registrerjobb">
+       <p:panelGrid columns="3" styleClass="ui-responsive" >
+        <p:selectOneMenu id="jobtype" value="#{ukelonn.newJobType}" converter="transactionTypeConverter">
+         <f:selectItem itemLabel="Velg jobb" itemValue="" noSelectionOption="true" />
+         <f:selectItems value="#{ukelonn.jobTypes}" var="jobtype2" itemValue="#{jobtype2}" itemLabel="#{jobtype2.transactionTypeName}"/>
+         <p:ajax event="change" update="amount" listener="#{ukelonn.newJobTypeSelected}"/>
+        </p:selectOneMenu>
+        <h:inputText id="amount" value="#{ukelonn.newJobWages}" required="true" readonly="#{facesContext.currentPhaseId.ordinal eq 6}"/>
+        <p:commandButton value="Registrer jobb" update="jobtype amount :page:balanse:balanse :page:userinfo:jobs:jobs :page:userinfo:payments:payments" actionListener="#{ukelonn.registerNewJob}" />
+       </p:panelGrid>
+      </h:form>
+     </p:tab>
+     <p:tab title="Siste jobber:">
+      <h:form id="jobs">
+       <p:dataTable id="jobs" var="job" value="#{ukelonn.jobs}" selection="${ukelonn.jobsSelectedForDelete}" rowKey="${job.id}">
+        <p:columnGroup type="header">
+         <p:column headerText=" " />
+         <p:column headerText="Dato" />
+         <p:column headerText="Jobbtype" />
+         <p:column headerText="Beløp" />
+        </p:columnGroup>
+        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+        <p:column><h:outputText value="#{job.transactionTime}"/></p:column>
+        <p:column><h:outputText value="#{job.transactionType.transactionTypeName}"/></p:column>
+        <p:column><h:outputText value="#{job.transactionAmount}"/></p:column>
+       </p:dataTable>
+       <p:commandButton value="Slett valgte jobber" update="jobs :page:balanse:balanse" actionListener="#{ukelonn.deleteSelectedJobs}" />
+      </h:form>
+     </p:tab>
+     <p:tab title="Siste utbetalinger">
+      <h:form id="payments">
+       <p:dataTable id="payments" var="payment" value="#{ukelonn.payments}">
+        <p:columnGroup type="header">
+         <p:column headerText="Dato" />
+         <p:column headerText="Type utbetaling" />
+         <p:column headerText="Beløp" />
+        </p:columnGroup>
+        <p:column><h:outputText value="#{payment.transactionTime}"/></p:column>
+        <p:column><h:outputText value="#{payment.transactionType.transactionTypeName}"/></p:column>
+        <p:column><h:outputText value="#{payment.transactionAmount}"/></p:column>
+       </p:dataTable>
+      </h:form>
+     </p:tab>
+    </p:accordionPanel>
+   </pm:content>
+  </pm:page>
  </h:body>
 </html>
