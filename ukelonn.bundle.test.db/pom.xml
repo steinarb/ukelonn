@@ -9,7 +9,7 @@
 
  <artifactId>ukelonn.bundle.test.db</artifactId>
 
- <name>ukelonn derby test database OSGi Bundle</name>
+ <name>Ukelonn webapp derby test database OSGi bundle</name>
 
  <dependencies>
   <dependency>

@@ -10,7 +10,7 @@
  <artifactId>ukelonn.api</artifactId>
  <packaging>bundle</packaging>
 
- <name>ukelonn api OSGi Bundle</name>
+ <name>Ukelonn webapp OSGi service definitions OSGi bundle</name>
 
  <dependencies>
   <dependency>

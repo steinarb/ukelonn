@@ -9,7 +9,7 @@
 
  <artifactId>ukelonn.bundle.postgresql.db</artifactId>
 
- <name>PostgreSQL database connection OSGi Bundle</name>
+ <name>Ukelonn webapp PostgreSQL database connection OSGi bundle</name>
 
  <dependencies>
   <dependency>
