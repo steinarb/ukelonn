@@ -44,6 +44,13 @@
      </instructions>
     </configuration>
    </plugin>
+   <plugin>
+    <groupId>org.apache.karaf.tooling</groupId>
+    <artifactId>karaf-maven-plugin</artifactId>
+    <configuration>
+     <primaryFeatureName>ukelonn-api</primaryFeatureName>
+    </configuration>
+   </plugin>
   </plugins>
  </build>
 </project>

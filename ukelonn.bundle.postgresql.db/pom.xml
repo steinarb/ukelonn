@@ -16,6 +16,14 @@
    <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.api</artifactId>
    <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.api</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
   </dependency>
   <dependency>
    <groupId>org.apache.felix</groupId>
@@ -37,6 +45,7 @@
    <groupId>javax.inject</groupId>
    <artifactId>javax.inject</artifactId>
    <version>1</version>
+   <scope>provided</scope>
   </dependency>
   <dependency>
    <groupId>junit</groupId>
@@ -53,6 +62,7 @@
   <dependency>
    <groupId>org.postgresql</groupId>
    <artifactId>postgresql</artifactId>
+   <scope>compile</scope>
   </dependency>
  </dependencies>
 
@@ -101,6 +111,13 @@
        <value>target/derby.log</value>
       </property>
      </systemProperties>
+    </configuration>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.karaf.tooling</groupId>
+    <artifactId>karaf-maven-plugin</artifactId>
+    <configuration>
+     <primaryFeatureName>ukelonn-db-postgresql</primaryFeatureName>
     </configuration>
    </plugin>
   </plugins>
