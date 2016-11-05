@@ -378,6 +378,12 @@
      <artifactId>karaf-maven-plugin</artifactId>
      <version>${karaf.version}</version>
      <extensions>true</extensions>
+     <configuration>
+      <startLevel>80</startLevel>
+      <includeTransitiveDependency>false</includeTransitiveDependency>
+      <aggregateFeatures>false</aggregateFeatures>
+      <includeProjectArtifact>true</includeProjectArtifact>
+     </configuration>
      <executions>
       <execution>
        <id>generate-features-file</id>
@@ -385,12 +391,6 @@
        <goals>
         <goal>features-generate-descriptor</goal>
        </goals>
-       <configuration>
-        <startLevel>80</startLevel>
-        <includeTransitiveDependency>false</includeTransitiveDependency>
-        <aggregateFeatures>false</aggregateFeatures>
-        <includeProjectArtifact>true</includeProjectArtifact>
-       </configuration>
       </execution>
      </executions>
     </plugin>
