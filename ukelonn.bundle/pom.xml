@@ -10,13 +10,21 @@
  <artifactId>ukelonn.bundle</artifactId>
  <packaging>war</packaging>
 
- <name>ukelonn OSGi Bundle</name>
+ <name>Ukelonn webapp OSGi bundle</name>
 
  <dependencies>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.api</artifactId>
    <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.api</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
   </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
@@ -43,6 +51,7 @@
    <groupId>javax.inject</groupId>
    <artifactId>javax.inject</artifactId>
    <version>1</version>
+   <scope>provided</scope>
   </dependency>
   <dependency>
    <groupId>org.hamcrest</groupId>
@@ -181,6 +190,13 @@
       </goals>
      </execution>
     </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.karaf.tooling</groupId>
+    <artifactId>karaf-maven-plugin</artifactId>
+    <configuration>
+     <primaryFeatureName>ukelonn</primaryFeatureName>
+    </configuration>
    </plugin>
   </plugins>
  </build>

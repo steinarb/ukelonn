@@ -10,7 +10,7 @@
  <artifactId>ukelonn.api</artifactId>
  <packaging>bundle</packaging>
 
- <name>ukelonn api OSGi Bundle</name>
+ <name>Ukelonn webapp OSGi service definitions OSGi bundle</name>
 
  <dependencies>
   <dependency>
@@ -42,6 +42,13 @@
        Embed-Transitive
       </_removeheaders>
      </instructions>
+    </configuration>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.karaf.tooling</groupId>
+    <artifactId>karaf-maven-plugin</artifactId>
+    <configuration>
+     <primaryFeatureName>ukelonn-api</primaryFeatureName>
     </configuration>
    </plugin>
   </plugins>

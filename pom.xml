@@ -26,6 +26,8 @@
   <dependency.httpcomponents.version>4.3.3</dependency.httpcomponents.version>
   <dependency.myfaces.version>2.2.6</dependency.myfaces.version>
   <derby.version>10.11.1.1</derby.version>
+  <javax.validation>1.1.0.Final</javax.validation>
+  <primefaces.version>6.0</primefaces.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
   <karaf.version>4.0.7</karaf.version>
  </properties>
@@ -334,7 +336,7 @@
    <dependency>
     <groupId>javax.validation</groupId>
     <artifactId>validation-api</artifactId>
-    <version>1.1.0.Final</version>
+    <version>${javax.validation}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
@@ -352,7 +354,7 @@
    <dependency>
     <groupId>org.primefaces</groupId>
     <artifactId>primefaces</artifactId>
-    <version>6.0</version>
+    <version>${primefaces.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
@@ -461,6 +463,27 @@
      <groupId>org.ops4j</groupId>
      <artifactId>maven-pax-plugin</artifactId>
      <version>1.5</version>
+    </plugin>
+    <plugin>
+     <groupId>org.apache.karaf.tooling</groupId>
+     <artifactId>karaf-maven-plugin</artifactId>
+     <version>${karaf.version}</version>
+     <extensions>true</extensions>
+     <configuration>
+      <startLevel>80</startLevel>
+      <includeTransitiveDependency>false</includeTransitiveDependency>
+      <aggregateFeatures>false</aggregateFeatures>
+      <includeProjectArtifact>true</includeProjectArtifact>
+     </configuration>
+     <executions>
+      <execution>
+       <id>generate-features-file</id>
+       <phase>package</phase>
+       <goals>
+        <goal>features-generate-descriptor</goal>
+       </goals>
+      </execution>
+     </executions>
     </plugin>
    </plugins>
   </pluginManagement>

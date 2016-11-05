@@ -77,27 +77,16 @@ Framgangsmåte:
       mvn clean install
     #+END_EXAMPLE
  2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
- 3. Gjør pax-web (servlet-kontainer-støtte for OSGi) tilgjengelig som "karaf features", hentet fra maven:
+ 3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:org.ops4j.pax.web/pax-web-features/4.2.7/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
     #+END_EXAMPLE
- 4. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+ 4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn.karaf/ukelonn-all/LATEST/xml/features
+      feature:install ukelonn-db-derby-test
+      feature:install ukelonn
     #+END_EXAMPLE
- 5. Installer avhengighetene:
-    #+BEGIN_EXAMPLE
-      feature:install pax-jsf-support
-      feature:install pax-jdbc
-      feature:install pax-jdbc-derby
-    #+END_EXAMPLE
- 6. Installer webapplikasjonen:
-    #+BEGIN_EXAMPLE
-      feature:install ukelonn.api
-      feature:install ukelonn.bundle.test.db
-      feature:install ukelonn.bundle
-    #+END_EXAMPLE
- 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+ 5. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
     - For en administrator-bruker, brukernavn/passord: on/ola12
@@ -119,28 +108,16 @@ Framgangsmåte:
       mvn clean install
     #+END_EXAMPLE
  2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
- 3. Gjør pax-web (servlet-kontainer-støtte for OSGi) tilgjengelig som "karaf features", hentet fra maven:
+ 3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:org.ops4j.pax.web/pax-web-features/4.2.7/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
     #+END_EXAMPLE
- 4. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+ 4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn.karaf/ukelonn-all/LATEST/xml/features
+      feature:install ukelonn-db-postgresql
+      feature:install ukelonn
     #+END_EXAMPLE
- 5. Installer avhengighetene:
-    #+BEGIN_EXAMPLE
-      feature:install pax-jsf-support
-      feature:install pax-jdbc
-      feature:install pax-jdbc-derby
-    #+END_EXAMPLE
- 6. Installer webapplikasjonen:
-    #+BEGIN_EXAMPLE
-      feature:install ukelonn.api
-      feature:install postgresql
-      feature:install ukelonn.bundle.postgresql.db
-      feature:install ukelonn.bundle
-    #+END_EXAMPLE
- 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+ 5. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
     - For en administrator-bruker, brukernavn/passord: on/ola12
