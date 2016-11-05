@@ -68,6 +68,7 @@
   <dependency>
    <groupId>org.rendersnake</groupId>
    <artifactId>rendersnake</artifactId>
+   <scope>compile</scope>
   </dependency>
  </dependencies>
 
@@ -123,6 +124,7 @@
     <artifactId>karaf-maven-plugin</artifactId>
     <configuration>
      <primaryFeatureName>ukelonn</primaryFeatureName>
+     <includeTransitiveDependency>true</includeTransitiveDependency>
     </configuration>
    </plugin>
   </plugins>
