@@ -39,7 +39,7 @@ public class PGUkelonnDatabaseProviderTest {
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
         ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
-        assertNotNull(onAccount);
+        assertNotNull("Expected returned account JDBC resultset not to be null", onAccount);
         while (onAccount.next()) {
             int account_id = onAccount.getInt("account_id");
             int user_id = onAccount.getInt("user_id");
@@ -66,6 +66,7 @@ public class PGUkelonnDatabaseProviderTest {
 
         // Test that the database has users
         ResultSet allUsers = database.query("select * from users");
+        assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
         assertThat(allUserCount, greaterThan(0));
