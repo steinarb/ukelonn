@@ -37,6 +37,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     String httpcomponentsVersion = "4.3.3";
     private String paxWebVersion = "4.3.0";
     private String jettyVersion = "9.2.17.v20160517";
+    private String shiroVersion = "1.3.1";
 
     @Inject
     private UkelonnDatabase database;
@@ -107,8 +108,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
                        mavenBundle("org.primefaces", "primefaces", "6.0"),
                        mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
-                       mavenBundle("org.apache.shiro", "shiro-core"),
-                       mavenBundle("org.apache.shiro", "shiro-web"),
+                       mavenBundle("org.apache.shiro", "shiro-core", shiroVersion),
+                       mavenBundle("org.apache.shiro", "shiro-web", shiroVersion),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.api"),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db"));
     }
