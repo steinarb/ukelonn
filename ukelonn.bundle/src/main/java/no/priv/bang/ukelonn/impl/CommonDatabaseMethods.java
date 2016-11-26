@@ -408,7 +408,7 @@ public class CommonDatabaseMethods {
             throw new RuntimeException(e);
         }
 
-        User user = new User(userId, username, password, email, firstname, lastname);
+        User user = new User(userId, username, email, password, firstname, lastname);
         return user;
     }
 
