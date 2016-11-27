@@ -50,6 +50,10 @@
    <artifactId>javax.inject</artifactId>
   </dependency>
   <dependency>
+   <groupId>org.hamcrest</groupId>
+   <artifactId>hamcrest-library</artifactId>
+  </dependency>
+  <dependency>
    <groupId>junit</groupId>
    <artifactId>junit</artifactId>
   </dependency>
@@ -67,9 +71,7 @@
   </dependency>
   <dependency>
    <groupId>javax.servlet</groupId>
-   <artifactId>servlet-api</artifactId>
-   <version>2.5</version>
-   <scope>provided</scope>
+   <artifactId>javax.servlet-api</artifactId>
   </dependency>
   <dependency>
    <groupId>org.apache.myfaces.core</groupId>
@@ -78,6 +80,10 @@
   <dependency>
    <groupId>org.apache.myfaces.core</groupId>
    <artifactId>myfaces-impl</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.primefaces</groupId>
+   <artifactId>primefaces</artifactId>
   </dependency>
   <dependency>
    <groupId>org.ops4j.pax.jdbc</groupId>
@@ -89,9 +95,32 @@
    <artifactId>derby</artifactId>
    <scope>test</scope>
   </dependency>
+  <dependency>
+   <groupId>org.ops4j.pax.shiro</groupId>
+   <artifactId>pax-shiro-faces</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-core</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-web</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.slf4j</groupId>
+   <artifactId>slf4j-simple</artifactId>
+   <version>1.7.21</version>
+   <scope>test</scope>
+  </dependency>
  </dependencies>
 
  <build>
+  <testResources>
+   <testResource>
+    <directory>src/main/webapp/WEB-INF</directory>
+   </testResource>
+  </testResources>
   <plugins>
    <plugin>
     <groupId>org.apache.felix</groupId>
@@ -125,6 +154,9 @@
        org.apache.taglibs.standard.tlv;version="1.1.2",
        javax.faces.*,
        org.apache.myfaces.webapp,
+       org.apache.shiro.web.env,
+       org.apache.shiro.web.servlet,
+       org.ops4j.pax.shiro.faces.tags,
        org.apache.myfaces.config,
        org.apache.myfaces.config.impl,
        org.apache.myfaces.config.impl.digester,

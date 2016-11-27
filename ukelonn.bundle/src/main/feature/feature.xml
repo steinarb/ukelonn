@@ -4,6 +4,10 @@
  <feature name="ukelonn">
   <feature>pax-jsf-support</feature>
   <feature>ukelonn-api</feature>
+  <bundle start-level="80">mvn:javax.validation/validation-api/${javax.validation}</bundle>
+  <bundle start-level="80">mvn:org.apache.shiro/shiro-core/${dependency.shiro.version}</bundle>
+  <bundle start-level="80">mvn:org.apache.shiro/shiro-web/${dependency.shiro.version}</bundle>
+  <bundle start-level="80">mvn:org.ops4j.pax.shiro/pax-shiro-faces/${dependency.pax.shiro.version}</bundle>
   <bundle start-level="80">mvn:org.primefaces/primefaces/${primefaces.version}</bundle>
  </feature>
 </features>
