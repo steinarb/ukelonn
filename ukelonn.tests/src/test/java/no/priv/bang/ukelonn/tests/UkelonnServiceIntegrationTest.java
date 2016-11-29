@@ -38,6 +38,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     private String paxWebVersion = "4.3.0";
     private String jettyVersion = "9.2.17.v20160517";
     private String shiroVersion = "1.3.1";
+    private String vaadinVersion = "7.7.4";
 
     @Inject
     private UkelonnDatabase database;
@@ -106,7 +107,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("javax.validation", "validation-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
-                       mavenBundle("org.primefaces", "primefaces", "6.0"),
+                       mavenBundle("com.vaadin", "vaadin-shared", vaadinVersion),
+                       mavenBundle("com.vaadin", "vaadin-server", vaadinVersion),
+                       mavenBundle("com.vaadin", "vaadin-themes", vaadinVersion),
+                       mavenBundle("org.jsoup", "jsoup", "1.8.3"),
                        mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
                        mavenBundle("org.apache.shiro", "shiro-core", shiroVersion),
                        mavenBundle("org.apache.shiro", "shiro-web", shiroVersion),

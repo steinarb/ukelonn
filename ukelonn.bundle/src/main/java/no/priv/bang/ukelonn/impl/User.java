@@ -16,8 +16,6 @@ public class User {
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
-
-        UserConverter.registerUser(this);
     }
 
     public int getUserId() {

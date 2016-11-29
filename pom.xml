@@ -24,10 +24,10 @@
   <dependency.jetty.version>9.2.17.v20160517</dependency.jetty.version>
   <dependency.xbean.version>4.1</dependency.xbean.version>
   <dependency.httpcomponents.version>4.3.3</dependency.httpcomponents.version>
-  <dependency.myfaces.version>2.2.6</dependency.myfaces.version>
   <derby.version>10.11.1.1</derby.version>
   <javax.validation>1.1.0.Final</javax.validation>
-  <primefaces.version>6.0</primefaces.version>
+  <jsoup.version>1.8.3</jsoup.version>
+  <vaadin.version>7.7.4</vaadin.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
   <karaf.version>4.0.7</karaf.version>
  </properties>
@@ -352,21 +352,27 @@
     <scope>provided</scope>
    </dependency>
    <dependency>
-    <groupId>org.apache.myfaces.core</groupId>
-    <artifactId>myfaces-api</artifactId>
-    <version>${dependency.myfaces.version}</version>
+    <groupId>org.jsoup</groupId>
+    <artifactId>jsoup</artifactId>
+    <version>${jsoup.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
-    <groupId>org.apache.myfaces.core</groupId>
-    <artifactId>myfaces-impl</artifactId>
-    <version>${dependency.myfaces.version}</version>
+    <groupId>com.vaadin</groupId>
+    <artifactId>vaadin-server</artifactId>
+    <version>${vaadin.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
-    <groupId>org.primefaces</groupId>
-    <artifactId>primefaces</artifactId>
-    <version>${primefaces.version}</version>
+    <groupId>com.vaadin</groupId>
+    <artifactId>vaadin-themes</artifactId>
+    <version>${vaadin.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>com.vaadin</groupId>
+    <artifactId>vaadin-client-compiled</artifactId>
+    <version>${vaadin.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
@@ -385,12 +391,6 @@
     <groupId>org.apache.derby</groupId>
     <artifactId>derby</artifactId>
     <version>${derby.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.shiro</groupId>
-    <artifactId>pax-shiro-faces</artifactId>
-    <version>${dependency.pax.shiro.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>

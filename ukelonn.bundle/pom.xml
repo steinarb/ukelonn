@@ -74,18 +74,6 @@
    <artifactId>javax.servlet-api</artifactId>
   </dependency>
   <dependency>
-   <groupId>org.apache.myfaces.core</groupId>
-   <artifactId>myfaces-api</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.myfaces.core</groupId>
-   <artifactId>myfaces-impl</artifactId>
-  </dependency>
-  <dependency>
-   <groupId>org.primefaces</groupId>
-   <artifactId>primefaces</artifactId>
-  </dependency>
-  <dependency>
    <groupId>org.ops4j.pax.jdbc</groupId>
    <artifactId>pax-jdbc-derby</artifactId>
    <scope>test</scope>
@@ -94,10 +82,6 @@
    <groupId>org.apache.derby</groupId>
    <artifactId>derby</artifactId>
    <scope>test</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.ops4j.pax.shiro</groupId>
-   <artifactId>pax-shiro-faces</artifactId>
   </dependency>
   <dependency>
    <groupId>org.apache.shiro</groupId>
@@ -112,6 +96,18 @@
    <artifactId>slf4j-simple</artifactId>
    <version>1.7.21</version>
    <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-server</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-themes</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-client-compiled</artifactId>
   </dependency>
  </dependencies>
 
@@ -140,36 +136,24 @@
       <Import-Package>
        no.priv.bang.ukelonn,
        javax.el,
-       javax.faces.webapp,
        javax.servlet.jsp;version="[2.2.0,3.0.0)",
        javax.servlet.jsp.jstl.core;version="1.2",
        javax.servlet.jsp.jstl.fmt;version="1.2",
        javax.servlet.jsp.jstl.tlv;version="1.2",
        javax.servlet;version="[2.6.0,4.0.0)",
        javax.servlet.http;version="[2.6.0,4.0.0)",
-       org.apache.taglibs.standard.resources;version="1.1.2",
-       org.apache.taglibs.standard.tag.common.core;version="1.1.2",
-       org.apache.taglibs.standard.tag.rt.core;version="1.1.2",
-       org.apache.taglibs.standard.tei;version="1.1.2",
-       org.apache.taglibs.standard.tlv;version="1.1.2",
-       javax.faces.*,
-       org.apache.myfaces.webapp,
+       com.vaadin.shared,
        org.apache.shiro.web.env,
        org.apache.shiro.web.servlet,
-       org.ops4j.pax.shiro.faces.tags,
-       org.apache.myfaces.config,
-       org.apache.myfaces.config.impl,
-       org.apache.myfaces.config.impl.digester,
-       org.apache.myfaces.config.impl.digester.elements,
+       com.vaadin.server,
+       VAADIN.themes,
+       VAADIN.widgetsets,
        *
       </Import-Package>
       <Export-Package>!*</Export-Package>
       <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
       <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
       <Web-ContextPath>ukelonn</Web-ContextPath>
-      <Require-Bundle>
-       org.primefaces;visibility:=reexport
-      </Require-Bundle>
       <_removeheaders>
        Include-Resource,
        Private-Package,
