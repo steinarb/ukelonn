@@ -110,6 +110,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("com.vaadin", "vaadin-shared", vaadinVersion),
                        mavenBundle("com.vaadin", "vaadin-server", vaadinVersion),
                        mavenBundle("com.vaadin", "vaadin-themes", vaadinVersion),
+                       mavenBundle("com.vaadin", "vaadin-client-compiled", vaadinVersion),
                        mavenBundle("org.jsoup", "jsoup", "1.8.3"),
                        mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
                        mavenBundle("org.apache.shiro", "shiro-core", shiroVersion),
