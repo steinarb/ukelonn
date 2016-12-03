@@ -1,5 +1,8 @@
 package no.priv.bang.ukelonn.impl;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -13,12 +16,13 @@ public class UkelonnUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+    	Subject currentUser = SecurityUtils.getSubject();
         // Create the content root layout for the UI
         VerticalLayout content = new VerticalLayout();
         setContent(content);
 
         // Display the greeting
-        content.addComponent(new Label("Hello World!"));
+        content.addComponent(new Label("Hello " + currentUser.getPrincipal()));
 
         // Have a clickable button
         content.addComponent(new Button("Push Me!",
