@@ -1,5 +1,6 @@
 package no.priv.bang.ukelonn.impl;
 
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
@@ -17,12 +18,13 @@ public class UkelonnUI extends UI {
     @Override
     protected void init(VaadinRequest request) {
     	Subject currentUser = SecurityUtils.getSubject();
+    	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getPrincipal());
         // Create the content root layout for the UI
         VerticalLayout content = new VerticalLayout();
         setContent(content);
 
         // Display the greeting
-        content.addComponent(new Label("Hello " + currentUser.getPrincipal()));
+        content.addComponent(new Label("Hello " + account.getFirstName()));
 
         // Have a clickable button
         content.addComponent(new Button("Push Me!",
