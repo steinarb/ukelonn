@@ -1,18 +1,25 @@
 package no.priv.bang.ukelonn.impl;
 
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getJobTypesFromTransactionTypes;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase;
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.registerNewJobInDatabase;
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -25,9 +32,14 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserView extends VerticalLayout implements View {
     private static final long serialVersionUID = 3003586932131097778L;
+    private Navigator navigator;
 
-    public UserView(Account account) {
-        // Display the greeting
+    public UserView(VaadinRequest request, Navigator navigator) {
+    	this.navigator = navigator;
+    	Principal currentUser = request.getUserPrincipal();
+    	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getName());
+
+    	// Display the greeting
         Component greeting = new Label("Hei " + account.getFirstName());
         greeting.setStyleName("h1");
         addComponent(greeting);
@@ -84,6 +96,15 @@ public class UserView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
+    	if (isAdministrator()){
+            navigator.navigateTo("admin");
+    	}
+
+    }
+
+    private boolean isAdministrator() {
+    	Subject currentUser = SecurityUtils.getSubject();
+        return currentUser.hasRole("administrator");
     }
 
 }

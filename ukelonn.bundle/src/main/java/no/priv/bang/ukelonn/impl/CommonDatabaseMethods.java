@@ -128,7 +128,25 @@ public class CommonDatabaseMethods {
             }
         }
 
-        return null;
+        return new Account(0, 0, username, "Ikke innlogget", null, 0);
+    }
+
+    public static AdminUser getAdminUserFromDatabase(Class<?> clazz, String username) {
+        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz);
+        StringBuilder query = sql("select * from administrators_view where username='").append(username).append("'");
+        ResultSet resultset = database.query(query.toString());
+        if (resultset != null) {
+            try {
+                if (resultset.next()) {
+                    AdminUser adminUser = mapAdminUser(resultset);
+                    return adminUser;
+                }
+            } catch (SQLException e) {
+                logError(CommonDatabaseMethods.class, "Error getting administrator user info from the database", e);
+            }
+        }
+
+        return new AdminUser(username, 0, 0, "Ikke innlogget", null);
     }
 
     public static List<Account> getAccounts(Class<?> clazz) {
@@ -410,6 +428,18 @@ public class CommonDatabaseMethods {
 
         User user = new User(userId, username, email, password, firstname, lastname);
         return user;
+    }
+
+    private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
+        AdminUser adminUser;
+        adminUser = new AdminUser(
+                                  resultset.getString("username"),
+                                  resultset.getInt("user_id"),
+                                  resultset.getInt("administrator_id"),
+                                  resultset.getString("first_name"),
+                                  resultset.getString("last_name")
+                                  );
+        return adminUser;
     }
 
     private static String getResourceAsString(String resourceName) {
