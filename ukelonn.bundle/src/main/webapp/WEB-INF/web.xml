@@ -20,7 +20,17 @@
  </filter-mapping>
 
  <servlet>
-  <servlet-name>Vaadin Servlet</servlet-name>
+  <servlet-name>top</servlet-name>
+  <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+
+  <init-param>
+   <param-name>UI</param-name>
+   <param-value>no.priv.bang.ukelonn.impl.TopUI</param-value>
+  </init-param>
+ </servlet>
+
+ <servlet>
+  <servlet-name>user</servlet-name>
   <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 
   <init-param>
@@ -29,9 +39,31 @@
   </init-param>
  </servlet>
 
+ <servlet>
+  <servlet-name>admin</servlet-name>
+  <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+
+  <init-param>
+   <param-name>UI</param-name>
+   <param-value>no.priv.bang.ukelonn.impl.UkelonnAdminUI</param-value>
+  </init-param>
+ </servlet>
+
  <servlet-mapping>
-  <servlet-name>Vaadin Servlet</servlet-name>
-  <url-pattern>/*</url-pattern>
+  <servlet-name>top</servlet-name>
+  <url-pattern></url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>user</servlet-name>
+  <url-pattern>/user/*</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>user</servlet-name>
+  <url-pattern>/VAADIN/*</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>admin</servlet-name>
+  <url-pattern>/admin/*</url-pattern>
  </servlet-mapping>
 
 </web-app>
