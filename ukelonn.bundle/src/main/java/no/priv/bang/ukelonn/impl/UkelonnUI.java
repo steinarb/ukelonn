@@ -1,12 +1,10 @@
 package no.priv.bang.ukelonn.impl;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getJobTypesFromTransactionTypes;
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase;
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.registerNewJobInDatabase;
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,9 +18,11 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class UkelonnUI extends AbstractUI {
@@ -44,14 +44,18 @@ public class UkelonnUI extends AbstractUI {
         greeting.setStyleName("h1");
         content.addComponent(greeting);
 
-        FormLayout balanceAndNewJob = new FormLayout();
+        FormLayout balanceLayout = new FormLayout();
         // Display the current balance
         ObjectProperty<Double> balance = new ObjectProperty<Double>(account.getBalance());
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
-        balanceAndNewJob.addComponent(balanceDisplay);
+        balanceLayout.addComponent(balanceDisplay);
+        content.addComponent(balanceLayout);
 
+        Accordion accordion = new Accordion();
+
+        FormLayout balanceAndNewJobTab = new FormLayout();
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
         BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
@@ -59,11 +63,11 @@ public class UkelonnUI extends AbstractUI {
         jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
-        balanceAndNewJob.addComponent(jobtypeSelector);
+        balanceAndNewJobTab.addComponent(jobtypeSelector);
         ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
         TextField newAmountDisplay = new TextField(newJobAmount);
         newAmountDisplay.setReadOnly(true);
-        balanceAndNewJob.addComponent(newAmountDisplay);
+        balanceAndNewJobTab.addComponent(newAmountDisplay);
         jobtypeSelector.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = 3145027593224884343L;
                 @Override
@@ -77,21 +81,38 @@ public class UkelonnUI extends AbstractUI {
             });
 
         // Have a clickable button
-        balanceAndNewJob.addComponent(new Button("Registrer jobb",
-                                                 new Button.ClickListener() {
-                                                     private static final long serialVersionUID = 2723190031041985566L;
+        balanceAndNewJobTab.addComponent(new Button("Registrer jobb",
+                                                    new Button.ClickListener() {
+                                                        private static final long serialVersionUID = 2723190031041985566L;
 
-                                                     @Override
-                                                     public void buttonClick(ClickEvent e) {
-                                                         TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
-                                                         if (jobType != null) {
-                                                             registerNewJobInDatabase(getClass(), account, jobType.getId(), jobType.getTransactionAmount());
-                                                             balance.setValue(account.getBalance());
-                                                             jobtypeSelector.setValue(null);
-                                                         }
-                                                     }
-                                                 }));
-        content.addComponent(balanceAndNewJob);
+                                                        @Override
+                                                        public void buttonClick(ClickEvent e) {
+                                                            TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
+                                                            if (jobType != null) {
+                                                                registerNewJobInDatabase(getClass(), account, jobType.getId(), jobType.getTransactionAmount());
+                                                                balance.setValue(account.getBalance());
+                                                                jobtypeSelector.setValue(null);
+                                                            }
+                                                        }
+                                                    }));
+        accordion.addTab(balanceAndNewJobTab);
+
+        VerticalLayout lastJobsTab = new VerticalLayout();
+        Table lastJobsTable = new Table();
+        lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
+        lastJobsTable.addContainerProperty("name", String.class, null, "Jobbtype", null, null);
+        lastJobsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        lastJobsTable.removeContainerProperty("id");
+        lastJobsTable.removeContainerProperty("transactionType");
+        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
+        lastJobsTable.setContainerDataSource(recentJobs);
+        lastJobsTab.addComponent(lastJobsTable);
+        accordion.addTab(lastJobsTab);
+
+        VerticalLayout lastPaymentsTab = new VerticalLayout();
+        accordion.addTab(lastPaymentsTab);
+
+        content.addComponent(accordion);
         setContent(content);
     }
 }
