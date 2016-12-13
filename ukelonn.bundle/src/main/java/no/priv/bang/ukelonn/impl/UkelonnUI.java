@@ -102,10 +102,9 @@ public class UkelonnUI extends AbstractUI {
         lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
         lastJobsTable.addContainerProperty("name", String.class, null, "Jobbtype", null, null);
         lastJobsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        lastJobsTable.removeContainerProperty("id");
-        lastJobsTable.removeContainerProperty("transactionType");
         BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
         lastJobsTable.setContainerDataSource(recentJobs);
+        lastJobsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
         lastJobsTab.addComponent(lastJobsTable);
         accordion.addTab(lastJobsTab);
 
