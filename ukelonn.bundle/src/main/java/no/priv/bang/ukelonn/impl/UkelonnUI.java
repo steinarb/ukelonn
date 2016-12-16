@@ -102,28 +102,37 @@ public class UkelonnUI extends AbstractUI {
         accordion.addTab(balanceAndNewJobTab);
 
         VerticalLayout lastJobsTab = new VerticalLayout();
-        Table lastJobsTable = new Table();
-        lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
-        lastJobsTable.addContainerProperty("name", String.class, null, "Jobbtype", null, null);
-        lastJobsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        lastJobsTable.setConverter("transactionTime", new StringToDateConverter() {
-                private static final long serialVersionUID = -1728291825811483452L;
-
-                @Override
-        	public DateFormat getFormat(Locale locale) {
-                    return new SimpleDateFormat("yyyy-MM-dd");
-        	}
-            });
         BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
-        lastJobsTable.setContainerDataSource(recentJobs);
-        lastJobsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTab.addComponent(lastJobsTable);
         accordion.addTab(lastJobsTab);
 
         VerticalLayout lastPaymentsTab = new VerticalLayout();
+        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
+        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        lastPaymentsTab.addComponent(lastPaymentsTable);
         accordion.addTab(lastPaymentsTab);
 
         content.addComponent(accordion);
         setContent(content);
+    }
+
+    private Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
+        final StringToDateConverter dateFormatter = new StringToDateConverter() {
+                private static final long serialVersionUID = -1728291825811483452L;
+
+                @Override
+                public DateFormat getFormat(Locale locale) {
+                    return new SimpleDateFormat("yyyy-MM-dd");
+                }
+            };
+        Table lastJobsTable = new Table();
+        lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
+        lastJobsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
+        lastJobsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        lastJobsTable.setConverter("transactionTime", dateFormatter);
+        lastJobsTable.setContainerDataSource(transactions);
+        lastJobsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
+        return lastJobsTable;
     }
 }
