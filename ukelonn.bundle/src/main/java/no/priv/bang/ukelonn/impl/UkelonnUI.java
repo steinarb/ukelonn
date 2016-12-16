@@ -99,19 +99,19 @@ public class UkelonnUI extends AbstractUI {
                                                             }
                                                         }
                                                     }));
-        accordion.addTab(balanceAndNewJobTab);
+        accordion.addTab(balanceAndNewJobTab, "Registrere jobb", null);
 
         VerticalLayout lastJobsTab = new VerticalLayout();
         BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTab.addComponent(lastJobsTable);
-        accordion.addTab(lastJobsTab);
+        accordion.addTab(lastJobsTab, "Siste jobber", null);
 
         VerticalLayout lastPaymentsTab = new VerticalLayout();
         BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
         Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
         lastPaymentsTab.addComponent(lastPaymentsTable);
-        accordion.addTab(lastPaymentsTab);
+        accordion.addTab(lastPaymentsTab, "Siste utbetalinger", null);
 
         content.addComponent(accordion);
         setContent(content);
