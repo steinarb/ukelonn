@@ -6,15 +6,19 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 
+@Theme("mobiletheme")
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
 
@@ -25,7 +29,10 @@ public class UkelonnAdminUI extends AbstractUI {
             getPage().setLocation(adminPage);
     	}
 
-    	VerticalLayout content = new VerticalLayout();
+    	CssLayout content = new CssLayout();
+    	content.setSizeFull();
+    	content.addStyleName("ukelonn-responsive-layout");
+    	Responsive.makeResponsive(content);
     	Principal currentUser = request.getUserPrincipal();
     	AdminUser admin = getAdminUserFromDatabase(getClass(), (String) currentUser.getName());
         // Display the greeting
