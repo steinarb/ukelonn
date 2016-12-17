@@ -378,6 +378,11 @@
     <scope>provided</scope>
    </dependency>
    <dependency>
+    <groupId>com.vaadin.addon</groupId>
+    <artifactId>vaadin-touchkit-agpl</artifactId>
+    <version>4.1.0</version>
+   </dependency>
+   <dependency>
     <groupId>org.ops4j.pax.jdbc</groupId>
     <artifactId>pax-jdbc</artifactId>
     <version>${dependency.pax.jdbc.version}</version>
@@ -577,4 +582,10 @@
   <module>ukelonn.karaf</module>
  </modules>
 
+ <repositories>
+  <repository>
+   <id>vaadin-addons</id>
+   <url>http://maven.vaadin.com/vaadin-addons</url>
+  </repository>
+ </repositories>
 </project>

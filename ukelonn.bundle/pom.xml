@@ -109,6 +109,10 @@
    <groupId>com.vaadin</groupId>
    <artifactId>vaadin-client-compiled</artifactId>
   </dependency>
+  <dependency>
+   <groupId>com.vaadin.addon</groupId>
+   <artifactId>vaadin-touchkit-agpl</artifactId>
+  </dependency>
  </dependencies>
 
  <build>
