@@ -4,12 +4,16 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
@@ -32,6 +36,12 @@ public class UkelonnAdminUI extends AbstractUI {
         Accordion accordion = new Accordion();
 
         VerticalLayout registerPaymentTab = new VerticalLayout();
+        List<Account> accounts = getAccounts(getClass());
+        BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, accounts);
+        ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
+        accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        accountSelector.setItemCaptionPropertyId("fullName");
+        registerPaymentTab.addComponent(accountSelector);
         Accordion userinfo = new Accordion();
         VerticalLayout jobsTab = new VerticalLayout();
         userinfo.addTab(jobsTab, "Siste jobber");
