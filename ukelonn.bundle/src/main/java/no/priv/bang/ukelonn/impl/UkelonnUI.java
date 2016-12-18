@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
@@ -29,6 +30,7 @@ import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button.ClickEvent;
 
+@Theme("runo")
 public class UkelonnUI extends AbstractUI {
     private static final long serialVersionUID = 1388525490129647161L;
 
