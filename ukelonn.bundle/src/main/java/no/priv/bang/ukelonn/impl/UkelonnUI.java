@@ -30,7 +30,7 @@ import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("runo")
+@Theme("chameleon")
 public class UkelonnUI extends AbstractUI {
     private static final long serialVersionUID = 1388525490129647161L;
 
