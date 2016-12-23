@@ -4,11 +4,7 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
 import java.net.URI;
 import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.vaadin.annotations.Theme;
@@ -16,7 +12,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.converter.StringToDateConverter;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -124,24 +119,4 @@ public class UkelonnUI extends AbstractUI {
         content.addComponent(accordion);
         setContent(content);
     }
-
-    private Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
-        Table lastJobsTable = new Table();
-        lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
-        lastJobsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
-        lastJobsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        lastJobsTable.setConverter("transactionTime", dateFormatter);
-        lastJobsTable.setContainerDataSource(transactions);
-        lastJobsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
-        return lastJobsTable;
-    }
-
-    final static StringToDateConverter dateFormatter = new StringToDateConverter() {
-            private static final long serialVersionUID = -1728291825811483452L;
-
-            @Override
-            public DateFormat getFormat(Locale locale) {
-                return new SimpleDateFormat("yyyy-MM-dd");
-            }
-        };
 }

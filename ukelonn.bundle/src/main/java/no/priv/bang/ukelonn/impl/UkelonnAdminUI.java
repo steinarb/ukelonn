@@ -7,18 +7,20 @@ import java.security.Principal;
 import java.util.List;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 
-@Theme("mobiletheme")
+@Theme("chameleon")
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
 
@@ -29,8 +31,7 @@ public class UkelonnAdminUI extends AbstractUI {
             getPage().setLocation(userPage);
     	}
 
-    	CssLayout content = new CssLayout();
-    	content.setSizeFull();
+    	VerticalLayout content = new VerticalLayout();
     	content.addStyleName("ukelonn-responsive-layout");
     	Responsive.makeResponsive(content);
     	Principal currentUser = request.getUserPrincipal();
@@ -40,6 +41,12 @@ public class UkelonnAdminUI extends AbstractUI {
         greeting.setStyleName("h1");
         content.addComponent(greeting);
 
+        // Updatable containers
+        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
+        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+        Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
+
+
         Accordion accordion = new Accordion();
 
         VerticalLayout registerPaymentTab = new VerticalLayout();
@@ -48,11 +55,27 @@ public class UkelonnAdminUI extends AbstractUI {
         ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
         accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         accountSelector.setItemCaptionPropertyId("fullName");
+        accountSelector.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -781514357123503476L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    Account account = (Account) accountSelector.getValue();
+                    recentJobs.removeAllItems();
+                    recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
+                    recentPayments.removeAllItems();
+                    recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                }
+            });
         registerPaymentTab.addComponent(accountSelector);
         Accordion userinfo = new Accordion();
         VerticalLayout jobsTab = new VerticalLayout();
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        jobsTab.addComponent(lastJobsTable);
         userinfo.addTab(jobsTab, "Siste jobber");
         VerticalLayout paymentsTab = new VerticalLayout();
+        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        paymentsTab.addComponent(lastPaymentsTable);
         userinfo.addTab(paymentsTab, "Siste utbetalinger");
         registerPaymentTab.addComponent(userinfo);
         accordion.addTab(registerPaymentTab, "Registrere utbetaling");
