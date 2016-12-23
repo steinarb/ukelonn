@@ -126,14 +126,6 @@ public class UkelonnUI extends AbstractUI {
     }
 
     private Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
-        final StringToDateConverter dateFormatter = new StringToDateConverter() {
-                private static final long serialVersionUID = -1728291825811483452L;
-
-                @Override
-                public DateFormat getFormat(Locale locale) {
-                    return new SimpleDateFormat("yyyy-MM-dd");
-                }
-            };
         Table lastJobsTable = new Table();
         lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
         lastJobsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
@@ -143,4 +135,13 @@ public class UkelonnUI extends AbstractUI {
         lastJobsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
         return lastJobsTable;
     }
+
+    final static StringToDateConverter dateFormatter = new StringToDateConverter() {
+            private static final long serialVersionUID = -1728291825811483452L;
+
+            @Override
+            public DateFormat getFormat(Locale locale) {
+                return new SimpleDateFormat("yyyy-MM-dd");
+            }
+        };
 }
