@@ -10,13 +10,16 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 
@@ -42,6 +45,7 @@ public class UkelonnAdminUI extends AbstractUI {
         content.addComponent(greeting);
 
         // Updatable containers
+        ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
         BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
         BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
         Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
@@ -62,12 +66,22 @@ public class UkelonnAdminUI extends AbstractUI {
                 public void valueChange(ValueChangeEvent event) {
                     Account account = (Account) accountSelector.getValue();
                     recentJobs.removeAllItems();
-                    recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
                     recentPayments.removeAllItems();
-                    recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                    if (account != null) {
+                    	refreshAccount(classForLogMessage, account);
+                        balance.setValue(account.getBalance());
+                        recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
+                        recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                    }
                 }
             });
         registerPaymentTab.addComponent(accountSelector);
+        FormLayout balanceLayout = new FormLayout();
+        TextField balanceDisplay = new TextField("Til gode:");
+        balanceDisplay.setPropertyDataSource(balance);
+        balanceDisplay.addStyleName("inline-label");
+        balanceLayout.addComponent(balanceDisplay);
+        registerPaymentTab.addComponent(balanceLayout);
         Accordion userinfo = new Accordion();
         VerticalLayout jobsTab = new VerticalLayout();
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
