@@ -86,6 +86,13 @@ public class UkelonnUI extends AbstractUI {
                 }
             });
 
+        // Updatable containers
+        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        lastJobsTable.setImmediate(true);
+        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
+        Class<? extends UkelonnUI> classForLogMessage = getClass();
+
         // Have a clickable button
         balanceAndNewJobTab.addComponent(new Button("Registrer jobb",
                                                     new Button.ClickListener() {
@@ -95,22 +102,21 @@ public class UkelonnUI extends AbstractUI {
                                                         public void buttonClick(ClickEvent e) {
                                                             TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
                                                             if (jobType != null) {
-                                                                registerNewJobInDatabase(getClass(), account, jobType.getId(), jobType.getTransactionAmount());
+                                                                registerNewJobInDatabase(classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
                                                                 balance.setValue(account.getBalance());
                                                                 jobtypeSelector.setValue(null);
+                                                                recentJobs.removeAllItems();
+                                                                recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
                                                             }
                                                         }
                                                     }));
         accordion.addTab(balanceAndNewJobTab, "Registrere jobb");
 
         VerticalLayout lastJobsTab = new VerticalLayout();
-        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTab.addComponent(lastJobsTable);
         accordion.addTab(lastJobsTab, "Siste jobber");
 
         VerticalLayout lastPaymentsTab = new VerticalLayout();
-        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
         Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
         lastPaymentsTab.addComponent(lastPaymentsTable);
         accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
