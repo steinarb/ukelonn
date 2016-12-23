@@ -25,8 +25,8 @@ public class UkelonnAdminUI extends AbstractUI {
     @Override
     protected void init(VaadinRequest request) {
     	if (!isAdministrator()) {
-            URI adminPage = addPathToURI(getPage().getLocation(), "../user/");
-            getPage().setLocation(adminPage);
+            URI userPage = addPathToURI(getPage().getLocation(), "../user/");
+            getPage().setLocation(userPage);
     	}
 
     	CssLayout content = new CssLayout();
