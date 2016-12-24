@@ -5,6 +5,7 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import java.net.URI;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -14,6 +15,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
@@ -22,6 +24,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
+import com.vaadin.ui.Button.ClickEvent;
 
 @Theme("chameleon")
 public class UkelonnAdminUI extends AbstractUI {
@@ -48,8 +51,10 @@ public class UkelonnAdminUI extends AbstractUI {
         ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
         BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
         BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+        BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class);
+        ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
+        ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
         Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
-
 
         Accordion accordion = new Accordion();
 
@@ -65,23 +70,57 @@ public class UkelonnAdminUI extends AbstractUI {
                 @Override
                 public void valueChange(ValueChangeEvent event) {
                     Account account = (Account) accountSelector.getValue();
+                    paymentTypes.removeAllItems();
                     recentJobs.removeAllItems();
                     recentPayments.removeAllItems();
                     if (account != null) {
                     	refreshAccount(classForLogMessage, account);
                         balance.setValue(account.getBalance());
+                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+                        final int idOfPayToBank = 4;
+                        paymenttype.select(transactionTypes.get(idOfPayToBank));
+                        amount.setValue(balance.getValue());
                         recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
                         recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
                     }
                 }
             });
         registerPaymentTab.addComponent(accountSelector);
-        FormLayout balanceLayout = new FormLayout();
+
+        FormLayout paymentLayout = new FormLayout();
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
-        balanceLayout.addComponent(balanceDisplay);
-        registerPaymentTab.addComponent(balanceLayout);
+        paymentLayout.addComponent(balanceDisplay);
+
+        paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        paymenttype.setItemCaptionPropertyId("transactionTypeName");
+        paymentLayout.addComponent(paymenttype);
+
+        TextField amountField = new TextField("Beløp:", amount);
+        paymentLayout.addComponent(amountField);
+
+        paymentLayout.addComponent(new Button("Registrer betaling",
+                                              new Button.ClickListener() {
+                                                  private static final long serialVersionUID = 5260321175219218136L;
+
+                                                  @Override
+                                                  public void buttonClick(ClickEvent event) {
+                                                      Account account = (Account) accountSelector.getValue();
+                                                      TransactionType payment = (TransactionType) paymenttype.getValue();
+                                                      if (account != null && payment != null) {
+                                                          addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
+                                                          recentPayments.removeAllItems();
+                                                          recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                                                          refreshAccount(classForLogMessage, account);
+                                                          balance.setValue(account.getBalance());
+                                                          amount.setValue(0.0);
+                                                      }
+                                                  }
+                                              }));
+        registerPaymentTab.addComponent(paymentLayout);
+
         Accordion userinfo = new Accordion();
         VerticalLayout jobsTab = new VerticalLayout();
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);

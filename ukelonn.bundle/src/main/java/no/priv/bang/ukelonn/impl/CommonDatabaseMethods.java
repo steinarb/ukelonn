@@ -78,6 +78,17 @@ public class CommonDatabaseMethods {
         return jobTypes;
     }
 
+    public static List<TransactionType> getPaymentTypesFromTransactionTypes(Collection<TransactionType> transactionTypes) {
+        ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
+        for (TransactionType transactionType : transactionTypes) {
+            if (transactionType.isTransactionIsWagePayment()) {
+                jobTypes.add(transactionType);
+            }
+        }
+
+        return jobTypes;
+    }
+
     public static void updateBalanseFromDatabase(Class<?> clazz, Account account) {
         UkelonnDatabase connection = connectionCheck(clazz);
         StringBuilder query = sql("select * from accounts_view where account_id=").append(account.getAccountId());
