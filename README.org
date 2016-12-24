@@ -100,6 +100,13 @@ Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstilli
  1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter
  2. Følgende tabeller må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/tables
  3. Følgende views må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/views
+ 4. I tillegg så må eksempeldataene være på plass for å kunne logge inn med brukerene nevnt i eksemplene: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data
+    Rekkefølgen dataene skal tas inn i, er:
+    1. example_transaction_types.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transaction_types.sql
+    2. example_users.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_users.sql
+    3. example_administrators.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_administrators.sql
+    4. example_accounts.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_accounts.sql
+    5. example_transactions.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transactions.sql
 
 Framgangsmåte:
  1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
