@@ -124,4 +124,4 @@ Framgangsmåte:
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
 * Lisens
 
-Lisensen er Eclipse Public License - v 1.0.  Jeg kunne tenkt meg GPL i en eller annen variant, men da måtte jeg passe på hvilke lisenser som var kompatible og det ble for mye jobb.
+Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.
