@@ -6,13 +6,17 @@ Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/develo
 
 * Hva ligger på de forskjellige branchene
 
-I øyeblikket er det to hoved-brancher:
+I øyeblikket er det tre hoved-brancher:
  1. using-primefaces
-    Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og er i skrivende stund den som er kommet lengst
- 2. using-rendersnake
+    Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og er i skrivende stund den som er kommet lengst.
+    Denne branchen er i skrivende stund "i produksjon" i heimen. Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet ser litt rart ut)
+ 2. using-vaadin
+    Denne branchen bruker [[https://vaadin.com/home][vaadin]] og er iferd med å nærme seg primefaces-branchen i funksjonalitet.
+    Her håper jeg å kunne bruke Vaadins [[https://vaadin.com/docs/-/part/touchkit/mobile-components.html][Mobile User Interface Components]] for å få noe som ser "app-aktig" ut, iallefall på registrering av jobber, gjort av ungene
+ 3. using-rendersnake
     Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet
 
-Jeg har også plan om å lage en branch med en versjon som bruker [[https://vaadin.com/home][vaadin]] istedenfor primefaces, men den er foreløpig på plan-stadiet
+Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det bør la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
 * Utsjekk og bygg
 
