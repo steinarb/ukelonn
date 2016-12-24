@@ -103,10 +103,20 @@ Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstilli
  4. I tillegg så må eksempeldataene være på plass for å kunne logge inn med brukerene nevnt i eksemplene: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data
     Rekkefølgen dataene skal tas inn i, er:
     1. example_transaction_types.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transaction_types.sql
+
+       /NB!/ denne fila /må/ inn i databasen som den er for at det skal fungere å legge inn nye brukere
     2. example_users.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_users.sql
     3. example_administrators.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_administrators.sql
     4. example_accounts.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_accounts.sql
     5. example_transactions.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transactions.sql
+    /OBS/: Her er det en mulighet til å legge inn egne data:
+    - Iallefall legg inn en bruker i example_users.sql
+    - Gjør samme bruker administrator i example_administrators.sql
+    - Behold example_transaction_types.sql (den kan justeres på i ettertid fra AdminUIet)
+    - Logg inn som admin-brukeren og du kan:
+      - legge inn nye jobbtyper,
+      - justere eksisterende jobbtyper (f.eks. beløp)
+      - legge inn nye brukere for ungene (for at disse skal dukke opp så må du ha lagt inn example_transaction_types.sql) som den er
 
 Framgangsmåte:
  1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
