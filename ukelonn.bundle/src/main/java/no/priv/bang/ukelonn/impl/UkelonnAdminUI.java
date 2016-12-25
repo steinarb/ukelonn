@@ -135,7 +135,27 @@ public class UkelonnAdminUI extends AbstractUI {
 
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
-        VerticalLayout newJobTypeTab = new VerticalLayout();
+        FormLayout newJobTypeTab = new FormLayout();
+        ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
+        ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
+        TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:", newJobTypeName);
+        newJobTypeTab.addComponent(newJobTypeNameField);
+        TextField newJobTypeAmountField = new TextField("Navn på ny jobbtype:", newJobTypeAmount);
+        newJobTypeTab.addComponent(newJobTypeAmountField);
+        newJobTypeTab.addComponent(new Button("Lag jobbtype", new Button.ClickListener() {
+                private static final long serialVersionUID = 1338062460936195627L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    String jobname = newJobTypeName.getValue();
+                    Double jobamount = newJobTypeAmount.getValue();
+                    if (!"".equals(jobname) && !Double.valueOf(0.0).equals(jobamount)) {
+                        addJobTypeToDatabase(classForLogMessage, jobname, jobamount);
+                        newJobTypeName.setValue("");
+                        newJobTypeAmount.setValue(0.0);
+                    }
+                }
+            }));
         jobtypes.addTab(newJobTypeTab, "Lag ny jobbtype");
         VerticalLayout jobtypesform = new VerticalLayout();
         jobtypes.addTab(jobtypesform, "Endre jobbtyper");
