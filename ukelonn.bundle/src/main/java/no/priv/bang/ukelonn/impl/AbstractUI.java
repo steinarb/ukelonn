@@ -28,14 +28,14 @@ public abstract class AbstractUI extends UI {
     }
 
     protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
-        Table lastJobsTable = new Table();
-        lastJobsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
-        lastJobsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
-        lastJobsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        lastJobsTable.setConverter("transactionTime", dateFormatter);
-        lastJobsTable.setContainerDataSource(transactions);
-        lastJobsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
-        return lastJobsTable;
+        Table transactionsTable = new Table();
+        transactionsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
+        transactionsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
+        transactionsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        transactionsTable.setConverter("transactionTime", dateFormatter);
+        transactionsTable.setContainerDataSource(transactions);
+        transactionsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
+        return transactionsTable;
     }
 
     static final StringToDateConverter dateFormatter = new StringToDateConverter() {
