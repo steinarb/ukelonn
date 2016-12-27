@@ -30,6 +30,7 @@ import com.vaadin.ui.Button.ClickEvent;
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
 
+    @SuppressWarnings("serial")
     @Override
     protected void init(VaadinRequest request) {
     	if (!isAdministrator()) {
@@ -51,7 +52,9 @@ public class UkelonnAdminUI extends AbstractUI {
         ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
         BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
         BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
-        BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class);
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
         ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
         ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
         Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
@@ -70,6 +73,7 @@ public class UkelonnAdminUI extends AbstractUI {
                 @Override
                 public void valueChange(ValueChangeEvent event) {
                     Account account = (Account) accountSelector.getValue();
+                    jobTypes.removeAllItems();
                     paymentTypes.removeAllItems();
                     recentJobs.removeAllItems();
                     recentPayments.removeAllItems();
@@ -77,6 +81,7 @@ public class UkelonnAdminUI extends AbstractUI {
                     	refreshAccount(classForLogMessage, account);
                         balance.setValue(account.getBalance());
                         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
                         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
                         final int idOfPayToBank = 4;
                         paymenttype.select(transactionTypes.get(idOfPayToBank));
@@ -138,6 +143,8 @@ public class UkelonnAdminUI extends AbstractUI {
         FormLayout newJobTypeTab = new FormLayout();
         ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
         ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
+        ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
+        ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
         TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:", newJobTypeName);
         newJobTypeTab.addComponent(newJobTypeNameField);
         TextField newJobTypeAmountField = new TextField("Navn på ny jobbtype:", newJobTypeAmount);
@@ -158,10 +165,66 @@ public class UkelonnAdminUI extends AbstractUI {
             }));
         jobtypes.addTab(newJobTypeTab, "Lag ny jobbtype");
         VerticalLayout jobtypesform = new VerticalLayout();
+        Table jobtypesTable = new Table();
+        jobtypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
+        jobtypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        jobtypesTable.setContainerDataSource(jobTypes);
+        jobtypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        jobtypesTable.setSelectable(true);
+        jobtypesTable.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -8324617275480799162L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
+                    if (transactionType != null) {
+                        editedJobTypeName.setValue(transactionType.getTransactionTypeName());
+                        editedJobTypeAmount.setValue(transactionType.getTransactionAmount());
+                    }
+                }
+            });
+        jobtypesform.addComponent(jobtypesTable);
+        FormLayout editJobLayout = new FormLayout();
+        TextField editJobTypeNameField = new TextField("Endre Navn på jobbtype:", editedJobTypeName);
+        editJobLayout.addComponent(editJobTypeNameField);
+        TextField editJobTypeAmountField = new TextField("Endre på ny jobbtype:", editedJobTypeAmount);
+        editJobLayout.addComponent(editJobTypeAmountField);
+        editJobLayout.addComponent(new Button("Lagre endringer i jobbtype", new Button.ClickListener() {
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
+                    if (transactionType != null) {
+                        if (!"".equals(editJobTypeNameField.getValue()) &&
+                            !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
+                        {
+                            transactionType.setTransactionTypeName(editedJobTypeName.getValue());
+                            transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
+                            updateTransactionTypeInDatabase(classForLogMessage, transactionType);
+                            jobtypesTable.setValue(null);
+                            editedJobTypeName.setValue("");
+                            editedJobTypeAmount.setValue(0.0);
+                            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                            jobTypes.removeAllItems();
+                            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+                        }
+                    }
+                }
+
+                private boolean identicalToExistingValues(TransactionType transactionType, ObjectProperty<String> transactionTypeName, ObjectProperty<Double> transactionTypeAmount) {
+                    if (transactionType == null || transactionType.getTransactionTypeName() == null || transactionType.getTransactionAmount() == null) {
+                        return false; // Nothing to compare against, always false
+                    }
+
+                    boolean isIdentical =
+                        transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
+                        transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
+                    return isIdentical;
+                }
+            }));
+        jobtypesform.addComponent(editJobLayout);
         jobtypes.addTab(jobtypesform, "Endre jobbtyper");
         jobtypeAdminTab.addComponent(jobtypes);
         accordion.addTab(jobtypeAdminTab, "Administrere jobbtyper");
-
 
         VerticalLayout paymentstypeadminTab = new VerticalLayout();
         Accordion paymentstypeadmin = new Accordion();
