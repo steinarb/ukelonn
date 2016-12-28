@@ -160,6 +160,8 @@ public class UkelonnAdminUI extends AbstractUI {
         ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
         ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
         ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
+        ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
+        ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
 
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
@@ -270,6 +272,65 @@ public class UkelonnAdminUI extends AbstractUI {
             }));
         paymentstypeadmin.addTab(newpaymenttypeTab, "Lag ny utbetalingstype");
         VerticalLayout paymenttypesform = new VerticalLayout();
+        Table paymentTypesTable = new Table();
+        paymentTypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
+        paymentTypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        paymentTypesTable.setContainerDataSource(paymentTypes);
+        paymentTypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        paymentTypesTable.setSelectable(true);
+        paymentTypesTable.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -1432137451555587595L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
+                    if (transactionType != null) {
+                        editedPaymentTypeName.setValue(transactionType.getTransactionTypeName());
+                        editedPaymentTypeAmount.setValue(transactionType.getTransactionAmount());
+                    }
+                }
+            });
+        paymenttypesform.addComponent(paymentTypesTable);
+        FormLayout editPaymentsLayout = new FormLayout();
+        TextField editPaymentTypeNameField = new TextField("Endre Navn på betalingstype:", editedPaymentTypeName);
+        editPaymentsLayout.addComponent(editPaymentTypeNameField);
+        TextField editPaymentTypeAmountField = new TextField("Endre beløp for betalingstype:", editedPaymentTypeAmount);
+        editPaymentsLayout.addComponent(editPaymentTypeAmountField);
+        editPaymentsLayout.addComponent(new Button("Lagre endringer i betalingstype", new Button.ClickListener() {
+                private static final long serialVersionUID = -2168895121731055862L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
+                    if (transactionType != null) {
+                        if (!"".equals(editPaymentTypeNameField.getValue()) &&
+                            !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
+                        {
+                            transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
+                            transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
+                            updateTransactionTypeInDatabase(classForLogMessage, transactionType);
+                            paymentTypesTable.setValue(null);
+                            editedPaymentTypeName.setValue("");
+                            editedPaymentTypeAmount.setValue(0.0);
+                            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                            paymentTypes.removeAllItems();
+                            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+                        }
+                    }
+                }
+
+                private boolean identicalToExistingValues(TransactionType transactionType, ObjectProperty<String> transactionTypeName, ObjectProperty<Double> transactionTypeAmount) {
+                    if (transactionType == null || transactionType.getTransactionTypeName() == null || transactionType.getTransactionAmount() == null) {
+                        return false; // Nothing to compare against, always false
+                    }
+
+                    boolean isIdentical =
+                        transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
+                        transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
+                    return isIdentical;
+                }
+            }));
+        paymenttypesform.addComponent(editPaymentsLayout);
         paymentstypeadmin.addTab(paymenttypesform, "Endre utbetalingstyper");
         paymentstypeadminTab.addComponent(paymentstypeadmin);
         accordion.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
