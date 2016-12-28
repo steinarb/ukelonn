@@ -29,8 +29,8 @@ import com.vaadin.ui.Button.ClickEvent;
 @Theme("chameleon")
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
+    final int idOfPayToBank = 4;
 
-    @SuppressWarnings("serial")
     @Override
     protected void init(VaadinRequest request) {
     	if (!isAdministrator()) {
@@ -83,7 +83,6 @@ public class UkelonnAdminUI extends AbstractUI {
                         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
                         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
                         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-                        final int idOfPayToBank = 4;
                         paymenttype.select(transactionTypes.get(idOfPayToBank));
                         amount.setValue(balance.getValue());
                         recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
@@ -101,6 +100,22 @@ public class UkelonnAdminUI extends AbstractUI {
 
         paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         paymenttype.setItemCaptionPropertyId("transactionTypeName");
+        paymenttype.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -8306551057458139402L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    TransactionType payment = (TransactionType) paymenttype.getValue();
+                    if (payment != null) {
+            		Double paymentAmount = payment.getTransactionAmount();
+                	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                            amount.setValue(balance.getValue());
+                	} else {
+                            amount.setValue(paymentAmount);
+                	}
+                    }
+                }
+            });
         paymentLayout.addComponent(paymenttype);
 
         TextField amountField = new TextField("Beløp:", amount);
@@ -138,16 +153,20 @@ public class UkelonnAdminUI extends AbstractUI {
         registerPaymentTab.addComponent(userinfo);
         accordion.addTab(registerPaymentTab, "Registrere utbetaling");
 
-        VerticalLayout jobtypeAdminTab = new VerticalLayout();
-        Accordion jobtypes = new Accordion();
-        FormLayout newJobTypeTab = new FormLayout();
+        // Updatable data model for the form elements (setting values in the properties will update the fields)
         ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
         ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
         ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
         ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
+        ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
+        ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
+
+        VerticalLayout jobtypeAdminTab = new VerticalLayout();
+        Accordion jobtypes = new Accordion();
+        FormLayout newJobTypeTab = new FormLayout();
         TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:", newJobTypeName);
         newJobTypeTab.addComponent(newJobTypeNameField);
-        TextField newJobTypeAmountField = new TextField("Navn på ny jobbtype:", newJobTypeAmount);
+        TextField newJobTypeAmountField = new TextField("Beløp for ny jobbtype:", newJobTypeAmount);
         newJobTypeTab.addComponent(newJobTypeAmountField);
         newJobTypeTab.addComponent(new Button("Lag jobbtype", new Button.ClickListener() {
                 private static final long serialVersionUID = 1338062460936195627L;
@@ -187,9 +206,11 @@ public class UkelonnAdminUI extends AbstractUI {
         FormLayout editJobLayout = new FormLayout();
         TextField editJobTypeNameField = new TextField("Endre Navn på jobbtype:", editedJobTypeName);
         editJobLayout.addComponent(editJobTypeNameField);
-        TextField editJobTypeAmountField = new TextField("Endre på ny jobbtype:", editedJobTypeAmount);
+        TextField editJobTypeAmountField = new TextField("Endre beløp for jobbtype:", editedJobTypeAmount);
         editJobLayout.addComponent(editJobTypeAmountField);
         editJobLayout.addComponent(new Button("Lagre endringer i jobbtype", new Button.ClickListener() {
+                private static final long serialVersionUID = 347708021528799659L;
+
                 @Override
                 public void buttonClick(ClickEvent event) {
                     TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
@@ -228,12 +249,30 @@ public class UkelonnAdminUI extends AbstractUI {
 
         VerticalLayout paymentstypeadminTab = new VerticalLayout();
         Accordion paymentstypeadmin = new Accordion();
-        VerticalLayout newpaymenttypeTab = new VerticalLayout();
+        FormLayout newpaymenttypeTab = new FormLayout();
+        TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
+        newpaymenttypeTab.addComponent(newPaymentTypeNameField);
+        TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
+        newpaymenttypeTab.addComponent(newPaymentTypeAmountField);
+        newpaymenttypeTab.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
+                private static final long serialVersionUID = -2160144195348196823L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    String paymentName = newPaymentTypeName.getValue();
+                    Double paymentAmount = newPaymentTypeAmount.getValue();
+                    if (!"".equals(paymentName) && !Double.valueOf(0.0).equals(paymentAmount)) {
+                        addPaymentTypeToDatabase(classForLogMessage, paymentName, paymentAmount);
+                        newPaymentTypeName.setValue("");
+                        newPaymentTypeAmount.setValue(0.0);
+                    }
+                }
+            }));
         paymentstypeadmin.addTab(newpaymenttypeTab, "Lag ny utbetalingstype");
         VerticalLayout paymenttypesform = new VerticalLayout();
         paymentstypeadmin.addTab(paymenttypesform, "Endre utbetalingstyper");
         paymentstypeadminTab.addComponent(paymentstypeadmin);
-        accordion.addTab(paymentstypeadminTab, "Endre utbetalingstyper");
+        accordion.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
 
         VerticalLayout useradminTab = new VerticalLayout();
         Accordion useradmin = new Accordion();
