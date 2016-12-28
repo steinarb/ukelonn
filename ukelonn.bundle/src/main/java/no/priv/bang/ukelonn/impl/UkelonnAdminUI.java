@@ -12,6 +12,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
@@ -20,6 +21,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -162,6 +164,12 @@ public class UkelonnAdminUI extends AbstractUI {
         ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
         ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
         ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
+        ObjectProperty<String> newUserUsername = new ObjectProperty<String>("");
+        ObjectProperty<String> newUserPassword1 = new ObjectProperty<String>("");
+        ObjectProperty<String> newUserPassword2 = new ObjectProperty<String>("");
+        ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
+        ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
+        ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
 
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
@@ -337,8 +345,58 @@ public class UkelonnAdminUI extends AbstractUI {
 
         VerticalLayout useradminTab = new VerticalLayout();
         Accordion useradmin = new Accordion();
-        VerticalLayout newuserTab = new VerticalLayout();
-        useradmin.addTab(newuserTab, "Legg til ny bruker");
+        FormLayout newUserTab = new FormLayout();
+        TextField newUserUsernameField = new TextField("Brukernavn:", newUserUsername);
+        newUserTab.addComponent(newUserUsernameField);
+        PasswordField newUserPassword1Field = new PasswordField("Passord:", newUserPassword1);
+        newUserTab.addComponent(newUserPassword1Field);
+        PasswordField newUserPassword2Field = new PasswordField("Gjenta passord:", newUserPassword2);
+        newUserPassword2Field.addValidator(new PasswordCompareValidator(newUserPassword1Field));
+        newUserTab.addComponent(newUserPassword2Field);
+        TextField newUserEmailField = new TextField("Epostadresse:", newUserEmail);
+        newUserEmailField.addValidator(new EmailValidator("Ikke en gyldig epostadresse"));
+        newUserTab.addComponent(newUserEmailField);
+        TextField newUserFirstnameField = new TextField("Fornavn:", newUserFirstname);
+        newUserTab.addComponent(newUserFirstnameField);
+        TextField newUserLastnameField = new TextField("Etternavn:", newUserLastname);
+        newUserTab.addComponent(newUserLastnameField);
+        newUserTab.addComponent(new Button("Lag bruker", new Button.ClickListener() {
+                private static final long serialVersionUID = 2493188115512727312L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    if (newUserIsAValidUser())
+                    {
+                    	addUserToDatabase(classForLogMessage,
+                                          newUserUsername.getValue(),
+                                          newUserPassword2.getValue(),
+                                          newUserEmail.getValue(),
+                                          newUserFirstname.getValue(),
+                                          newUserLastname.getValue());
+                    	newUserUsername.setValue("");
+                    	newUserPassword1.setValue("");
+                    	newUserPassword2.setValue("");
+                    	newUserEmail.setValue("");
+                    	newUserFirstname.setValue("");
+                    	newUserLastname.setValue("");
+                        List<Account> accounts = getAccounts(classForLogMessage);
+                        accountsContainer.removeAllItems();
+                        accountsContainer.addAll(accounts);
+                    }
+                }
+
+                private boolean newUserIsAValidUser() {
+                    return
+                        !"".equals(newUserUsername.getValue()) &&
+                        !"".equals(newUserPassword1.getValue()) &&
+                        newUserPassword1.getValue().equals(newUserPassword2Field.getValue()) &&
+                        newUserPassword2Field.isValid() &&
+                        newUserEmailField.isValid() &&
+                        !"".equals(newUserFirstname.getValue()) &&
+                        !"".equals(newUserLastname.getValue());
+                }
+            }));
+        useradmin.addTab(newUserTab, "Legg til ny bruker");
         VerticalLayout changeuserpasswordTab = new VerticalLayout();
         useradmin.addTab(changeuserpasswordTab, "Bytt passord på bruker");
         VerticalLayout usersTab = new VerticalLayout();
