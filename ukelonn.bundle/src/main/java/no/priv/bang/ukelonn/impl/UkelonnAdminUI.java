@@ -170,6 +170,9 @@ public class UkelonnAdminUI extends AbstractUI {
         ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
         ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
         ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
+        BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(classForLogMessage));
+        ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
+        ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
 
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
@@ -397,7 +400,45 @@ public class UkelonnAdminUI extends AbstractUI {
                 }
             }));
         useradmin.addTab(newUserTab, "Legg til ny bruker");
-        VerticalLayout changeuserpasswordTab = new VerticalLayout();
+        FormLayout changeuserpasswordTab = new FormLayout();
+        ComboBox editUserPasswordUsersField = new ComboBox("Velg bruker", editUserPasswordUsers);
+        editUserPasswordUsersField.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        editUserPasswordUsersField.setItemCaptionPropertyId("fullname");
+        editUserPasswordUsersField.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -5949282377337763508L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    User user = (User) editUserPasswordUsersField.getValue();
+                    if (user != null) {
+                        editUserPassword1.setValue("");
+                        editUserPassword2.setValue("");
+                    }
+                }
+            });
+        changeuserpasswordTab.addComponent(editUserPasswordUsersField);
+        PasswordField editUserPassword1Field = new PasswordField("Passord:", editUserPassword1);
+        changeuserpasswordTab.addComponent(editUserPassword1Field);
+        PasswordField editUserPassword2Field = new PasswordField("Gjenta passord:", editUserPassword2);
+        editUserPassword2Field.addValidator(new PasswordCompareValidator(editUserPassword1Field));
+        changeuserpasswordTab.addComponent(newUserPassword2Field);
+        changeuserpasswordTab.addComponent(new Button("Endre passord", new Button.ClickListener() {
+                private static final long serialVersionUID = 811470485549038444L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    User user = (User) editUserPasswordUsersField.getValue();
+                    if (user != null) {
+                        if (!"".equals(editUserPassword1Field.getValue()) &&
+                            editUserPassword2Field.isValid())
+                        {
+                            changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
+                            editUserPassword1.setValue("");
+                            editUserPassword2.setValue("");
+                        }
+                    }
+                }
+            }));
         useradmin.addTab(changeuserpasswordTab, "Bytt passord på bruker");
         VerticalLayout usersTab = new VerticalLayout();
         useradmin.addTab(usersTab, "Endre brukere");
