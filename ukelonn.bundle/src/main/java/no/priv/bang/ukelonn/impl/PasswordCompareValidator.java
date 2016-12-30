@@ -14,7 +14,8 @@ public class PasswordCompareValidator implements Validator {
 
     @Override
     public void validate(Object value) throws InvalidValueException {
-        if (!otherPassword.getValue().equals(value)){
+    	String otherPasswordValue = otherPassword.getValue();
+        if (!otherPasswordValue.equals(value)){
             throw new InvalidValueException("Passwords aren't identical");
         }
     }
