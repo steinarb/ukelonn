@@ -1,0 +1,1 @@
+update users set username = '%s', email = '%s', first_name = '%s', last_name = '%s' where user_id = %d

@@ -4,6 +4,8 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,6 +61,63 @@ public class CommonDatabaseMethodsTest {
         assertEquals("unknownuser", accountNotInDatabase.getUsername());
         assertEquals(0, accountNotInDatabase.getUserId());
         assertEquals("Ikke innlogget", accountNotInDatabase.getFirstName());
+    }
+
+    @Test
+    public void testUpdateUserInDatabase() {
+    	try {
+            List<User> users = getUsers(getClass());
+            User jad = findUserInListByName(users, "jad");
+            int jadUserid = jad.getUserId();
+
+            String newUsername = "nn";
+            String newEmail = "nn213@aol.com";
+            String newFirstname = "Nomen";
+            String newLastname = "Nescio";
+
+            // Verify that the new values are different from the old values
+            assertNotEquals(newUsername, jad.getUsername());
+            assertNotEquals(newEmail, jad.getEmail());
+            assertNotEquals(newFirstname, jad.getFirstname());
+            assertNotEquals(newLastname, jad.getLastname());
+
+            // Create a brand new User bean to use for the update (password won't be used in the update)
+            User jadToUpdate = new User(jadUserid, newUsername, newEmail, null, newFirstname, newLastname);
+            int expectedNumberOfUpdatedRecords = 1;
+            int numberOfUpdatedRecords = updateUserInDatabase(getClass(), jadToUpdate);
+            assertEquals(expectedNumberOfUpdatedRecords, numberOfUpdatedRecords);
+
+            // Read back an updated user and compare with the expected values
+            List<User> usersAfterUpdate = getUsers(getClass());
+            assertEquals("Expected no new users added", users.size(), usersAfterUpdate.size());
+            User jadAfterUpdate = findUserInListById(usersAfterUpdate, jadUserid);
+            assertEquals(newUsername, jadAfterUpdate.getUsername());
+            assertEquals(newEmail, jadAfterUpdate.getEmail());
+            assertEquals(newFirstname, jadAfterUpdate.getFirstname());
+            assertEquals(newLastname, jadAfterUpdate.getLastname());
+    	} finally {
+            restoreTestDatabase();
+    	}
+    }
+
+    private User findUserInListByName(List<User> users, String username) {
+        for (User user : users) {
+            if (username.equals(user.getUsername())) {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+    private User findUserInListById(List<User> users, int userId) {
+        for (User user : users) {
+            if (userId == user.getUserId()) {
+                return user;
+            }
+        }
+
+        return null;
     }
 
 }

@@ -365,6 +365,20 @@ public class CommonDatabaseMethods {
         return database.update(update.toString());
     }
 
+    public static int updateUserInDatabase(Class<?> classForLogging, User userToUpdate) {
+        String updateUserSql = String.format(
+                                             getResourceAsString("/sql/query/update_user.sql"),
+                                             userToUpdate.getUsername(),
+                                             userToUpdate.getEmail(),
+                                             userToUpdate.getFirstname(),
+                                             userToUpdate.getLastname(),
+                                             userToUpdate.getUserId()
+                                             );
+
+        UkelonnDatabase database = connectionCheck(classForLogging);
+        return database.update(updateUserSql.toString());
+    }
+
     public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
     	StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
         UkelonnDatabase database = connectionCheck(clazz);
