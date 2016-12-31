@@ -381,15 +381,20 @@ public class UkelonnAdminUI extends AbstractUI {
                                           newUserEmail.getValue(),
                                           newUserFirstname.getValue(),
                                           newUserLastname.getValue());
-                    	newUserUsername.setValue("");
-                    	newUserPassword1.setValue("");
-                    	newUserPassword2.setValue("");
-                    	newUserEmail.setValue("");
-                    	newUserFirstname.setValue("");
-                    	newUserLastname.setValue("");
+
+                    	clearAllNewUserFormElements();
 
                     	refreshListWidgetsAffectedByChangesToUsers();
                     }
+                }
+
+                private void clearAllNewUserFormElements() {
+                    newUserUsername.setValue("");
+                    newUserPassword1.setValue("");
+                    newUserPassword2.setValue("");
+                    newUserEmail.setValue("");
+                    newUserFirstname.setValue("");
+                    newUserLastname.setValue("");
                 }
 
                 private boolean newUserIsAValidUser() {
