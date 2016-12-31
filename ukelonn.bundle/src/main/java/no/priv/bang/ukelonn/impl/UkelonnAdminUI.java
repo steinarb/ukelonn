@@ -173,6 +173,11 @@ public class UkelonnAdminUI extends AbstractUI {
         BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(classForLogMessage));
         ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
         ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
+        BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class, getUsers(classForLogMessage));
+        ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
+        ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
+        ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
+        ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
 
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
@@ -440,7 +445,73 @@ public class UkelonnAdminUI extends AbstractUI {
                 }
             }));
         useradmin.addTab(changeuserpasswordTab, "Bytt passord på bruker");
-        VerticalLayout usersTab = new VerticalLayout();
+        FormLayout usersTab = new FormLayout();
+        ComboBox editUserUsersField = new ComboBox("Velg bruker", editUserUsers);
+        editUserUsersField.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        editUserUsersField.setItemCaptionPropertyId("fullname");
+        editUserUsersField.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = 7774428541884411808L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    User user = (User) editUserUsersField.getValue();
+                    if (user != null) {
+                        editUserUsername.setValue(user.getUsername());
+                        editUserEmail.setValue(user.getEmail());
+                        editUserFirstname.setValue(user.getFirstname());
+                        editUserLastname.setValue(user.getLastname());
+                    }
+                }
+            });
+        usersTab.addComponent(editUserUsersField);
+
+        TextField editUserUsernameField = new TextField("Brukernavn:", editUserUsername);
+        usersTab.addComponent(editUserUsernameField);
+        TextField editUserEmailField = new TextField("Epostadresse:", editUserEmail);
+        editUserEmailField.addValidator(new EmailValidator("Ikke en gyldig epostadresse"));
+        usersTab.addComponent(editUserEmailField);
+        TextField editUserFirstnameField = new TextField("Fornavn:", editUserFirstname);
+        usersTab.addComponent(editUserFirstnameField);
+        TextField editUserLastnameField = new TextField("Etternavn:", editUserLastname);
+        usersTab.addComponent(editUserLastnameField);
+        usersTab.addComponent(new Button("Lagre endringer av bruker", new Button.ClickListener() {
+                private static final long serialVersionUID = 1658760136279718499L;
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    User user = (User) editUserUsersField.getValue();
+                    if (user != null) {
+                        user.setUsername(editUserUsername.getValue());
+                        user.setEmail(editUserEmail.getValue());
+                        user.setFirstname(editUserFirstname.getValue());
+                        user.setLastname(editUserLastname.getValue());
+
+                        updateUserInDatabase(classForLogMessage, user);
+
+                        clearFormElements();
+
+                        refreshListWidgetsAffectedByChangesToUsers();
+                    }
+                }
+
+                private void clearFormElements() {
+                    editUserUsername.setValue("");
+                    editUserEmail.setValue("");
+                    editUserFirstname.setValue("");
+                    editUserLastname.setValue("");
+                }
+
+                private void refreshListWidgetsAffectedByChangesToUsers() {
+                    List<Account> accounts = getAccounts(classForLogMessage);
+                    accountsContainer.removeAllItems();
+                    accountsContainer.addAll(accounts);
+                    List<User> users = getUsers(classForLogMessage);
+                    editUserPasswordUsers.removeAllItems();
+                    editUserUsers.removeAllItems();
+                    editUserPasswordUsers.addAll(users);
+                    editUserUsers.addAll(users);
+                }
+            }));
         useradmin.addTab(usersTab, "Endre brukere");
         useradminTab.addComponent(useradmin);
         accordion.addTab(useradminTab, "Administrere brukere");
