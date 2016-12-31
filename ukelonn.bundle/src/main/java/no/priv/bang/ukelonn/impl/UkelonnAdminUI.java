@@ -421,7 +421,7 @@ public class UkelonnAdminUI extends AbstractUI {
         changeuserpasswordTab.addComponent(editUserPassword1Field);
         PasswordField editUserPassword2Field = new PasswordField("Gjenta passord:", editUserPassword2);
         editUserPassword2Field.addValidator(new PasswordCompareValidator(editUserPassword1Field));
-        changeuserpasswordTab.addComponent(newUserPassword2Field);
+        changeuserpasswordTab.addComponent(editUserPassword2Field);
         changeuserpasswordTab.addComponent(new Button("Endre passord", new Button.ClickListener() {
                 private static final long serialVersionUID = 811470485549038444L;
 
