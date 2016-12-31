@@ -387,9 +387,8 @@ public class UkelonnAdminUI extends AbstractUI {
                     	newUserEmail.setValue("");
                     	newUserFirstname.setValue("");
                     	newUserLastname.setValue("");
-                        List<Account> accounts = getAccounts(classForLogMessage);
-                        accountsContainer.removeAllItems();
-                        accountsContainer.addAll(accounts);
+
+                    	refreshListWidgetsAffectedByChangesToUsers();
                     }
                 }
 
@@ -402,6 +401,17 @@ public class UkelonnAdminUI extends AbstractUI {
                         newUserEmailField.isValid() &&
                         !"".equals(newUserFirstname.getValue()) &&
                         !"".equals(newUserLastname.getValue());
+                }
+
+                private void refreshListWidgetsAffectedByChangesToUsers() {
+                    List<Account> accounts = getAccounts(classForLogMessage);
+                    accountsContainer.removeAllItems();
+                    accountsContainer.addAll(accounts);
+                    List<User> users = getUsers(classForLogMessage);
+                    editUserPasswordUsers.removeAllItems();
+                    editUserUsers.removeAllItems();
+                    editUserPasswordUsers.addAll(users);
+                    editUserUsers.addAll(users);
                 }
             }));
         useradmin.addTab(newUserTab, "Legg til ny bruker");
