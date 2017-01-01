@@ -28,7 +28,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("chameleon")
+@Theme("runo")
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
