@@ -30,6 +30,7 @@
   <javax.validation>1.1.0.Final</javax.validation>
   <jsoup.version>1.8.3</jsoup.version>
   <vaadin.version>7.7.4</vaadin.version>
+  <vaadin.touchkit.version>4.1.0</vaadin.touchkit.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
   <karaf.version>4.0.7</karaf.version>
  </properties>
@@ -380,7 +381,7 @@
    <dependency>
     <groupId>com.vaadin.addon</groupId>
     <artifactId>vaadin-touchkit-agpl</artifactId>
-    <version>4.1.0</version>
+    <version>${vaadin.touchkit.version}</version>
    </dependency>
    <dependency>
     <groupId>org.ops4j.pax.jdbc</groupId>

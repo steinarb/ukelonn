@@ -13,5 +13,6 @@
   <bundle start-level="80">mvn:com.vaadin/vaadin-server/${vaadin.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin/vaadin-themes/${vaadin.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin/vaadin-client-compiled/${vaadin.version}</bundle>
+  <bundle start-level="80">wrap:mvn:com.vaadin.addon/vaadin-touchkit-agpl/${vaadin.touchkit.version}</bundle>
  </feature>
 </features>
