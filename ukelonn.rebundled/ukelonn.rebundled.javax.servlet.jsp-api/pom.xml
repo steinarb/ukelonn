@@ -3,7 +3,7 @@
  <modelVersion>4.0.0</modelVersion>
  <parent>
   <artifactId>ukelonn.rebundled</artifactId>
-  <groupId>no.priv.bang.ukelonn</groupId>
+  <groupId>no.priv.bang.ukelonn.rebundled</groupId>
   <version>1.0.0-SNAPSHOT</version>
  </parent>
 
