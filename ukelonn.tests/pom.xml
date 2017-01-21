@@ -256,6 +256,16 @@
    <groupId>org.jsoup</groupId>
    <artifactId>jsoup</artifactId>
   </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn.rebundled</groupId>
+   <artifactId>ukelonn.rebundled.com.vaadin.external.gwt.gwt-user</artifactId>
+   <version>${vaadin.touchkit.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn.rebundled</groupId>
+   <artifactId>ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl</artifactId>
+   <version>${vaadin.touchkit.version}</version>
+  </dependency>
  </dependencies>
 
  <build>

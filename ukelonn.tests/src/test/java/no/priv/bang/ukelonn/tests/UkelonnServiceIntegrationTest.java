@@ -38,12 +38,14 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     private String paxWebVersion = "4.3.0";
     private String jettyVersion = "9.2.17.v20160517";
     private String shiroVersion = "1.3.1";
-    private String vaadinVersion = "7.7.4";
+    private String vaadinVersion = "7.6.1";
+    private String vaadinTouchkitVersion = "4.1.0";
 
     @Inject
     private UkelonnDatabase database;
 
-    @Inject BundleContext bundleContext;
+    @Inject 
+    BundleContext bundleContext;
 
     UkelonnService ukelonnService;
     ServiceListener ukelonnServiceListener;
@@ -107,10 +109,15 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("javax.validation", "validation-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
+                       mavenBundle("no.priv.bang.ukelonn.rebundled", "ukelonn.rebundled.com.vaadin.external.gwt.gwt-user", "2.7.0.vaadin4"),
                        mavenBundle("com.vaadin", "vaadin-shared", vaadinVersion),
                        mavenBundle("com.vaadin", "vaadin-server", vaadinVersion),
                        mavenBundle("com.vaadin", "vaadin-themes", vaadinVersion),
                        mavenBundle("com.vaadin", "vaadin-client-compiled", vaadinVersion),
+                       mavenBundle("com.vaadin.external.google", "guava", "16.0.1.vaadin1"),
+                       mavenBundle("com.vaadin.external.flute", "flute", "1.3.0.gg2"),
+                       mavenBundle("com.vaadin.external.streamhtmlparser", "streamhtmlparser-jsilver", "0.0.10.vaadin1"),
+                       mavenBundle("no.priv.bang.ukelonn.rebundled", "ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl", vaadinTouchkitVersion),
                        mavenBundle("org.jsoup", "jsoup", "1.8.3"),
                        mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
                        mavenBundle("org.apache.shiro", "shiro-core", shiroVersion),
