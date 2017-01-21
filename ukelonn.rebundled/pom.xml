@@ -16,6 +16,13 @@
 
  <modules>
   <module>ukelonn.rebundled.javax.servlet.jsp-api</module>
+  <module>ukelonn.rebundled.org.w3c.css.sac</module>
+  <module>ukelonn.rebundled.net.sourceforge.cssparser</module>
+  <module>ukelonn.rebundled.net.sourceforge.htmlunit.corejs</module>
+  <module>ukelonn.rebundled.net.sourceforge.htmlunit.neko</module>
+  <module>ukelonn.rebundled.com.vaadin.external.gwt.gwt-dev</module>
+  <module>ukelonn.rebundled.com.vaadin.external.gwt.gwt-user</module>
+  <module>ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl</module>
  </modules>
 
 </project>
