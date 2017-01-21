@@ -31,7 +31,8 @@
    <artifactId>ukelonn.bundle.test.db</artifactId>
    <version>${project.version}</version>
    <scope>test</scope>
-   </dependency><dependency>
+  </dependency>
+  <dependency>
    <groupId>org.apache.felix</groupId>
    <artifactId>org.osgi.core</artifactId>
    <version>1.4.0</version>
@@ -150,6 +151,26 @@
        org.apache.shiro.web.env,
        org.apache.shiro.web.servlet,
        com.vaadin.server,
+       com.vaadin.addon.touchkit.server,
+       com.vaadin.addon.touchkit.settings,
+       com.vaadin.addon.touchkit.annotations,
+       VAADIN.widgetsets.com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet,
+       VAADIN.widgetsets.com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet.deferredjs.0A32B241463C3CF770B8CD52599C1C21,
+       com.vaadin.addon.touchkit.extensions,
+       com.vaadin.addon.touchkit.gwt,
+       com.vaadin.addon.touchkit.gwt.client,
+       com.vaadin.addon.touchkit.gwt.client.communication,
+       com.vaadin.addon.touchkit.gwt.client.offlinemode,
+       com.vaadin.addon.touchkit.gwt.client.theme,
+       com.vaadin.addon.touchkit.gwt.client.theme.fonts,
+       com.vaadin.addon.touchkit.gwt.client.theme.img,
+       com.vaadin.addon.touchkit.gwt.client.ui,
+       com.vaadin.addon.touchkit.gwt.client.vcom,
+       com.vaadin.addon.touchkit.gwt.client.vcom.navigation,
+       com.vaadin.addon.touchkit.gwt.client.vcom.popover,
+       com.vaadin.addon.touchkit.service,
+       com.vaadin.addon.touchkit.ui,
+       assets,
        VAADIN.themes,
        VAADIN.widgetsets,
        *
