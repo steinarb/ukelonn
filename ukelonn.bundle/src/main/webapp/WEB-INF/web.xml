@@ -21,7 +21,7 @@
 
  <servlet>
   <servlet-name>top</servlet-name>
-  <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+  <servlet-class>com.vaadin.addon.touchkit.server.TouchKitServlet</servlet-class>
 
   <init-param>
    <param-name>UI</param-name>
@@ -31,7 +31,7 @@
 
  <servlet>
   <servlet-name>user</servlet-name>
-  <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+  <servlet-class>com.vaadin.addon.touchkit.server.TouchKitServlet</servlet-class>
 
   <init-param>
    <param-name>UI</param-name>
@@ -41,7 +41,7 @@
 
  <servlet>
   <servlet-name>admin</servlet-name>
-  <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+  <servlet-class>com.vaadin.addon.touchkit.server.TouchKitServlet</servlet-class>
 
   <init-param>
    <param-name>UI</param-name>
