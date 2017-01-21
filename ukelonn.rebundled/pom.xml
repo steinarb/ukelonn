@@ -20,7 +20,7 @@
   <module>ukelonn.rebundled.net.sourceforge.cssparser</module>
   <module>ukelonn.rebundled.net.sourceforge.htmlunit.corejs</module>
   <module>ukelonn.rebundled.net.sourceforge.htmlunit.neko</module>
-  <module>ukelonn.rebundled.com.vaadin.external.gwt.gwt-dev</module>
+  <!-- <module>ukelonn.rebundled.com.vaadin.external.gwt.gwt-dev</module> Fails with maven-bundle-plugin 2.5.3 -->
   <module>ukelonn.rebundled.com.vaadin.external.gwt.gwt-user</module>
   <module>ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl</module>
  </modules>
