@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
@@ -28,7 +29,8 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("runo")
+@Theme("touchkit")
+@Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
