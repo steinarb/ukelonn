@@ -31,8 +31,10 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     	this.dataSourceFactory = dataSourceFactory;
     	if (this.dataSourceFactory != null) {
             createConnection();
-            createSchema();
-            insertMockData();
+            boolean createdSchema = createSchema();
+            if (createdSchema) {
+                insertMockData();
+            }
     	}
     }
 
@@ -54,17 +56,16 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     public boolean createSchema() {
         try {
             Statement createSchema = connect.getConnection().createStatement();
-            boolean result = false;
-            result |= createSchema.execute(getResourceAsString("/sql/tables/users.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/tables/accounts.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/tables/transaction_types.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/tables/transactions.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/tables/administrators.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/views/administrators_view.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/views/accounts_view.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/views/wage_payments_view.sql"));
-            result |= createSchema.execute(getResourceAsString("/sql/views/work_done_view.sql"));
-            return result;
+            createSchema.execute(getResourceAsString("/sql/tables/users.sql"));
+            createSchema.execute(getResourceAsString("/sql/tables/accounts.sql"));
+            createSchema.execute(getResourceAsString("/sql/tables/transaction_types.sql"));
+            createSchema.execute(getResourceAsString("/sql/tables/transactions.sql"));
+            createSchema.execute(getResourceAsString("/sql/tables/administrators.sql"));
+            createSchema.execute(getResourceAsString("/sql/views/administrators_view.sql"));
+            createSchema.execute(getResourceAsString("/sql/views/accounts_view.sql"));
+            createSchema.execute(getResourceAsString("/sql/views/wage_payments_view.sql"));
+            createSchema.execute(getResourceAsString("/sql/views/work_done_view.sql"));
+            return true; // Successfully created tne schema
         } catch (Exception e) {
             logError("Derby mock database failed to create schema", e);
             return false;
