@@ -13,6 +13,10 @@
   <bundle start-level="80">mvn:com.vaadin/vaadin-server/${vaadin.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin/vaadin-themes/${vaadin.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin/vaadin-client-compiled/${vaadin.version}</bundle>
+  <bundle start-level="80">mvn:com.vaadin.external.flute/flute/${vaadin.flute.version}</bundle>
+  <bundle start-level="80">mvn:com.vaadin.external.streamhtmlparser/streamhtmlparser-jsilver/${vaadin.streamhtmlparser.version}</bundle>
+  <bundle start-level="80">mvn:com.vaadin.external.google/guava/${vaadin.guava.version}</bundle>
+  <bundle start-level="80">wrap:mvn:com.vaadin.external.gwt/gwt-user/${vaadin.gwt-user.version}</bundle>
   <bundle start-level="80">wrap:mvn:com.vaadin.addon/vaadin-touchkit-agpl/${vaadin.touchkit.version}</bundle>
  </feature>
 </features>
