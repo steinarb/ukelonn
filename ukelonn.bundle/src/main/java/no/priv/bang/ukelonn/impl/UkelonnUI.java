@@ -7,6 +7,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.addon.touchkit.ui.NavigationManager;
+import com.vaadin.addon.touchkit.ui.NavigationView;
+import com.vaadin.addon.touchkit.ui.TabBarView;
+import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -15,15 +19,12 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button.ClickEvent;
 
 @Theme("touchkit")
@@ -41,36 +42,39 @@ public class UkelonnUI extends AbstractUI {
     	Principal currentUser = request.getUserPrincipal();
     	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getName());
 
-    	// Display the greeting
-    	VerticalLayout content = new VerticalLayout();
-        Component greeting = new Label("Hei " + account.getFirstName());
-        greeting.setStyleName("h1");
-        content.addComponent(greeting);
+        TabBarView tabs = new TabBarView();
 
-        FormLayout balanceLayout = new FormLayout();
+        NavigationManager balanceAndNewJobTab = new NavigationManager();
+        NavigationView balanceAndNewJobView = new NavigationView();
+        CssLayout balanceAndNewJobForm = new CssLayout();
+        VerticalComponentGroup balanceAndNewJobGroup = new VerticalComponentGroup();
+        balanceAndNewJobGroup.setWidth("100%");
+
+        // Display the greeting
+        Component greeting = new Label("Ukelønn for " + account.getFirstName());
+        greeting.setStyleName("h1");
+        balanceAndNewJobGroup.addComponent(greeting);
+
         // Display the current balance
         ObjectProperty<Double> balance = new ObjectProperty<Double>(account.getBalance());
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
-        balanceLayout.addComponent(balanceDisplay);
-        content.addComponent(balanceLayout);
+        balanceAndNewJobGroup.addComponent(balanceDisplay);
 
-        Accordion accordion = new Accordion();
-
-        FormLayout balanceAndNewJobTab = new FormLayout();
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
         BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
-        ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
-        jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        //ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
+        NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", paymentTypesContainer);
+        jobtypeSelector.setValue("Item " + 2);        //jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
-        balanceAndNewJobTab.addComponent(jobtypeSelector);
+        balanceAndNewJobGroup.addComponent(jobtypeSelector);
         ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
         TextField newAmountDisplay = new TextField(newJobAmount);
         newAmountDisplay.setReadOnly(true);
-        balanceAndNewJobTab.addComponent(newAmountDisplay);
+        balanceAndNewJobGroup.addComponent(newAmountDisplay);
         jobtypeSelector.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = 3145027593224884343L;
                 @Override
@@ -91,34 +95,46 @@ public class UkelonnUI extends AbstractUI {
         Class<? extends UkelonnUI> classForLogMessage = getClass();
 
         // Have a clickable button
-        balanceAndNewJobTab.addComponent(new Button("Registrer jobb",
-                                                    new Button.ClickListener() {
-                                                        private static final long serialVersionUID = 2723190031041985566L;
+        balanceAndNewJobGroup.addComponent(new Button("Registrer jobb",
+                                                      new Button.ClickListener() {
+                                                          private static final long serialVersionUID = 2723190031041985566L;
 
-                                                        @Override
-                                                        public void buttonClick(ClickEvent e) {
-                                                            TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
-                                                            if (jobType != null) {
-                                                                registerNewJobInDatabase(classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
-                                                                balance.setValue(account.getBalance());
-                                                                jobtypeSelector.setValue(null);
-                                                                recentJobs.removeAllItems();
-                                                                recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
-                                                            }
-                                                        }
-                                                    }));
-        accordion.addTab(balanceAndNewJobTab, "Registrere jobb");
+                                                          @Override
+                                                          public void buttonClick(ClickEvent e) {
+                                                              TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
+                                                              if (jobType != null) {
+                                                                  registerNewJobInDatabase(classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
+                                                                  jobtypeSelector.setValue(null);
+                                                                  balance.setValue(account.getBalance());
+                                                                  recentJobs.removeAllItems();
+                                                                  recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
+                                                              }
+                                                          }
+                                                      }));
+        balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
+        balanceAndNewJobView.setContent(balanceAndNewJobForm);
+        balanceAndNewJobTab.navigateTo(balanceAndNewJobView);
+        tabs.addTab(balanceAndNewJobTab, "Registrere jobb");
 
-        VerticalLayout lastJobsTab = new VerticalLayout();
-        lastJobsTab.addComponent(lastJobsTable);
-        accordion.addTab(lastJobsTab, "Siste jobber");
+        NavigationManager lastJobsTab = new NavigationManager();
+        CssLayout lastJobsForm = new CssLayout();
+        VerticalComponentGroup lastJobsGroup = new VerticalComponentGroup();
+        lastJobsGroup.setWidth("100%");
+        lastJobsGroup.addComponent(lastJobsTable);
+        lastJobsForm.addComponent(lastJobsGroup);
+        lastJobsTab.navigateTo(lastJobsForm);
+        tabs.addTab(lastJobsTab, "Siste jobber");
 
-        VerticalLayout lastPaymentsTab = new VerticalLayout();
+        NavigationManager lastPaymentsTab = new NavigationManager();
+        CssLayout lastPaymentsForm = new CssLayout();
+        VerticalComponentGroup lastPaymentsGroup = new VerticalComponentGroup();
+        lastPaymentsGroup.setWidth("100%");
         Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
-        lastPaymentsTab.addComponent(lastPaymentsTable);
-        accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
+        lastPaymentsGroup.addComponent(lastPaymentsTable);
+        lastPaymentsForm.addComponent(lastPaymentsGroup);
+        lastPaymentsTab.navigateTo(lastPaymentsForm);
+        tabs.addTab(lastPaymentsTab, "Siste utbetalinger");
 
-        content.addComponent(accordion);
-        setContent(content);
+        setContent(tabs);
     }
 }
