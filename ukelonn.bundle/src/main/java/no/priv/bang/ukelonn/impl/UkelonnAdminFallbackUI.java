@@ -31,7 +31,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnAdminUI extends AbstractUI {
+public class UkelonnAdminFallbackUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
 
@@ -61,7 +61,7 @@ public class UkelonnAdminUI extends AbstractUI {
         BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
         ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
         ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
-        Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
+        Class<?> classForLogMessage = getClass();
 
         Accordion accordion = new Accordion();
 
