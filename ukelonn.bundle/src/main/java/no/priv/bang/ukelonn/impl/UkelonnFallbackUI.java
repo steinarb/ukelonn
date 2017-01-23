@@ -28,7 +28,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnUI extends AbstractUI {
+public class UkelonnFallbackUI extends AbstractUI {
     private static final long serialVersionUID = 1388525490129647161L;
 
     @Override
@@ -88,7 +88,7 @@ public class UkelonnUI extends AbstractUI {
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTable.setImmediate(true);
         BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
-        Class<? extends UkelonnUI> classForLogMessage = getClass();
+        Class<?> classForLogMessage = getClass();
 
         // Have a clickable button
         balanceAndNewJobTab.addComponent(new Button("Registrer jobb",
