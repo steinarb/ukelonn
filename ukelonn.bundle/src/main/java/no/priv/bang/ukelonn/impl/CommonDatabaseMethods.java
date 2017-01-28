@@ -220,6 +220,23 @@ public class CommonDatabaseMethods {
         return transactions;
     }
 
+    /***
+     * Create a list of dummy transactions used to force the initial size of tables.
+     *
+     * @return A list of 10 transactions with empty values for everything
+     */
+    public static Collection<? extends Transaction> getDummyTransactions() {
+    	int lengthOfDummyList = 10;
+    	TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
+    	ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
+    	for (int i = 0; i < lengthOfDummyList; i++) {
+            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0);
+            dummyTransactions.add(dummyTransaction);
+        }
+
+    	return (Collection<? extends Transaction>) dummyTransactions;
+    }
+
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
         Transaction transaction =
             new Transaction(
