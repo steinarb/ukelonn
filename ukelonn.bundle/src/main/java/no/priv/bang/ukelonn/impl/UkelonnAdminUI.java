@@ -7,6 +7,9 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.addon.touchkit.ui.NavigationManager;
+import com.vaadin.addon.touchkit.ui.TabBarView;
+import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -14,14 +17,15 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -42,33 +46,32 @@ public class UkelonnAdminUI extends AbstractUI {
             getPage().setLocation(userPage);
     	}
 
-    	VerticalLayout content = new VerticalLayout();
-    	content.addStyleName("ukelonn-responsive-layout");
-    	Responsive.makeResponsive(content);
+        TabBarView tabs = new TabBarView();
+
+        NavigationManager registerPaymentTab = new NavigationManager();
+        CssLayout registerPaymentTabForm = new CssLayout();
+        VerticalComponentGroup registerPaymentTabGroup = new VerticalComponentGroup();
     	Principal currentUser = request.getUserPrincipal();
     	AdminUser admin = getAdminUserFromDatabase(getClass(), (String) currentUser.getName());
         // Display the greeting
-        Component greeting = new Label("Hei " + admin.getFirstname());
+        Component greeting = new Label("Ukelønn admin UI, bruker: " + admin.getFirstname());
         greeting.setStyleName("h1");
-        content.addComponent(greeting);
+        registerPaymentTabGroup.addComponent(greeting);
 
         // Updatable containers
         ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
-        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
-        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
+        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
         BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
-        ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
+        NativeSelect paymenttype = new NativeSelect("Registrer utbetaling", paymentTypes);
         ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
         Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
 
-        Accordion accordion = new Accordion();
-
-        VerticalLayout registerPaymentTab = new VerticalLayout();
         List<Account> accounts = getAccounts(getClass());
         BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, accounts);
-        ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
+        NativeSelect accountSelector = new NativeSelect("Velg hvem det skal betales til", accountsContainer);
         accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         accountSelector.setItemCaptionPropertyId("fullName");
         accountSelector.addValueChangeListener(new ValueChangeListener() {
@@ -94,7 +97,7 @@ public class UkelonnAdminUI extends AbstractUI {
                     }
                 }
             });
-        registerPaymentTab.addComponent(accountSelector);
+        registerPaymentTabGroup.addComponent(accountSelector);
 
         FormLayout paymentLayout = new FormLayout();
         TextField balanceDisplay = new TextField("Til gode:");
@@ -143,7 +146,7 @@ public class UkelonnAdminUI extends AbstractUI {
                                                       }
                                                   }
                                               }));
-        registerPaymentTab.addComponent(paymentLayout);
+        registerPaymentTabGroup.addComponent(paymentLayout);
 
         Accordion userinfo = new Accordion();
         VerticalLayout jobsTab = new VerticalLayout();
@@ -154,8 +157,10 @@ public class UkelonnAdminUI extends AbstractUI {
         Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
         paymentsTab.addComponent(lastPaymentsTable);
         userinfo.addTab(paymentsTab, "Siste utbetalinger");
-        registerPaymentTab.addComponent(userinfo);
-        accordion.addTab(registerPaymentTab, "Registrere utbetaling");
+        registerPaymentTabGroup.addComponent(userinfo);
+        registerPaymentTabForm.addComponent(registerPaymentTabGroup);
+        registerPaymentTab.navigateTo(registerPaymentTabForm);
+        tabs.addTab(registerPaymentTab, "Registrere utbetaling");
 
         // Updatable data model for the form elements (setting values in the properties will update the fields)
         ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
@@ -265,7 +270,7 @@ public class UkelonnAdminUI extends AbstractUI {
         jobtypesform.addComponent(editJobLayout);
         jobtypes.addTab(jobtypesform, "Endre jobbtyper");
         jobtypeAdminTab.addComponent(jobtypes);
-        accordion.addTab(jobtypeAdminTab, "Administrere jobbtyper");
+        tabs.addTab(jobtypeAdminTab, "Administrere jobbtyper");
 
         VerticalLayout paymentstypeadminTab = new VerticalLayout();
         Accordion paymentstypeadmin = new Accordion();
@@ -351,7 +356,7 @@ public class UkelonnAdminUI extends AbstractUI {
         paymenttypesform.addComponent(editPaymentsLayout);
         paymentstypeadmin.addTab(paymenttypesform, "Endre utbetalingstyper");
         paymentstypeadminTab.addComponent(paymentstypeadmin);
-        accordion.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
+        tabs.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
 
         VerticalLayout useradminTab = new VerticalLayout();
         Accordion useradmin = new Accordion();
@@ -531,11 +536,9 @@ public class UkelonnAdminUI extends AbstractUI {
             }));
         useradmin.addTab(usersTab, "Endre brukere");
         useradminTab.addComponent(useradmin);
-        accordion.addTab(useradminTab, "Administrere brukere");
+        tabs.addTab(useradminTab, "Administrere brukere");
 
-        content.addComponent(accordion);
-
-        setContent(content);
+        setContent(tabs);
     }
 
 }
