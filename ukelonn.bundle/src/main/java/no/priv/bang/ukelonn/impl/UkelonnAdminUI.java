@@ -285,11 +285,15 @@ public class UkelonnAdminUI extends AbstractUI {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     String paymentName = newPaymentTypeName.getValue();
-                    Double paymentAmount = newPaymentTypeAmount.getValue();
-                    if (!"".equals(paymentName) && !Double.valueOf(0.0).equals(paymentAmount)) {
+                    Double rawPaymentAmount = newPaymentTypeAmount.getValue();
+                    Double paymentAmount = Double.valueOf(0.0).equals(rawPaymentAmount) ? null : rawPaymentAmount;
+                    if (!"".equals(paymentName)) {
                         addPaymentTypeToDatabase(classForLogMessage, paymentName, paymentAmount);
                         newPaymentTypeName.setValue("");
                         newPaymentTypeAmount.setValue(0.0);
+                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                        paymentTypes.removeAllItems();
+                        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
                     }
                 }
             }));

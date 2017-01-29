@@ -300,7 +300,7 @@ public class CommonDatabaseMethods {
         database.update(sql);
     }
 
-    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
+    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
         String sql = String.format(
                                    Locale.US, // Format the double correctly for SQL
                                    getResourceAsString("/sql/query/insert_new_payment_type.sql"),
