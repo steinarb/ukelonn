@@ -41,6 +41,11 @@ public class UkelonnAdminUI extends AbstractUI {
 
     @Override
     protected void init(VaadinRequest request) {
+    	if (!isLoggedIn()) {
+            URI loginPage = addPathToURI(getPage().getLocation(), "../login/");
+            getPage().setLocation(loginPage);
+    	}
+
     	if (!isAdministrator()) {
             URI userPage = addPathToURI(getPage().getLocation(), "../user/");
             getPage().setLocation(userPage);

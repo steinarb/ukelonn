@@ -27,6 +27,13 @@ public abstract class AbstractUI extends UI {
         return currentUser.hasRole("administrator");
     }
 
+    protected boolean isLoggedIn() {
+    	Subject currentUser = SecurityUtils.getSubject();
+    	boolean isRemembered = currentUser.isRemembered();
+    	boolean isAuthenticated = currentUser.isAuthenticated();
+    	return isRemembered || isAuthenticated;
+    }
+
     protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
         Table transactionsTable = new Table();
         transactionsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);

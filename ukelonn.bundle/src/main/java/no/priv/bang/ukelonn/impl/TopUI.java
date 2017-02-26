@@ -9,13 +9,16 @@ public class TopUI extends AbstractUI {
 
     @Override
     protected void init(VaadinRequest request) {
-    	if (isAdministrator()) {
+    	if (!isLoggedIn()) {
+            URI loginPage = addPathToURI(getPage().getLocation(), "login/");
+            getPage().setLocation(loginPage);
+    	} else if (isAdministrator()) {
             URI adminPage = addPathToURI(getPage().getLocation(), "admin/");
             getPage().setLocation(adminPage);
+    	} else {
+            URI userPage = addPathToURI(getPage().getLocation(), "user/");
+            getPage().setLocation(userPage);
     	}
-
-    	URI userPage = addPathToURI(getPage().getLocation(), "user/");
-    	getPage().setLocation(userPage);
     }
 
 }
