@@ -11,6 +11,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
@@ -75,6 +76,7 @@ public class LoginUI extends AbstractUI {
                     }
                 }
             });
+        loginButton.setClickShortcut(KeyCode.ENTER);
         content.addComponent(loginButton);
         setContent(content);
     }
