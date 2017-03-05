@@ -25,6 +25,8 @@ import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class CommonDatabaseMethods {
 
+    static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
+
     public static UkelonnDatabase connectionCheck(Class<?> clazz) {
         UkelonnService ukelonnService = CommonServiceMethods.connectionCheck(clazz);
 
@@ -180,7 +182,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<Transaction> getPaymentsFromAccount(Account account, Class<?> clazz) {
-        List<Transaction> payments = getTransactionsFromAccount(account, clazz, "/sql/query/payments_last10.sql", "payments");
+        List<Transaction> payments = getTransactionsFromAccount(account, clazz, "/sql/query/payments_last_n.sql", "payments");
         makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
@@ -193,7 +195,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<Transaction> getJobsFromAccount(Account account, Class<?> clazz) {
-        return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last10.sql", "job");
+        return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last_n.sql", "job");
     }
 
     private static List<Transaction> getTransactionsFromAccount(Account account,
@@ -204,7 +206,7 @@ public class CommonDatabaseMethods {
         List<Transaction> transactions = new ArrayList<Transaction>();
         if (null != account) {
             UkelonnDatabase database = connectionCheck(clazz);
-            String sql = String.format(getResourceAsString(sqlTemplate), account.getAccountId());
+            String sql = String.format(getResourceAsString(sqlTemplate), account.getAccountId(), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
             ResultSet resultSet = database.query(sql.toString());
             if (resultSet != null) {
                 try {

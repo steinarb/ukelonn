@@ -42,6 +42,7 @@ public abstract class AbstractUI extends UI {
         transactionsTable.setConverter("transactionTime", dateFormatter);
         transactionsTable.setContainerDataSource(transactions);
         transactionsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
+        transactionsTable.setPageLength(CommonDatabaseMethods.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
         return transactionsTable;
     }
 
