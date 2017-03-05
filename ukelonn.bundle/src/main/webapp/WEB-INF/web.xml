@@ -76,7 +76,7 @@
   <url-pattern>/user/*</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
-  <servlet-name>user</servlet-name>
+  <servlet-name>top</servlet-name>
   <url-pattern>/VAADIN/*</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
