@@ -7,7 +7,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.addon.touchkit.annotations.OfflineModeEnabled;
 import com.vaadin.addon.touchkit.ui.NavigationManager;
 import com.vaadin.addon.touchkit.ui.NavigationView;
 import com.vaadin.addon.touchkit.ui.TabBarView;
@@ -30,7 +29,6 @@ import com.vaadin.ui.Button.ClickEvent;
 
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-@OfflineModeEnabled(false)
 public class UkelonnUI extends AbstractUI {
     private static final long serialVersionUID = 1388525490129647161L;
 

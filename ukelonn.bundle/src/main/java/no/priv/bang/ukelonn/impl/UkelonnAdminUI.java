@@ -36,7 +36,6 @@ import com.vaadin.ui.Button.ClickEvent;
 
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-@OfflineModeEnabled(false)
 public class UkelonnAdminUI extends AbstractUI {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
