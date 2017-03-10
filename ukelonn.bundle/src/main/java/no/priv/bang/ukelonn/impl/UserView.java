@@ -2,21 +2,19 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
-import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
 import com.vaadin.addon.touchkit.ui.NavigationManager;
 import com.vaadin.addon.touchkit.ui.NavigationView;
 import com.vaadin.addon.touchkit.ui.TabBarView;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -27,27 +25,18 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("touchkit")
-@Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnUI extends AbstractUI {
+public class UserView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
+    private BeanItemContainer<TransactionType> paymentTypesContainer;
+    private BeanItemContainer<Transaction> recentJobs;
+    private ObjectProperty<String> greetingProperty;
+    private ObjectProperty<Double> balance;
+    private BeanItemContainer<Transaction> recentPayments;
+    private Account account;
 
-    @Override
-    protected void init(VaadinRequest request) {
-    	if (!isLoggedIn()) {
-            URI loginPage = addPathToURI(getPage().getLocation(), "../login/");
-            getPage().setLocation(loginPage);
-    	}
-
-    	if (isAdministrator()) {
-            URI adminPage = addPathToURI(getPage().getLocation(), "../admin/");
-            getPage().setLocation(adminPage);
-    	}
-
-    	Principal currentUser = request.getUserPrincipal();
-    	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getName());
-
-        TabBarView tabs = new TabBarView();
+    public UserView(VaadinRequest request) {
+    	setSizeFull();
+    	TabBarView tabs = new TabBarView();
 
         NavigationManager balanceAndNewJobTab = new NavigationManager();
         NavigationView balanceAndNewJobView = new NavigationView();
@@ -56,12 +45,13 @@ public class UkelonnUI extends AbstractUI {
         balanceAndNewJobGroup.setWidth("100%");
 
         // Display the greeting
-        Component greeting = new Label("Ukelønn for " + account.getFirstName());
+        greetingProperty = new ObjectProperty<String>("Ukelønn for ????");
+        Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
         balanceAndNewJobGroup.addComponent(greeting);
 
         // Display the current balance
-        ObjectProperty<Double> balance = new ObjectProperty<Double>(account.getBalance());
+        balance = new ObjectProperty<Double>(0.0);
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
@@ -69,10 +59,11 @@ public class UkelonnUI extends AbstractUI {
 
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
-        BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
+        paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
         //ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
         NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", paymentTypesContainer);
-        jobtypeSelector.setValue("Item " + 2);        //jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        jobtypeSelector.setValue("Item " + 2);
+        //jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
         balanceAndNewJobGroup.addComponent(jobtypeSelector);
@@ -93,11 +84,11 @@ public class UkelonnUI extends AbstractUI {
             });
 
         // Updatable containers
-        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
+        recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTable.setImmediate(true);
-        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
-        Class<? extends UkelonnUI> classForLogMessage = getClass();
+        recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+        Class<? extends UserView> classForLogMessage = getClass();
 
         // Have a clickable button
         balanceAndNewJobGroup.addComponent(new Button("Registrer jobb",
@@ -140,6 +131,19 @@ public class UkelonnUI extends AbstractUI {
         lastPaymentsTab.navigateTo(lastPaymentsForm);
         tabs.addTab(lastPaymentsTab, "Siste utbetalinger");
 
-        setContent(tabs);
+        addComponent(tabs);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+    	String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+    	account = getAccountInfoFromDatabase(getClass(), currentUser);
+
+    	greetingProperty.setValue("Ukelønn for " + account.getFirstName());
+    	balance = new ObjectProperty<Double>(account.getBalance());
+    	recentJobs.removeAllItems();
+    	recentJobs.addAll(getJobsFromAccount(account, getClass()));
+    	recentPayments.removeAllItems();
+    	recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
     }
 }

@@ -2,17 +2,15 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
-import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -26,18 +24,10 @@ import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("touchkit")
-@Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnFallbackUI extends AbstractUI {
+public class UserFallbackView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
 
-    @Override
-    protected void init(VaadinRequest request) {
-    	if (isAdministrator()) {
-            URI adminPage = addPathToURI(getPage().getLocation(), "../admin/");
-            getPage().setLocation(adminPage);
-    	}
-
+    public UserFallbackView(VaadinRequest request) {
     	Principal currentUser = request.getUserPrincipal();
     	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getName());
 
@@ -119,6 +109,12 @@ public class UkelonnFallbackUI extends AbstractUI {
         accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
 
         content.addComponent(accordion);
-        setContent(content);
+        addComponent(content);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        // TODO Auto-generated method stub
+
     }
 }

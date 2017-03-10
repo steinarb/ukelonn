@@ -2,22 +2,20 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
-import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.addon.touchkit.annotations.OfflineModeEnabled;
+import org.apache.shiro.SecurityUtils;
+
 import com.vaadin.addon.touchkit.ui.NavigationManager;
 import com.vaadin.addon.touchkit.ui.TabBarView;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
@@ -34,33 +32,22 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("touchkit")
-@Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnAdminUI extends AbstractUI {
+public class AdminView extends AbstractView {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
+    private ObjectProperty<String> greetingProperty;
 
-    @Override
-    protected void init(VaadinRequest request) {
-    	if (!isLoggedIn()) {
-            URI loginPage = addPathToURI(getPage().getLocation(), "../login/");
-            getPage().setLocation(loginPage);
-    	}
-
-    	if (!isAdministrator()) {
-            URI userPage = addPathToURI(getPage().getLocation(), "../user/");
-            getPage().setLocation(userPage);
-    	}
-
+    public AdminView(VaadinRequest request) {
+    	setSizeFull();
         TabBarView tabs = new TabBarView();
 
         NavigationManager registerPaymentTab = new NavigationManager();
         CssLayout registerPaymentTabForm = new CssLayout();
         VerticalComponentGroup registerPaymentTabGroup = new VerticalComponentGroup();
-    	Principal currentUser = request.getUserPrincipal();
-    	AdminUser admin = getAdminUserFromDatabase(getClass(), (String) currentUser.getName());
+
         // Display the greeting
-        Component greeting = new Label("Ukelønn admin UI, bruker: " + admin.getFirstname());
+        greetingProperty = new ObjectProperty<String>("Ukelønn admin UI, bruker: ????");
+        Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
         registerPaymentTabGroup.addComponent(greeting);
 
@@ -73,7 +60,7 @@ public class UkelonnAdminUI extends AbstractUI {
         BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
         NativeSelect paymenttype = new NativeSelect("Registrer utbetaling", paymentTypes);
         ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
-        Class<? extends UkelonnAdminUI> classForLogMessage = getClass();
+        Class<? extends AdminView> classForLogMessage = getClass();
 
         List<Account> accounts = getAccounts(getClass());
         BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, accounts);
@@ -548,7 +535,14 @@ public class UkelonnAdminUI extends AbstractUI {
         useradminTab.addComponent(useradmin);
         tabs.addTab(useradminTab, "Administrere brukere");
 
-        setContent(tabs);
+        addComponent(tabs);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+    	String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+    	AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
+        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
     }
 
 }

@@ -2,18 +2,16 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
-import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
@@ -29,19 +27,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
-@Theme("touchkit")
-@Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnAdminFallbackUI extends AbstractUI {
+public class AdminFallbackView extends AbstractView {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
 
-    @Override
-    protected void init(VaadinRequest request) {
-    	if (!isAdministrator()) {
-            URI userPage = addPathToURI(getPage().getLocation(), "../user/");
-            getPage().setLocation(userPage);
-    	}
-
+    public AdminFallbackView(VaadinRequest request) {
     	VerticalLayout content = new VerticalLayout();
     	content.addStyleName("ukelonn-responsive-layout");
     	Responsive.makeResponsive(content);
@@ -535,7 +525,13 @@ public class UkelonnAdminFallbackUI extends AbstractUI {
 
         content.addComponent(accordion);
 
-        setContent(content);
+        addComponent(content);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        // TODO Auto-generated method stub
+
     }
 
 }

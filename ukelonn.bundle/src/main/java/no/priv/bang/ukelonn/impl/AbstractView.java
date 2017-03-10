@@ -11,10 +11,11 @@ import org.apache.shiro.subject.Subject;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.StringToDateConverter;
+import com.vaadin.navigator.View;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
-public abstract class AbstractUI extends UI {
+public abstract class AbstractView extends VerticalLayout implements View {
     private static final long serialVersionUID = 267153275586375959L;
     public static URI addPathToURI(URI location, String path) {
         String combinedPath = location.getPath() + path;

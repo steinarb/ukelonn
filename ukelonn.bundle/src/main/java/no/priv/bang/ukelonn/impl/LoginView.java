@@ -1,7 +1,5 @@
 package no.priv.bang.ukelonn.impl;
 
-import java.net.URI;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -12,6 +10,8 @@ import org.apache.shiro.subject.Subject;
 
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
@@ -23,11 +23,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 
-public class LoginUI extends AbstractUI {
+public class LoginView extends AbstractView {
     private static final long serialVersionUID = 4812377913694429252L;
 
-    @Override
-    protected void init(VaadinRequest request) {
+    public LoginView(VaadinRequest request, Navigator navigator) {
 
         ObjectProperty<String> username = new ObjectProperty<String>("");
         ObjectProperty<String> password = new ObjectProperty<String>("");
@@ -39,7 +38,7 @@ public class LoginUI extends AbstractUI {
         content.addComponent(passwordfield);
         VerticalLayout notificationArea = new VerticalLayout();
         content.addComponent(notificationArea);
-        Class<? extends LoginUI> classForLogging = getClass();
+        Class<? extends LoginView> classForLogging = getClass();
         Button loginButton = new Button("Login", new Button.ClickListener() {
                 private static final long serialVersionUID = -683422815692655520L;
 
@@ -53,11 +52,9 @@ public class LoginUI extends AbstractUI {
                         subject.login(token);
 
                         if (subject.hasRole("administrator")) {
-                            URI adminPage = addPathToURI(getPage().getLocation(), "../admin/");
-                            getPage().setLocation(adminPage);
+                            navigator.navigateTo("admin");
                         } else {
-                            URI userPage = addPathToURI(getPage().getLocation(), "../user/");
-                            getPage().setLocation(userPage);
+                            navigator.navigateTo("");
                         }
                     } catch(UnknownAccountException e) {
                         notification("Unknown account");
@@ -78,11 +75,17 @@ public class LoginUI extends AbstractUI {
             });
         loginButton.setClickShortcut(KeyCode.ENTER);
         content.addComponent(loginButton);
-        setContent(content);
+        addComponent(content);
     }
 
     public void notification(String message) {
         Notification.show(message, "", Notification.Type.WARNING_MESSAGE);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        // TODO Auto-generated method stub
+
     }
 
 }
