@@ -60,10 +60,8 @@ public class UserView extends AbstractView {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
         paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
-        //ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
         NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", paymentTypesContainer);
         jobtypeSelector.setValue("Item " + 2);
-        //jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
         balanceAndNewJobGroup.addComponent(jobtypeSelector);
