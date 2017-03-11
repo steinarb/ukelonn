@@ -6,9 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.StringToDateConverter;
 import com.vaadin.navigator.View;
@@ -21,18 +18,6 @@ public abstract class AbstractView extends VerticalLayout implements View {
         String combinedPath = location.getPath() + path;
         URI newURI = location.resolve(combinedPath);
         return newURI;
-    }
-
-    protected boolean isAdministrator() {
-    	Subject currentUser = SecurityUtils.getSubject();
-        return currentUser.hasRole("administrator");
-    }
-
-    protected boolean isLoggedIn() {
-    	Subject currentUser = SecurityUtils.getSubject();
-    	boolean isRemembered = currentUser.isRemembered();
-    	boolean isAuthenticated = currentUser.isAuthenticated();
-    	return isRemembered || isAuthenticated;
     }
 
     protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
