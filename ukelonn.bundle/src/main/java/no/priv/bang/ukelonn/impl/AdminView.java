@@ -19,7 +19,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
@@ -425,8 +424,7 @@ public class AdminView extends AbstractView {
             }));
         useradmin.addTab(newUserTab, "Legg til ny bruker");
         FormLayout changeuserpasswordTab = new FormLayout();
-        ComboBox editUserPasswordUsersField = new ComboBox("Velg bruker", editUserPasswordUsers);
-        editUserPasswordUsersField.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        NativeSelect editUserPasswordUsersField = new NativeSelect("Velg bruker", editUserPasswordUsers);
         editUserPasswordUsersField.setItemCaptionPropertyId("fullname");
         editUserPasswordUsersField.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -5949282377337763508L;
@@ -465,8 +463,7 @@ public class AdminView extends AbstractView {
             }));
         useradmin.addTab(changeuserpasswordTab, "Bytt passord på bruker");
         FormLayout usersTab = new FormLayout();
-        ComboBox editUserUsersField = new ComboBox("Velg bruker", editUserUsers);
-        editUserUsersField.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        NativeSelect editUserUsersField = new NativeSelect("Velg bruker", editUserUsers);
         editUserUsersField.setItemCaptionPropertyId("fullname");
         editUserUsersField.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = 7774428541884411808L;
