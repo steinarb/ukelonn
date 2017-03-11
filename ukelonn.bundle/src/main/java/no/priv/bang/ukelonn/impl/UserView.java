@@ -140,7 +140,7 @@ public class UserView extends AbstractView {
     	account = getAccountInfoFromDatabase(getClass(), currentUser);
 
     	greetingProperty.setValue("Ukelønn for " + account.getFirstName());
-    	balance = new ObjectProperty<Double>(account.getBalance());
+    	balance.setValue(account.getBalance());
     	recentJobs.removeAllItems();
     	recentJobs.addAll(getJobsFromAccount(account, getClass()));
     	recentPayments.removeAllItems();
