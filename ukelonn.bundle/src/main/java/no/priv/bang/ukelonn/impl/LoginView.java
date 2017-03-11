@@ -25,12 +25,10 @@ import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 public class LoginView extends AbstractView {
     private static final long serialVersionUID = 4812377913694429252L;
+    ObjectProperty<String> username = new ObjectProperty<String>("");
+    ObjectProperty<String> password = new ObjectProperty<String>("");
 
     public LoginView(VaadinRequest request, Navigator navigator) {
-
-        ObjectProperty<String> username = new ObjectProperty<String>("");
-        ObjectProperty<String> password = new ObjectProperty<String>("");
-
         FormLayout content = new FormLayout();
         TextField usernameField = new TextField("Username", username);
         content.addComponent(usernameField);
@@ -44,6 +42,7 @@ public class LoginView extends AbstractView {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    passwordfield.commit();
                     Subject subject = SecurityUtils.getSubject();
 
                     UsernamePasswordToken token = new UsernamePasswordToken(username.getValue(), password.getValue().toCharArray(), true);
