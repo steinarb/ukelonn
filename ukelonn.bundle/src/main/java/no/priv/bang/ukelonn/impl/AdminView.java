@@ -219,6 +219,7 @@ public class AdminView extends AbstractView {
                     }
                 }
             });
+        jobtypesTable.setPageLength(jobTypes.size());
         jobtypesform.addComponent(jobtypesTable);
         FormLayout editJobLayout = new FormLayout();
         TextField editJobTypeNameField = new TextField("Endre Navn på jobbtype:", editedJobTypeName);
@@ -309,6 +310,7 @@ public class AdminView extends AbstractView {
                     }
                 }
             });
+        paymentTypesTable.setPageLength(paymentTypes.size());
         paymenttypesform.addComponent(paymentTypesTable);
         FormLayout editPaymentsLayout = new FormLayout();
         TextField editPaymentTypeNameField = new TextField("Endre Navn på betalingstype:", editedPaymentTypeName);
