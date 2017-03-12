@@ -117,6 +117,11 @@
    </exclusions>
   </dependency>
   <dependency>
+   <groupId>org.ow2.asm</groupId>
+   <artifactId>asm-all</artifactId>
+   <version>5.0.2</version>
+  </dependency>
+  <dependency>
    <groupId>org.apache.httpcomponents</groupId>
    <artifactId>httpcore</artifactId>
   </dependency>
@@ -197,10 +202,6 @@
    <artifactId>commons-discovery</artifactId>
   </dependency>
   <dependency>
-   <groupId>javax.enterprise</groupId>
-   <artifactId>cdi-api</artifactId>
-  </dependency>
-  <dependency>
    <groupId>javax.interceptor</groupId>
    <artifactId>javax.interceptor-api</artifactId>
   </dependency>
@@ -256,6 +257,12 @@
   <dependency>
    <groupId>com.vaadin</groupId>
    <artifactId>vaadin-server</artifactId>
+   <exclusions>
+    <exclusion>
+     <groupId>com.vaadin</groupId>
+     <artifactId>vaadin-sass-compiler</artifactId>
+    </exclusion>
+   </exclusions>
   </dependency>
   <dependency>
    <groupId>com.vaadin</groupId>
