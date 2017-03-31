@@ -27,7 +27,8 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
-    private BeanItemContainer<TransactionType> paymentTypesContainer;
+    // Updatable containers
+    private BeanItemContainer<TransactionType> jobTypesContainer;
     private BeanItemContainer<Transaction> recentJobs;
     private ObjectProperty<String> greetingProperty;
     private ObjectProperty<Double> balance;
@@ -57,10 +58,11 @@ public class UserView extends AbstractView {
         balanceDisplay.addStyleName("inline-label");
         balanceAndNewJobGroup.addComponent(balanceDisplay);
 
+        // Initialize the list of job types
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-        List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
-        paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
-        NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", paymentTypesContainer);
+        List<TransactionType> jobTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
+        jobTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, jobTypes);
+        NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", jobTypesContainer);
         jobtypeSelector.setValue("Item " + 2);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
@@ -81,7 +83,6 @@ public class UserView extends AbstractView {
                 }
             });
 
-        // Updatable containers
         recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTable.setImmediate(true);
