@@ -41,6 +41,49 @@ public class UserView extends AbstractView {
 
         NavigationManager balanceAndNewJobTab = new NavigationManager();
         NavigationView balanceAndNewJobView = new NavigationView();
+        CssLayout balanceAndNewJobForm = createBalanceAndNewJobForm();
+        balanceAndNewJobView.setContent(balanceAndNewJobForm);
+        balanceAndNewJobTab.navigateTo(balanceAndNewJobView);
+        tabs.addTab(balanceAndNewJobTab, "Registrere jobb");
+
+        NavigationManager lastJobsTab = new NavigationManager();
+        CssLayout lastJobsForm = new CssLayout();
+        VerticalComponentGroup lastJobsGroup = new VerticalComponentGroup();
+        lastJobsGroup.setWidth("100%");
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        lastJobsTable.setImmediate(true);
+        lastJobsGroup.addComponent(lastJobsTable);
+        lastJobsForm.addComponent(lastJobsGroup);
+        lastJobsTab.navigateTo(lastJobsForm);
+        tabs.addTab(lastJobsTab, "Siste jobber");
+
+        NavigationManager lastPaymentsTab = new NavigationManager();
+        CssLayout lastPaymentsForm = new CssLayout();
+        VerticalComponentGroup lastPaymentsGroup = new VerticalComponentGroup();
+        lastPaymentsGroup.setWidth("100%");
+        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        lastPaymentsGroup.addComponent(lastPaymentsTable);
+        lastPaymentsForm.addComponent(lastPaymentsGroup);
+        lastPaymentsTab.navigateTo(lastPaymentsForm);
+        tabs.addTab(lastPaymentsTab, "Siste utbetalinger");
+
+        addComponent(tabs);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+        account = getAccountInfoFromDatabase(getClass(), currentUser);
+
+        greetingProperty.setValue("Ukelønn for " + account.getFirstName());
+        balance.setValue(account.getBalance());
+        recentJobs.removeAllItems();
+        recentJobs.addAll(getJobsFromAccount(account, getClass()));
+        recentPayments.removeAllItems();
+        recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
+    }
+
+    private CssLayout createBalanceAndNewJobForm() {
         CssLayout balanceAndNewJobForm = new CssLayout();
         VerticalComponentGroup balanceAndNewJobGroup = new VerticalComponentGroup();
         balanceAndNewJobGroup.setWidth("100%");
@@ -100,44 +143,6 @@ public class UserView extends AbstractView {
                                                           }
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
-        balanceAndNewJobView.setContent(balanceAndNewJobForm);
-        balanceAndNewJobTab.navigateTo(balanceAndNewJobView);
-        tabs.addTab(balanceAndNewJobTab, "Registrere jobb");
-
-        NavigationManager lastJobsTab = new NavigationManager();
-        CssLayout lastJobsForm = new CssLayout();
-        VerticalComponentGroup lastJobsGroup = new VerticalComponentGroup();
-        lastJobsGroup.setWidth("100%");
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
-        lastJobsTable.setImmediate(true);
-        lastJobsGroup.addComponent(lastJobsTable);
-        lastJobsForm.addComponent(lastJobsGroup);
-        lastJobsTab.navigateTo(lastJobsForm);
-        tabs.addTab(lastJobsTab, "Siste jobber");
-
-        NavigationManager lastPaymentsTab = new NavigationManager();
-        CssLayout lastPaymentsForm = new CssLayout();
-        VerticalComponentGroup lastPaymentsGroup = new VerticalComponentGroup();
-        lastPaymentsGroup.setWidth("100%");
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
-        lastPaymentsGroup.addComponent(lastPaymentsTable);
-        lastPaymentsForm.addComponent(lastPaymentsGroup);
-        lastPaymentsTab.navigateTo(lastPaymentsForm);
-        tabs.addTab(lastPaymentsTab, "Siste utbetalinger");
-
-        addComponent(tabs);
-    }
-
-    @Override
-    public void enter(ViewChangeEvent event) {
-    	String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-    	account = getAccountInfoFromDatabase(getClass(), currentUser);
-
-    	greetingProperty.setValue("Ukelønn for " + account.getFirstName());
-    	balance.setValue(account.getBalance());
-    	recentJobs.removeAllItems();
-    	recentJobs.addAll(getJobsFromAccount(account, getClass()));
-    	recentPayments.removeAllItems();
-    	recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
+        return balanceAndNewJobForm;
     }
 }
