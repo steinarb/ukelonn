@@ -28,11 +28,11 @@ import com.vaadin.ui.Button.ClickEvent;
 public class UserView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
     // Updatable containers
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
+    private ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
     private BeanItemContainer<TransactionType> jobTypesContainer;
-    private BeanItemContainer<Transaction> recentJobs;
-    private ObjectProperty<String> greetingProperty;
-    private ObjectProperty<Double> balance;
-    private BeanItemContainer<Transaction> recentPayments;
+    private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
+    private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
     private Account account;
 
     public UserView(VaadinRequest request) {
@@ -46,13 +46,11 @@ public class UserView extends AbstractView {
         balanceAndNewJobGroup.setWidth("100%");
 
         // Display the greeting
-        greetingProperty = new ObjectProperty<String>("Ukelønn for ????");
         Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
         balanceAndNewJobGroup.addComponent(greeting);
 
         // Display the current balance
-        balance = new ObjectProperty<Double>(0.0);
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
@@ -83,13 +81,8 @@ public class UserView extends AbstractView {
                 }
             });
 
-        recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
-        lastJobsTable.setImmediate(true);
-        recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
-        Class<? extends UserView> classForLogMessage = getClass();
-
         // Have a clickable button
+        Class<? extends UserView> classForLogMessage = getClass();
         balanceAndNewJobGroup.addComponent(new Button("Registrer jobb",
                                                       new Button.ClickListener() {
                                                           private static final long serialVersionUID = 2723190031041985566L;
@@ -115,6 +108,8 @@ public class UserView extends AbstractView {
         CssLayout lastJobsForm = new CssLayout();
         VerticalComponentGroup lastJobsGroup = new VerticalComponentGroup();
         lastJobsGroup.setWidth("100%");
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        lastJobsTable.setImmediate(true);
         lastJobsGroup.addComponent(lastJobsTable);
         lastJobsForm.addComponent(lastJobsGroup);
         lastJobsTab.navigateTo(lastJobsForm);
