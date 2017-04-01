@@ -13,23 +13,22 @@ import com.vaadin.ui.UI;
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
 public class UkelonnUI extends UI {
     private static final long serialVersionUID = 1388525490129647161L;
-    private Navigator navigator;
 
     @Override
     protected void init(VaadinRequest request) {
     	getPage().setTitle("Ukelønn");
-    	navigator = new Navigator(this, this);
+    	setNavigator(new Navigator(this, this));
 
     	// Add all of the different views
-    	navigator.addView("", new UserView(request));
-    	navigator.addView("admin", new AdminView(request));
-    	navigator.addView("login", new LoginView(request, navigator));
+    	getNavigator().addView("", new UserView(request));
+    	getNavigator().addView("admin", new AdminView(request));
+    	getNavigator().addView("login", new LoginView(request, getNavigator()));
     	if (!isLoggedIn()) {
-            navigator.navigateTo("login");
+            getNavigator().navigateTo("login");
     	} else if (isAdministrator()) {
-            navigator.navigateTo("admin");
+            getNavigator().navigateTo("admin");
     	} else {
-            navigator.navigateTo("");
+            getNavigator().navigateTo("");
     	}
     }
 
