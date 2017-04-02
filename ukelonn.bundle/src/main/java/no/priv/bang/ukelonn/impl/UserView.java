@@ -45,25 +45,9 @@ public class UserView extends AbstractView {
         navigationManager.addComponent(balanceAndNewJobView);
         navigationManager.navigateTo(balanceAndNewJobView);
 
-        CssLayout lastJobsForm = new CssLayout();
-        VerticalComponentGroup lastJobsGroup = new VerticalComponentGroup();
-        Table lastJobsTable = createTransactionTable("Jobber", recentJobs);
-        lastJobsGroup.addComponent(lastJobsTable);
-        lastJobsForm.addComponent(lastJobsGroup);
-        NavigationView lastJobsView = new NavigationView("Siste jobber", lastJobsForm);
-        navigationManager.addComponent(lastJobsView);
-        navigationManager.navigateTo(lastJobsView);
-        navigationManager.navigateBack();
+        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, "Siste jobber");
 
-        CssLayout lastPaymentsForm = new CssLayout();
-        VerticalComponentGroup lastPaymentsGroup = new VerticalComponentGroup();
-        Table lastPaymentsTable = createTransactionTable("Siste utbetalinger", recentPayments);
-        lastPaymentsGroup.addComponent(lastPaymentsTable);
-        lastPaymentsForm.addComponent(lastPaymentsGroup);
-        NavigationView lastPaymentsView = new NavigationView("Siste utbetalinger", lastPaymentsForm);
-        navigationManager.addComponent(lastPaymentsView);
-        navigationManager.navigateTo(lastPaymentsView);
-        navigationManager.navigateBack();
+        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, "Siste utbetalinger");
 
         NavigationButton navigateToLastJobs = createNavigationButton("Siste jobber", lastJobsView);
         balanceAndNewJobForm.addComponent(navigateToLastJobs);
@@ -146,6 +130,19 @@ public class UserView extends AbstractView {
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
         return balanceAndNewJobForm;
+    }
+
+    private NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, BeanItemContainer<Transaction> transactions, String navigationViewCaption) {
+        CssLayout transactionTableForm = new CssLayout();
+        VerticalComponentGroup transactionTableGroup = new VerticalComponentGroup();
+        Table transactionTable = createTransactionTable(tableTitle, transactions);
+        transactionTableGroup.addComponent(transactionTable);
+        transactionTableForm.addComponent(transactionTableGroup);
+        NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableForm);
+        navigationManager.addComponent(transactionTableView);
+        navigationManager.navigateTo(transactionTableView);
+        navigationManager.navigateBack();
+        return transactionTableView;
     }
 
     private NavigationButton createNavigationButton(String caption, NavigationView targetView) {
