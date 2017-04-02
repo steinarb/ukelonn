@@ -85,15 +85,22 @@ public class AdminView extends AbstractView {
         registerPaymentTabGroup.addComponent(createNavigationButton("Siste jobber for bruker", lastJobsForUserView));
         registerPaymentTabGroup.addComponent(createNavigationButton("Siste utbetalinger til bruker", lastPaymentsForUserView));
 
+
+        // Job type administration
         Class<? extends AdminView> classForLogMessage = getClass();
-        VerticalLayout jobtypeAdminTab = new VerticalLayout();
-        Accordion jobtypes = new Accordion();
-        FormLayout newJobTypeTab = new FormLayout();
+        NavigationManager jobtypeAdminTab = new NavigationManager();
+        VerticalComponentGroup jobtypeAdminContent = createVerticalComponentGroupWithCssLayoutAndNavigationView(jobtypeAdminTab, new NavigationView(), "Administrere jobbtyper");
+
+        String newJobtypeLabel = "Ny jobbtype";
+        String modifyJobtypesLabel = "Endre jobbtyper";
+
+        NavigationView newJobTypeTab = new NavigationView();
+        VerticalComponentGroup newJobTypeTabContent = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(jobtypeAdminTab, newJobTypeTab, newJobtypeLabel);
         TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:", newJobTypeName);
-        newJobTypeTab.addComponent(newJobTypeNameField);
+        newJobTypeTabContent.addComponent(newJobTypeNameField);
         TextField newJobTypeAmountField = new TextField("Beløp for ny jobbtype:", newJobTypeAmount);
-        newJobTypeTab.addComponent(newJobTypeAmountField);
-        newJobTypeTab.addComponent(new Button("Lag jobbtype", new Button.ClickListener() {
+        newJobTypeTabContent.addComponent(newJobTypeAmountField);
+        newJobTypeTabContent.addComponent(new Button("Lag jobbtype", new Button.ClickListener() {
                 private static final long serialVersionUID = 1338062460936195627L;
 
                 @Override
@@ -107,8 +114,9 @@ public class AdminView extends AbstractView {
                     }
                 }
             }));
-        jobtypes.addTab(newJobTypeTab, "Lag ny jobbtype");
-        VerticalLayout jobtypesform = new VerticalLayout();
+
+        NavigationView jobtypesTab = new NavigationView();
+        VerticalComponentGroup jobtypesform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(jobtypeAdminTab, jobtypesTab, modifyJobtypesLabel);
         Table jobtypesTable = new Table();
         jobtypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
         jobtypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
@@ -169,8 +177,9 @@ public class AdminView extends AbstractView {
                 }
             }));
         jobtypesform.addComponent(editJobLayout);
-        jobtypes.addTab(jobtypesform, "Endre jobbtyper");
-        jobtypeAdminTab.addComponent(jobtypes);
+
+        jobtypeAdminContent.addComponent(createNavigationButton(newJobtypeLabel, newJobTypeTab));
+        jobtypeAdminContent.addComponent(createNavigationButton(modifyJobtypesLabel, jobtypesTab));
         tabs.addTab(jobtypeAdminTab, "Administrere jobbtyper");
 
         VerticalLayout paymentstypeadminTab = new VerticalLayout();
@@ -477,7 +486,7 @@ public class AdminView extends AbstractView {
                     recentJobs.removeAllItems();
                     recentPayments.removeAllItems();
                     if (account != null) {
-                    	refreshAccount(classForLogMessage, account);
+                        refreshAccount(classForLogMessage, account);
                         balance.setValue(account.getBalance());
                         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
                         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
@@ -506,12 +515,12 @@ public class AdminView extends AbstractView {
                 public void valueChange(ValueChangeEvent event) {
                     TransactionType payment = (TransactionType) paymenttype.getValue();
                     if (payment != null) {
-            		Double paymentAmount = payment.getTransactionAmount();
-                	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                        Double paymentAmount = payment.getTransactionAmount();
+	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
                             amount.setValue(balance.getValue());
-                	} else {
+	            	} else {
                             amount.setValue(paymentAmount);
-                	}
+	            	}
                     }
                 }
             });
@@ -544,6 +553,23 @@ public class AdminView extends AbstractView {
         registerPaymentTab.addComponent(registerPaymentView);
         registerPaymentTab.navigateTo(registerPaymentView);
         return registerPaymentTabGroup;
+    }
+
+    private VerticalComponentGroup createVerticalComponentGroupWithCssLayoutAndNavigationView(NavigationManager navigationManager, NavigationView view, String caption) {
+        CssLayout layout = new CssLayout();
+        VerticalComponentGroup vContainer = new VerticalComponentGroup();
+        layout.addComponent(vContainer);
+        view.setCaption(caption);
+        view.setContent(layout);
+        navigationManager.addComponent(view);
+        navigationManager.navigateTo(view);
+        return vContainer;
+    }
+
+    private VerticalComponentGroup createVerticalComponentGroupWithCssLayoutAndNavigationSubView(NavigationManager navigationManager, NavigationView navigationView, String caption) {
+        VerticalComponentGroup vContainer = createVerticalComponentGroupWithCssLayoutAndNavigationView(navigationManager, navigationView, caption);
+        navigationManager.navigateBack();
+        return vContainer;
     }
 
 }
