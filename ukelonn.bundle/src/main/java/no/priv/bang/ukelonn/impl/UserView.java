@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
+
+import com.vaadin.addon.touchkit.ui.NavigationButton;
 import com.vaadin.addon.touchkit.ui.NavigationManager;
 import com.vaadin.addon.touchkit.ui.NavigationView;
-import com.vaadin.addon.touchkit.ui.TabBarView;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -37,37 +38,38 @@ public class UserView extends AbstractView {
 
     public UserView(VaadinRequest request) {
     	setSizeFull();
-    	TabBarView tabs = new TabBarView();
 
-        NavigationManager balanceAndNewJobTab = new NavigationManager();
-        NavigationView balanceAndNewJobView = new NavigationView();
+        NavigationManager navigationManager = new NavigationManager();
         CssLayout balanceAndNewJobForm = createBalanceAndNewJobForm();
-        balanceAndNewJobView.setContent(balanceAndNewJobForm);
-        balanceAndNewJobTab.navigateTo(balanceAndNewJobView);
-        tabs.addTab(balanceAndNewJobTab, "Registrere jobb");
+        NavigationView balanceAndNewJobView = new NavigationView("Registrere jobb", balanceAndNewJobForm);
+        navigationManager.addComponent(balanceAndNewJobView);
+        navigationManager.navigateTo(balanceAndNewJobView);
 
-        NavigationManager lastJobsTab = new NavigationManager();
         CssLayout lastJobsForm = new CssLayout();
         VerticalComponentGroup lastJobsGroup = new VerticalComponentGroup();
-        lastJobsGroup.setWidth("100%");
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
-        lastJobsTable.setImmediate(true);
+        Table lastJobsTable = createTransactionTable("Jobber", recentJobs);
         lastJobsGroup.addComponent(lastJobsTable);
         lastJobsForm.addComponent(lastJobsGroup);
-        lastJobsTab.navigateTo(lastJobsForm);
-        tabs.addTab(lastJobsTab, "Siste jobber");
+        NavigationView lastJobsView = new NavigationView("Siste jobber", lastJobsForm);
+        navigationManager.addComponent(lastJobsView);
+        navigationManager.navigateTo(lastJobsView);
+        navigationManager.navigateBack();
 
-        NavigationManager lastPaymentsTab = new NavigationManager();
         CssLayout lastPaymentsForm = new CssLayout();
         VerticalComponentGroup lastPaymentsGroup = new VerticalComponentGroup();
-        lastPaymentsGroup.setWidth("100%");
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        Table lastPaymentsTable = createTransactionTable("Siste utbetalinger", recentPayments);
         lastPaymentsGroup.addComponent(lastPaymentsTable);
         lastPaymentsForm.addComponent(lastPaymentsGroup);
-        lastPaymentsTab.navigateTo(lastPaymentsForm);
-        tabs.addTab(lastPaymentsTab, "Siste utbetalinger");
+        NavigationView lastPaymentsView = new NavigationView("Siste utbetalinger", lastPaymentsForm);
+        navigationManager.addComponent(lastPaymentsView);
+        navigationManager.navigateTo(lastPaymentsView);
+        navigationManager.navigateBack();
 
-        addComponent(tabs);
+        NavigationButton navigateToLastJobs = createNavigationButton("Siste jobber", lastJobsView);
+        balanceAndNewJobForm.addComponent(navigateToLastJobs);
+        NavigationButton navigateToLastPayments = createNavigationButton("Siste utbetalinger", lastPaymentsView);
+        balanceAndNewJobForm.addComponent(navigateToLastPayments);
+        addComponent(navigationManager);
     }
 
     @Override
@@ -144,5 +146,10 @@ public class UserView extends AbstractView {
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
         return balanceAndNewJobForm;
+    }
+
+    private NavigationButton createNavigationButton(String caption, NavigationView targetView) {
+        NavigationButton button = new NavigationButton(caption, targetView);
+        return button;
     }
 }
