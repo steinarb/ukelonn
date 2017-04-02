@@ -6,9 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.vaadin.addon.touchkit.ui.NavigationButton;
+import com.vaadin.addon.touchkit.ui.NavigationManager;
+import com.vaadin.addon.touchkit.ui.NavigationView;
+import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.StringToDateConverter;
 import com.vaadin.navigator.View;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
@@ -30,6 +35,24 @@ public abstract class AbstractView extends VerticalLayout implements View {
         transactionsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
         transactionsTable.setPageLength(CommonDatabaseMethods.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
         return transactionsTable;
+    }
+
+    protected NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, BeanItemContainer<Transaction> transactions, String navigationViewCaption) {
+        CssLayout transactionTableForm = new CssLayout();
+        VerticalComponentGroup transactionTableGroup = new VerticalComponentGroup();
+        Table transactionTable = createTransactionTable(tableTitle, transactions);
+        transactionTableGroup.addComponent(transactionTable);
+        transactionTableForm.addComponent(transactionTableGroup);
+        NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableForm);
+        navigationManager.addComponent(transactionTableView);
+        navigationManager.navigateTo(transactionTableView);
+        navigationManager.navigateBack();
+        return transactionTableView;
+    }
+
+    protected NavigationButton createNavigationButton(String caption, NavigationView targetView) {
+        NavigationButton button = new NavigationButton(caption, targetView);
+        return button;
     }
 
     static final StringToDateConverter dateFormatter = new StringToDateConverter() {

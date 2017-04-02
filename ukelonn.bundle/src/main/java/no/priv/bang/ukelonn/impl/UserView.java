@@ -22,7 +22,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 
@@ -130,23 +129,5 @@ public class UserView extends AbstractView {
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
         return balanceAndNewJobForm;
-    }
-
-    private NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, BeanItemContainer<Transaction> transactions, String navigationViewCaption) {
-        CssLayout transactionTableForm = new CssLayout();
-        VerticalComponentGroup transactionTableGroup = new VerticalComponentGroup();
-        Table transactionTable = createTransactionTable(tableTitle, transactions);
-        transactionTableGroup.addComponent(transactionTable);
-        transactionTableForm.addComponent(transactionTableGroup);
-        NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableForm);
-        navigationManager.addComponent(transactionTableView);
-        navigationManager.navigateTo(transactionTableView);
-        navigationManager.navigateBack();
-        return transactionTableView;
-    }
-
-    private NavigationButton createNavigationButton(String caption, NavigationView targetView) {
-        NavigationButton button = new NavigationButton(caption, targetView);
-        return button;
     }
 }
