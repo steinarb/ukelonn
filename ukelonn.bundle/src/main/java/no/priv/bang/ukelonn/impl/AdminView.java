@@ -182,14 +182,21 @@ public class AdminView extends AbstractView {
         jobtypeAdminContent.addComponent(createNavigationButton(modifyJobtypesLabel, jobtypesTab));
         tabs.addTab(jobtypeAdminTab, "Administrere jobbtyper");
 
-        VerticalLayout paymentstypeadminTab = new VerticalLayout();
-        Accordion paymentstypeadmin = new Accordion();
-        FormLayout newpaymenttypeTab = new FormLayout();
+
+        // Payment type administration.
+        NavigationManager paymentstypeadminTab = new NavigationManager();
+        VerticalComponentGroup paymentstypeadmin = createVerticalComponentGroupWithCssLayoutAndNavigationView(paymentstypeadminTab, new NavigationView(), "Administrere utbetalingstyper");
+
+        String newPaymenttypeLabel = "Lag ny betalingstype";
+        String modifyPayementtypesLabel = "Endre utbetalingstyper";
+
+        NavigationView newpaymenttypeTab = new NavigationView();
+        VerticalComponentGroup newpaymenttypeForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, newpaymenttypeTab, newPaymenttypeLabel);
         TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
-        newpaymenttypeTab.addComponent(newPaymentTypeNameField);
+        newpaymenttypeForm.addComponent(newPaymentTypeNameField);
         TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
-        newpaymenttypeTab.addComponent(newPaymentTypeAmountField);
-        newpaymenttypeTab.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
+        newpaymenttypeForm.addComponent(newPaymentTypeAmountField);
+        newpaymenttypeForm.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
                 private static final long serialVersionUID = -2160144195348196823L;
 
                 @Override
@@ -207,8 +214,9 @@ public class AdminView extends AbstractView {
                     }
                 }
             }));
-        paymentstypeadmin.addTab(newpaymenttypeTab, "Lag ny utbetalingstype");
-        VerticalLayout paymenttypesform = new VerticalLayout();
+
+        NavigationView paymentstypeTab = new NavigationView();
+        VerticalComponentGroup paymenttypesform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, paymentstypeTab, modifyPayementtypesLabel);
         Table paymentTypesTable = new Table();
         paymentTypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
         paymentTypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
@@ -269,8 +277,9 @@ public class AdminView extends AbstractView {
                 }
             }));
         paymenttypesform.addComponent(editPaymentsLayout);
-        paymentstypeadmin.addTab(paymenttypesform, "Endre utbetalingstyper");
-        paymentstypeadminTab.addComponent(paymentstypeadmin);
+
+        paymentstypeadmin.addComponent(createNavigationButton(newPaymenttypeLabel, newpaymenttypeTab));
+        paymentstypeadmin.addComponent(createNavigationButton(modifyPayementtypesLabel, paymentstypeTab));
         tabs.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
 
         VerticalLayout useradminTab = new VerticalLayout();
