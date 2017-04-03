@@ -39,19 +39,21 @@ public class UserView extends AbstractView {
     	setSizeFull();
 
         NavigationManager navigationManager = new NavigationManager();
-        CssLayout balanceAndNewJobForm = createBalanceAndNewJobForm();
-        NavigationView balanceAndNewJobView = new NavigationView("Registrere jobb", balanceAndNewJobForm);
+        VerticalComponentGroup balanceAndNewJobGroup = createBalanceAndNewJobForm();
+        NavigationView balanceAndNewJobView = new NavigationView("Registrere jobb", balanceAndNewJobGroup);
         navigationManager.addComponent(balanceAndNewJobView);
         navigationManager.navigateTo(balanceAndNewJobView);
 
-        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, "Siste jobber");
+        String lastJobsLabel = "Siste jobber";
+        String lastPaymentsLabel = "Siste utbetalinger";
 
-        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, "Siste utbetalinger");
+        // Create Subviews with tables
+        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, lastJobsLabel);
+        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, lastPaymentsLabel);
 
-        NavigationButton navigateToLastJobs = createNavigationButton("Siste jobber", lastJobsView);
-        balanceAndNewJobForm.addComponent(navigateToLastJobs);
-        NavigationButton navigateToLastPayments = createNavigationButton("Siste utbetalinger", lastPaymentsView);
-        balanceAndNewJobForm.addComponent(navigateToLastPayments);
+        // Add buttons to the top view, linking to the subviews
+        balanceAndNewJobGroup.addComponent(createNavigationButton(lastJobsLabel, lastJobsView));
+        balanceAndNewJobGroup.addComponent(createNavigationButton(lastPaymentsLabel, lastPaymentsView));
         addComponent(navigationManager);
     }
 
@@ -68,7 +70,7 @@ public class UserView extends AbstractView {
         recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
     }
 
-    private CssLayout createBalanceAndNewJobForm() {
+    private VerticalComponentGroup createBalanceAndNewJobForm() {
         CssLayout balanceAndNewJobForm = new CssLayout();
         VerticalComponentGroup balanceAndNewJobGroup = new VerticalComponentGroup();
         balanceAndNewJobGroup.setWidth("100%");
@@ -128,6 +130,6 @@ public class UserView extends AbstractView {
                                                           }
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
-        return balanceAndNewJobForm;
+        return balanceAndNewJobGroup;
     }
 }
