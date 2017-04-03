@@ -18,7 +18,6 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -28,7 +27,6 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
@@ -282,24 +280,32 @@ public class AdminView extends AbstractView {
         paymentstypeadmin.addComponent(createNavigationButton(modifyPayementtypesLabel, paymentstypeTab));
         tabs.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
 
-        VerticalLayout useradminTab = new VerticalLayout();
-        Accordion useradmin = new Accordion();
-        FormLayout newUserTab = new FormLayout();
+
+        // User administration
+        NavigationManager useradminTab = new NavigationManager();
+        VerticalComponentGroup useradmin = createVerticalComponentGroupWithCssLayoutAndNavigationView(useradminTab, new NavigationView(), "Administrere brukere");
+
+        String newUserLabel = "Legg til ny bruker";
+        String changePasswordForUserLabel = "Bytt passord på bruker";
+        String modifyUsersLabel = "Endre brukere";
+
+        NavigationView newUserTab = new NavigationView();
+        VerticalComponentGroup newUserForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(useradminTab, newUserTab, newUserLabel);
         TextField newUserUsernameField = new TextField("Brukernavn:", newUserUsername);
-        newUserTab.addComponent(newUserUsernameField);
+        newUserForm.addComponent(newUserUsernameField);
         PasswordField newUserPassword1Field = new PasswordField("Passord:", newUserPassword1);
-        newUserTab.addComponent(newUserPassword1Field);
+        newUserForm.addComponent(newUserPassword1Field);
         PasswordField newUserPassword2Field = new PasswordField("Gjenta passord:", newUserPassword2);
         newUserPassword2Field.addValidator(new PasswordCompareValidator(newUserPassword1Field));
-        newUserTab.addComponent(newUserPassword2Field);
+        newUserForm.addComponent(newUserPassword2Field);
         TextField newUserEmailField = new TextField("Epostadresse:", newUserEmail);
         newUserEmailField.addValidator(new EmailValidator("Ikke en gyldig epostadresse"));
-        newUserTab.addComponent(newUserEmailField);
+        newUserForm.addComponent(newUserEmailField);
         TextField newUserFirstnameField = new TextField("Fornavn:", newUserFirstname);
-        newUserTab.addComponent(newUserFirstnameField);
+        newUserForm.addComponent(newUserFirstnameField);
         TextField newUserLastnameField = new TextField("Etternavn:", newUserLastname);
-        newUserTab.addComponent(newUserLastnameField);
-        newUserTab.addComponent(new Button("Lag bruker", new Button.ClickListener() {
+        newUserForm.addComponent(newUserLastnameField);
+        newUserForm.addComponent(new Button("Lag bruker", new Button.ClickListener() {
                 private static final long serialVersionUID = 2493188115512727312L;
 
                 @Override
@@ -350,8 +356,9 @@ public class AdminView extends AbstractView {
                     editUserUsers.addAll(users);
                 }
             }));
-        useradmin.addTab(newUserTab, "Legg til ny bruker");
-        FormLayout changeuserpasswordTab = new FormLayout();
+
+        NavigationView changeuserpasswordTab = new NavigationView();
+        VerticalComponentGroup changeuserpasswordForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(useradminTab, changeuserpasswordTab, changePasswordForUserLabel);
         NativeSelect editUserPasswordUsersField = new NativeSelect("Velg bruker", editUserPasswordUsers);
         editUserPasswordUsersField.setItemCaptionPropertyId("fullname");
         editUserPasswordUsersField.addValueChangeListener(new ValueChangeListener() {
@@ -366,13 +373,13 @@ public class AdminView extends AbstractView {
                     }
                 }
             });
-        changeuserpasswordTab.addComponent(editUserPasswordUsersField);
+        changeuserpasswordForm.addComponent(editUserPasswordUsersField);
         PasswordField editUserPassword1Field = new PasswordField("Passord:", editUserPassword1);
-        changeuserpasswordTab.addComponent(editUserPassword1Field);
+        changeuserpasswordForm.addComponent(editUserPassword1Field);
         PasswordField editUserPassword2Field = new PasswordField("Gjenta passord:", editUserPassword2);
         editUserPassword2Field.addValidator(new PasswordCompareValidator(editUserPassword1Field));
-        changeuserpasswordTab.addComponent(editUserPassword2Field);
-        changeuserpasswordTab.addComponent(new Button("Endre passord", new Button.ClickListener() {
+        changeuserpasswordForm.addComponent(editUserPassword2Field);
+        changeuserpasswordForm.addComponent(new Button("Endre passord", new Button.ClickListener() {
                 private static final long serialVersionUID = 811470485549038444L;
 
                 @Override
@@ -389,8 +396,9 @@ public class AdminView extends AbstractView {
                     }
                 }
             }));
-        useradmin.addTab(changeuserpasswordTab, "Bytt passord på bruker");
-        FormLayout usersTab = new FormLayout();
+
+        NavigationView usersTab = new NavigationView();
+        VerticalComponentGroup usersform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(useradminTab, usersTab, modifyUsersLabel);
         NativeSelect editUserUsersField = new NativeSelect("Velg bruker", editUserUsers);
         editUserUsersField.setItemCaptionPropertyId("fullname");
         editUserUsersField.addValueChangeListener(new ValueChangeListener() {
@@ -407,18 +415,18 @@ public class AdminView extends AbstractView {
                     }
                 }
             });
-        usersTab.addComponent(editUserUsersField);
+        usersform.addComponent(editUserUsersField);
 
         TextField editUserUsernameField = new TextField("Brukernavn:", editUserUsername);
-        usersTab.addComponent(editUserUsernameField);
+        usersform.addComponent(editUserUsernameField);
         TextField editUserEmailField = new TextField("Epostadresse:", editUserEmail);
         editUserEmailField.addValidator(new EmailValidator("Ikke en gyldig epostadresse"));
-        usersTab.addComponent(editUserEmailField);
+        usersform.addComponent(editUserEmailField);
         TextField editUserFirstnameField = new TextField("Fornavn:", editUserFirstname);
-        usersTab.addComponent(editUserFirstnameField);
+        usersform.addComponent(editUserFirstnameField);
         TextField editUserLastnameField = new TextField("Etternavn:", editUserLastname);
-        usersTab.addComponent(editUserLastnameField);
-        usersTab.addComponent(new Button("Lagre endringer av bruker", new Button.ClickListener() {
+        usersform.addComponent(editUserLastnameField);
+        usersform.addComponent(new Button("Lagre endringer av bruker", new Button.ClickListener() {
                 private static final long serialVersionUID = 1658760136279718499L;
 
                 @Override
@@ -456,8 +464,10 @@ public class AdminView extends AbstractView {
                     editUserUsers.addAll(users);
                 }
             }));
-        useradmin.addTab(usersTab, "Endre brukere");
-        useradminTab.addComponent(useradmin);
+
+        useradmin.addComponent(createNavigationButton(newUserLabel, newUserTab));
+        useradmin.addComponent(createNavigationButton(changePasswordForUserLabel, changeuserpasswordTab));
+        useradmin.addComponent(createNavigationButton(modifyUsersLabel, usersTab));
         tabs.addTab(useradminTab, "Administrere brukere");
 
         addComponent(tabs);
