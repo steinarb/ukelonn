@@ -31,6 +31,37 @@ public class AdminFallbackView extends AbstractView {
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
 
+    // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
+    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
+    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
+    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class);
+    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class);
+    ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
+    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class);
+    ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
+    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
+    ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
+    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
+    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
+    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
+    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
+    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
+    ObjectProperty<String> newUserUsername = new ObjectProperty<String>("");
+    ObjectProperty<String> newUserPassword1 = new ObjectProperty<String>("");
+    ObjectProperty<String> newUserPassword2 = new ObjectProperty<String>("");
+    ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
+    ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
+    ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
+    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class);
+    ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
+    ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
+    BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class);
+    ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
+    ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
+    ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
+    ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
+
     public AdminFallbackView(VaadinRequest request) {
     	VerticalLayout content = new VerticalLayout();
     	content.addStyleName("ukelonn-responsive-layout");
@@ -43,21 +74,17 @@ public class AdminFallbackView extends AbstractView {
         content.addComponent(greeting);
 
         // Updatable containers
-        ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
-        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
-        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-        BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-        BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
         ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
-        ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
         Class<?> classForLogMessage = getClass();
 
         Accordion accordion = new Accordion();
 
         VerticalLayout registerPaymentTab = new VerticalLayout();
         List<Account> accounts = getAccounts(getClass());
-        BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, accounts);
+        accountsContainer.addAll(accounts);
         ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
         accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         accountSelector.setItemCaptionPropertyId("fullName");
@@ -148,28 +175,8 @@ public class AdminFallbackView extends AbstractView {
         accordion.addTab(registerPaymentTab, "Registrere utbetaling");
 
         // Updatable data model for the form elements (setting values in the properties will update the fields)
-        ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
-        ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
-        ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
-        ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
-        ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
-        ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-        ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
-        ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-        ObjectProperty<String> newUserUsername = new ObjectProperty<String>("");
-        ObjectProperty<String> newUserPassword1 = new ObjectProperty<String>("");
-        ObjectProperty<String> newUserPassword2 = new ObjectProperty<String>("");
-        ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
-        ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
-        ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
-        BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(classForLogMessage));
-        ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
-        ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
-        BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class, getUsers(classForLogMessage));
-        ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
-        ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
-        ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
-        ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
+        editUserPasswordUsers.addAll(getUsers(classForLogMessage));
+        editUserUsers.addAll(getUsers(classForLogMessage));
 
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();

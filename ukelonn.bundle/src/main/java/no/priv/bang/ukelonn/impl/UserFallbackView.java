@@ -27,6 +27,13 @@ import com.vaadin.ui.Button.ClickEvent;
 public class UserFallbackView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
 
+    // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
+    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
+    BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class);
+    ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
+    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
+    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+
     public UserFallbackView(VaadinRequest request) {
     	Principal currentUser = request.getUserPrincipal();
     	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getName());
@@ -39,7 +46,7 @@ public class UserFallbackView extends AbstractView {
 
         FormLayout balanceLayout = new FormLayout();
         // Display the current balance
-        ObjectProperty<Double> balance = new ObjectProperty<Double>(account.getBalance());
+        balance.setValue(account.getBalance());
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
@@ -51,13 +58,12 @@ public class UserFallbackView extends AbstractView {
         FormLayout balanceAndNewJobTab = new FormLayout();
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
-        BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, paymentTypes);
+        paymentTypesContainer.addAll(paymentTypes);
         ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
         jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
         balanceAndNewJobTab.addComponent(jobtypeSelector);
-        ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
         TextField newAmountDisplay = new TextField(newJobAmount);
         newAmountDisplay.setReadOnly(true);
         balanceAndNewJobTab.addComponent(newAmountDisplay);
@@ -74,10 +80,10 @@ public class UserFallbackView extends AbstractView {
             });
 
         // Updatable containers
-        BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getJobsFromAccount(account, getClass()));
+        recentJobs.addAll(getJobsFromAccount(account, getClass()));
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTable.setImmediate(true);
-        BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getPaymentsFromAccount(account, getClass()));
+        recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
         Class<?> classForLogMessage = getClass();
 
         // Have a clickable button
