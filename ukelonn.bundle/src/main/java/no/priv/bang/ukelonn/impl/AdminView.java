@@ -73,6 +73,22 @@ public class AdminView extends AbstractView {
     	setSizeFull();
         TabBarView tabs = new TabBarView();
 
+        createPaymentRegistrationTab(tabs);
+        createJobtypeAdminstrationTab(tabs);
+        createPaymenttypeAdministrationTab(tabs);
+        createUserAdministrationTab(tabs);
+
+        addComponent(tabs);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
+        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
+    }
+
+    private void createPaymentRegistrationTab(TabBarView tabs) {
         NavigationManager registerPaymentTab = new NavigationManager();
         tabs.addTab(registerPaymentTab, "Registrere utbetaling");
         VerticalComponentGroup registerPaymentTabGroup = createRegisterPaymentForm(registerPaymentTab);
@@ -82,9 +98,103 @@ public class AdminView extends AbstractView {
 
         registerPaymentTabGroup.addComponent(createNavigationButton("Siste jobber for bruker", lastJobsForUserView));
         registerPaymentTabGroup.addComponent(createNavigationButton("Siste utbetalinger til bruker", lastPaymentsForUserView));
+    }
 
+    private VerticalComponentGroup createRegisterPaymentForm(NavigationManager registerPaymentTab) {
+        CssLayout registerPaymentTabForm = new CssLayout();
+        VerticalComponentGroup registerPaymentTabGroup = new VerticalComponentGroup();
 
-        // Job type administration
+        // Display the greeting
+        Component greeting = new Label(greetingProperty);
+        greeting.setStyleName("h1");
+        registerPaymentTabGroup.addComponent(greeting);
+
+        NativeSelect paymenttype = new NativeSelect("Registrer utbetaling", paymentTypes);
+        Class<? extends AdminView> classForLogMessage = getClass();
+        NativeSelect accountSelector = new NativeSelect("Velg hvem det skal betales til", accountsContainer);
+        accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        accountSelector.setItemCaptionPropertyId("fullName");
+        accountSelector.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -781514357123503476L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    Account account = (Account) accountSelector.getValue();
+                    jobTypes.removeAllItems();
+                    paymentTypes.removeAllItems();
+                    recentJobs.removeAllItems();
+                    recentPayments.removeAllItems();
+                    if (account != null) {
+                        refreshAccount(classForLogMessage, account);
+                        balance.setValue(account.getBalance());
+                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+                        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+                        paymenttype.select(transactionTypes.get(idOfPayToBank));
+                        amount.setValue(balance.getValue());
+                        recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
+                        recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                    }
+                }
+            });
+        registerPaymentTabGroup.addComponent(accountSelector);
+
+        FormLayout paymentLayout = new FormLayout();
+        TextField balanceDisplay = new TextField("Til gode:");
+        balanceDisplay.setPropertyDataSource(balance);
+        balanceDisplay.addStyleName("inline-label");
+        paymentLayout.addComponent(balanceDisplay);
+
+        paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        paymenttype.setItemCaptionPropertyId("transactionTypeName");
+        paymenttype.addValueChangeListener(new ValueChangeListener() {
+                private static final long serialVersionUID = -8306551057458139402L;
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    TransactionType payment = (TransactionType) paymenttype.getValue();
+                    if (payment != null) {
+                        Double paymentAmount = payment.getTransactionAmount();
+	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                            amount.setValue(balance.getValue());
+	            	} else {
+                            amount.setValue(paymentAmount);
+	            	}
+                    }
+                }
+            });
+        paymentLayout.addComponent(paymenttype);
+
+        TextField amountField = new TextField("Beløp:", amount);
+        paymentLayout.addComponent(amountField);
+
+        paymentLayout.addComponent(new Button("Registrer betaling",
+                                              new Button.ClickListener() {
+                                                  private static final long serialVersionUID = 5260321175219218136L;
+
+                                                  @Override
+                                                  public void buttonClick(ClickEvent event) {
+                                                      Account account = (Account) accountSelector.getValue();
+                                                      TransactionType payment = (TransactionType) paymenttype.getValue();
+                                                      if (account != null && payment != null) {
+                                                          addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
+                                                          recentPayments.removeAllItems();
+                                                          recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                                                          refreshAccount(classForLogMessage, account);
+                                                          balance.setValue(account.getBalance());
+                                                          amount.setValue(0.0);
+                                                      }
+                                                  }
+                                              }));
+        registerPaymentTabGroup.addComponent(paymentLayout);
+        registerPaymentTabForm.addComponent(registerPaymentTabGroup);
+        NavigationView registerPaymentView = new NavigationView("Registrer betaling", registerPaymentTabForm);
+        registerPaymentTab.addComponent(registerPaymentView);
+        registerPaymentTab.navigateTo(registerPaymentView);
+        return registerPaymentTabGroup;
+    }
+
+    private void createJobtypeAdminstrationTab(TabBarView tabs) {
         Class<? extends AdminView> classForLogMessage = getClass();
         NavigationManager jobtypeAdminTab = new NavigationManager();
         VerticalComponentGroup jobtypeAdminContent = createVerticalComponentGroupWithCssLayoutAndNavigationView(jobtypeAdminTab, new NavigationView(), "Administrere jobbtyper");
@@ -179,8 +289,9 @@ public class AdminView extends AbstractView {
         jobtypeAdminContent.addComponent(createNavigationButton(newJobtypeLabel, newJobTypeTab));
         jobtypeAdminContent.addComponent(createNavigationButton(modifyJobtypesLabel, jobtypesTab));
         tabs.addTab(jobtypeAdminTab, "Administrere jobbtyper");
+    }
 
-
+    private void createPaymenttypeAdministrationTab(TabBarView tabs) {
         // Payment type administration.
         NavigationManager paymentstypeadminTab = new NavigationManager();
         VerticalComponentGroup paymentstypeadmin = createVerticalComponentGroupWithCssLayoutAndNavigationView(paymentstypeadminTab, new NavigationView(), "Administrere utbetalingstyper");
@@ -190,9 +301,10 @@ public class AdminView extends AbstractView {
 
         NavigationView newpaymenttypeTab = new NavigationView();
         VerticalComponentGroup newpaymenttypeForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, newpaymenttypeTab, newPaymenttypeLabel);
+        Class<? extends AdminView> classForLogMessage = getClass();
         TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
         newpaymenttypeForm.addComponent(newPaymentTypeNameField);
-        TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
+	TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
         newpaymenttypeForm.addComponent(newPaymentTypeAmountField);
         newpaymenttypeForm.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
                 private static final long serialVersionUID = -2160144195348196823L;
@@ -279,9 +391,9 @@ public class AdminView extends AbstractView {
         paymentstypeadmin.addComponent(createNavigationButton(newPaymenttypeLabel, newpaymenttypeTab));
         paymentstypeadmin.addComponent(createNavigationButton(modifyPayementtypesLabel, paymentstypeTab));
         tabs.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
+    }
 
-
-        // User administration
+    private void createUserAdministrationTab(TabBarView tabs) {
         NavigationManager useradminTab = new NavigationManager();
         VerticalComponentGroup useradmin = createVerticalComponentGroupWithCssLayoutAndNavigationView(useradminTab, new NavigationView(), "Administrere brukere");
 
@@ -303,6 +415,7 @@ public class AdminView extends AbstractView {
         newUserForm.addComponent(newUserEmailField);
         TextField newUserFirstnameField = new TextField("Fornavn:", newUserFirstname);
         newUserForm.addComponent(newUserFirstnameField);
+        Class<? extends AdminView> classForLogMessage = getClass();
         TextField newUserLastnameField = new TextField("Etternavn:", newUserLastname);
         newUserForm.addComponent(newUserLastnameField);
         newUserForm.addComponent(new Button("Lag bruker", new Button.ClickListener() {
@@ -312,16 +425,16 @@ public class AdminView extends AbstractView {
                 public void buttonClick(ClickEvent event) {
                     if (newUserIsAValidUser())
                     {
-                    	addUserToDatabase(classForLogMessage,
+                        addUserToDatabase(classForLogMessage,
                                           newUserUsername.getValue(),
                                           newUserPassword2.getValue(),
                                           newUserEmail.getValue(),
                                           newUserFirstname.getValue(),
                                           newUserLastname.getValue());
 
-                    	clearAllNewUserFormElements();
+                        clearAllNewUserFormElements();
 
-                    	refreshListWidgetsAffectedByChangesToUsers();
+                        refreshListWidgetsAffectedByChangesToUsers();
                     }
                 }
 
@@ -469,109 +582,6 @@ public class AdminView extends AbstractView {
         useradmin.addComponent(createNavigationButton(changePasswordForUserLabel, changeuserpasswordTab));
         useradmin.addComponent(createNavigationButton(modifyUsersLabel, usersTab));
         tabs.addTab(useradminTab, "Administrere brukere");
-
-        addComponent(tabs);
-    }
-
-    @Override
-    public void enter(ViewChangeEvent event) {
-        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
-        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
-    }
-
-    private VerticalComponentGroup createRegisterPaymentForm(NavigationManager registerPaymentTab) {
-        CssLayout registerPaymentTabForm = new CssLayout();
-        VerticalComponentGroup registerPaymentTabGroup = new VerticalComponentGroup();
-
-        // Display the greeting
-        Component greeting = new Label(greetingProperty);
-        greeting.setStyleName("h1");
-        registerPaymentTabGroup.addComponent(greeting);
-
-        NativeSelect paymenttype = new NativeSelect("Registrer utbetaling", paymentTypes);
-        Class<? extends AdminView> classForLogMessage = getClass();
-        NativeSelect accountSelector = new NativeSelect("Velg hvem det skal betales til", accountsContainer);
-        accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        accountSelector.setItemCaptionPropertyId("fullName");
-        accountSelector.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -781514357123503476L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    Account account = (Account) accountSelector.getValue();
-                    jobTypes.removeAllItems();
-                    paymentTypes.removeAllItems();
-                    recentJobs.removeAllItems();
-                    recentPayments.removeAllItems();
-                    if (account != null) {
-                        refreshAccount(classForLogMessage, account);
-                        balance.setValue(account.getBalance());
-                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
-                        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-                        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-                        paymenttype.select(transactionTypes.get(idOfPayToBank));
-                        amount.setValue(balance.getValue());
-                        recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
-                        recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
-                    }
-                }
-            });
-        registerPaymentTabGroup.addComponent(accountSelector);
-
-        FormLayout paymentLayout = new FormLayout();
-        TextField balanceDisplay = new TextField("Til gode:");
-        balanceDisplay.setPropertyDataSource(balance);
-        balanceDisplay.addStyleName("inline-label");
-        paymentLayout.addComponent(balanceDisplay);
-
-        paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        paymenttype.setItemCaptionPropertyId("transactionTypeName");
-        paymenttype.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -8306551057458139402L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    TransactionType payment = (TransactionType) paymenttype.getValue();
-                    if (payment != null) {
-                        Double paymentAmount = payment.getTransactionAmount();
-	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
-                            amount.setValue(balance.getValue());
-	            	} else {
-                            amount.setValue(paymentAmount);
-	            	}
-                    }
-                }
-            });
-        paymentLayout.addComponent(paymenttype);
-
-        TextField amountField = new TextField("Beløp:", amount);
-        paymentLayout.addComponent(amountField);
-
-        paymentLayout.addComponent(new Button("Registrer betaling",
-                                              new Button.ClickListener() {
-                                                  private static final long serialVersionUID = 5260321175219218136L;
-
-                                                  @Override
-                                                  public void buttonClick(ClickEvent event) {
-                                                      Account account = (Account) accountSelector.getValue();
-                                                      TransactionType payment = (TransactionType) paymenttype.getValue();
-                                                      if (account != null && payment != null) {
-                                                          addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
-                                                          recentPayments.removeAllItems();
-                                                          recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
-                                                          refreshAccount(classForLogMessage, account);
-                                                          balance.setValue(account.getBalance());
-                                                          amount.setValue(0.0);
-                                                      }
-                                                  }
-                                              }));
-        registerPaymentTabGroup.addComponent(paymentLayout);
-        registerPaymentTabForm.addComponent(registerPaymentTabGroup);
-        NavigationView registerPaymentView = new NavigationView("Registrer betaling", registerPaymentTabForm);
-        registerPaymentTab.addComponent(registerPaymentView);
-        registerPaymentTab.navigateTo(registerPaymentView);
-        return registerPaymentTabGroup;
     }
 
     private VerticalComponentGroup createVerticalComponentGroupWithCssLayoutAndNavigationView(NavigationManager navigationManager, NavigationView view, String caption) {
