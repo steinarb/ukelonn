@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 
-import com.vaadin.addon.touchkit.ui.NavigationButton;
 import com.vaadin.addon.touchkit.ui.NavigationManager;
 import com.vaadin.addon.touchkit.ui.NavigationView;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
