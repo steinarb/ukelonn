@@ -13,6 +13,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
@@ -21,6 +22,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -531,6 +533,7 @@ public class AdminFallbackView extends AbstractView {
         accordion.addTab(useradminTab, "Administrere brukere");
 
         content.addComponent(accordion);
+        content.addComponent(new Link("Mobilversjon", new ExternalResource(request.getContextPath() + "?ui-style=mobile")));
 
         addComponent(content);
     }

@@ -1,6 +1,7 @@
 package no.priv.bang.ukelonn.impl;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
@@ -21,10 +23,12 @@ import org.junit.Test;
 import com.vaadin.server.DefaultDeploymentConfiguration;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
+import com.vaadin.util.CurrentInstance;
 
 public class UkelonnUITest {
 
@@ -73,12 +77,60 @@ public class UkelonnUITest {
     @Test
     public void testInitWhenRegularUser() {
         VaadinSession.setCurrent(session);
+        when(user.isRemembered()).thenReturn(false);
+        when(user.isAuthenticated()).thenReturn(true);
+        when(user.hasRole(eq("administrator"))).thenReturn(false);
+        UkelonnUI ui = new UkelonnUI();
+        String location = "http://localhost:8181/ukelonn/";
+        VaadinRequest request = createMockVaadinRequest(location);
+        ui.doInit(request, -1, location);
+
+        assertEquals(UserView.class, ui.getNavigator().getCurrentView().getClass());
+    }
+
+    @Test
+    public void testFallbackUserViewInitWhenRegularUser() {
+        VaadinSession.setCurrent(session);
     	when(user.isRemembered()).thenReturn(false);
     	when(user.isAuthenticated()).thenReturn(true);
     	when(user.hasRole(eq("administrator"))).thenReturn(false);
         UkelonnUI ui = new UkelonnUI();
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
+        Cookie[] cookies = { new Cookie("cookie", "crumb"), new Cookie("ui-style", "browser")};
+        when(request.getCookies()).thenReturn(cookies);
+        ui.doInit(request, -1, location);
+
+        assertEquals(UserFallbackView.class, ui.getNavigator().getCurrentView().getClass());
+    }
+
+    @Test
+    public void testSwitchToBrowserFriendlyView() {
+        VaadinSession.setCurrent(session);
+    	when(user.isRemembered()).thenReturn(false);
+    	when(user.isAuthenticated()).thenReturn(true);
+    	when(user.hasRole(eq("administrator"))).thenReturn(false);
+        UkelonnUI ui = new UkelonnUI();
+        String location = "http://localhost:8181/ukelonn/";
+        VaadinRequest request = createMockVaadinRequest(location);
+        when(request.getParameter(eq("ui-style"))).thenReturn("browser");
+    	CurrentInstance.set(VaadinResponse.class, mock(VaadinResponse.class));
+        ui.doInit(request, -1, location);
+
+        assertEquals(UserFallbackView.class, ui.getNavigator().getCurrentView().getClass());
+    }
+
+    @Test
+    public void testSwitchToMobileFriendlyView() {
+        VaadinSession.setCurrent(session);
+    	when(user.isRemembered()).thenReturn(false);
+    	when(user.isAuthenticated()).thenReturn(true);
+    	when(user.hasRole(eq("administrator"))).thenReturn(false);
+        UkelonnUI ui = new UkelonnUI();
+        String location = "http://localhost:8181/ukelonn/";
+        VaadinRequest request = createMockVaadinRequest(location);
+        when(request.getParameter(eq("ui-style"))).thenReturn("mobile");
+    	CurrentInstance.set(VaadinResponse.class, mock(VaadinResponse.class));
         ui.doInit(request, -1, location);
 
         assertEquals(UserView.class, ui.getNavigator().getCurrentView().getClass());
@@ -112,8 +164,25 @@ public class UkelonnUITest {
         assertEquals(AdminView.class, ui.getNavigator().getCurrentView().getClass());
     }
 
+    @Test
+    public void testAdminFallbackViewInitWhenLoggedInAsAdministrator() {
+        VaadinSession.setCurrent(session);
+    	when(user.isRemembered()).thenReturn(true);
+    	when(user.isAuthenticated()).thenReturn(false);
+    	when(user.hasRole(eq("administrator"))).thenReturn(true);
+        UkelonnUI ui = new UkelonnUI();
+        String location = "http://localhost:8181/ukelonn/";
+        VaadinRequest request = createMockVaadinRequest(location);
+        Cookie[] cookies = { new Cookie("ui-style", "browser")};
+        when(request.getCookies()).thenReturn(cookies);
+        ui.doInit(request, -1, location);
+
+        assertEquals(AdminFallbackView.class, ui.getNavigator().getCurrentView().getClass());
+    }
+
     private VaadinRequest createMockVaadinRequest(String location) {
         VaadinRequest request = mock(VaadinRequest.class);
+        when(request.getCookies()).thenReturn(new Cookie[0]);
         when(request.getParameter(eq("v-loc"))).thenReturn(location);
         return request;
     }

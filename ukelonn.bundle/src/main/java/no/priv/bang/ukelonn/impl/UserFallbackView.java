@@ -12,12 +12,14 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -114,6 +116,7 @@ public class UserFallbackView extends AbstractView {
         accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
 
         content.addComponent(accordion);
+        content.addComponent(new Link("Mobilversjon", new ExternalResource(request.getContextPath() + "?ui-style=mobile")));
         addComponent(content);
     }
 
