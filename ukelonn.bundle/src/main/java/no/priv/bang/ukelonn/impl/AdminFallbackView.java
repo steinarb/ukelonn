@@ -79,14 +79,34 @@ public class AdminFallbackView extends AbstractView {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        editUserPasswordUsers.addAll(getUsers(getClass()));
+        editUserUsers.addAll(getUsers(getClass()));
         ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
-        Class<?> classForLogMessage = getClass();
 
         Accordion accordion = new Accordion();
+        createPaymentRegistrationTab(paymenttype, accordion);
+        createJobtypeAdminTab(accordion);
+        createPaymenttypesAdminTab(accordion);
+        createUserAdminTab(accordion);
 
+        content.addComponent(accordion);
+        content.addComponent(new Link("Mobilversjon", new ExternalResource(request.getContextPath() + "?ui-style=mobile")));
+
+        addComponent(content);
+    }
+
+    @Override
+    public void enter(ViewChangeEvent event) {
+        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
+        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
+    }
+
+    private void createPaymentRegistrationTab(ComboBox paymenttype, Accordion accordion) {
         VerticalLayout registerPaymentTab = new VerticalLayout();
         List<Account> accounts = getAccounts(getClass());
         accountsContainer.addAll(accounts);
+        Class<?> classForLogMessage = getClass();
         ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
         accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         accountSelector.setItemCaptionPropertyId("fullName");
@@ -101,7 +121,7 @@ public class AdminFallbackView extends AbstractView {
                     recentJobs.removeAllItems();
                     recentPayments.removeAllItems();
                     if (account != null) {
-                    	refreshAccount(classForLogMessage, account);
+                        refreshAccount(classForLogMessage, account);
                         balance.setValue(account.getBalance());
                         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
                         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
@@ -130,12 +150,12 @@ public class AdminFallbackView extends AbstractView {
                 public void valueChange(ValueChangeEvent event) {
                     TransactionType payment = (TransactionType) paymenttype.getValue();
                     if (payment != null) {
-            		Double paymentAmount = payment.getTransactionAmount();
-                	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                        Double paymentAmount = payment.getTransactionAmount();
+	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
                             amount.setValue(balance.getValue());
-                	} else {
+	            	} else {
                             amount.setValue(paymentAmount);
-                	}
+	            	}
                     }
                 }
             });
@@ -175,16 +195,15 @@ public class AdminFallbackView extends AbstractView {
         userinfo.addTab(paymentsTab, "Siste utbetalinger");
         registerPaymentTab.addComponent(userinfo);
         accordion.addTab(registerPaymentTab, "Registrere utbetaling");
+    }
 
-        // Updatable data model for the form elements (setting values in the properties will update the fields)
-        editUserPasswordUsers.addAll(getUsers(classForLogMessage));
-        editUserUsers.addAll(getUsers(classForLogMessage));
-
+    private void createJobtypeAdminTab(Accordion accordion) {
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
         FormLayout newJobTypeTab = new FormLayout();
         TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:", newJobTypeName);
         newJobTypeTab.addComponent(newJobTypeNameField);
+        Class<?> classForLogMessage = getClass();
         TextField newJobTypeAmountField = new TextField("Beløp for ny jobbtype:", newJobTypeAmount);
         newJobTypeTab.addComponent(newJobTypeAmountField);
         newJobTypeTab.addComponent(new Button("Lag jobbtype", new Button.ClickListener() {
@@ -265,12 +284,15 @@ public class AdminFallbackView extends AbstractView {
         jobtypes.addTab(jobtypesform, "Endre jobbtyper");
         jobtypeAdminTab.addComponent(jobtypes);
         accordion.addTab(jobtypeAdminTab, "Administrere jobbtyper");
+    }
 
+    private void createPaymenttypesAdminTab(Accordion accordion) {
         VerticalLayout paymentstypeadminTab = new VerticalLayout();
         Accordion paymentstypeadmin = new Accordion();
         FormLayout newpaymenttypeTab = new FormLayout();
         TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
         newpaymenttypeTab.addComponent(newPaymentTypeNameField);
+        Class<?> classForLogMessage = getClass();
         TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
         newpaymenttypeTab.addComponent(newPaymentTypeAmountField);
         newpaymenttypeTab.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
@@ -351,7 +373,10 @@ public class AdminFallbackView extends AbstractView {
         paymentstypeadmin.addTab(paymenttypesform, "Endre utbetalingstyper");
         paymentstypeadminTab.addComponent(paymentstypeadmin);
         accordion.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
+    }
 
+    private void createUserAdminTab(Accordion accordion) {
+        Class<?> classForLogMessage = getClass();
         VerticalLayout useradminTab = new VerticalLayout();
         Accordion useradmin = new Accordion();
         FormLayout newUserTab = new FormLayout();
@@ -531,18 +556,6 @@ public class AdminFallbackView extends AbstractView {
         useradmin.addTab(usersTab, "Endre brukere");
         useradminTab.addComponent(useradmin);
         accordion.addTab(useradminTab, "Administrere brukere");
-
-        content.addComponent(accordion);
-        content.addComponent(new Link("Mobilversjon", new ExternalResource(request.getContextPath() + "?ui-style=mobile")));
-
-        addComponent(content);
-    }
-
-    @Override
-    public void enter(ViewChangeEvent event) {
-        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
-        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
     }
 
 }
