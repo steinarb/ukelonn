@@ -28,6 +28,7 @@ public class UkelonnUI extends UI {
             getNavigator().addView("", new UserView(request));
             getNavigator().addView("admin", new AdminView(request));
     	} else {
+            setTheme("valo");
             getNavigator().addView("", new UserFallbackView(request));
             getNavigator().addView("admin", new AdminFallbackView(request));
     	}
