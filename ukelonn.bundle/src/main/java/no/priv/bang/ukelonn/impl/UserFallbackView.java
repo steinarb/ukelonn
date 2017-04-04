@@ -2,9 +2,10 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.shiro.SecurityUtils;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -26,8 +27,10 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserFallbackView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
+    private Account account;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
     ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
     BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class);
     ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
@@ -35,18 +38,14 @@ public class UserFallbackView extends AbstractView {
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
 
     public UserFallbackView(VaadinRequest request) {
-    	Principal currentUser = request.getUserPrincipal();
-    	Account account = getAccountInfoFromDatabase(getClass(), (String) currentUser.getName());
-
     	// Display the greeting
     	VerticalLayout content = new VerticalLayout();
-        Component greeting = new Label("Hei " + account.getFirstName());
+        Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
         content.addComponent(greeting);
 
         FormLayout balanceLayout = new FormLayout();
         // Display the current balance
-        balance.setValue(account.getBalance());
         TextField balanceDisplay = new TextField("Til gode:");
         balanceDisplay.setPropertyDataSource(balance);
         balanceDisplay.addStyleName("inline-label");
@@ -120,7 +119,14 @@ public class UserFallbackView extends AbstractView {
 
     @Override
     public void enter(ViewChangeEvent event) {
-        // TODO Auto-generated method stub
+        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+        account = getAccountInfoFromDatabase(getClass(), currentUser);
 
+        greetingProperty.setValue("Ukelønn for " + account.getFirstName());
+        balance.setValue(account.getBalance());
+        recentJobs.removeAllItems();
+        recentJobs.addAll(getJobsFromAccount(account, getClass()));
+        recentPayments.removeAllItems();
+        recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
     }
 }

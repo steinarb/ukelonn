@@ -2,9 +2,10 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.shiro.SecurityUtils;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -32,6 +33,7 @@ public class AdminFallbackView extends AbstractView {
     final int idOfPayToBank = 4;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn admin UI, bruker: ????");
     ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
@@ -66,10 +68,8 @@ public class AdminFallbackView extends AbstractView {
     	VerticalLayout content = new VerticalLayout();
     	content.addStyleName("ukelonn-responsive-layout");
     	Responsive.makeResponsive(content);
-    	Principal currentUser = request.getUserPrincipal();
-    	AdminUser admin = getAdminUserFromDatabase(getClass(), (String) currentUser.getName());
         // Display the greeting
-        Component greeting = new Label("Hei " + admin.getFirstname());
+        Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
         content.addComponent(greeting);
 
@@ -537,8 +537,9 @@ public class AdminFallbackView extends AbstractView {
 
     @Override
     public void enter(ViewChangeEvent event) {
-        // TODO Auto-generated method stub
-
+        String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
+        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
+        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
     }
 
 }
