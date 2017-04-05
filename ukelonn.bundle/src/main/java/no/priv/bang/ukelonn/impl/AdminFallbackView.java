@@ -90,7 +90,7 @@ public class AdminFallbackView extends AbstractView {
 
         content.addComponent(accordion);
 
-        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request, "mobile");
+        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request, "mobile", "Mobilversjon");
         content.addComponent(links);
 
         addComponent(content);
