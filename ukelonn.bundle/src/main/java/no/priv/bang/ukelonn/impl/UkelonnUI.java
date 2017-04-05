@@ -94,6 +94,7 @@ public class UkelonnUI extends UI {
             // Save cookie with updated value
             uiStyle.setPath(request.getContextPath());
             VaadinService.getCurrentResponse().addCookie(uiStyle);
+            getPage().setLocation(getPage().getLocation().resolve(".")); // Clear the "?ui-style=..." argument from the URL
         }
         return uiStyle;
     }
