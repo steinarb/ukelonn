@@ -22,6 +22,10 @@ public class UkelonnUI extends UI {
     	getPage().setTitle("Ukelønn");
     	setNavigator(new Navigator(this, this));
     	Cookie uiStyle = checkForUIStyleCookie(request);
+    	if (isLogout(request)) {
+            SecurityUtils.getSubject().logout();
+            getPage().setLocation(getPage().getLocation().resolve(".")); // Clear the "?logout=yes" argument from the URL
+    	}
 
     	// Add all of the different views
     	if (isMobile(uiStyle)) {
@@ -40,6 +44,15 @@ public class UkelonnUI extends UI {
     	} else {
             getNavigator().navigateTo("");
     	}
+    }
+
+    private boolean isLogout(VaadinRequest request) {
+    	// Only an explicit ?logout=yes argument will cause a logout
+    	if ("yes".equals(request.getParameter("logout"))) {
+            return true;
+    	}
+
+    	return false;
     }
 
     private boolean isMobile(Cookie uiStyle) {

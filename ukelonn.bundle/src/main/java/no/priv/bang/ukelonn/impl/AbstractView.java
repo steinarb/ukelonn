@@ -13,7 +13,12 @@ import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.StringToDateConverter;
 import com.vaadin.navigator.View;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
@@ -53,6 +58,18 @@ public abstract class AbstractView extends VerticalLayout implements View {
     protected NavigationButton createNavigationButton(String caption, NavigationView targetView) {
         NavigationButton button = new NavigationButton(caption, targetView);
         return button;
+    }
+
+    protected HorizontalLayout createLinksToBrowserVersionAndLogout(VaadinRequest request) {
+        HorizontalLayout links = new HorizontalLayout();
+        links.setSpacing(true);
+        links.setWidth("100%");
+        Link linkToBrowserFriendlyUI = new Link("Nettleserversjon", new ExternalResource(request.getContextPath() + "?ui-style=browser"));
+        links.addComponent(linkToBrowserFriendlyUI);
+        Link linkToLogout = new Link("Logg ut", new ExternalResource(request.getContextPath() + "?logout=yes"));
+        links.addComponent(linkToLogout);
+        links.setComponentAlignment(linkToLogout, Alignment.MIDDLE_RIGHT);
+        return links;
     }
 
     static final StringToDateConverter dateFormatter = new StringToDateConverter() {

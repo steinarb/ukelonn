@@ -91,6 +91,7 @@ public class AdminFallbackView extends AbstractView {
 
         content.addComponent(accordion);
         content.addComponent(new Link("Mobilversjon", new ExternalResource(request.getContextPath() + "?ui-style=mobile")));
+        content.addComponent(new Link("Logg ut", new ExternalResource(request.getContextPath() + "?logout=yes")));
 
         addComponent(content);
     }

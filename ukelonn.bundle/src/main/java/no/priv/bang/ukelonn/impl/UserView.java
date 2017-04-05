@@ -15,13 +15,12 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
@@ -56,12 +55,13 @@ public class UserView extends AbstractView {
         balanceAndNewJobGroup.addComponent(createNavigationButton(lastJobsLabel, lastJobsView));
         balanceAndNewJobGroup.addComponent(createNavigationButton(lastPaymentsLabel, lastPaymentsView));
         addComponent(navigationManager);
-        Link linkToBrowserFriendlyUI = new Link("Nettleserversjon", new ExternalResource(request.getContextPath() + "?ui-style=browser"));
-        addComponent(linkToBrowserFriendlyUI);
+
+        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request);
+        addComponent(links);
 
         // Set the stretch to minimize the size used by the link
         setExpandRatio(navigationManager, 100);
-        setExpandRatio(linkToBrowserFriendlyUI, 1);
+        setExpandRatio(links, 1);
     }
 
     @Override
