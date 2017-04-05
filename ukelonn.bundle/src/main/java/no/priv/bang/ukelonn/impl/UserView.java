@@ -56,7 +56,7 @@ public class UserView extends AbstractView {
         balanceAndNewJobGroup.addComponent(createNavigationButton(lastPaymentsLabel, lastPaymentsView));
         addComponent(navigationManager);
 
-        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request);
+        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request, "browser");
         addComponent(links);
 
         // Set the stretch to minimize the size used by the link

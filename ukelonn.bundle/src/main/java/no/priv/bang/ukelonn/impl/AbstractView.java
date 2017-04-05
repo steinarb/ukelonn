@@ -60,11 +60,11 @@ public abstract class AbstractView extends VerticalLayout implements View {
         return button;
     }
 
-    protected HorizontalLayout createLinksToBrowserVersionAndLogout(VaadinRequest request) {
+    protected HorizontalLayout createLinksToBrowserVersionAndLogout(VaadinRequest request, String uiStyle) {
         HorizontalLayout links = new HorizontalLayout();
         links.setSpacing(true);
         links.setWidth("100%");
-        Link linkToBrowserFriendlyUI = new Link("Nettleserversjon", new ExternalResource(request.getContextPath() + "?ui-style=browser"));
+        Link linkToBrowserFriendlyUI = new Link("Nettleserversjon", new ExternalResource(request.getContextPath() + "?ui-style=" + uiStyle));
         links.addComponent(linkToBrowserFriendlyUI);
         Link linkToLogout = new Link("Logg ut", new ExternalResource(request.getContextPath() + "?logout=yes"));
         links.addComponent(linkToLogout);

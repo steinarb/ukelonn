@@ -81,7 +81,7 @@ public class AdminView extends AbstractView {
 
         addComponent(tabs);
 
-        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request);
+        HorizontalLayout links = createLinksToBrowserVersionAndLogout(request, "browser");
         addComponent(links);
 
         // Set the stretch to minimize the size used by the link
