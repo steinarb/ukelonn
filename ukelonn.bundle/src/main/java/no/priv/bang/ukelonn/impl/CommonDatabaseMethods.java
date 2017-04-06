@@ -25,6 +25,8 @@ import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class CommonDatabaseMethods {
 
+    static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
+
     public static UkelonnDatabase connectionCheck(Class<?> clazz) {
         UkelonnService ukelonnService = CommonServiceMethods.connectionCheck(clazz);
 
@@ -71,6 +73,17 @@ public class CommonDatabaseMethods {
         ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
         for (TransactionType transactionType : transactionTypes) {
             if (transactionType.isTransactionIsWork()) {
+                jobTypes.add(transactionType);
+            }
+        }
+
+        return jobTypes;
+    }
+
+    public static List<TransactionType> getPaymentTypesFromTransactionTypes(Collection<TransactionType> transactionTypes) {
+        ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
+        for (TransactionType transactionType : transactionTypes) {
+            if (transactionType.isTransactionIsWagePayment()) {
                 jobTypes.add(transactionType);
             }
         }
@@ -128,7 +141,25 @@ public class CommonDatabaseMethods {
             }
         }
 
-        return null;
+        return new Account(0, 0, username, "Ikke innlogget", null, 0);
+    }
+
+    public static AdminUser getAdminUserFromDatabase(Class<?> clazz, String username) {
+        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz);
+        StringBuilder query = sql("select * from administrators_view where username='").append(username).append("'");
+        ResultSet resultset = database.query(query.toString());
+        if (resultset != null) {
+            try {
+                if (resultset.next()) {
+                    AdminUser adminUser = mapAdminUser(resultset);
+                    return adminUser;
+                }
+            } catch (SQLException e) {
+                logError(CommonDatabaseMethods.class, "Error getting administrator user info from the database", e);
+            }
+        }
+
+        return new AdminUser(username, 0, 0, "Ikke innlogget", null);
     }
 
     public static List<Account> getAccounts(Class<?> clazz) {
@@ -151,7 +182,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<Transaction> getPaymentsFromAccount(Account account, Class<?> clazz) {
-        List<Transaction> payments = getTransactionsFromAccount(account, clazz, "/sql/query/payments_last10.sql", "payments");
+        List<Transaction> payments = getTransactionsFromAccount(account, clazz, "/sql/query/payments_last_n.sql", "payments");
         makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
@@ -164,7 +195,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<Transaction> getJobsFromAccount(Account account, Class<?> clazz) {
-        return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last10.sql", "job");
+        return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last_n.sql", "job");
     }
 
     private static List<Transaction> getTransactionsFromAccount(Account account,
@@ -175,7 +206,7 @@ public class CommonDatabaseMethods {
         List<Transaction> transactions = new ArrayList<Transaction>();
         if (null != account) {
             UkelonnDatabase database = connectionCheck(clazz);
-            String sql = String.format(getResourceAsString(sqlTemplate), account.getAccountId());
+            String sql = String.format(getResourceAsString(sqlTemplate), account.getAccountId(), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
             ResultSet resultSet = database.query(sql.toString());
             if (resultSet != null) {
                 try {
@@ -189,6 +220,23 @@ public class CommonDatabaseMethods {
         }
 
         return transactions;
+    }
+
+    /***
+     * Create a list of dummy transactions used to force the initial size of tables.
+     *
+     * @return A list of 10 transactions with empty values for everything
+     */
+    public static Collection<? extends Transaction> getDummyTransactions() {
+    	int lengthOfDummyList = 10;
+    	TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
+    	ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
+    	for (int i = 0; i < lengthOfDummyList; i++) {
+            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0);
+            dummyTransactions.add(dummyTransaction);
+        }
+
+    	return (Collection<? extends Transaction>) dummyTransactions;
     }
 
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
@@ -254,7 +302,7 @@ public class CommonDatabaseMethods {
         database.update(sql);
     }
 
-    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
+    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
         String sql = String.format(
                                    Locale.US, // Format the double correctly for SQL
                                    getResourceAsString("/sql/query/insert_new_payment_type.sql"),
@@ -336,6 +384,20 @@ public class CommonDatabaseMethods {
         return database.update(update.toString());
     }
 
+    public static int updateUserInDatabase(Class<?> classForLogging, User userToUpdate) {
+        String updateUserSql = String.format(
+                                             getResourceAsString("/sql/query/update_user.sql"),
+                                             userToUpdate.getUsername(),
+                                             userToUpdate.getEmail(),
+                                             userToUpdate.getFirstname(),
+                                             userToUpdate.getLastname(),
+                                             userToUpdate.getUserId()
+                                             );
+
+        UkelonnDatabase database = connectionCheck(classForLogging);
+        return database.update(updateUserSql.toString());
+    }
+
     public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
     	StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
         UkelonnDatabase database = connectionCheck(clazz);
@@ -410,6 +472,18 @@ public class CommonDatabaseMethods {
 
         User user = new User(userId, username, email, password, firstname, lastname);
         return user;
+    }
+
+    private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
+        AdminUser adminUser;
+        adminUser = new AdminUser(
+                                  resultset.getString("username"),
+                                  resultset.getInt("user_id"),
+                                  resultset.getInt("administrator_id"),
+                                  resultset.getString("first_name"),
+                                  resultset.getString("last_name")
+                                  );
+        return adminUser;
     }
 
     private static String getResourceAsString(String resourceName) {

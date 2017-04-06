@@ -10,7 +10,7 @@
  <artifactId>ukelonn.karaf</artifactId>
  <packaging>pom</packaging>
 
- <name>Do not install this feature, it will install two conflicing database connections</name>
+ <name>Do not install this feature, it will install two conflicting database connections</name>
 
  <dependencies>
   <dependency>

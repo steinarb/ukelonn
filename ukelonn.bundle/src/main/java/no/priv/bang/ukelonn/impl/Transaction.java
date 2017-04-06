@@ -25,6 +25,10 @@ public class Transaction {
         this.id = id;
     }
 
+    public String getName() {
+    	return this.transactionType.getTransactionTypeName();
+    }
+
 
     public TransactionType getTransactionType() {
         return transactionType;
