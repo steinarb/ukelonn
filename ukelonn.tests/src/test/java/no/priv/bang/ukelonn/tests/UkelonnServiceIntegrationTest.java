@@ -103,7 +103,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.apache.geronimo.bundles", "commons-discovery"),
                        mavenBundle("javax.enterprise", "cdi-api"),
                        mavenBundle("javax.interceptor", "javax.interceptor-api"),
-                       mavenBundle("javax.validation", "validation-api"),
+                       mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-api"),
                        mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
                        mavenBundle("org.primefaces", "primefaces", "6.0"),
