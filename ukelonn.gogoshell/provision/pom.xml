@@ -192,6 +192,20 @@
    <artifactId>pax-jdbc-derby</artifactId>
   </dependency>
   <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-core</artifactId>
+   <exclusions>
+    <exclusion>
+     <groupId>org.slf4j</groupId>
+     <artifactId>slf4j-api</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>commons-beanutils</groupId>
+     <artifactId>commons-beanutils</artifactId>
+    </exclusion>
+   </exclusions>
+  </dependency>
+  <dependency>
    <groupId>org.rendersnake</groupId>
    <artifactId>rendersnake</artifactId>
   </dependency>

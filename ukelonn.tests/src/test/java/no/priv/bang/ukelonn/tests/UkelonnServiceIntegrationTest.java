@@ -22,6 +22,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
+    private String shiroVersion = "1.3.1";
 
     @Inject
     private UkelonnService ukelonnService;
@@ -76,6 +77,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
                        mavenBundle("org.apache.derby", "derby"),
                        mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"),
                        mavenBundle("org.apache.commons", "commons-lang3", "3.3.2"),
+                       mavenBundle("org.apache.shiro", "shiro-core", shiroVersion),
                        mavenBundle("org.rendersnake", "rendersnake").version(asInProject()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.api", getMavenProjectVersion()),
                        mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle", getMavenProjectVersion()),

@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
+import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -24,15 +25,10 @@ import no.steria.osgi.jsr330activator.Jsr330Activator;
  *
  */
 public class UkelonnServiceProvider extends UkelonnServiceBase implements Provider<UkelonnService> {
-
-    private static UkelonnService instance;
+    private static UkelonnServiceProvider instance;
     private WebContainer webContainer;
-    private HttpContext httpContext;
     private UkelonnDatabase database;
-
-    public static UkelonnService getInstance() {
-        return instance;
-    }
+    private LogService logservice;
 
     public UkelonnServiceProvider() {
         super();
@@ -50,7 +46,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     }
 
     @Inject
-    public void setWebContainer(WebContainer webcontainer) {
+    public void setLogservice(LogService logservice) {
+    	this.logservice = logservice;
+    }
+
+    @Override
+    public LogService getLogservice() {
+        return logservice;
+    }
+
+    @Inject
+    public void setWebContainer(WebContainer webcontainer) throws ClassNotFoundException, ServletException, NamespaceException {
         webContainer = webcontainer;
         if (webcontainer != null ) {
             final HttpContext httpContext = webContainer.createDefaultHttpContext();
@@ -75,6 +81,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
 
     public UkelonnService get() {
         return this;
+    }
+
+    public static UkelonnService getInstance() {
+        return instance;
     }
 
 }

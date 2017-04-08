@@ -52,8 +52,8 @@ public class UkelonnDatabaseProviderTest {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         setPrivateField(provider, "dataSourceFactory", dataSourceFactory); // Avoid side effects of the public setter
         provider.createConnection();
-        boolean createSchemaStatementsReturnedUpdateResults = provider.createSchema();
-        assertFalse("Expected no update results on schema creation", createSchemaStatementsReturnedUpdateResults);
+        boolean createdSchema = provider.createSchema();
+        assertTrue(createdSchema);
 
         int[] numberOfRowsmodifiedAfterInsertOfMockData = provider.insertMockData();
         assertEquals(62, numberOfRowsmodifiedAfterInsertOfMockData.length);

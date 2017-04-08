@@ -6,13 +6,19 @@ Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/develo
 
 * Hva ligger på de forskjellige branchene
 
-I øyeblikket er det to hoved-brancher:
- 1. using-primefaces
-    Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og er i skrivende stund den som er kommet lengst
- 2. using-rendersnake
+I øyeblikket er det tre hoved-brancher:
+ 1. using-vaadin
+    Denne branchen bruker [[https://vaadin.com/home][vaadin]] og er iferd med å nærme seg primefaces-branchen i funksjonalitet.
+    Her brukes Vaadins [[https://vaadin.com/docs/-/part/touchkit/mobile-components.html][Mobile User Interface Components]] for å få noe som ser "app-aktig" ut, iallefall på registrering av jobber, gjort av ungene.
+    Admin-grensesnittet er også blitt mer mobilt men vil trives bedre på en tablet enn på en mobil (det er mer som skal vises fram).
+    Denne branchen er i skrivende stund "i produksjon" i heimen.
+ 2. using-primefaces
+    Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og var den første som var ferdig.
+    Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet ser litt rart ut)
+ 3. using-rendersnake
     Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet
 
-Jeg har også plan om å lage en branch med en versjon som bruker [[https://vaadin.com/home][vaadin]] istedenfor primefaces, men den er foreløpig på plan-stadiet
+Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det bør la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
 * Utsjekk og bygg
 
@@ -33,15 +39,17 @@ Dette trengs for å laste og kjøre programvaren
  3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
     #+BEGIN_EXAMPLE
       cd %HOME%\git\ukelonn
-      git checkout using-primefaces
+      git checkout using-vaadin
       mvn clean install
       cd ukelonn.gogoshell
       mvn install pax:provision
     #+END_EXAMPLE
- 4. Åpne en nettleser på http://localhost:8090
+ 4. Åpne en nettleser på http://localhost:8090/ukelonn/
+
+/Men NB! Oppstart av webapp fra gogoshell brukes ikke i aktiv utvikling lengre.  Akkurat nå bruker jeg Apache Karaf både i utvikling og i produksjon./
 
 * Beskrivelse av koden
-(/Beskriver versjonen fra using-primefaces/)
+(/Beskriver versjonen fra using-vaadin/)
 
 Prosjektet er et maven-prosjekt med følgende struktur:
  - =pom.xml=
@@ -49,7 +57,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    - =ukelonn.api/pom.xml=
      Dette er en OSGi-bundle som definerer to OSGi-servicer: UkelonnService og UkelonnDatabase
    - =ukelonn.bundle/pom.xml=
-     Dette er selve webapplikasjonen.  Siden dette er en JSF-applikasjon så er dette en WAR og ikke en JAR, men det er også en OSGi-bundle som krever en UkelonnDatabase service og som eksponerer en UkelonnService service
+     Dette er selve webapplikasjonen.  Siden dette er en Vaadin-applikasjon som bruker servlet API, så er dette en WAR og ikke en JAR, men det er også en OSGi-bundle som krever en UkelonnDatabase service og som eksponerer en UkelonnService service
    - =ukelonn.bundle.test.db/pom.xml=
      Dette er en ikke-persistent SQL-database i minnet som setter opp forventet skjema og fyller opp databasen med test-data.
      Dette er en fullt funksjonell database, men ingenting blir persistert mellom kjøringer.  Den brukes til test både av webappen i gogoshell og brukes som en vanlig jar-fil i enhetstestene i ukelonn.bundle
@@ -62,7 +70,9 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    - =ukelonn.karaf/pom.xml=
      Dette er en POM som lager en "feature"-fil for [[http://karaf.apache.org/][Apache karaf]]
    - =ukelonn.rebundled/pom.xml=
-     Hver gang man trenger en avhengighet som ikke er en OSGi-bundle kan man "rebundle" avhengigheten ved å lage et nytt underprosjekt av dette prosjektet
+     Hver gang man trenger en avhengighet som ikke er en OSGi-bundle kan man "rebundle" avhengigheten ved å lage et nytt underprosjekt av dette prosjektet.
+     Apache Karaf har muligheter til å auto-bundle jar-filer ved lasting, men integrasjonstestene i ukelonn.tests og gogoshell-kjøring av prosjektet trenger begge avhengigheter som OSGi-bundler.
+     Vaadin TouchKit og noen av avhengighetene til TouchKit var /ikke/ bundler og måtte rebundles.  Men selve Vaadin og avhengighetene var allerede bundlet.
 
 * Kjøring på apache karaf
 ** Kjøring på apache karaf med testdatabasen
@@ -73,7 +83,7 @@ Framgangsmåte:
       cd %HOME%\git
       git clone https://github.com/steinarb/ukelonn.git
       cd %HOME%\git\ukelonn
-      git checkout using-primefaces
+      git checkout using-vaadin
       mvn clean install
     #+END_EXAMPLE
  2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
@@ -96,6 +106,23 @@ Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstilli
  1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter
  2. Følgende tabeller må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/tables
  3. Følgende views må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/views
+ 4. I tillegg så må eksempeldataene være på plass for å kunne logge inn med brukerene nevnt i eksemplene: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data
+    Rekkefølgen dataene skal tas inn i, er:
+    1. example_transaction_types.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transaction_types.sql
+
+       /NB!/ denne fila /må/ inn i databasen som den er for at det skal fungere å legge inn nye brukere
+    2. example_users.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_users.sql
+    3. example_administrators.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_administrators.sql
+    4. example_accounts.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_accounts.sql
+    5. example_transactions.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transactions.sql
+    /OBS/: Her er det en mulighet til å legge inn egne data:
+    - Iallefall legg inn en bruker i example_users.sql
+    - Gjør samme bruker administrator i example_administrators.sql
+    - Behold example_transaction_types.sql (den kan justeres på i ettertid fra AdminUIet)
+    - Logg inn som admin-brukeren og du kan:
+      - legge inn nye jobbtyper,
+      - justere eksisterende jobbtyper (f.eks. beløp)
+      - legge inn nye brukere for ungene (for at disse skal dukke opp så må du ha lagt inn example_transaction_types.sql) som den er
 
 Framgangsmåte:
  1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
@@ -104,7 +131,7 @@ Framgangsmåte:
       cd %HOME%\git
       git clone https://github.com/steinarb/ukelonn.git
       cd %HOME%\git\ukelonn
-      git checkout using-primefaces
+      git checkout using-vaadin
       mvn clean install
     #+END_EXAMPLE
  2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
@@ -124,4 +151,4 @@ Framgangsmåte:
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
 * Lisens
 
-Lisensen er Eclipse Public License - v 1.0.  Jeg kunne tenkt meg GPL i en eller annen variant, men da måtte jeg passe på hvilke lisenser som var kompatible og det ble for mye jobb.
+Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.

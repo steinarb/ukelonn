@@ -39,7 +39,7 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
             ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
             connect = dataSource.getPooledConnection();
         } catch (Exception e) {
-            logError("Derby mock database failed to create connection", e);
+            logError("PostgreSQL database service failed to create connection to local DB server", e);
         }
     }
 

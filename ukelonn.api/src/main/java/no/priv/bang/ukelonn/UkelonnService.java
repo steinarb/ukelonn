@@ -1,5 +1,7 @@
 package no.priv.bang.ukelonn;
 
+import org.osgi.service.log.LogService;
+
 /**
  * This is the service exposed by the ukelonn.bundle
  * after it gets all of its injections, and activates.
@@ -15,5 +17,7 @@ public interface UkelonnService {
     String getMessage();
 
     UkelonnDatabase getDatabase();
+
+    LogService getLogservice();
 
 }
