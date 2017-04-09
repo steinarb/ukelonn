@@ -19,6 +19,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
@@ -74,9 +75,17 @@ public abstract class AbstractView extends VerticalLayout implements View {
         return links;
     }
 
-    protected Panel wrapInPanel(Component wrappedComponent) {
+    protected Component wrapInPanel(Component wrappedComponent) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSizeFull();
+        Label indent = new Label(" ");
+        indent.setWidth("1mm");
+        horizontalLayout.addComponent(indent);
         Panel panel = new Panel(wrappedComponent);
-        return panel;
+        panel.setWidth("100%");
+        horizontalLayout.addComponent(panel);
+        horizontalLayout.setExpandRatio(panel, 1);
+        return horizontalLayout;
     }
 
     static final StringToDateConverter dateFormatter = new StringToDateConverter() {
