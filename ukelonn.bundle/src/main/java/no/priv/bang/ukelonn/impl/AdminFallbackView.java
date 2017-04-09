@@ -284,7 +284,7 @@ public class AdminFallbackView extends AbstractView {
         jobtypesform.addComponent(editJobLayout);
         jobtypes.addTab(jobtypesform, "Endre jobbtyper");
         jobtypeAdminTab.addComponent(jobtypes);
-        accordion.addTab(jobtypeAdminTab, "Administrere jobbtyper");
+        accordion.addTab(wrapInPanel(jobtypeAdminTab), "Administrere jobbtyper");
     }
 
     private void createPaymenttypesAdminTab(Accordion accordion) {
@@ -373,7 +373,7 @@ public class AdminFallbackView extends AbstractView {
         paymenttypesform.addComponent(editPaymentsLayout);
         paymentstypeadmin.addTab(paymenttypesform, "Endre utbetalingstyper");
         paymentstypeadminTab.addComponent(paymentstypeadmin);
-        accordion.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
+        accordion.addTab(wrapInPanel(paymentstypeadminTab), "Administrere utbetalingstyper");
     }
 
     private void createUserAdminTab(Accordion accordion) {
@@ -556,7 +556,7 @@ public class AdminFallbackView extends AbstractView {
             }));
         useradmin.addTab(usersTab, "Endre brukere");
         useradminTab.addComponent(useradmin);
-        accordion.addTab(useradminTab, "Administrere brukere");
+        accordion.addTab(wrapInPanel(useradminTab), "Administrere brukere");
     }
 
 }
