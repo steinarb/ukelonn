@@ -104,7 +104,8 @@ public class AdminFallbackView extends AbstractView {
     }
 
     private void createPaymentRegistrationTab(ComboBox paymenttype, Accordion accordion) {
-        VerticalLayout registerPaymentTab = new VerticalLayout();
+        Accordion registerPaymentTab = new Accordion();
+        VerticalLayout userinfo = new VerticalLayout();
         List<Account> accounts = getAccounts(getClass());
         accountsContainer.addAll(accounts);
         Class<?> classForLogMessage = getClass();
@@ -134,7 +135,7 @@ public class AdminFallbackView extends AbstractView {
                     }
                 }
             });
-        registerPaymentTab.addComponent(accountSelector);
+        userinfo.addComponent(accountSelector);
 
         FormLayout paymentLayout = new FormLayout();
         TextField balanceDisplay = new TextField("Til gode:");
@@ -183,19 +184,18 @@ public class AdminFallbackView extends AbstractView {
                         }
                     }
                 }));
-        registerPaymentTab.addComponent(paymentLayout);
+        userinfo.addComponent(paymentLayout);
 
-        Accordion userinfo = new Accordion();
+        registerPaymentTab.addTab(userinfo, "Brukerinfo");
         VerticalLayout jobsTab = new VerticalLayout();
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         jobsTab.addComponent(lastJobsTable);
-        userinfo.addTab(jobsTab, "Siste jobber");
+        registerPaymentTab.addTab(jobsTab, "Siste jobber");
         VerticalLayout paymentsTab = new VerticalLayout();
         Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
         paymentsTab.addComponent(lastPaymentsTable);
-        userinfo.addTab(paymentsTab, "Siste utbetalinger");
-        registerPaymentTab.addComponent(userinfo);
-        accordion.addTab(registerPaymentTab, "Registrere utbetaling");
+        registerPaymentTab.addTab(paymentsTab, "Siste utbetalinger");
+        accordion.addTab(wrapInPanel(registerPaymentTab), "Registrere utbetaling");
     }
 
     private void createJobtypeAdminTab(Accordion accordion) {

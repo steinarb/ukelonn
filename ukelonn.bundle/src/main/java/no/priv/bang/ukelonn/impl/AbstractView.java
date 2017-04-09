@@ -16,9 +16,11 @@ import com.vaadin.navigator.View;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
@@ -70,6 +72,11 @@ public abstract class AbstractView extends VerticalLayout implements View {
         links.addComponent(linkToLogout);
         links.setComponentAlignment(linkToLogout, Alignment.MIDDLE_RIGHT);
         return links;
+    }
+
+    protected Panel wrapInPanel(Component wrappedComponent) {
+        Panel panel = new Panel(wrappedComponent);
+        return panel;
     }
 
     static final StringToDateConverter dateFormatter = new StringToDateConverter() {
