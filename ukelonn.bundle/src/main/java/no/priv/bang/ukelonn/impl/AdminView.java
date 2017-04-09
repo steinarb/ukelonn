@@ -227,6 +227,7 @@ public class AdminView extends AbstractView {
                         addJobTypeToDatabase(classForLogMessage, jobname, jobamount);
                         newJobTypeName.setValue("");
                         newJobTypeAmount.setValue(0.0);
+                        refreshJobTypesFromDatabase();
                     }
                 }
             }));
@@ -274,9 +275,7 @@ public class AdminView extends AbstractView {
                             jobtypesTable.setValue(null);
                             editedJobTypeName.setValue("");
                             editedJobTypeAmount.setValue(0.0);
-                            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
-                            jobTypes.removeAllItems();
-                            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+                            refreshJobTypesFromDatabase();
                         }
                     }
                 }
@@ -607,6 +606,12 @@ public class AdminView extends AbstractView {
         VerticalComponentGroup vContainer = createVerticalComponentGroupWithCssLayoutAndNavigationView(navigationManager, navigationView, caption);
         navigationManager.navigateBack();
         return vContainer;
+    }
+
+    private void refreshJobTypesFromDatabase() {
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        jobTypes.removeAllItems();
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
     }
 
 }

@@ -218,6 +218,7 @@ public class AdminFallbackView extends AbstractView {
                         addJobTypeToDatabase(classForLogMessage, jobname, jobamount);
                         newJobTypeName.setValue("");
                         newJobTypeAmount.setValue(0.0);
+                        refreshJobTypesFromDatabase();
                     }
                 }
             }));
@@ -263,9 +264,7 @@ public class AdminFallbackView extends AbstractView {
                             jobtypesTable.setValue(null);
                             editedJobTypeName.setValue("");
                             editedJobTypeAmount.setValue(0.0);
-                            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
-                            jobTypes.removeAllItems();
-                            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+                            refreshJobTypesFromDatabase();
                         }
                     }
                 }
@@ -557,6 +556,12 @@ public class AdminFallbackView extends AbstractView {
         useradmin.addTab(usersTab, "Endre brukere");
         useradminTab.addComponent(useradmin);
         accordion.addTab(wrapInPanel(useradminTab), "Administrere brukere");
+    }
+
+    private void refreshJobTypesFromDatabase() {
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        jobTypes.removeAllItems();
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
     }
 
 }
