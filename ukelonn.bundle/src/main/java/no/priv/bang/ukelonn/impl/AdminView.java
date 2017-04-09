@@ -325,9 +325,7 @@ public class AdminView extends AbstractView {
                         addPaymentTypeToDatabase(classForLogMessage, paymentName, paymentAmount);
                         newPaymentTypeName.setValue("");
                         newPaymentTypeAmount.setValue(0.0);
-                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
-                        paymentTypes.removeAllItems();
-                        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+                        refreshPaymentTypesFromDatabase();
                     }
                 }
             }));
@@ -375,9 +373,7 @@ public class AdminView extends AbstractView {
                             paymentTypesTable.setValue(null);
                             editedPaymentTypeName.setValue("");
                             editedPaymentTypeAmount.setValue(0.0);
-                            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
-                            paymentTypes.removeAllItems();
-                            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+                            refreshPaymentTypesFromDatabase();
                         }
                     }
                 }
@@ -612,6 +608,12 @@ public class AdminView extends AbstractView {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         jobTypes.removeAllItems();
         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+    }
+
+    private void refreshPaymentTypesFromDatabase() {
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        paymentTypes.removeAllItems();
+        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
     }
 
 }

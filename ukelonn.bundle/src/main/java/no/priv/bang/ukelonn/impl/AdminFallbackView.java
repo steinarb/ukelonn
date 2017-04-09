@@ -303,10 +303,11 @@ public class AdminFallbackView extends AbstractView {
                 public void buttonClick(ClickEvent event) {
                     String paymentName = newPaymentTypeName.getValue();
                     Double paymentAmount = newPaymentTypeAmount.getValue();
-                    if (!"".equals(paymentName) && !Double.valueOf(0.0).equals(paymentAmount)) {
+                    if (!"".equals(paymentName)) {
                         addPaymentTypeToDatabase(classForLogMessage, paymentName, paymentAmount);
                         newPaymentTypeName.setValue("");
                         newPaymentTypeAmount.setValue(0.0);
+                        refreshPaymentTypesFromDatabase();
                     }
                 }
             }));
@@ -352,9 +353,7 @@ public class AdminFallbackView extends AbstractView {
                             paymentTypesTable.setValue(null);
                             editedPaymentTypeName.setValue("");
                             editedPaymentTypeAmount.setValue(0.0);
-                            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
-                            paymentTypes.removeAllItems();
-                            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+                            refreshPaymentTypesFromDatabase();
                         }
                     }
                 }
@@ -564,6 +563,12 @@ public class AdminFallbackView extends AbstractView {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         jobTypes.removeAllItems();
         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+    }
+
+    private void refreshPaymentTypesFromDatabase() {
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        paymentTypes.removeAllItems();
+        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
     }
 
 }
