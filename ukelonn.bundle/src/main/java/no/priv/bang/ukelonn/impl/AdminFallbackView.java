@@ -166,24 +166,25 @@ public class AdminFallbackView extends AbstractView {
         TextField amountField = new TextField("Beløp:", amount);
         paymentLayout.addComponent(amountField);
 
-        paymentLayout.addComponent(new Button("Registrer betaling",
-                new Button.ClickListener() {
-                    private static final long serialVersionUID = 5260321175219218136L;
+        paymentLayout.addComponent(
+            new Button("Registrer betaling",
+                       new Button.ClickListener() {
+                           private static final long serialVersionUID = 5260321175219218136L;
 
-                    @Override
-                    public void buttonClick(ClickEvent event) {
-                        Account account = (Account) accountSelector.getValue();
-                        TransactionType payment = (TransactionType) paymenttype.getValue();
-                        if (account != null && payment != null) {
-                            addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
-                            recentPayments.removeAllItems();
-                            recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
-                            refreshAccount(classForLogMessage, account);
-                            balance.setValue(account.getBalance());
-                            amount.setValue(0.0);
-                        }
-                    }
-                }));
+                           @Override
+                           public void buttonClick(ClickEvent event) {
+                               Account account = (Account) accountSelector.getValue();
+                               TransactionType payment = (TransactionType) paymenttype.getValue();
+                               if (account != null && payment != null) {
+                                   addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
+                                   recentPayments.removeAllItems();
+                                   recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                                   refreshAccount(classForLogMessage, account);
+                                   balance.setValue(account.getBalance());
+                                   amount.setValue(0.0);
+                               }
+                           }
+                       }));
         userinfo.addComponent(paymentLayout);
 
         registerPaymentTab.addTab(userinfo, "Brukerinfo");
@@ -401,7 +402,8 @@ public class AdminFallbackView extends AbstractView {
                 public void buttonClick(ClickEvent event) {
                     if (newUserIsAValidUser())
                     {
-                    	addUserToDatabase(classForLogMessage,
+                    	addUserToDatabase(
+                            classForLogMessage,
                             newUserUsername.getValue(),
                             newUserPassword2.getValue(),
                             newUserEmail.getValue(),
