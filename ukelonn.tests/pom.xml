@@ -194,6 +194,10 @@
    <artifactId>derby</artifactId>
   </dependency>
   <dependency>
+   <groupId>org.apache.shiro</groupId>
+   <artifactId>shiro-core</artifactId>
+  </dependency>
+  <dependency>
    <groupId>org.rendersnake</groupId>
    <artifactId>rendersnake</artifactId>
   </dependency>
@@ -207,10 +211,10 @@
    </testResource>
   </testResources>
   <plugins>
+   <!-- generate dependencies versions for use by asInProject() in pax exam tests -->
    <plugin>
     <groupId>org.apache.servicemix.tooling</groupId>
     <artifactId>depends-maven-plugin</artifactId>
-    <version>1.3.1</version>
     <executions>
      <execution>
       <id>generate-depends-file</id>
