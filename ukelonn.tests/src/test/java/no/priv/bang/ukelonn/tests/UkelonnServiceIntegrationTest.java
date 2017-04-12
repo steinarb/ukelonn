@@ -1,10 +1,7 @@
 package no.priv.bang.ukelonn.tests;
 
 import static org.junit.Assert.*;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -34,12 +31,6 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
     Bundle installWarBundle;
-    String httpcomponentsVersion = "4.3.3";
-    private String paxWebVersion = "4.3.0";
-    private String jettyVersion = "9.2.17.v20160517";
-    private String shiroVersion = "1.3.1";
-    private String vaadinVersion = "7.6.1";
-    private String vaadinTouchkitVersion = "4.1.0";
 
     @Inject
     private UkelonnDatabase database;
@@ -65,39 +56,39 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             systemProperty("org.ops4j.pax.web.log.ncsa.directory").value("target/logs"),
             systemProperty("org.ops4j.pax.web.jsp.scratch.dir").value("target/paxexam/scratch-dir"),
             systemProperty("org.ops4j.pax.url.mvn.certificateCheck").value("false"),
-            mavenBundle("org.ops4j.pax.logging", "pax-logging-api"),
-            mavenBundle("org.ops4j.pax.logging", "pax-logging-service"),
-            mavenBundle("org.ops4j.pax.url", "pax-url-war", "2.4.7").type("jar").classifier("uber"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi", paxWebVersion),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api", paxWebVersion),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war", paxWebVersion),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard", paxWebVersion),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime", paxWebVersion),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp", paxWebVersion),
-            mavenBundle("org.ops4j.pax.web.itest", "pax-web-itest-base", paxWebVersion),
+            mavenBundle("org.ops4j.pax.logging", "pax-logging-api").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.logging", "pax-logging-service").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.url", "pax-url-war").versionAsInProject().type("jar").classifier("uber"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-spi").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web", "pax-web-api").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web.itest", "pax-web-itest-base").versionAsInProject(),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj"),
             mavenBundle("org.apache.xbean", "xbean-reflect"),
             mavenBundle("org.apache.xbean", "xbean-finder"),
             mavenBundle("org.apache.xbean", "xbean-bundleutils"),
-            mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
+            mavenBundle("org.ow2.asm", "asm-all").versionAsInProject(),
             mavenBundle("commons-codec", "commons-codec"),
             mavenBundle("org.apache.felix", "org.apache.felix.eventadmin"),
             mavenBundle("org.apache.httpcomponents", "httpcore-osgi"),
             mavenBundle("org.apache.httpcomponents", "httpmime"),
             mavenBundle("org.apache.httpcomponents", "httpclient-osgi"),
-            mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty", paxWebVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-util", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-io", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-http", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-continuation", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-server", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-client", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-security", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-xml", jettyVersion),
-            mavenBundle("org.eclipse.jetty", "jetty-servlet", jettyVersion),
-            mavenBundle("commons-beanutils", "commons-beanutils", "1.8.3"),
-            mavenBundle("commons-collections", "commons-collections", "3.2.1"),
+            mavenBundle("javax.servlet", "javax.servlet-api").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-util").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-io").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-http").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-continuation").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-server").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-client").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-security").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-xml").versionAsInProject(),
+            mavenBundle("org.eclipse.jetty", "jetty-servlet").versionAsInProject(),
+            mavenBundle("commons-beanutils", "commons-beanutils").versionAsInProject(),
+            mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
             mavenBundle("org.apache.derby", "derby"),
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-digester"),
@@ -109,19 +100,19 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             mavenBundle("javax.validation", "validation-api"),
             mavenBundle("org.apache.myfaces.core", "myfaces-api"),
             mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
-            mavenBundle("no.priv.bang.ukelonn.rebundled", "ukelonn.rebundled.com.vaadin.external.gwt.gwt-user", "2.7.0.vaadin4"),
-            mavenBundle("com.vaadin", "vaadin-shared", vaadinVersion),
-            mavenBundle("com.vaadin", "vaadin-server", vaadinVersion),
-            mavenBundle("com.vaadin", "vaadin-themes", vaadinVersion),
-            mavenBundle("com.vaadin", "vaadin-client-compiled", vaadinVersion),
-            mavenBundle("com.vaadin.external.google", "guava", "16.0.1.vaadin1"),
-            mavenBundle("com.vaadin.external.flute", "flute", "1.3.0.gg2"),
-            mavenBundle("com.vaadin.external.streamhtmlparser", "streamhtmlparser-jsilver", "0.0.10.vaadin1"),
-            mavenBundle("no.priv.bang.ukelonn.rebundled", "ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl", vaadinTouchkitVersion),
-            mavenBundle("org.jsoup", "jsoup", "1.8.3"),
+            mavenBundle("no.priv.bang.ukelonn.rebundled", "ukelonn.rebundled.com.vaadin.external.gwt.gwt-user").versionAsInProject(),
+            mavenBundle("com.vaadin", "vaadin-shared").versionAsInProject(),
+            mavenBundle("com.vaadin", "vaadin-server").versionAsInProject(),
+            mavenBundle("com.vaadin", "vaadin-themes").versionAsInProject(),
+            mavenBundle("com.vaadin", "vaadin-client-compiled").versionAsInProject(),
+            mavenBundle("com.vaadin.external.google", "guava").versionAsInProject(),
+            mavenBundle("com.vaadin.external.flute", "flute").versionAsInProject(),
+            mavenBundle("com.vaadin.external.streamhtmlparser", "streamhtmlparser-jsilver").versionAsInProject(),
+            mavenBundle("no.priv.bang.ukelonn.rebundled", "ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl").versionAsInProject(),
+            mavenBundle("org.jsoup", "jsoup").versionAsInProject(),
             mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
-            mavenBundle("org.apache.shiro", "shiro-core", shiroVersion),
-            mavenBundle("org.apache.shiro", "shiro-web", shiroVersion),
+            mavenBundle("org.apache.shiro", "shiro-core").versionAsInProject(),
+            mavenBundle("org.apache.shiro", "shiro-web").versionAsInProject(),
             mavenBundle("no.priv.bang.ukelonn", "ukelonn.api"),
             mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db"));
     }

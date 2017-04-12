@@ -262,6 +262,18 @@
    <version>${vaadin.gwt-user.version}</version>
   </dependency>
   <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-server</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-themes</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-client-compiled</artifactId>
+  </dependency>
+  <dependency>
    <groupId>no.priv.bang.ukelonn.rebundled</groupId>
    <artifactId>ukelonn.rebundled.com.vaadin.addon.vaadin-touchkit-agpl</artifactId>
    <version>${vaadin.touchkit.version}</version>
@@ -275,5 +287,20 @@
     <filtering>true</filtering>
    </testResource>
   </testResources>
+  <plugins>
+   <!-- generate dependencies versions for use by asInProject() in pax exam tests -->
+   <plugin>
+    <groupId>org.apache.servicemix.tooling</groupId>
+    <artifactId>depends-maven-plugin</artifactId>
+    <executions>
+     <execution>
+      <id>generate-depends-file</id>
+      <goals>
+       <goal>generate-depends-file</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
  </build>
 </project>
