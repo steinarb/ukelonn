@@ -29,7 +29,7 @@
   <javax.validation>1.1.0.Final</javax.validation>
   <primefaces.version>6.0</primefaces.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
-  <karaf.version>4.0.7</karaf.version>
+  <karaf.version>4.0.9</karaf.version>
  </properties>
 
  <dependencyManagement>
@@ -270,6 +270,33 @@
    </dependency>
    <dependency>
     <groupId>org.ops4j.pax.exam</groupId>
+    <artifactId>pax-exam-container-karaf</artifactId>
+    <version>${dependency.pax.exam.version}</version>
+    <scope>test</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.karaf</groupId>
+    <artifactId>apache-karaf-minimal</artifactId>
+    <version>${karaf.version}</version>
+    <type>zip</type>
+    <scope>test</scope>
+    <exclusions>
+     <exclusion>
+      <groupId>*</groupId>
+      <artifactId>*</artifactId>
+     </exclusion>
+    </exclusions>
+   </dependency>
+   <dependency>
+    <groupId>org.apache.karaf.features</groupId>
+    <artifactId>standard</artifactId>
+    <version>${karaf.version}</version>
+    <type>xml</type>
+    <classifier>features</classifier>
+    <scope>test</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.ops4j.pax.exam</groupId>
     <artifactId>pax-exam-junit4</artifactId>
     <version>${dependency.pax.exam.version}</version>
     <scope>test</scope>
@@ -277,18 +304,6 @@
    <dependency>
     <groupId>org.ops4j.pax.exam</groupId>
     <artifactId>pax-exam-link-mvn</artifactId>
-    <version>${dependency.pax.exam.version}</version>
-    <scope>test</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.exam</groupId>
-    <artifactId>pax-exam-container-native</artifactId>
-    <version>${dependency.pax.exam.version}</version>
-    <scope>test</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.exam</groupId>
-    <artifactId>pax-exam-container-forked</artifactId>
     <version>${dependency.pax.exam.version}</version>
     <scope>test</scope>
    </dependency>
@@ -464,7 +479,8 @@
     <plugin>
      <groupId>org.apache.maven.plugins</groupId>
      <artifactId>maven-surefire-plugin</artifactId>
-     <version>2.19.1</version>
+     <!-- Had to downgrade to 2.18 because the karaf Java VM doesn't stop after the test in 2.19.1 and later (also fails in 2.20) -->
+     <version>2.18</version>
     </plugin>
     <plugin>
      <groupId>org.eluder.coveralls</groupId>

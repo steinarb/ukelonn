@@ -2,6 +2,9 @@ package no.priv.bang.ukelonn.tests;
 
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
+
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -15,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.web.itest.base.HttpTestClient;
@@ -43,69 +47,15 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Configuration
     public Option[] config() {
+        final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
+        final MavenArtifactUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features").versionAsInProject().type("xml").classifier("features");
+        final MavenArtifactUrlReference ukelonnFeatureRepo = maven().groupId("no.priv.bang.ukelonn").artifactId("ukelonn.karaf").versionAsInProject().type("xml").classifier("features");
         return options(
+            karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false),
+            configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
             junitBundles(),
-            systemProperty("logback.configurationFile").value("file:src/test/resources/logback.xml"),
-            systemProperty("org.osgi.service.http.port").value("8081"),
-            systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
-            systemProperty("org.osgi.service.http.hostname").value("127.0.0.1"),
-            systemProperty("org.osgi.service.http.port").value("8181"),
-            systemProperty("java.protocol.handler.pkgs").value("org.ops4j.pax.url"),
-            systemProperty("org.ops4j.pax.url.war.importPaxLoggingPackages").value("true"),
-            systemProperty("org.ops4j.pax.web.log.ncsa.enabled").value("true"),
-            systemProperty("org.ops4j.pax.web.log.ncsa.directory").value("target/logs"),
-            systemProperty("org.ops4j.pax.web.jsp.scratch.dir").value("target/paxexam/scratch-dir"),
-            systemProperty("org.ops4j.pax.url.mvn.certificateCheck").value("false"),
-            mavenBundle("org.ops4j.pax.logging", "pax-logging-api"),
-            mavenBundle("org.ops4j.pax.logging", "pax-logging-service"),
-            mavenBundle("org.ops4j.pax.url", "pax-url-war").versionAsInProject().type("jar").classifier("uber"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web.itest", "pax-web-itest-base").versionAsInProject(),
-            mavenBundle("org.eclipse.jdt.core.compiler", "ecj"),
-            mavenBundle("org.apache.xbean", "xbean-reflect"),
-            mavenBundle("org.apache.xbean", "xbean-finder"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils"),
-            mavenBundle("org.ow2.asm", "asm-all").versionAsInProject(),
-            mavenBundle("commons-codec", "commons-codec"),
-            mavenBundle("org.apache.felix", "org.apache.felix.eventadmin"),
-            mavenBundle("org.apache.httpcomponents", "httpcore-osgi"),
-            mavenBundle("org.apache.httpcomponents", "httpmime"),
-            mavenBundle("org.apache.httpcomponents", "httpclient-osgi"),
-            mavenBundle("javax.servlet", "javax.servlet-api").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-util").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-io").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-http").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-continuation").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-server").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-client").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-security").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-xml").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty", "jetty-servlet").versionAsInProject(),
-            mavenBundle("commons-beanutils", "commons-beanutils").versionAsInProject(),
-            mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
-            mavenBundle("org.apache.derby", "derby"),
-            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc-derby"),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-digester"),
-            mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr303-api-1.0.0"),
-            mavenBundle("org.apache.servicemix.specs", "org.apache.servicemix.specs.jsr250-1.0"),
-            mavenBundle("org.apache.geronimo.bundles", "commons-discovery"),
-            mavenBundle("javax.enterprise", "cdi-api"),
-            mavenBundle("javax.interceptor", "javax.interceptor-api"),
-            mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
-            mavenBundle("org.apache.myfaces.core", "myfaces-api"),
-            mavenBundle("org.apache.myfaces.core", "myfaces-impl"),
-            mavenBundle("org.primefaces", "primefaces").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.shiro", "pax-shiro-faces"),
-            mavenBundle("org.apache.shiro", "shiro-core").versionAsInProject(),
-            mavenBundle("org.apache.shiro", "shiro-web").versionAsInProject(),
-            mavenBundle("no.priv.bang.ukelonn", "ukelonn.api"),
-            mavenBundle("no.priv.bang.ukelonn", "ukelonn.bundle.test.db"));
+            features(paxJdbcRepo),
+            features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
     }
 
     @Before
