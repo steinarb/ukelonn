@@ -33,6 +33,13 @@
    <classifier>features</classifier>
   </dependency>
   <dependency>
+   <groupId>org.ops4j.pax.cdi</groupId>
+   <artifactId>pax-cdi-features</artifactId>
+   <version>1.0.0.RC2</version>
+   <type>xml</type>
+   <classifier>features</classifier>
+  </dependency>
+  <dependency>
    <groupId>org.ops4j.pax.jdbc</groupId>
    <artifactId>pax-jdbc-features</artifactId>
    <version>${dependency.pax.jdbc.version}</version>
