@@ -86,7 +86,7 @@ Framgangsmåte:
       git checkout using-vaadin
       mvn clean install
     #+END_EXAMPLE
- 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.9]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
@@ -134,7 +134,7 @@ Framgangsmåte:
       git checkout using-vaadin
       mvn clean install
     #+END_EXAMPLE
- 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.0.9]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features

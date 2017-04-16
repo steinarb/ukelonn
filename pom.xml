@@ -42,7 +42,7 @@
   <vaadin.gwt-user.version>2.7.0.vaadin4</vaadin.gwt-user.version>
   <vaadin.touchkit.version>4.1.0</vaadin.touchkit.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
-  <karaf.version>4.0.7</karaf.version>
+  <karaf.version>4.0.9</karaf.version>
  </properties>
 
  <dependencyManagement>
