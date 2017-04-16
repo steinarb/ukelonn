@@ -40,6 +40,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
             junitBundles(),
+            mavenBundle("org.apache.shiro", "shiro-core").versionAsInProject(),
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
     }
