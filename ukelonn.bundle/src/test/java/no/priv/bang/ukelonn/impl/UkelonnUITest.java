@@ -1,5 +1,7 @@
 package no.priv.bang.ukelonn.impl;
 
+import static no.priv.bang.ukelonn.testutils.TestUtils.releaseFakeOsgiServices;
+import static no.priv.bang.ukelonn.testutils.TestUtils.setupFakeOsgiServices;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -17,6 +19,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.SubjectContext;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,6 +40,7 @@ public class UkelonnUITest {
 
     @BeforeClass
     public static void setupClass() throws ServiceException, ServletException {
+        setupFakeOsgiServices();
     	VaadinServlet servlet = new VaadinServlet();
     	ServletConfig config = mock(ServletConfig.class);
     	ServletContext context = mock(ServletContext.class);
@@ -58,6 +62,11 @@ public class UkelonnUITest {
     	user = mock(Subject.class);
     	when(securitymanager.createSubject(any(SubjectContext.class))).thenReturn(user);
     	SecurityUtils.setSecurityManager(securitymanager);
+    }
+
+    @AfterClass
+    public static void teardownForAllTests() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    	releaseFakeOsgiServices();
     }
 
     @Test
