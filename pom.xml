@@ -618,7 +618,7 @@
   <profile>
    <id>rebundle-requirements</id>
    <activation>
-    <activeByDefault>true</activeByDefault>
+    <activeByDefault>false</activeByDefault>
    </activation>
    <modules>
     <module>ukelonn.rebundled</module>
