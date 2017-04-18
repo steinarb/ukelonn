@@ -38,6 +38,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Configuration
     public Option[] config() {
         final String jmxPort = freePortAsString();
+        final String httpPort = freePortAsString();
+        final String httpsPort = freePortAsString();
         final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
         final MavenArtifactUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features").versionAsInProject().type("xml").classifier("features");
         final MavenArtifactUrlReference ukelonnFeatureRepo = maven().groupId("no.priv.bang.ukelonn").artifactId("ukelonn.karaf").versionAsInProject().type("xml").classifier("features");
@@ -46,6 +48,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
+            editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
+            editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port.secure", httpsPort),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
             features(paxJdbcRepo),
