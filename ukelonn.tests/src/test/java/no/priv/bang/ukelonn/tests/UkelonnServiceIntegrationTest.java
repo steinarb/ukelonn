@@ -26,6 +26,8 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
+    public static final String RMI_SERVER_PORT = "44445";
+    public static final String RMI_REG_PORT = "1100";
 
     @Inject
     private UkelonnDatabase database;
@@ -42,6 +44,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         return options(
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
+            editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
+            editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
             features(paxJdbcRepo),
