@@ -20,14 +20,12 @@ import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.web.itest.base.HttpTestClient;
-import org.osgi.framework.Bundle;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
-    Bundle installWarBundle;
 
     @Inject
     private UkelonnDatabase database;
