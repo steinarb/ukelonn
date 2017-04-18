@@ -603,7 +603,6 @@
   <module>ukelonn.tests</module>
   <module>ukelonn.bundle.test.db</module>
   <module>ukelonn.bundle.postgresql.db</module>
-  <module>ukelonn.gogoshell</module>
   <module>ukelonn.karaf</module>
  </modules>
 
@@ -616,12 +615,13 @@
 
  <profiles>
   <profile>
-   <id>rebundle-requirements</id>
+   <id>use-gogoshell</id>
    <activation>
     <activeByDefault>false</activeByDefault>
    </activation>
    <modules>
     <module>ukelonn.rebundled</module>
+    <module>ukelonn.gogoshell</module>
    </modules>
   </profile>
  </profiles>

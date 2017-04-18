@@ -40,7 +40,7 @@ Dette trengs for å laste og kjøre programvaren
     #+BEGIN_EXAMPLE
       cd %HOME%\git\ukelonn
       git checkout using-vaadin
-      mvn -P rebundle-requirements clean install
+      mvn -P use-gogoshell clean install
       cd ukelonn.gogoshell
       mvn install pax:provision
     #+END_EXAMPLE
