@@ -10,8 +10,6 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +21,6 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.web.itest.base.HttpTestClient;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceReference;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
@@ -40,10 +33,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     private UkelonnDatabase database;
 
     @Inject
-    BundleContext bundleContext;
-
     UkelonnService ukelonnService;
-    ServiceListener ukelonnServiceListener;
 
     @Configuration
     public Option[] config() {
@@ -56,46 +46,6 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             junitBundles(),
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
-    }
-
-    @Before
-    public void setup() throws BundleException {
-        // Can't use injection for the Webapp service since the bundle isn't
-        // started until setUp and all injections are resolved
-        // before the tests start.
-        //
-        // Creating a service listener instead.
-        ukelonnServiceListener = new ServiceListener() {
-
-	    	@Override
-                public void serviceChanged(ServiceEvent event) {
-                    @SuppressWarnings("rawtypes")
-                        ServiceReference sr = event.getServiceReference();
-                    @SuppressWarnings("unchecked")
-                        Object rawService = bundleContext.getService(sr);
-                    if (rawService instanceof UkelonnService) {
-                        UkelonnService service = (UkelonnService) rawService;
-                        switch(event.getType()) {
-                          case ServiceEvent.REGISTERED:
-                            ukelonnService = service;
-                            break;
-                          default:
-                            break;
-                        }
-                    }
-                }
-            };
-        bundleContext.addServiceListener(ukelonnServiceListener);
-
-        // The war bundle has to be manually started or it won't work
-        final String bundlePath = "mvn:no.priv.bang.ukelonn/ukelonn.bundle/" + getMavenProjectVersion() + "/war";
-        installWarBundle = bundleContext.installBundle(bundlePath);
-        installWarBundle.start();
-    }
-
-    @After
-    public void tearDown() throws BundleException {
-    	installWarBundle.stop();
     }
 
     @Test
