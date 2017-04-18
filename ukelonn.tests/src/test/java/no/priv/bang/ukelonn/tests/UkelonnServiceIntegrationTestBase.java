@@ -2,6 +2,7 @@ package no.priv.bang.ukelonn.tests;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ServerSocket;
 import java.util.List;
 import java.util.Properties;
 
@@ -81,6 +82,21 @@ public class UkelonnServiceIntegrationTestBase {
         for (BundleCapability capability : capabilities) {
             System.out.println("   " + capability.getAttributes().get("osgi.wiring.package") + ";" + capability.getAttributes().get("version"));
         }
+    }
+
+    static int freePort() {
+        try (final ServerSocket serverSocket = new ServerSocket(0)) {
+            serverSocket.setReuseAddress(true);
+            final int port = serverSocket.getLocalPort();
+
+            return port;
+        } catch (final IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    static String freePortAsString() {
+        return Integer.toString(freePort());
     }
 
 }
