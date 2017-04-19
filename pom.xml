@@ -489,14 +489,25 @@
  </build>
 
  <modules>
-  <module>ukelonn.rebundled</module>
   <module>ukelonn.api</module>
   <module>ukelonn.bundle</module>
   <module>ukelonn.tests</module>
   <module>ukelonn.bundle.test.db</module>
   <module>ukelonn.bundle.postgresql.db</module>
-  <module>ukelonn.gogoshell</module>
   <module>ukelonn.karaf</module>
  </modules>
+
+ <profiles>
+  <profile>
+   <id>use-gogoshell</id>
+   <activation>
+    <activeByDefault>false</activeByDefault>
+   </activation>
+   <modules>
+    <module>ukelonn.rebundled</module>
+    <module>ukelonn.gogoshell</module>
+   </modules>
+  </profile>
+ </profiles>
 
 </project>
