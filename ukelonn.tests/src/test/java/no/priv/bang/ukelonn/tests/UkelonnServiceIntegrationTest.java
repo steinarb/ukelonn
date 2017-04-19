@@ -10,8 +10,6 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,31 +20,26 @@ import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.web.itest.base.HttpTestClient;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceReference;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
-    Bundle installWarBundle;
+    public static final String RMI_SERVER_PORT = "44445";
+    public static final String RMI_REG_PORT = "1100";
 
     @Inject
     private UkelonnDatabase database;
 
     @Inject
-    BundleContext bundleContext;
-
     UkelonnService ukelonnService;
-    ServiceListener ukelonnServiceListener;
 
     @Configuration
     public Option[] config() {
+        final String jmxPort = freePortAsString();
+        final String httpPort = freePortAsString();
+        final String httpsPort = freePortAsString();
         final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
         final MavenArtifactUrlReference paxCdiRepo = maven().groupId("org.ops4j.pax.cdi").artifactId("pax-cdi-features").versionAsInProject().type("xml").classifier("features");
         final MavenArtifactUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features").versionAsInProject().type("xml").classifier("features");
@@ -54,50 +47,16 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         return options(
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
+            systemTimeout(60000),
+            editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
+            editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
+            editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
+            editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port.secure", httpsPort),
+            vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
             features(paxCdiRepo),
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
-    }
-
-    @Before
-    public void setup() throws BundleException {
-        // Can't use injection for the Webapp service since the bundle isn't
-        // started until setUp and all injections are resolved
-        // before the tests start.
-        //
-        // Creating a service listener instead.
-        ukelonnServiceListener = new ServiceListener() {
-
-	    	@Override
-                public void serviceChanged(ServiceEvent event) {
-                    @SuppressWarnings("rawtypes")
-                        ServiceReference sr = event.getServiceReference();
-                    @SuppressWarnings("unchecked")
-                        Object rawService = bundleContext.getService(sr);
-                    if (rawService instanceof UkelonnService) {
-                        UkelonnService service = (UkelonnService) rawService;
-                        switch(event.getType()) {
-                          case ServiceEvent.REGISTERED:
-                            ukelonnService = service;
-                            break;
-                          default:
-                            break;
-                        }
-                    }
-                }
-            };
-        bundleContext.addServiceListener(ukelonnServiceListener);
-
-        // The war bundle has to be manually started or it won't work
-        final String bundlePath = "mvn:no.priv.bang.ukelonn/ukelonn.bundle/" + getMavenProjectVersion() + "/war";
-        installWarBundle = bundleContext.installBundle(bundlePath);
-        installWarBundle.start();
-    }
-
-    @After
-    public void tearDown() throws BundleException {
-    	installWarBundle.stop();
     }
 
     @Test
@@ -111,18 +70,17 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     public void testDerbyTestDatabase() throws SQLException {
         ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
         assertNotNull(onAccount);
-        while (onAccount.next()) {
-            int account_id = onAccount.getInt("account_id");
-            int user_id = onAccount.getInt("user_id");
-            String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
-            assertEquals(3, account_id);
-            assertEquals(3, user_id);
-            assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
-        }
+        assertTrue(onAccount.next()); // Verify that there is at least one result
+        int account_id = onAccount.getInt("account_id");
+        int user_id = onAccount.getInt("user_id");
+        String username = onAccount.getString("username");
+        String first_name = onAccount.getString("first_name");
+        String last_name = onAccount.getString("last_name");
+        assertEquals(3, account_id);
+        assertEquals(3, user_id);
+        assertEquals("jad", username);
+        assertEquals("Jane", first_name);
+        assertEquals("Doe", last_name);
     }
 
     @Ignore
