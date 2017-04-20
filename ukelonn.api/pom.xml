@@ -14,14 +14,12 @@
 
  <dependencies>
   <dependency>
-   <groupId>org.apache.felix</groupId>
+   <groupId>org.osgi</groupId>
    <artifactId>org.osgi.core</artifactId>
-   <version>1.4.0</version>
-   <scope>provided</scope>
   </dependency>
   <dependency>
    <groupId>org.osgi</groupId>
-   <artifactId>org.osgi.compendium</artifactId>
+   <artifactId>org.osgi.service.log</artifactId>
   </dependency>
  </dependencies>
 

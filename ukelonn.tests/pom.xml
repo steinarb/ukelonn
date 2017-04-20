@@ -69,10 +69,6 @@
    <artifactId>org.osgi.core</artifactId>
   </dependency>
   <dependency>
-   <groupId>org.osgi</groupId>
-   <artifactId>org.osgi.compendium</artifactId>
-  </dependency>
-  <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.karaf</artifactId>
    <version>${project.version}</version>
