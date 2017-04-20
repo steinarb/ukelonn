@@ -616,15 +616,4 @@
   </repository>
  </repositories>
 
- <profiles>
-  <profile>
-   <id>rebundle-dependencies</id>
-   <activation>
-    <activeByDefault>false</activeByDefault>
-   </activation>
-   <modules>
-    <module>ukelonn.rebundled</module>
-   </modules>
-  </profile>
- </profiles>
 </project>
