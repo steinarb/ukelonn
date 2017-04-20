@@ -513,11 +513,6 @@
      <version>3.1.0</version>
     </plugin>
     <plugin>
-     <groupId>org.ops4j</groupId>
-     <artifactId>maven-pax-plugin</artifactId>
-     <version>1.5</version>
-    </plugin>
-    <plugin>
      <groupId>org.apache.karaf.tooling</groupId>
      <artifactId>karaf-maven-plugin</artifactId>
      <version>${karaf.version}</version>
@@ -623,13 +618,12 @@
 
  <profiles>
   <profile>
-   <id>use-gogoshell</id>
+   <id>rebundle-dependencies</id>
    <activation>
     <activeByDefault>false</activeByDefault>
    </activation>
    <modules>
     <module>ukelonn.rebundled</module>
-    <module>ukelonn.gogoshell</module>
    </modules>
   </profile>
  </profiles>

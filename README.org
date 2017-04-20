@@ -22,7 +22,7 @@ Jeg har også plan om å lage en branch med en versjon som bruker [[http://spark
 
 * Utsjekk og bygg
 
-Dette trengs for å laste og kjøre programvaren
+Dette trengs for å laste og teste ut denne programvaren
  1. Installer det som trengs:
     - git: https://git-scm.com/download/win
     - Java SDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
@@ -40,13 +40,23 @@ Dette trengs for å laste og kjøre programvaren
     #+BEGIN_EXAMPLE
       cd %HOME%\git\ukelonn
       git checkout using-vaadin
-      mvn -P use-gogoshell clean install
-      cd ukelonn.gogoshell
-      mvn install pax:provision
+      mvn clean install
     #+END_EXAMPLE
- 4. Åpne en nettleser på http://localhost:8090/ukelonn/
-
-/Men NB! Oppstart av webapp fra gogoshell brukes ikke i aktiv utvikling lengre.  Akkurat nå bruker jeg Apache Karaf både i utvikling og i produksjon./
+ 4. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 5. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+    #+END_EXAMPLE
+ 6. Installer webapplikasjonen:
+    #+BEGIN_EXAMPLE
+      feature:install ukelonn-db-derby-test
+      feature:install ukelonn
+    #+END_EXAMPLE
+ 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+    - For en vanlig bruker, brukernavn/passord: jad/1ad
+      - Vanlig bruker kan registrere nye jobber og sjekke saldo
+    - For en administrator-bruker, brukernavn/passord: on/ola12
+      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
 
 * Beskrivelse av koden
 (/Beskriver versjonen fra using-vaadin/)
@@ -74,34 +84,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Apache Karaf har muligheter til å auto-bundle jar-filer ved lasting, men integrasjonstestene i ukelonn.tests og gogoshell-kjøring av prosjektet trenger begge avhengigheter som OSGi-bundler.
      Vaadin TouchKit og noen av avhengighetene til TouchKit var /ikke/ bundler og måtte rebundles.  Men selve Vaadin og avhengighetene var allerede bundlet.
 
-* Kjøring på apache karaf
-** Kjøring på apache karaf med testdatabasen
-Framgangsmåte:
- 1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
-    #+BEGIN_EXAMPLE
-      mkdir %HOME%\git
-      cd %HOME%\git
-      git clone https://github.com/steinarb/ukelonn.git
-      cd %HOME%\git\ukelonn
-      git checkout using-vaadin
-      mvn clean install
-    #+END_EXAMPLE
- 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
- 3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
-    #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
-    #+END_EXAMPLE
- 4. Installer webapplikasjonen:
-    #+BEGIN_EXAMPLE
-      feature:install ukelonn-db-derby-test
-      feature:install ukelonn
-    #+END_EXAMPLE
- 5. Koble en nettleser mot http://localhost:8181/ukelonn/
-    - For en vanlig bruker, brukernavn/passord: jad/1ad
-      - Vanlig bruker kan registrere nye jobber og sjekke saldo
-    - For en administrator-bruker, brukernavn/passord: on/ola12
-      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
-** Kjøring på apache karaf med PostgreSQL
+* Kjøring på apache karaf med PostgreSQL
 Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstillinger:
  1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter
  2. Følgende tabeller må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/tables
