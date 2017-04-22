@@ -95,56 +95,8 @@
     <scope>provided</scope>
    </dependency>
    <dependency>
-    <groupId>org.ops4j.pax.logging</groupId>
-    <artifactId>pax-logging-api</artifactId>
-    <version>${dependency.pax.swissbox.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.logging</groupId>
-    <artifactId>pax-logging-service</artifactId>
-    <version>${dependency.pax.swissbox.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.url</groupId>
-    <artifactId>pax-url-war</artifactId>
-    <version>${dependency.pax.url.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.web</groupId>
-    <artifactId>pax-web-spi</artifactId>
-    <version>${dependency.pax.web.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
     <groupId>org.ops4j.pax.web</groupId>
     <artifactId>pax-web-api</artifactId>
-    <version>${dependency.pax.web.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.web</groupId>
-    <artifactId>pax-web-extender-war</artifactId>
-    <version>${dependency.pax.web.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.web</groupId>
-    <artifactId>pax-web-extender-whiteboard</artifactId>
-    <version>${dependency.pax.web.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.web</groupId>
-    <artifactId>pax-web-runtime</artifactId>
-    <version>${dependency.pax.web.version}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.ops4j.pax.web</groupId>
-    <artifactId>pax-web-jsp</artifactId>
     <version>${dependency.pax.web.version}</version>
     <scope>provided</scope>
    </dependency>
@@ -197,66 +149,6 @@
     <groupId>org.ops4j.pax.url</groupId>
     <artifactId>pax-url-reference</artifactId>
     <version>${dependency.pax.url.version}</version>
-   </dependency>
-   <dependency>
-    <groupId>commons-beanutils</groupId>
-    <artifactId>commons-beanutils</artifactId>
-    <version>1.8.3</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>commons-collections</groupId>
-    <artifactId>commons-collections</artifactId>
-    <version>3.2.1</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.apache.servicemix.bundles</groupId>
-    <artifactId>org.apache.servicemix.bundles.commons-digester</artifactId>
-    <version>1.8_4</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.apache.servicemix.specs</groupId>
-    <artifactId>org.apache.servicemix.specs.jsr303-api-1.0.0</artifactId>
-    <version>1.8.0</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.apache.servicemix.specs</groupId>
-    <artifactId>org.apache.servicemix.specs.jsr250-1.0</artifactId>
-    <version>2.0.0</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.apache.geronimo.bundles</groupId>
-    <artifactId>commons-discovery</artifactId>
-    <version>0.4_1</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>javax.enterprise</groupId>
-    <artifactId>cdi-api</artifactId>
-    <version>1.2</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>javax.interceptor</groupId>
-    <artifactId>javax.interceptor-api</artifactId>
-    <version>1.2</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>javax.validation</groupId>
-    <artifactId>validation-api</artifactId>
-    <version>${javax.validation}</version>
-    <scope>provided</scope>
-   </dependency>
-   <dependency>
-    <groupId>org.jsoup</groupId>
-    <artifactId>jsoup</artifactId>
-    <version>${jsoup.version}</version>
-    <scope>provided</scope>
    </dependency>
    <dependency>
     <groupId>com.vaadin</groupId>
