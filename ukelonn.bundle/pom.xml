@@ -37,19 +37,16 @@
    <scope>test</scope>
   </dependency>
   <dependency>
-   <groupId>org.apache.derby</groupId>
-   <artifactId>derby</artifactId>
-   <scope>test</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.felix</groupId>
+   <groupId>org.osgi</groupId>
    <artifactId>org.osgi.core</artifactId>
-   <version>1.4.0</version>
-   <scope>provided</scope>
   </dependency>
   <dependency>
    <groupId>org.osgi</groupId>
-   <artifactId>org.osgi.compendium</artifactId>
+   <artifactId>org.osgi.service.log</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.osgi</groupId>
+   <artifactId>org.osgi.service.jdbc</artifactId>
   </dependency>
   <dependency>
    <groupId>no.steria.osgi.jsr330activator</groupId>
