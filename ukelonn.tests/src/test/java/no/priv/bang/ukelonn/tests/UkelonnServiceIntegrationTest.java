@@ -16,10 +16,13 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.web.itest.base.HttpTestClient;
+import org.ops4j.pax.web.itest.base.client.HttpTestClient;
+import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
+
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 
@@ -48,6 +51,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
             systemTimeout(60000),
+            logLevel(LogLevel.DEBUG),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
             editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
@@ -87,12 +91,12 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Test
     public void webappAccessTest() throws Exception {
     	Thread.sleep(20*1000);
-        HttpTestClient testclient = new HttpTestClient();
+        HttpTestClient testclient = HttpTestClientFactory.createDefaultTestClient();
     	try {
-            String response = testclient.testWebPath("http://localhost:8081/ukelonn/", 404);
+            testclient.doGET("http://localhost:8081/ukelonn/").withReturnCode(404);
+            String response = testclient.executeTest();
             assertEquals("", response);
     	} finally {
-            testclient.close();
             testclient = null;
     	}
     }
