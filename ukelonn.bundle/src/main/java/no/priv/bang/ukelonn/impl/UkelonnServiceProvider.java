@@ -55,11 +55,39 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
 
     @Inject
     public void setWebContainer(WebContainer webcontainer) throws ClassNotFoundException, ServletException, NamespaceException {
-        webContainer = webcontainer;
+    	if (webcontainer != null) {
+            registerWebappWithWebContainer(webcontainer);
+    	} else {
+            unregisterWebappWithWebContainer();
+    	}
+    }
+
+    public WebContainer getWebContainer() {
+        return webContainer;
+    }
+
+    private void registerWebappWithWebContainer(WebContainer webcontainer) throws NamespaceException {
+    	if (webcontainer == webContainer) {
+            return; // Nothing to do, already registered
+    	}
+
+    	if (webContainer != null) {
+            // Disconnect the existing container before setting a new
+            unregisterWebappWithWebContainer();
+    	}
+
+    	webContainer = webcontainer;
         httpContext = webContainer.createDefaultHttpContext();
 
         // register images as resources
         webContainer.registerResources("/images", "/images", httpContext);
+    }
+
+    private void unregisterWebappWithWebContainer() {
+    	if (webContainer != null) {
+            webContainer.unregister("/images");
+            webContainer = null;
+    	}
     }
 
     public UkelonnService get() {
