@@ -5,12 +5,14 @@ import javax.inject.Provider;
 import javax.servlet.ServletException;
 
 import org.ops4j.pax.web.service.WebContainer;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
+import no.steria.osgi.jsr330activator.ActivatorShutdown;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
 
 /**
@@ -31,6 +33,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     public UkelonnServiceProvider() {
         super();
         instance = this;
+    }
+
+    @ActivatorShutdown
+    public void stop(BundleContext context) {
+    	unregisterWebappWithWebContainer();
     }
 
     @Inject
@@ -55,11 +62,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
 
     @Inject
     public void setWebContainer(WebContainer webcontainer) throws ClassNotFoundException, ServletException, NamespaceException {
-    	if (webcontainer != null) {
-            registerWebappWithWebContainer(webcontainer);
-    	} else {
-            unregisterWebappWithWebContainer();
-    	}
+        registerWebappWithWebContainer(webcontainer);
     }
 
     public WebContainer getWebContainer() {
@@ -71,16 +74,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
             return; // Nothing to do, already registered
     	}
 
-    	if (webContainer != null) {
-            // Disconnect the existing container before setting a new
-            unregisterWebappWithWebContainer();
-    	}
+        // Disconnect the existing container before setting a new
+        unregisterWebappWithWebContainer();
 
     	webContainer = webcontainer;
-        httpContext = webContainer.createDefaultHttpContext();
 
-        // register images as resources
-        webContainer.registerResources("/images", "/images", httpContext);
+    	if (webcontainer != null) {
+            httpContext = webContainer.createDefaultHttpContext();
+
+            // register images as resources
+            webContainer.registerResources("/images", "/images", httpContext);
+    	}
     }
 
     private void unregisterWebappWithWebContainer() {
