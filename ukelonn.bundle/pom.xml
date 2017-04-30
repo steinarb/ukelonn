@@ -8,7 +8,7 @@
  </parent>
 
  <artifactId>ukelonn.bundle</artifactId>
- <packaging>war</packaging>
+ <packaging>bundle</packaging>
 
  <name>Ukelonn webapp OSGi bundle</name>
 
@@ -132,7 +132,6 @@
       <supportedProjectType>war</supportedProjectType>
      </supportedProjectTypes>
      <instructions>
-      <_wab>src/main/webapp</_wab>
       <Bundle-SymbolicName>no.priv.bang.ukelonn</Bundle-SymbolicName>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Bundle-Version>${project.version}</Bundle-Version>
@@ -175,8 +174,6 @@
       </Import-Package>
       <Export-Package>!*</Export-Package>
       <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
-      <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
-      <Web-ContextPath>ukelonn</Web-ContextPath>
       <_removeheaders>
        Include-Resource,
        Private-Package,
@@ -185,14 +182,6 @@
       </_removeheaders>
      </instructions>
     </configuration>
-    <executions>
-     <execution>
-      <id>bundle</id>
-      <goals>
-       <goal>bundle</goal>
-      </goals>
-     </execution>
-    </executions>
    </plugin>
    <plugin>
     <groupId>org.apache.karaf.tooling</groupId>

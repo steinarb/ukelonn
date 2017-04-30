@@ -1,14 +1,19 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.servlet.ServletException;
 
+import org.apache.shiro.web.env.EnvironmentLoaderListener;
+import org.apache.shiro.web.servlet.ShiroFilter;
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.NamespaceException;
 import org.osgi.service.log.LogService;
+
+import com.vaadin.addon.touchkit.server.TouchKitServlet;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -29,6 +34,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     private HttpContext httpContext;
     private UkelonnDatabase database;
     private LogService logservice;
+    private EnvironmentLoaderListener listener;
+    private ShiroFilter shirofilter;
+    private TouchKitServlet servlet;
 
     public UkelonnServiceProvider() {
         super();
@@ -61,7 +69,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     }
 
     @Inject
-    public void setWebContainer(WebContainer webcontainer) throws ClassNotFoundException, ServletException, NamespaceException {
+    public void setWebContainer(WebContainer webcontainer) {
         registerWebappWithWebContainer(webcontainer);
     }
 
@@ -69,7 +77,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
         return webContainer;
     }
 
-    private void registerWebappWithWebContainer(WebContainer webcontainer) throws NamespaceException {
+    private void registerWebappWithWebContainer(WebContainer webcontainer) {
     	if (webcontainer == webContainer) {
             return; // Nothing to do, already registered
     	}
@@ -82,14 +90,37 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     	if (webcontainer != null) {
             httpContext = webContainer.createDefaultHttpContext();
 
-            // register images as resources
-            webContainer.registerResources("/images", "/images", httpContext);
+            // Shiro filter config values
+            final Dictionary<String, Object> initParamsShiroFilter = new Hashtable<>();
+            final String[] urlPatternsShiroFilter = { "/ukelonn/*" };
+
+            // servlet config values
+            final Dictionary<String, Object> initParams = new Hashtable<String, Object>();
+            initParams.put("UI", "no.priv.bang.ukelonn.impl.UkelonnUI");
+            final String registrationPath = "/ukelonn/*";
+            final String[] urlPatterns = { registrationPath, "/VAADIN/*" };
+
+            try {
+            	listener = new EnvironmentLoaderListener();
+            	webContainer.registerEventListener(listener, httpContext);
+
+                shirofilter = new ShiroFilter();
+            	webcontainer.registerFilter(shirofilter, urlPatternsShiroFilter, null, initParamsShiroFilter, httpContext);
+
+                servlet = new TouchKitServlet();
+                webContainer.registerServlet(servlet, urlPatterns, initParams, httpContext);
+
+            } catch (Exception e) {
+                safeLogError("Failed to configure ukelonn webapp", e);
+            }
     	}
     }
 
     private void unregisterWebappWithWebContainer() {
     	if (webContainer != null) {
-            webContainer.unregister("/images");
+            webContainer.unregisterServlet(servlet);
+            webContainer.unregisterFilter(shirofilter);
+            webContainer.unregisterEventListener(listener);
             webContainer = null;
     	}
     }
@@ -100,6 +131,19 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
 
     public static UkelonnService getInstance() {
         return instance;
+    }
+
+    /***
+     * Log an error level message to the OSGi log service if available,
+     * if the OSGi log service isn't available, just eat the log message quietly.
+     *
+     * @param message the message to log
+     * @param e the exception
+     */
+    private void safeLogError(String message, Throwable e) {
+        if (logservice != null) {
+            logservice.log(LogService.LOG_ERROR, message, e);
+        }
     }
 
 }
