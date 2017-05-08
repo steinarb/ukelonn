@@ -137,16 +137,8 @@
       <Bundle-Version>${project.version}</Bundle-Version>
       <Import-Package>
        no.priv.bang.ukelonn,
-       javax.el,
-       javax.servlet.jsp;version="[2.2.0,3.0.0)",
-       javax.servlet.jsp.jstl.core;version="1.2",
-       javax.servlet.jsp.jstl.fmt;version="1.2",
-       javax.servlet.jsp.jstl.tlv;version="1.2",
-       javax.servlet;version="[2.6.0,4.0.0)",
        javax.servlet.http;version="[2.6.0,4.0.0)",
        com.vaadin.shared,
-       org.apache.shiro.web.env,
-       org.apache.shiro.web.servlet,
        com.vaadin.server,
        com.vaadin.addon.touchkit.server,
        com.vaadin.addon.touchkit.settings,
