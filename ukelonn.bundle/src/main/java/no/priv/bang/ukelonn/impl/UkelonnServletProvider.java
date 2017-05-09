@@ -1,51 +1,58 @@
 package no.priv.bang.ukelonn.impl;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.servlet.Servlet;
 
-import org.apache.shiro.web.env.EnvironmentLoaderListener;
-import org.apache.shiro.web.servlet.ShiroFilter;
-import org.ops4j.pax.web.service.WebContainer;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.http.HttpContext;
+import org.ops4j.pax.web.extender.whiteboard.ExtenderConstants;
 import org.osgi.service.log.LogService;
 
 import com.vaadin.addon.touchkit.server.TouchKitServlet;
+import com.vaadin.server.UIClassSelectionEvent;
+import com.vaadin.server.UICreateEvent;
+import com.vaadin.server.UIProvider;
+import com.vaadin.ui.UI;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.steria.osgi.jsr330activator.ActivatorShutdown;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
+import no.steria.osgi.jsr330activator.ServiceProperties;
+import no.steria.osgi.jsr330activator.ServiceProperty;
 
 /**
- * A thin wrapper around {@link UkelonnServiceBase} that will
- * be picked up by the {@link Jsr330Activator} and be presented
- * in OSGi as a {@link UkelonnService} service.
+ * This class will be be picked and instantiated up by the {@link Jsr330Activator} and be presented
+ * in OSGi as a {@link Servlet} service.
+ *
+ * The way it works, is:
+ *  1. The Jsr330Activator will start by instantiating this class
+ *  2. The Jsr330Activator will then register listeners for the two dependent services (log and database services)
+ *  3. When the dependent services become available the Jsr330Activator will call the get() method of this class
+ *     to get the servlet instance, which is then registered as an OSGi service, which is picked up by the
+ *     pax web whiteboard extender
+ *  4. If one or both of the dependent services go away, the servlet instance will be registered as going away
+ *     (and will hopefully be removed in the pax web whiteboard extender)
+ *  5. If the JsrActivator is stopped (e.g. when unloading the bundle), the Jsr330Activator will retract the
+ *     servlet OSGi service, and release its hold on the two injected services
+ *
+ *  See also: {@link ShiroFilterProvider}, {@link ShiroEnvironmentLoaderListenerProvider}
  *
  * @author Steinar Bang
  *
  */
-public class UkelonnServiceProvider extends UkelonnServiceBase implements Provider<UkelonnService> {
-    private static UkelonnServiceProvider instance;
-    private WebContainer webContainer;
-    private HttpContext httpContext;
+@ServiceProperties({
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_ALIAS, value = "/"),
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
+public class UkelonnServletProvider extends UIProvider implements Provider<Servlet>, UkelonnService {
+    private static final long serialVersionUID = -275959896126008712L;
+    private static UkelonnServletProvider instance;
     private UkelonnDatabase database;
     private LogService logservice;
-    private EnvironmentLoaderListener listener;
-    private ShiroFilter shirofilter;
     private TouchKitServlet servlet;
 
-    public UkelonnServiceProvider() {
+    public UkelonnServletProvider() {
         super();
         instance = this;
-    }
-
-    @ActivatorShutdown
-    public void stop(BundleContext context) {
-    	unregisterWebappWithWebContainer();
     }
 
     @Inject
@@ -53,7 +60,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     	this.database = database;
     }
 
-    @Override
     public UkelonnDatabase getDatabase() {
         return database;
     }
@@ -63,87 +69,30 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     	this.logservice = logservice;
     }
 
-    @Override
     public LogService getLogservice() {
         return logservice;
     }
 
-    @Inject
-    public void setWebContainer(WebContainer webcontainer) {
-        registerWebappWithWebContainer(webcontainer);
-    }
-
-    public WebContainer getWebContainer() {
-        return webContainer;
-    }
-
-    private void registerWebappWithWebContainer(WebContainer webcontainer) {
-    	if (webcontainer == webContainer) {
-            return; // Nothing to do, already registered
-    	}
-
-        // Disconnect the existing container before setting a new
-        unregisterWebappWithWebContainer();
-
-    	webContainer = webcontainer;
-
-    	if (webcontainer != null) {
-            httpContext = webContainer.createDefaultHttpContext();
-
-            // Shiro filter config values
-            final Dictionary<String, Object> initParamsShiroFilter = new Hashtable<>();
-            final String[] urlPatternsShiroFilter = { "/ukelonn/*" };
-
-            // servlet config values
-            final Dictionary<String, Object> initParams = new Hashtable<String, Object>();
-            initParams.put("UI", "no.priv.bang.ukelonn.impl.UkelonnUI");
-            final String registrationPath = "/ukelonn/*";
-            final String[] urlPatterns = { registrationPath, "/VAADIN/*" };
-
-            try {
-            	listener = new EnvironmentLoaderListener();
-            	webContainer.registerEventListener(listener, httpContext);
-
-                shirofilter = new ShiroFilter();
-            	webcontainer.registerFilter(shirofilter, urlPatternsShiroFilter, null, initParamsShiroFilter, httpContext);
-
-                servlet = new TouchKitServlet();
-                webContainer.registerServlet(servlet, urlPatterns, initParams, httpContext);
-
-            } catch (Exception e) {
-                safeLogError("Failed to configure ukelonn webapp", e);
-            }
-    	}
-    }
-
-    private void unregisterWebappWithWebContainer() {
-    	if (webContainer != null) {
-            webContainer.unregisterServlet(servlet);
-            webContainer.unregisterFilter(shirofilter);
-            webContainer.unregisterEventListener(listener);
-            webContainer = null;
-    	}
-    }
-
-    public UkelonnService get() {
-        return this;
-    }
-
-    public static UkelonnService getInstance() {
-        return instance;
-    }
-
-    /***
-     * Log an error level message to the OSGi log service if available,
-     * if the OSGi log service isn't available, just eat the log message quietly.
-     *
-     * @param message the message to log
-     * @param e the exception
-     */
-    private void safeLogError(String message, Throwable e) {
-        if (logservice != null) {
-            logservice.log(LogService.LOG_ERROR, message, e);
+    public Servlet get() {
+        if (servlet == null) {
+            servlet = new UkelonnServlet(this);
         }
+
+        return servlet;
+    }
+
+    @Override
+    public UI createInstance(UICreateEvent event) {
+        return new UkelonnUI(this);
+    }
+
+    @Override
+    public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
+        throw new UnsupportedOperationException("Not called, this provider creates instances with back pointers.");
+    }
+
+    public static UkelonnServletProvider getInstance() {
+        return instance;
     }
 
 }

@@ -31,6 +31,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class AdminFallbackView extends AbstractView {
     private static final long serialVersionUID = -1581589472749242129L;
+    private UkelonnServletProvider provider;
     final int idOfPayToBank = 4;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
@@ -65,7 +66,8 @@ public class AdminFallbackView extends AbstractView {
     ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
     ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
 
-    public AdminFallbackView(VaadinRequest request) {
+    public AdminFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
+    	this.provider = provider;
     	VerticalLayout content = new VerticalLayout();
     	content.addStyleName("ukelonn-responsive-layout");
     	Responsive.makeResponsive(content);
@@ -75,11 +77,11 @@ public class AdminFallbackView extends AbstractView {
         content.addComponent(greeting);
 
         // Updatable containers
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-        editUserPasswordUsers.addAll(getUsers(getClass()));
-        editUserUsers.addAll(getUsers(getClass()));
+        editUserPasswordUsers.addAll(getUsers(provider, getClass()));
+        editUserUsers.addAll(getUsers(provider, getClass()));
         ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
 
         Accordion accordion = new Accordion();
@@ -99,14 +101,14 @@ public class AdminFallbackView extends AbstractView {
     @Override
     public void enter(ViewChangeEvent event) {
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
+        AdminUser admin = getAdminUserFromDatabase(provider, getClass(), currentUser);
         greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
     }
 
     private void createPaymentRegistrationTab(ComboBox paymenttype, Accordion accordion) {
         Accordion registerPaymentTab = new Accordion();
         VerticalLayout userinfo = new VerticalLayout();
-        List<Account> accounts = getAccounts(getClass());
+        List<Account> accounts = getAccounts(provider, getClass());
         accountsContainer.addAll(accounts);
         Class<?> classForLogMessage = getClass();
         ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
@@ -123,15 +125,15 @@ public class AdminFallbackView extends AbstractView {
                     recentJobs.removeAllItems();
                     recentPayments.removeAllItems();
                     if (account != null) {
-                        refreshAccount(classForLogMessage, account);
+                        refreshAccount(provider, classForLogMessage, account);
                         balance.setValue(account.getBalance());
-                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, classForLogMessage);
                         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
                         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
                         paymenttype.select(transactionTypes.get(idOfPayToBank));
                         amount.setValue(balance.getValue());
-                        recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
-                        recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                        recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
+                        recentPayments.addAll(getPaymentsFromAccount(provider, account, classForLogMessage));
                     }
                 }
             });
@@ -176,10 +178,10 @@ public class AdminFallbackView extends AbstractView {
                                Account account = (Account) accountSelector.getValue();
                                TransactionType payment = (TransactionType) paymenttype.getValue();
                                if (account != null && payment != null) {
-                                   addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
+                                   addNewPaymentToAccount(provider, classForLogMessage, account, payment, amount.getValue());
                                    recentPayments.removeAllItems();
-                                   recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
-                                   refreshAccount(classForLogMessage, account);
+                                   recentPayments.addAll(getPaymentsFromAccount(provider, account, classForLogMessage));
+                                   refreshAccount(provider, classForLogMessage, account);
                                    balance.setValue(account.getBalance());
                                    amount.setValue(0.0);
                                }
@@ -216,7 +218,7 @@ public class AdminFallbackView extends AbstractView {
                     String jobname = newJobTypeName.getValue();
                     Double jobamount = newJobTypeAmount.getValue();
                     if (!"".equals(jobname) && !Double.valueOf(0.0).equals(jobamount)) {
-                        addJobTypeToDatabase(classForLogMessage, jobname, jobamount);
+                        addJobTypeToDatabase(provider, classForLogMessage, jobname, jobamount);
                         newJobTypeName.setValue("");
                         newJobTypeAmount.setValue(0.0);
                         refreshJobTypesFromDatabase();
@@ -261,7 +263,7 @@ public class AdminFallbackView extends AbstractView {
                         {
                             transactionType.setTransactionTypeName(editedJobTypeName.getValue());
                             transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
-                            updateTransactionTypeInDatabase(classForLogMessage, transactionType);
+                            updateTransactionTypeInDatabase(provider, classForLogMessage, transactionType);
                             jobtypesTable.setValue(null);
                             editedJobTypeName.setValue("");
                             editedJobTypeAmount.setValue(0.0);
@@ -304,7 +306,7 @@ public class AdminFallbackView extends AbstractView {
                     String paymentName = newPaymentTypeName.getValue();
                     Double paymentAmount = newPaymentTypeAmount.getValue();
                     if (!"".equals(paymentName)) {
-                        addPaymentTypeToDatabase(classForLogMessage, paymentName, paymentAmount);
+                        addPaymentTypeToDatabase(provider, classForLogMessage, paymentName, paymentAmount);
                         newPaymentTypeName.setValue("");
                         newPaymentTypeAmount.setValue(0.0);
                         refreshPaymentTypesFromDatabase();
@@ -349,7 +351,7 @@ public class AdminFallbackView extends AbstractView {
                         {
                             transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
                             transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
-                            updateTransactionTypeInDatabase(classForLogMessage, transactionType);
+                            updateTransactionTypeInDatabase(provider, classForLogMessage, transactionType);
                             paymentTypesTable.setValue(null);
                             editedPaymentTypeName.setValue("");
                             editedPaymentTypeAmount.setValue(0.0);
@@ -402,6 +404,7 @@ public class AdminFallbackView extends AbstractView {
                     if (newUserIsAValidUser())
                     {
                     	addUserToDatabase(
+                            provider,
                             classForLogMessage,
                             newUserUsername.getValue(),
                             newUserPassword2.getValue(),
@@ -436,10 +439,10 @@ public class AdminFallbackView extends AbstractView {
                 }
 
                 private void refreshListWidgetsAffectedByChangesToUsers() {
-                    List<Account> accounts = getAccounts(classForLogMessage);
+                    List<Account> accounts = getAccounts(provider, classForLogMessage);
                     accountsContainer.removeAllItems();
                     accountsContainer.addAll(accounts);
-                    List<User> users = getUsers(classForLogMessage);
+                    List<User> users = getUsers(provider, classForLogMessage);
                     editUserPasswordUsers.removeAllItems();
                     editUserUsers.removeAllItems();
                     editUserPasswordUsers.addAll(users);
@@ -479,7 +482,7 @@ public class AdminFallbackView extends AbstractView {
                         if (!"".equals(editUserPassword1Field.getValue()) &&
                             editUserPassword2Field.isValid())
                         {
-                            changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
+                            changePasswordForUser(provider, user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
                             editUserPassword1.setValue("");
                             editUserPassword2.setValue("");
                         }
@@ -528,7 +531,7 @@ public class AdminFallbackView extends AbstractView {
                         user.setFirstname(editUserFirstname.getValue());
                         user.setLastname(editUserLastname.getValue());
 
-                        updateUserInDatabase(classForLogMessage, user);
+                        updateUserInDatabase(provider, classForLogMessage, user);
 
                         clearFormElements();
 
@@ -544,10 +547,10 @@ public class AdminFallbackView extends AbstractView {
                 }
 
                 private void refreshListWidgetsAffectedByChangesToUsers() {
-                    List<Account> accounts = getAccounts(classForLogMessage);
+                    List<Account> accounts = getAccounts(provider, classForLogMessage);
                     accountsContainer.removeAllItems();
                     accountsContainer.addAll(accounts);
-                    List<User> users = getUsers(classForLogMessage);
+                    List<User> users = getUsers(provider, classForLogMessage);
                     editUserPasswordUsers.removeAllItems();
                     editUserUsers.removeAllItems();
                     editUserPasswordUsers.addAll(users);
@@ -560,13 +563,13 @@ public class AdminFallbackView extends AbstractView {
     }
 
     private void refreshJobTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         jobTypes.removeAllItems();
         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
     }
 
     private void refreshPaymentTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         paymentTypes.removeAllItems();
         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
     }

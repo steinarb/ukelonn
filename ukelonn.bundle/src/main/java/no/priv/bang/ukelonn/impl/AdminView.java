@@ -33,18 +33,19 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class AdminView extends AbstractView {
     private static final long serialVersionUID = -1581589472749242129L;
+    private UkelonnServletProvider provider;
     final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn admin UI, bruker: ????");
-    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(getClass()));
+    BeanItemContainer<Account> accountsContainer;
     ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
     ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
-    Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+    Map<Integer, TransactionType> transactionTypes;
+    BeanItemContainer<TransactionType> paymentTypes;
+    BeanItemContainer<TransactionType> jobTypes;
 
     // Data model for the admin tasks
     ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
@@ -61,16 +62,23 @@ public class AdminView extends AbstractView {
     ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
     ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
     ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(getClass()));
+    BeanItemContainer<User> editUserPasswordUsers;
     ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
     ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class, getUsers(getClass()));
+    BeanItemContainer<User> editUserUsers;
     ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
     ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
     ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
     ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
 
-    public AdminView(VaadinRequest request) {
+    public AdminView(UkelonnServletProvider provider, VaadinRequest request) {
+    	this.provider = provider;
+    	accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(provider, getClass()));
+    	transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+    	editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
+    	editUserUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
+    	paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+    	jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
     	setSizeFull();
         TabBarView tabs = new TabBarView();
 
@@ -92,7 +100,7 @@ public class AdminView extends AbstractView {
     @Override
     public void enter(ViewChangeEvent event) {
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-        AdminUser admin = getAdminUserFromDatabase(getClass(), currentUser);
+        AdminUser admin = getAdminUserFromDatabase(provider, getClass(), currentUser);
         greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
     }
 
@@ -133,15 +141,15 @@ public class AdminView extends AbstractView {
                     recentJobs.removeAllItems();
                     recentPayments.removeAllItems();
                     if (account != null) {
-                        refreshAccount(classForLogMessage, account);
+                        refreshAccount(provider, classForLogMessage, account);
                         balance.setValue(account.getBalance());
-                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(classForLogMessage);
+                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, classForLogMessage);
                         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
                         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
                         paymenttype.select(transactionTypes.get(idOfPayToBank));
                         amount.setValue(balance.getValue());
-                        recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
-                        recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                        recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
+                        recentPayments.addAll(getPaymentsFromAccount(provider, account, classForLogMessage));
                     }
                 }
             });
@@ -185,10 +193,10 @@ public class AdminView extends AbstractView {
                                                       Account account = (Account) accountSelector.getValue();
                                                       TransactionType payment = (TransactionType) paymenttype.getValue();
                                                       if (account != null && payment != null) {
-                                                          addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
+                                                          addNewPaymentToAccount(provider, classForLogMessage, account, payment, amount.getValue());
                                                           recentPayments.removeAllItems();
-                                                          recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
-                                                          refreshAccount(classForLogMessage, account);
+                                                          recentPayments.addAll(getPaymentsFromAccount(provider, account, classForLogMessage));
+                                                          refreshAccount(provider, classForLogMessage, account);
                                                           balance.setValue(account.getBalance());
                                                           amount.setValue(0.0);
                                                       }
@@ -224,7 +232,7 @@ public class AdminView extends AbstractView {
                     String jobname = newJobTypeName.getValue();
                     Double jobamount = newJobTypeAmount.getValue();
                     if (!"".equals(jobname) && !Double.valueOf(0.0).equals(jobamount)) {
-                        addJobTypeToDatabase(classForLogMessage, jobname, jobamount);
+                        addJobTypeToDatabase(provider, classForLogMessage, jobname, jobamount);
                         newJobTypeName.setValue("");
                         newJobTypeAmount.setValue(0.0);
                         refreshJobTypesFromDatabase();
@@ -271,7 +279,7 @@ public class AdminView extends AbstractView {
                         {
                             transactionType.setTransactionTypeName(editedJobTypeName.getValue());
                             transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
-                            updateTransactionTypeInDatabase(classForLogMessage, transactionType);
+                            updateTransactionTypeInDatabase(provider, classForLogMessage, transactionType);
                             jobtypesTable.setValue(null);
                             editedJobTypeName.setValue("");
                             editedJobTypeAmount.setValue(0.0);
@@ -322,7 +330,7 @@ public class AdminView extends AbstractView {
                     Double rawPaymentAmount = newPaymentTypeAmount.getValue();
                     Double paymentAmount = Double.valueOf(0.0).equals(rawPaymentAmount) ? null : rawPaymentAmount;
                     if (!"".equals(paymentName)) {
-                        addPaymentTypeToDatabase(classForLogMessage, paymentName, paymentAmount);
+                        addPaymentTypeToDatabase(provider, classForLogMessage, paymentName, paymentAmount);
                         newPaymentTypeName.setValue("");
                         newPaymentTypeAmount.setValue(0.0);
                         refreshPaymentTypesFromDatabase();
@@ -369,7 +377,7 @@ public class AdminView extends AbstractView {
                         {
                             transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
                             transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
-                            updateTransactionTypeInDatabase(classForLogMessage, transactionType);
+                            updateTransactionTypeInDatabase(provider, classForLogMessage, transactionType);
                             paymentTypesTable.setValue(null);
                             editedPaymentTypeName.setValue("");
                             editedPaymentTypeAmount.setValue(0.0);
@@ -428,12 +436,14 @@ public class AdminView extends AbstractView {
                 public void buttonClick(ClickEvent event) {
                     if (newUserIsAValidUser())
                     {
-                        addUserToDatabase(classForLogMessage,
-                                          newUserUsername.getValue(),
-                                          newUserPassword2.getValue(),
-                                          newUserEmail.getValue(),
-                                          newUserFirstname.getValue(),
-                                          newUserLastname.getValue());
+                        addUserToDatabase(
+                            provider,
+                            classForLogMessage,
+                            newUserUsername.getValue(),
+                            newUserPassword2.getValue(),
+                            newUserEmail.getValue(),
+                            newUserFirstname.getValue(),
+                            newUserLastname.getValue());
 
                         clearAllNewUserFormElements();
 
@@ -462,10 +472,10 @@ public class AdminView extends AbstractView {
                 }
 
                 private void refreshListWidgetsAffectedByChangesToUsers() {
-                    List<Account> accounts = getAccounts(classForLogMessage);
+                    List<Account> accounts = getAccounts(provider, classForLogMessage);
                     accountsContainer.removeAllItems();
                     accountsContainer.addAll(accounts);
-                    List<User> users = getUsers(classForLogMessage);
+                    List<User> users = getUsers(provider, classForLogMessage);
                     editUserPasswordUsers.removeAllItems();
                     editUserUsers.removeAllItems();
                     editUserPasswordUsers.addAll(users);
@@ -505,7 +515,7 @@ public class AdminView extends AbstractView {
                         if (!"".equals(editUserPassword1Field.getValue()) &&
                             editUserPassword2Field.isValid())
                         {
-                            changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
+                            changePasswordForUser(provider, user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
                             editUserPassword1.setValue("");
                             editUserPassword2.setValue("");
                         }
@@ -554,7 +564,7 @@ public class AdminView extends AbstractView {
                         user.setFirstname(editUserFirstname.getValue());
                         user.setLastname(editUserLastname.getValue());
 
-                        updateUserInDatabase(classForLogMessage, user);
+                        updateUserInDatabase(provider, classForLogMessage, user);
 
                         clearFormElements();
 
@@ -570,10 +580,10 @@ public class AdminView extends AbstractView {
                 }
 
                 private void refreshListWidgetsAffectedByChangesToUsers() {
-                    List<Account> accounts = getAccounts(classForLogMessage);
+                    List<Account> accounts = getAccounts(provider, classForLogMessage);
                     accountsContainer.removeAllItems();
                     accountsContainer.addAll(accounts);
-                    List<User> users = getUsers(classForLogMessage);
+                    List<User> users = getUsers(provider, classForLogMessage);
                     editUserPasswordUsers.removeAllItems();
                     editUserUsers.removeAllItems();
                     editUserPasswordUsers.addAll(users);
@@ -605,13 +615,13 @@ public class AdminView extends AbstractView {
     }
 
     private void refreshJobTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         jobTypes.removeAllItems();
         jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
     }
 
     private void refreshPaymentTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         paymentTypes.removeAllItems();
         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
     }

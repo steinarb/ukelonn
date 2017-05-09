@@ -28,6 +28,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserFallbackView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
+    private UkelonnServletProvider provider;
     private Account account;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
@@ -38,7 +39,8 @@ public class UserFallbackView extends AbstractView {
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
 
-    public UserFallbackView(VaadinRequest request) {
+    public UserFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
+    	this.provider = provider;
     	// Display the greeting
     	VerticalLayout content = new VerticalLayout();
         Component greeting = new Label(greetingProperty);
@@ -56,7 +58,7 @@ public class UserFallbackView extends AbstractView {
         Accordion accordion = new Accordion();
 
         FormLayout balanceAndNewJobTab = new FormLayout();
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
         paymentTypesContainer.addAll(paymentTypes);
         ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
@@ -80,10 +82,10 @@ public class UserFallbackView extends AbstractView {
             });
 
         // Updatable containers
-        recentJobs.addAll(getJobsFromAccount(account, getClass()));
+        recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
         Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
         lastJobsTable.setImmediate(true);
-        recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
+        recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
         Class<?> classForLogMessage = getClass();
 
         // Have a clickable button
@@ -95,11 +97,11 @@ public class UserFallbackView extends AbstractView {
                                                         public void buttonClick(ClickEvent e) {
                                                             TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
                                                             if (jobType != null) {
-                                                                registerNewJobInDatabase(classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
+                                                                registerNewJobInDatabase(provider, classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
                                                                 balance.setValue(account.getBalance());
                                                                 jobtypeSelector.setValue(null);
                                                                 recentJobs.removeAllItems();
-                                                                recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
+                                                                recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
                                                             }
                                                         }
                                                     }));
@@ -125,13 +127,13 @@ public class UserFallbackView extends AbstractView {
     @Override
     public void enter(ViewChangeEvent event) {
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-        account = getAccountInfoFromDatabase(getClass(), currentUser);
+        account = getAccountInfoFromDatabase(provider, getClass(), currentUser);
 
         greetingProperty.setValue("Ukelønn for " + account.getFirstName());
         balance.setValue(account.getBalance());
         recentJobs.removeAllItems();
-        recentJobs.addAll(getJobsFromAccount(account, getClass()));
+        recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
         recentPayments.removeAllItems();
-        recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
+        recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
     }
 }

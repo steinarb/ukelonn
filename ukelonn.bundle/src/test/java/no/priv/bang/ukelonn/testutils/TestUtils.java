@@ -1,6 +1,5 @@
 package no.priv.bang.ukelonn.testutils;
 
-import static org.mockito.Mockito.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
@@ -9,12 +8,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
-import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.bundle.test.db.UkelonnDatabaseProvider;
-import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
+import no.priv.bang.ukelonn.impl.ShiroFilterProvider;
+import no.priv.bang.ukelonn.impl.UkelonnServletProvider;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
 /**
@@ -24,6 +23,12 @@ import no.priv.bang.ukelonn.mocks.MockLogService;
  *
  */
 public class TestUtils {
+
+    private static UkelonnServletProvider ukelonnServletProvider;
+
+    public static UkelonnServletProvider getUkelonnServletProvider() {
+        return ukelonnServletProvider;
+    }
 
     /**
      * Get a {@link File} referencing a resource.
@@ -40,20 +45,18 @@ public class TestUtils {
      * Fake injected OSGi services.
      */
     public static void setupFakeOsgiServices() {
-        UkelonnServiceProvider ukelonnServiceSingleton = new UkelonnServiceProvider();
+        ukelonnServletProvider = new UkelonnServletProvider();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
         LogService logservice = new MockLogService();
         ukelonnDatabaseProvider.setLogService(logservice);
-        WebContainer mockContainer = mock(WebContainer.class);
-        try {
-            ukelonnServiceSingleton.setWebContainer(mockContainer);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
-        ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+        ukelonnServletProvider.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+        ukelonnServletProvider.setLogservice(logservice);
+
+        ShiroFilterProvider shiroFilterProvider = new ShiroFilterProvider();
+        shiroFilterProvider.setUkelonnDatabase(ukelonnDatabaseProvider.get());
     }
 
     /***
@@ -65,12 +68,12 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        UkelonnServiceProvider ukelonnService = (UkelonnServiceProvider) UkelonnServiceProvider.getInstance();
+        UkelonnServletProvider ukelonnService = (UkelonnServletProvider) UkelonnServletProvider.getInstance();
         if (ukelonnService != null) {
             ukelonnService.setUkelonnDatabase(null); // Release the database
 
             // Release the UkelonnService
-            Field ukelonnServiceInstanceField = UkelonnServiceProvider.class.getDeclaredField("instance");
+            Field ukelonnServiceInstanceField = UkelonnServletProvider.class.getDeclaredField("instance");
             ukelonnServiceInstanceField.setAccessible(true);
             ukelonnServiceInstanceField.set(null, null);
         }
@@ -88,7 +91,7 @@ public class TestUtils {
 
     public static void restoreTestDatabase() {
     	dropTestDatabase();
-    	UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
+    	UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServletProvider.getInstance().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
     }

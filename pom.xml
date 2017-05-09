@@ -86,15 +86,21 @@
     <scope>provided</scope>
    </dependency>
    <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
     <groupId>org.ops4j.pax.web</groupId>
-    <artifactId>pax-web-api</artifactId>
+    <artifactId>pax-web-runtime</artifactId>
     <version>${dependency.pax.web.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.1.0</version>
+    <groupId>org.ops4j.pax.web</groupId>
+    <artifactId>pax-web-extender-whiteboard</artifactId>
+    <version>${dependency.pax.web.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>

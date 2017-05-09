@@ -27,6 +27,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
+    private UkelonnServletProvider provider;
     // Updatable containers
     private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
     private ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
@@ -35,7 +36,8 @@ public class UserView extends AbstractView {
     private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
     private Account account;
 
-    public UserView(VaadinRequest request) {
+    public UserView(UkelonnServletProvider provider, VaadinRequest request) {
+    	this.provider = provider;
     	setSizeFull();
 
         NavigationManager navigationManager = new NavigationManager();
@@ -67,14 +69,14 @@ public class UserView extends AbstractView {
     @Override
     public void enter(ViewChangeEvent event) {
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
-        account = getAccountInfoFromDatabase(getClass(), currentUser);
+        account = getAccountInfoFromDatabase(provider, getClass(), currentUser);
 
         greetingProperty.setValue("Ukelønn for " + account.getFirstName());
         balance.setValue(account.getBalance());
         recentJobs.removeAllItems();
-        recentJobs.addAll(getJobsFromAccount(account, getClass()));
+        recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
         recentPayments.removeAllItems();
-        recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
+        recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
     }
 
     private VerticalComponentGroup createBalanceAndNewJobForm() {
@@ -94,7 +96,7 @@ public class UserView extends AbstractView {
         balanceAndNewJobGroup.addComponent(balanceDisplay);
 
         // Initialize the list of job types
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         List<TransactionType> jobTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
         jobTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, jobTypes);
         NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", jobTypesContainer);
@@ -128,11 +130,11 @@ public class UserView extends AbstractView {
                                                           public void buttonClick(ClickEvent e) {
                                                               TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
                                                               if (jobType != null) {
-                                                                  registerNewJobInDatabase(classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
+                                                                  registerNewJobInDatabase(provider, classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
                                                                   jobtypeSelector.setValue(null);
                                                                   balance.setValue(account.getBalance());
                                                                   recentJobs.removeAllItems();
-                                                                  recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
+                                                                  recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
                                                               }
                                                           }
                                                       }));

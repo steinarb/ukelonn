@@ -27,21 +27,21 @@ public class CommonDatabaseMethods {
 
     static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
 
-    public static UkelonnDatabase connectionCheck(Class<?> clazz) {
-        UkelonnService ukelonnService = CommonServiceMethods.connectionCheck(clazz);
+    public static UkelonnDatabase connectionCheck(UkelonnService ukelonnServletProvider, Class<?> clazz) {
+        UkelonnService provider = CommonServiceMethods.connectionCheck(ukelonnServletProvider, clazz);
 
-        UkelonnDatabase database = ukelonnService.getDatabase();
+        UkelonnDatabase database = provider.getDatabase();
         if (database == null) {
             String className = clazz.getSimpleName();
-            throw new RuntimeException(className + " bean unable to find OSGi service UkelonnDatabase, giving up");
+            throw new RuntimeException(className + " unable to find OSGi service UkelonnDatabase, giving up");
         }
 
         return database;
     }
 
-    public static Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase(Class<?> clazz) {
+    public static Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase(UkelonnService provider, Class<?> clazz) {
         Map<Integer, TransactionType> transactiontypes = new Hashtable<Integer, TransactionType>();
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         ResultSet resultSet = database.query("select * from transaction_types");
         if (resultSet != null) {
             try {
@@ -50,7 +50,7 @@ public class CommonDatabaseMethods {
                     transactiontypes.put(transactiontype.getId(), transactiontype);
                 }
             } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, "Error getting transaction types from the database", e);
+                logError(provider, CommonDatabaseMethods.class, "Error getting transaction types from the database", e);
             }
         }
 
@@ -60,11 +60,11 @@ public class CommonDatabaseMethods {
     private static TransactionType mapTransactionType(ResultSet resultset) throws SQLException {
         TransactionType transactionType =
             new TransactionType(
-                                resultset.getInt("transaction_type_id"),
-                                resultset.getString("transaction_type_name"),
-                                resultset.getDouble("transaction_amount"),
-                                resultset.getBoolean("transaction_is_work"),
-                                resultset.getBoolean("transaction_is_wage_payment")
+                resultset.getInt("transaction_type_id"),
+                resultset.getString("transaction_type_name"),
+                resultset.getDouble("transaction_amount"),
+                resultset.getBoolean("transaction_is_work"),
+                resultset.getBoolean("transaction_is_wage_payment")
                                 );
         return transactionType;
     }
@@ -91,8 +91,8 @@ public class CommonDatabaseMethods {
         return jobTypes;
     }
 
-    public static void updateBalanseFromDatabase(Class<?> clazz, Account account) {
-        UkelonnDatabase connection = connectionCheck(clazz);
+    public static void updateBalanseFromDatabase(UkelonnService provider, Class<?> clazz, Account account) {
+        UkelonnDatabase connection = connectionCheck(provider, clazz);
         StringBuilder query = sql("select * from accounts_view where account_id=").append(account.getAccountId());
         ResultSet results = connection.query(query.toString());
         if (results != null) {
@@ -102,12 +102,12 @@ public class CommonDatabaseMethods {
                     account.setBalance(balance);
                 }
             } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, "Error getting a user's account balance from the database", e);
+                logError(provider, CommonDatabaseMethods.class, "Error getting a user's account balance from the database", e);
             }
         }
     }
 
-    public static void addNewPaymentToAccount(Class<?> clazz, Account account, TransactionType paymentType, double payment) {
+    public static void addNewPaymentToAccount(UkelonnService provider, Class<?> clazz, Account account, TransactionType paymentType, double payment) {
         int accountId = account.getAccountId();
         int transactionTypeId = paymentType.getId();
         double amount = 0 - payment;
@@ -116,18 +116,18 @@ public class CommonDatabaseMethods {
             append(transactionTypeId).append(",").
             append(amount).append(")");
 
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(query.toString());
     }
 
-    public static Map<Integer, TransactionType> refreshAccount(Class<?> clazz, Account account) {
-        updateBalanseFromDatabase(clazz, account);
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(clazz);
+    public static Map<Integer, TransactionType> refreshAccount(UkelonnService provider, Class<?> clazz, Account account) {
+        updateBalanseFromDatabase(provider, clazz, account);
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, clazz);
         return transactionTypes;
     }
 
-    public static Account getAccountInfoFromDatabase(Class<?> clazz, String username) {
-        UkelonnDatabase database = connectionCheck(clazz);
+    public static Account getAccountInfoFromDatabase(UkelonnService provider, Class<?> clazz, String username) {
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         StringBuilder query = sql("select * from accounts_view where username='").append(username).append("'");
         ResultSet resultset = database.query(query.toString());
         if (resultset != null) {
@@ -137,15 +137,15 @@ public class CommonDatabaseMethods {
                     return newaccount;
                 }
             } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, "Error getting a single account from the database", e);
+                logError(provider, CommonDatabaseMethods.class, "Error getting a single account from the database", e);
             }
         }
 
         return new Account(0, 0, username, "Ikke innlogget", null, 0);
     }
 
-    public static AdminUser getAdminUserFromDatabase(Class<?> clazz, String username) {
-        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz);
+    public static AdminUser getAdminUserFromDatabase(UkelonnService provider, Class<?> clazz, String username) {
+        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(provider, clazz);
         StringBuilder query = sql("select * from administrators_view where username='").append(username).append("'");
         ResultSet resultset = database.query(query.toString());
         if (resultset != null) {
@@ -155,16 +155,16 @@ public class CommonDatabaseMethods {
                     return adminUser;
                 }
             } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, "Error getting administrator user info from the database", e);
+                logError(provider, CommonDatabaseMethods.class, "Error getting administrator user info from the database", e);
             }
         }
 
         return new AdminUser(username, 0, 0, "Ikke innlogget", null);
     }
 
-    public static List<Account> getAccounts(Class<?> clazz) {
+    public static List<Account> getAccounts(UkelonnService provider, Class<?> clazz) {
         ArrayList<Account> accounts = new ArrayList<Account>();
-        UkelonnDatabase connection = connectionCheck(clazz);
+        UkelonnDatabase connection = connectionCheck(provider, clazz);
         ResultSet results = connection.query("select * from accounts_view");
         if (results != null) {
             try {
@@ -174,15 +174,15 @@ public class CommonDatabaseMethods {
                 }
             } catch (SQLException e) {
                 // Log and continue
-                logError(CommonDatabaseMethods.class, "Error when getting all accounts from the database", e);
+                logError(provider, CommonDatabaseMethods.class, "Error when getting all accounts from the database", e);
             }
         }
 
         return accounts;
     }
 
-    public static List<Transaction> getPaymentsFromAccount(Account account, Class<?> clazz) {
-        List<Transaction> payments = getTransactionsFromAccount(account, clazz, "/sql/query/payments_last_n.sql", "payments");
+    public static List<Transaction> getPaymentsFromAccount(UkelonnService provider, Account account, Class<?> clazz) {
+        List<Transaction> payments = getTransactionsFromAccount(provider, account, clazz, "/sql/query/payments_last_n.sql", "payments");
         makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
@@ -194,19 +194,21 @@ public class CommonDatabaseMethods {
         }
     }
 
-    public static List<Transaction> getJobsFromAccount(Account account, Class<?> clazz) {
-        return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last_n.sql", "job");
+    public static List<Transaction> getJobsFromAccount(UkelonnService provider, Account account, Class<?> clazz) {
+        return getTransactionsFromAccount(provider, account, clazz, "/sql/query/jobs_last_n.sql", "job");
     }
 
-    private static List<Transaction> getTransactionsFromAccount(Account account,
-                                                                Class<?> clazz,
-                                                                String sqlTemplate,
-                                                                String transactionType)
+    private static List<Transaction> getTransactionsFromAccount(
+        UkelonnService provider,
+        Account account,
+        Class<?> clazz,
+        String sqlTemplate,
+        String transactionType)
     {
         List<Transaction> transactions = new ArrayList<Transaction>();
         if (null != account) {
-            UkelonnDatabase database = connectionCheck(clazz);
-            String sql = String.format(getResourceAsString(sqlTemplate), account.getAccountId(), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
+            UkelonnDatabase database = connectionCheck(provider, clazz);
+            String sql = String.format(getResourceAsString(provider, sqlTemplate), account.getAccountId(), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
             ResultSet resultSet = database.query(sql.toString());
             if (resultSet != null) {
                 try {
@@ -214,7 +216,7 @@ public class CommonDatabaseMethods {
                         transactions.add(mapTransaction(resultSet));
                     }
                 } catch (SQLException e) {
-                    logError(CommonDatabaseMethods.class, "Error getting "+transactionType+"s from the database", e);
+                    logError(provider, CommonDatabaseMethods.class, "Error getting "+transactionType+"s from the database", e);
                 }
             }
         }
@@ -242,127 +244,128 @@ public class CommonDatabaseMethods {
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
         Transaction transaction =
             new Transaction(
-                            resultset.getInt("transaction_id"),
-                            mapTransactionType(resultset),
-                            resultset.getDate("transaction_time"),
-                            resultset.getDouble("transaction_amount")
+                resultset.getInt("transaction_id"),
+                mapTransactionType(resultset),
+                resultset.getDate("transaction_time"),
+                resultset.getDouble("transaction_amount")
                             );
         return transaction;
     }
 
     public static Account MapAccount(ResultSet results) throws SQLException {
         return new Account(
-                           results.getInt("account_id"),
-                           results.getInt("user_id"),
-                           results.getString("username"),
-                           results.getString("first_name"),
-                           results.getString("last_name"),
-                           results.getDouble("balance")
+            results.getInt("account_id"),
+            results.getInt("user_id"),
+            results.getString("username"),
+            results.getString("first_name"),
+            results.getString("last_name"),
+            results.getDouble("balance")
                            );
     }
 
-    public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
+    public static Map<Integer, TransactionType> registerNewJobInDatabase(UkelonnService provider, Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
         StringBuilder query = sql("insert into transactions (account_id,transaction_type_id,transaction_amount) values (").
             append(account.getAccountId()).append(",").
             append(newJobTypeId).append(",").
             append(newJobWages).append(")");
 
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(query.toString());
 
         // Update the list of jobs and the updated balance from the DB
-        Map<Integer, TransactionType> transactionTypes = refreshAccount(clazz, account);
+        Map<Integer, TransactionType> transactionTypes = refreshAccount(provider, clazz, account);
         return transactionTypes;
     }
 
-    public static void addJobTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
+    public static void addJobTypeToDatabase(UkelonnService provider, Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
         String sql = String.format(
-                                   Locale.US, // Format the double correctly for SQL
-                                   getResourceAsString("/sql/query/insert_new_job_type.sql"),
-                                   newPaymentTypeName,
-                                   newPaymentTypeAmount
+            Locale.US, // Format the double correctly for SQL
+            getResourceAsString(provider, "/sql/query/insert_new_job_type.sql"),
+            newPaymentTypeName,
+            newPaymentTypeAmount
                                    );
 
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(sql);
     }
 
-    public static void updateTransactionTypeInDatabase(Class<?> clazz, TransactionType modifiedJobType) {
+    public static void updateTransactionTypeInDatabase(UkelonnService provider, Class<?> clazz, TransactionType modifiedJobType) {
         String sql = String.format(
-                                   Locale.US, // Format the double correctly for SQL
-                                   getResourceAsString("/sql/query/update_transaction_type.sql"),
-                                   modifiedJobType.getTransactionTypeName(),
-                                   modifiedJobType.getTransactionAmount(),
-                                   modifiedJobType.isTransactionIsWork() ? "true" : "false",
-                                   modifiedJobType.isTransactionIsWagePayment() ? "true" : "false",
-                                   modifiedJobType.getId()
+            Locale.US, // Format the double correctly for SQL
+            getResourceAsString(provider, "/sql/query/update_transaction_type.sql"),
+            modifiedJobType.getTransactionTypeName(),
+            modifiedJobType.getTransactionAmount(),
+            modifiedJobType.isTransactionIsWork() ? "true" : "false",
+            modifiedJobType.isTransactionIsWagePayment() ? "true" : "false",
+            modifiedJobType.getId()
                                    );
 
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(sql);
     }
 
-    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
+    public static void addPaymentTypeToDatabase(UkelonnService provider, Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
         String sql = String.format(
-                                   Locale.US, // Format the double correctly for SQL
-                                   getResourceAsString("/sql/query/insert_new_payment_type.sql"),
-                                   newPaymentTypeName,
-                                   newPaymentTypeAmount
+            Locale.US, // Format the double correctly for SQL
+            getResourceAsString(provider, "/sql/query/insert_new_payment_type.sql"),
+            newPaymentTypeName,
+            newPaymentTypeAmount
                                    );
 
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(sql);
     }
 
     public static void addUserToDatabase(
-                                         Class<?> clazz,
-                                         String newUserUsername,
-                                         String newUserPassword,
-                                         String newUserEmail,
-                                         String newUserFirstname,
-                                         String newUserLastname
+        UkelonnService provider,
+        Class<?> clazz,
+        String newUserUsername,
+        String newUserPassword,
+        String newUserEmail,
+        String newUserFirstname,
+        String newUserLastname
                                          )
     {
       	String salt = getNewSalt();
         String hashedPassword = hashPassword(newUserPassword, salt);
 
         String insertUserSql = String.format(
-                                             getResourceAsString("/sql/query/insert_new_user.sql"),
-                                             newUserUsername,
-                                             hashedPassword,
-                                             salt,
-                                             newUserEmail,
-                                             newUserFirstname,
-                                             newUserLastname
+            getResourceAsString(provider, "/sql/query/insert_new_user.sql"),
+            newUserUsername,
+            hashedPassword,
+            salt,
+            newUserEmail,
+            newUserFirstname,
+            newUserLastname
                                              );
 
         String findUserIdFromUsernameSql = String.format(
-                                                         getResourceAsString("/sql/query/find_user_id_from_username.sql"),
-                                                         newUserUsername
+            getResourceAsString(provider, "/sql/query/find_user_id_from_username.sql"),
+            newUserUsername
                                                          );
 
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(insertUserSql);
         ResultSet userIdResultSet = database.query(findUserIdFromUsernameSql);
         try {
             if (userIdResultSet.next()) {
                 int userId = userIdResultSet.getInt("user_id");
                 String insertAccountSql = String.format(
-                                                        getResourceAsString("/sql/query/insert_new_account.sql"),
-                                                        userId
+                    getResourceAsString(provider, "/sql/query/insert_new_account.sql"),
+                    userId
                                                         );
                 database.update(insertAccountSql);
-                addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, userId);
+                addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(provider, database, userId);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static List<User> getUsers(Class<?> clazz) {
+    public static List<User> getUsers(UkelonnService provider, Class<?> clazz) {
         ArrayList<User> users = new ArrayList<User>();
         String sql = "select * from users order by user_id";
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         ResultSet resultSet = database.query(sql);
         try {
             while (resultSet.next()) {
@@ -376,31 +379,31 @@ public class CommonDatabaseMethods {
         return users;
     }
 
-    public static int changePasswordForUser(String username, String password, Class<?> clazz) {
+    public static int changePasswordForUser(UkelonnService provider, String username, String password, Class<?> clazz) {
       	String salt = getNewSalt();
         String hashedPassword = hashPassword(password, salt);
         StringBuilder update = sql("update users set password='").append(hashedPassword).append("', salt='").append(salt).append("' where username='").append(username).append("'");
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         return database.update(update.toString());
     }
 
-    public static int updateUserInDatabase(Class<?> classForLogging, User userToUpdate) {
+    public static int updateUserInDatabase(UkelonnService provider, Class<?> classForLogging, User userToUpdate) {
         String updateUserSql = String.format(
-                                             getResourceAsString("/sql/query/update_user.sql"),
-                                             userToUpdate.getUsername(),
-                                             userToUpdate.getEmail(),
-                                             userToUpdate.getFirstname(),
-                                             userToUpdate.getLastname(),
-                                             userToUpdate.getUserId()
+            getResourceAsString(provider, "/sql/query/update_user.sql"),
+            userToUpdate.getUsername(),
+            userToUpdate.getEmail(),
+            userToUpdate.getFirstname(),
+            userToUpdate.getLastname(),
+            userToUpdate.getUserId()
                                              );
 
-        UkelonnDatabase database = connectionCheck(classForLogging);
+        UkelonnDatabase database = connectionCheck(provider, classForLogging);
         return database.update(updateUserSql.toString());
     }
 
-    public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
+    public static void deleteTransactions(UkelonnService provider, Class<?> clazz, List<Transaction> transactions) {
     	StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
-        UkelonnDatabase database = connectionCheck(clazz);
+        UkelonnDatabase database = connectionCheck(provider, clazz);
         database.update(deleteQuery.toString());
     }
 
@@ -440,13 +443,14 @@ public class CommonDatabaseMethods {
      * Because of the sum() column of accounts_view, accounts without transactions
      * won't appear in the accounts list, so all accounts are created with a
      * payment of 0 kroner.
+     * @param provider an object holding references to the database and log OSGi services
      * @param database The {@link UkelonnDatabase} to register the payment in
      * @param userId Used as the key to do the update to the account
      */
-    private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
+    private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnService provider, UkelonnDatabase database, int userId) {
         String sql = String.format(
-                                   getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
-                                   userId
+            getResourceAsString(provider, "/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
+            userId
                                    );
 
         database.update(sql);
@@ -477,16 +481,16 @@ public class CommonDatabaseMethods {
     private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
         AdminUser adminUser;
         adminUser = new AdminUser(
-                                  resultset.getString("username"),
-                                  resultset.getInt("user_id"),
-                                  resultset.getInt("administrator_id"),
-                                  resultset.getString("first_name"),
-                                  resultset.getString("last_name")
+            resultset.getString("username"),
+            resultset.getInt("user_id"),
+            resultset.getInt("administrator_id"),
+            resultset.getString("first_name"),
+            resultset.getString("last_name")
                                   );
         return adminUser;
     }
 
-    private static String getResourceAsString(String resourceName) {
+    private static String getResourceAsString(UkelonnService provider, String resourceName) {
         ByteArrayOutputStream resource = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;
@@ -498,7 +502,7 @@ public class CommonDatabaseMethods {
 
             return resource.toString("UTF-8");
         } catch (Exception e) {
-            logError(CommonDatabaseMethods.class, "Error getting resource \"" + resource + "\" from the classpath", e);
+            logError(provider, CommonDatabaseMethods.class, "Error getting resource \"" + resource + "\" from the classpath", e);
         }
 
         return null;

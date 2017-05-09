@@ -14,8 +14,6 @@ import org.osgi.service.log.LogService;
  */
 public interface UkelonnService {
 
-    String getMessage();
-
     UkelonnDatabase getDatabase();
 
     LogService getLogservice();
