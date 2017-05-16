@@ -7,7 +7,7 @@
   <version>1.0.0-SNAPSHOT</version>
  </parent>
 
- <artifactId>ukelonn.bundle.test.db</artifactId>
+ <artifactId>ukelonn.bundle.db.test</artifactId>
 
  <name>Ukelonn webapp derby test database OSGi bundle</name>
 
@@ -82,7 +82,7 @@
       <supportedProjectType>war</supportedProjectType>
      </supportedProjectTypes>
      <instructions>
-      <Bundle-SymbolicName>no.priv.bang.ukelonn.test.db</Bundle-SymbolicName>
+      <Bundle-SymbolicName>no.priv.bang.ukelonn.db.test</Bundle-SymbolicName>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Bundle-Version>${project.version}</Bundle-Version>
       <Export-Package>!*</Export-Package>

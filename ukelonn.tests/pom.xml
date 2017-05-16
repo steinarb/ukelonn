@@ -85,7 +85,7 @@
   </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
-   <artifactId>ukelonn.bundle.test.db</artifactId>
+   <artifactId>ukelonn.bundle.db.test</artifactId>
    <version>${project.version}</version>
    <scope>test</scope>
   </dependency>

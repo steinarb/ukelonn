@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.postgresql.db;
+package no.priv.bang.ukelonn.bundle.db.postgresql;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -14,7 +14,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.postgresql.osgi.PGDataSourceFactory;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.bundle.postgresql.db.mocks.MockLogService;
+import no.priv.bang.ukelonn.bundle.db.postgresql.mocks.MockLogService;
 
 public class PGUkelonnDatabaseProviderTest {
 

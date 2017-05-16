@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.test.db.mocks;
+package no.priv.bang.ukelonn.bundle.db.test.mocks;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;

@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.postgresql.db.mocks;
+package no.priv.bang.ukelonn.bundle.db.postgresql.mocks;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;

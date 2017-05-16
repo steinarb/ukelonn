@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.postgresql.db;
+package no.priv.bang.ukelonn.bundle.db.postgresql;
 
 import java.sql.ResultSet;
 import java.sql.Statement;

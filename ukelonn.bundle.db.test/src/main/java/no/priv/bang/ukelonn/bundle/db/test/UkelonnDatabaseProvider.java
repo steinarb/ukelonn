@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.test.db;
+package no.priv.bang.ukelonn.bundle.db.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

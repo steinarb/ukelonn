@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.test.db;
+package no.priv.bang.ukelonn.bundle.db.test;
 
 import static org.junit.Assert.*;
 
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.bundle.test.db.mocks.MockLogService;
+import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
 
