@@ -15,6 +15,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
 public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
     private LogService logService;
@@ -32,6 +33,8 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     	if (this.dataSourceFactory != null) {
             createConnection();
             boolean createdSchema = createSchema();
+            UkelonnLiquibase liquibase = new UkelonnLiquibase();
+            liquibase.readSchema(connect);
             if (createdSchema) {
                 insertMockData();
             }

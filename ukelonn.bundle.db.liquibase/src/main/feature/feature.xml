@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.db.liquibase">
+ <feature name="ukelonn-db-liquibase">
+  <bundle start-level="80">mvn:org.liquibase/liquibase-core/${liquibase.version}</bundle>
+ </feature>
+</features>
