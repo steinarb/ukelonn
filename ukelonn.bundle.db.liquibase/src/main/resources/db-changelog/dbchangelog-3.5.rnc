@@ -3,6 +3,7 @@ namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace ns_1 = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace rng = "http://relaxng.org/ns/structure/1.0"
 namespace xsd = "http://www.w3.org/2001/XMLSchema"
+namespace xsi = "http://www.w3.org/2001/XMLSchema-instance"
 
 propertyExpression = xsd:string { pattern = "$\{[\w\.]+\}" }
 [
@@ -106,15 +107,13 @@ databaseChangeLog =
          attribute labels { xsd:string }?,
          attribute applyToRollback { booleanExp }?
        }*,
-       changeSetAttributes,
-       attribute * { text }
+       changeSetAttributes
      }*
      | # include
        element include {
          attribute file { xsd:string },
          attribute relativeToChangelogFile { booleanExp }?,
-         attribute context { xsd:string }?,
-         attribute * { text }
+         attribute context { xsd:string }?
        }*
      | element includeAll {
          attribute path { xsd:string },
@@ -123,11 +122,9 @@ databaseChangeLog =
          attribute relativeToChangelogFile { booleanExp }?,
          attribute resourceComparator { xsd:string }?,
          attribute filter { xsd:string }?,
-         attribute context { xsd:string }?,
-         attribute * { text }
+         attribute context { xsd:string }?
        }*)*,
-    changeLogAttributes,
-    attribute * { text }
+    changeLogAttributes
   }
 modifySqlChildren =
   element replace {
@@ -159,7 +156,8 @@ changeLogAttributes =
   attribute logicalFilePath { xsd:string }?,
   attribute context { xsd:string }?,
   [ ns_1:defaultValue = "LEGACY" ]
-  attribute objectQuotingStrategy { objectQuotingStrategy }?
+  attribute objectQuotingStrategy { objectQuotingStrategy }?,
+  attribute xsi:schemaLocation { xsd:string }?
 # Attributes for changeSet
 changeSetAttributes =
   attribute id { xsd:string },
@@ -195,7 +193,7 @@ constraintsAttributes =
   attribute deferrable { booleanExp }?,
   attribute initiallyDeferred { booleanExp }?,
   attribute checkConstraint { xsd:string }?
-column =
+columnAttributes =
   attribute name { xsd:string }?,
   attribute computed { booleanExp }?,
   attribute type { xsd:string }?,
@@ -236,14 +234,12 @@ column =
       ]
     ]
     xsd:string
-  }?,
-  attribute * { text }
+  }?
 columnType =
   constraints?,
   element * { text }*,
-  column,
-  attribute * { text }
-param =
+  column
+paramAttributes =
   attribute name { xsd:string }?,
   attribute value { xsd:string }?,
   attribute valueNumeric { xsd:string }?,
@@ -305,7 +301,7 @@ renameSequenceAttributes =
   attribute oldSequenceName { xsd:string },
   attribute newSequenceName { xsd:string }
 indexName = attribute indexName { xsd:string }
-createIndex =
+createIndexAttributes =
   tableNameAttribute,
   indexName,
   attribute associatedWith { xsd:string }?,
@@ -639,12 +635,11 @@ constraints = element constraints { constraintsAttributes }
 start |= column
 column =
   element column {
-    constraints?,
-    column,
-    attribute * { text }
+    columnAttributes,
+    constraints?
   }
 start |= param
-param = element param { param }
+param = element param { paramAttributes, param }
 # Children for createTable
 start |= createTable
 createTable =
@@ -653,8 +648,7 @@ createTable =
      | element * { text }*)+,
     tableNameAttribute,
     attribute tablespace { xsd:string }?,
-    attribute remarks { xsd:string }?,
-    attribute * { text }
+    attribute remarks { xsd:string }?
   }
 # Children for createView
 start |= createView
@@ -760,8 +754,7 @@ sqlFile =
 start |= tagDatabase
 tagDatabase =
   element tagDatabase {
-    attribute tag { xsd:string },
-    attribute * { text }
+    attribute tag { xsd:string }
   }
 start |= stop
 stop = element stop { empty }
@@ -824,10 +817,8 @@ renameSequence = element renameSequence { renameSequenceAttributes }
 start |= createIndex
 createIndex =
   element createIndex {
-    (column+
-     | element * { text }*)+,
-    createIndex,
-    attribute * { text }
+    createIndexAttributes,
+    (column+ | element * { text }*)+
   }
 start |= dropIndex
 dropIndex =
@@ -843,8 +834,7 @@ customChange =
       attribute name { xsd:string },
       attribute value { xsd:string }?
     }*,
-    attribute class { xsd:string },
-    attribute * { text }
+    attribute class { xsd:string }
   }
 # Children for changeSet
 changeSetChildren =
