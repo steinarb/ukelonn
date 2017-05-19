@@ -9,6 +9,7 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.diff.compare.CompareControl;
 import liquibase.diff.output.DiffOutputControl;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 public class UkelonnLiquibase {
 
@@ -26,6 +27,18 @@ public class UkelonnLiquibase {
             command.setDiffOutputControl(diffOutputControl);
 
             command.execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean createSchema(PooledConnection connect) {
+        try {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor();
+            Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            liquibase.update("");
+            return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

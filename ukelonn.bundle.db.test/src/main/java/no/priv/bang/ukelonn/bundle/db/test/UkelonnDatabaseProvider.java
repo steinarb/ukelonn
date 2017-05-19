@@ -32,9 +32,8 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     	this.dataSourceFactory = dataSourceFactory;
     	if (this.dataSourceFactory != null) {
             createConnection();
-            boolean createdSchema = createSchema();
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
-            liquibase.readSchema(connect);
+            boolean createdSchema = liquibase.createSchema(connect);
             if (createdSchema) {
                 insertMockData();
             }
