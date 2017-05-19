@@ -1,3 +1,5 @@
+--liquibase formatted sql
+--changeset sb:example_transactions
 insert into transactions (account_id,transaction_type_id,transaction_time,transaction_amount) values (3,1,'2016-07-29 20:18:00', 45);
 insert into transactions (account_id,transaction_type_id,transaction_time,transaction_amount) values (3,2,'2016-07-29 20:18:00', 45);
 insert into transactions (account_id,transaction_type_id,transaction_time,transaction_amount) values (3,3,'2016-07-29 20:18:00', 35);

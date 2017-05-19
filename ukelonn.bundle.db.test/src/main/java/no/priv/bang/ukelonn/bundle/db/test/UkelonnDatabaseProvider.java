@@ -1,9 +1,9 @@
 package no.priv.bang.ukelonn.bundle.db.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -14,6 +14,16 @@ import javax.sql.PooledConnection;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
+import liquibase.Liquibase;
+import liquibase.changelog.ChangeLogHistoryServiceFactory;
+import liquibase.changelog.RanChangeSet;
+import liquibase.changelog.StandardChangeLogHistoryService;
+import liquibase.database.Database;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
@@ -33,9 +43,11 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     	if (this.dataSourceFactory != null) {
             createConnection();
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
-            boolean createdSchema = liquibase.createSchema(connect);
-            if (createdSchema) {
+            try {
+                liquibase.createSchema(connect);
                 insertMockData();
+            } catch (Exception e) {
+                logError("Failed to create derby test database schema", e);
             }
     	}
     }
@@ -51,42 +63,34 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         }
     }
 
+    /**
+     * Package private method to let the unit test determine if the Liquibase changesets have
+     * been run.
+     *
+     * @return A list of all changesets run by liqubase in the derby database
+     * @throws SQLException
+     * @throws DatabaseException
+     */
+    List<RanChangeSet> getChangeLogHistory() throws SQLException, DatabaseException {
+        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
+        StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
+        return logHistoryService.getRanChangeSets();
+    }
+
     public UkelonnDatabase get() {
         return this;
     }
 
-    public boolean createSchema() {
+    public void insertMockData() {
         try {
-            Statement createSchema = connect.getConnection().createStatement();
-            createSchema.execute(getResourceAsString("/sql/tables/users.sql"));
-            createSchema.execute(getResourceAsString("/sql/tables/accounts.sql"));
-            createSchema.execute(getResourceAsString("/sql/tables/transaction_types.sql"));
-            createSchema.execute(getResourceAsString("/sql/tables/transactions.sql"));
-            createSchema.execute(getResourceAsString("/sql/tables/administrators.sql"));
-            createSchema.execute(getResourceAsString("/sql/views/administrators_view.sql"));
-            createSchema.execute(getResourceAsString("/sql/views/accounts_view.sql"));
-            createSchema.execute(getResourceAsString("/sql/views/wage_payments_view.sql"));
-            createSchema.execute(getResourceAsString("/sql/views/work_done_view.sql"));
-            return true; // Successfully created tne schema
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor();
+            Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            liquibase.update("");
         } catch (Exception e) {
-            logError("Derby mock database failed to create schema", e);
-            return false;
+            logError("Failed to fill derby test database with data.", e);
         }
-    }
-
-    public int[] insertMockData() {
-        int[] insertedRowCounts = new int[0];
-        int[] insertedRows = insertRows("/sql/data/example_users.sql");
-        insertedRowCounts = concatenate(insertedRowCounts, insertedRows);
-        insertedRows = insertRows("/sql/data/example_accounts.sql");
-        insertedRowCounts = concatenate(insertedRowCounts, insertedRows);
-        insertedRows = insertRows("/sql/data/example_administrators.sql");
-        insertedRowCounts = concatenate(insertedRowCounts, insertedRows);
-        insertedRows = insertRows("/sql/data/example_transaction_types.sql");
-        insertedRowCounts = concatenate(insertedRowCounts, insertedRows);
-        insertedRows = insertRows("/sql/data/example_transactions.sql");
-        insertedRowCounts = concatenate(insertedRowCounts, insertedRows);
-        return insertedRowCounts;
     }
 
     @Override
@@ -122,51 +126,6 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         if (logService != null) {
             logService.log(LogService.LOG_ERROR, message, exception);
         }
-    }
-
-    private int[] insertRows(String resourceName) {
-        String sql = getResourceAsString(resourceName);
-        String[] insertStatements = sql.split(";\r?\n");
-        try {
-            Statement statement = connect.getConnection().createStatement();
-            statement.clearBatch();
-            for (String insertStatement : insertStatements) {
-                statement.addBatch(insertStatement);
-            }
-
-            int[] insertedRows = statement.executeBatch();
-            statement.clearBatch();
-            return insertedRows;
-        } catch (Exception e) {
-            logError("Derby mock database failed to create insert mock data", e);
-        }
-
-        return null;
-    }
-
-    private int[] concatenate(int[] array1, int[] array2) {
-        int[] retval = new int[array1.length + array2.length];
-        System.arraycopy(array1, 0, retval, 0, array1.length);
-        System.arraycopy(array2, 0, retval, array1.length, array2.length);
-        return retval;
-    }
-
-    private String getResourceAsString(String resourceName) {
-        ByteArrayOutputStream resource = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        InputStream resourceStream = getClass().getResourceAsStream(resourceName);
-        try {
-            while ((length = resourceStream.read(buffer)) != -1) {
-                resource.write(buffer, 0, length);
-            }
-
-            return resource.toString("UTF-8");
-        } catch (Exception e) {
-            logError("Derby mock database read resource \"" + resourceName + "\"", e);
-        }
-
-        return null;
     }
 
 }

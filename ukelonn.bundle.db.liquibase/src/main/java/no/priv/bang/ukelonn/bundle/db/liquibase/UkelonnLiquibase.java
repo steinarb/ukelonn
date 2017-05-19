@@ -1,5 +1,6 @@
 package no.priv.bang.ukelonn.bundle.db.liquibase;
 
+import java.sql.SQLException;
 import javax.sql.PooledConnection;
 
 import liquibase.Liquibase;
@@ -9,6 +10,7 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.diff.compare.CompareControl;
 import liquibase.diff.output.DiffOutputControl;
+import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
 public class UkelonnLiquibase {
@@ -32,16 +34,11 @@ public class UkelonnLiquibase {
         }
     }
 
-    public boolean createSchema(PooledConnection connect) {
-        try {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor();
-            Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-            liquibase.update("");
-            return true;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void createSchema(PooledConnection connect) throws SQLException, LiquibaseException {
+        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor();
+        Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+        liquibase.update("");
     }
 
 }

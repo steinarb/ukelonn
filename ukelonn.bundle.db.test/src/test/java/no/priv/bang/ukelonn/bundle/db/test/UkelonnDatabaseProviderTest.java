@@ -2,12 +2,12 @@ package no.priv.bang.ukelonn.bundle.db.test;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.util.List;
 
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -22,6 +22,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 
+import liquibase.changelog.RanChangeSet;
+import liquibase.exception.DatabaseException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
 
@@ -46,38 +48,7 @@ public class UkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testCreateDatabase() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        setPrivateField(provider, "dataSourceFactory", dataSourceFactory); // Avoid side effects of the public setter
-        provider.createConnection();
-        boolean createdSchema = provider.createSchema();
-        assertTrue(createdSchema);
-
-        int[] numberOfRowsmodifiedAfterInsertOfMockData = provider.insertMockData();
-        assertEquals(62, numberOfRowsmodifiedAfterInsertOfMockData.length);
-
-        // Test the database by making a query using a view
-        UkelonnDatabase database = provider.get();
-        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
-        assertNotNull(onAccount);
-        while (onAccount.next()) {
-            int account_id = onAccount.getInt("account_id");
-            int user_id = onAccount.getInt("user_id");
-            String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
-            assertEquals(3, account_id);
-            assertEquals(3, user_id);
-            assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
-        }
-    }
-
-    @Test
-    public void testThatActivatorCreatesDatabase() throws SQLException {
+    public void testThatActivatorCreatesDatabase() throws SQLException, DatabaseException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
@@ -99,6 +70,10 @@ public class UkelonnDatabaseProviderTest {
             assertEquals("Jane", first_name);
             assertEquals("Doe", last_name);
         }
+
+        // Verify that the schema changeset as well as all of the test data change sets has been run
+        List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
+        assertEquals(6, ranChangeSets.size());
     }
 
     @Test
@@ -168,12 +143,6 @@ public class UkelonnDatabaseProviderTest {
         ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
         return authenticationInfo;
-    }
-
-    private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field field = object.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(object, value);
     }
 
 }
