@@ -3,7 +3,7 @@
 
  <changeSet author="sb@dod.no" id="ukelonn-1.0.0">
 
-  <createTable catalogName="ukelonn" schemaName="ukelonn" tableName="users">
+  <createTable tableName="users">
    <column autoIncrement="true" name="user_id" type="INTEGER">
     <constraints primaryKey="true" primaryKeyName="SQL170518210719000"/>
    </column>
@@ -27,7 +27,7 @@
    </column>
   </createTable>
 
-  <createTable catalogName="ukelonn" schemaName="ukelonn" tableName="transaction_types">
+  <createTable tableName="transaction_types">
    <column autoIncrement="true" name="transaction_type_id" type="INTEGER">
     <constraints primaryKey="true" primaryKeyName="SQL170518210719080"/>
    </column>
@@ -43,7 +43,7 @@
    </column>
   </createTable>
 
-  <createTable catalogName="ukelonn" schemaName="ukelonn" tableName="administrators">
+  <createTable tableName="administrators">
    <column autoIncrement="true" name="administrator_id" type="INTEGER">
     <constraints primaryKey="true" primaryKeyName="SQL170518210719121"/>
    </column>
@@ -52,26 +52,26 @@
    </column>
   </createTable>
 
-  <createIndex catalogName="ukelonn" indexName="SQL170518210719120" schemaName="ukelonn" tableName="administrators">
+  <createIndex indexName="SQL170518210719120" tableName="administrators">
    <column name="user_id"/>
   </createIndex>
 
   <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="app" baseTableName="administrators" baseTableSchemaName="app" constraintName="SQL170518210719120" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableCatalogName="app" referencedTableName="users"/>
 
-  <createTable catalogName="ukelonn" schemaName="ukelonn" tableName="accounts">
+  <createTable tableName="accounts">
    <column autoIncrement="true" name="account_id" type="INTEGER">
     <constraints primaryKey="true" primaryKeyName="SQL170518210719041"/>
    </column>
    <column name="user_id" type="INTEGER"/>
   </createTable>
 
-  <createIndex catalogName="ukelonn" indexName="SQL170518210719040" schemaName="ukelonn" tableName="accounts">
+  <createIndex indexName="SQL170518210719040" tableName="accounts">
    <column name="user_id"/>
   </createIndex>
 
   <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="app" baseTableName="accounts" baseTableSchemaName="app" constraintName="SQL170518210719040" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableCatalogName="app" referencedTableName="users"/>
 
-  <createTable catalogName="ukelonn" schemaName="ukelonn" tableName="transactions">
+  <createTable tableName="transactions">
    <column autoIncrement="true" name="transaction_id" type="INTEGER">
     <constraints primaryKey="true" primaryKeyName="SQL170518210719092"/>
    </column>
@@ -89,11 +89,11 @@
    </column>
   </createTable>
 
-  <createIndex catalogName="ukelonn" indexName="SQL170518210719090" schemaName="ukelonn" tableName="transactions">
+  <createIndex indexName="SQL170518210719090" tableName="transactions">
    <column name="account_id"/>
   </createIndex>
 
-  <createIndex catalogName="ukelonn" indexName="SQL170518210719091" schemaName="ukelonn" tableName="transactions">
+  <createIndex indexName="SQL170518210719091" tableName="transactions">
    <column name="transaction_type_id"/>
   </createIndex>
 
@@ -101,25 +101,25 @@
 
   <addForeignKeyConstraint baseColumnNames="transaction_type_id" baseTableCatalogName="app" baseTableName="transactions" baseTableSchemaName="app" constraintName="SQL170518210719091" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="transaction_type_id" referencedTableCatalogName="app" referencedTableName="transaction_types"/>
 
-  <createView catalogName="ukelonn" fullDefinition="false" schemaName="ukelonn" viewName="accounts_view">select accounts.account_id, users.user_id, username, first_name, last_name, SUM(transaction_amount) as balance&#13;
+  <createView fullDefinition="false" viewName="accounts_view">select accounts.account_id, users.user_id, username, first_name, last_name, SUM(transaction_amount) as balance&#13;
   from users&#13;
   join accounts on accounts.user_id=users.user_id&#13;
   join transactions on transactions.account_id=accounts.account_id&#13;
   group by accounts.account_id, users.user_id, username, first_name, last_name</createView>
 
-  <createView catalogName="ukelonn" fullDefinition="false" schemaName="ukelonn" viewName="administrators_view">select administrators.administrator_id, users.user_id, username, first_name, last_name&#13;
+  <createView fullDefinition="false" viewName="administrators_view">select administrators.administrator_id, users.user_id, username, first_name, last_name&#13;
   from users&#13;
   join administrators on administrators.user_id=users.user_id&#13;
   group by administrators.administrator_id, users.user_id, username, first_name, last_name</createView>
 
-  <createView catalogName="ukelonn" fullDefinition="false" schemaName="ukelonn" viewName="wage_payments_view">select accounts.account_id, users.user_id, username, transaction_time, transaction_type_name, ABS(transactions.transaction_amount) as transaction_amount&#13;
+  <createView fullDefinition="false" viewName="wage_payments_view">select accounts.account_id, users.user_id, username, transaction_time, transaction_type_name, ABS(transactions.transaction_amount) as transaction_amount&#13;
   from users&#13;
   join accounts on accounts.user_id=users.user_id&#13;
   join transactions on transactions.account_id=accounts.account_id&#13;
   join transaction_types on transaction_types.transaction_type_id=transactions.transaction_type_id and transaction_is_wage_payment&#13;
   order by transaction_time desc</createView>
 
-  <createView catalogName="ukelonn" fullDefinition="false" schemaName="ukelonn" viewName="work_done_view">select accounts.account_id, users.user_id, username, transaction_time, transaction_type_name, transactions.transaction_amount&#13;
+  <createView fullDefinition="false" viewName="work_done_view">select accounts.account_id, users.user_id, username, transaction_time, transaction_type_name, transactions.transaction_amount&#13;
   from users&#13;
   join accounts on accounts.user_id=users.user_id&#13;
   join transactions on transactions.account_id=accounts.account_id&#13;
