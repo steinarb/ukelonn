@@ -28,6 +28,12 @@
   </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.bundle.db.liquibase</artifactId>
+   <version>${project.version}</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.bundle.db.test</artifactId>
    <version>${project.version}</version>
    <scope>test</scope>
@@ -75,6 +81,11 @@
   <dependency>
    <groupId>org.ops4j.pax.jdbc</groupId>
    <artifactId>pax-jdbc-derby</artifactId>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.liquibase</groupId>
+   <artifactId>liquibase-core</artifactId>
    <scope>test</scope>
   </dependency>
   <dependency>
