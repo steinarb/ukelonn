@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -23,7 +22,6 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
-import org.junit.After;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -34,15 +32,6 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
-
-    @After
-    public void tearDown() {
-        try {
-            DriverManager.getConnection("jdbc:derby:memory:ukelonn;drop=true");
-        } catch (SQLException e) {
-            // Just eat any exceptions quietly. The database will be cleaned up
-        }
-    }
 
     @Test
     public void testGetName() {
