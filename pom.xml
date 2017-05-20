@@ -15,6 +15,7 @@
   <maven.bundle.plugin.version>2.5.3</maven.bundle.plugin.version>
   <karaf.version>4.1.1</karaf.version>
   <liquibase.version>3.5.3</liquibase.version>
+  <snakeyaml.version>1.17</snakeyaml.version>
   <derby.version>10.11.1.1</derby.version>
   <postgresql.version>9.4.1211.jre7</postgresql.version>
   <dependency.osgi.version>6.0.0</dependency.osgi.version>

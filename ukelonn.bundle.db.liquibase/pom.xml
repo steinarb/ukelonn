@@ -39,7 +39,7 @@
       <supportedProjectType>war</supportedProjectType>
      </supportedProjectTypes>
      <instructions>
-      <Bundle-SymbolicName>no.priv.bang.ukelonn.test.db</Bundle-SymbolicName>
+      <Bundle-SymbolicName>no.priv.bang.ukelonn.db.liquibase</Bundle-SymbolicName>
       <Bundle-Version>${project.version}</Bundle-Version>
       <Export-Package>no.priv.bang.ukelonn.bundle.db.liquibase</Export-Package>
       <_removeheaders>
