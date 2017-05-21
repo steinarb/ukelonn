@@ -1,7 +1,6 @@
 package no.priv.bang.ukelonn.bundle.db.test;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
@@ -22,7 +21,6 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
@@ -68,14 +66,16 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
      * been run.
      *
      * @return A list of all changesets run by liqubase in the derby database
-     * @throws SQLException
-     * @throws DatabaseException
      */
-    List<RanChangeSet> getChangeLogHistory() throws SQLException, DatabaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
-        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
-        StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
-        return logHistoryService.getRanChangeSets();
+    List<RanChangeSet> getChangeLogHistory() {
+    	try {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
+            StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
+            return logHistoryService.getRanChangeSets();
+    	} catch (Exception e) {
+            throw new RuntimeException(e);
+    	}
     }
 
     public UkelonnDatabase get() {
