@@ -36,7 +36,7 @@ public class UkelonnLiquibase {
 
     public void createSchema(PooledConnection connect) throws SQLException, LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor();
+        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
         Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
         liquibase.update("");
     }

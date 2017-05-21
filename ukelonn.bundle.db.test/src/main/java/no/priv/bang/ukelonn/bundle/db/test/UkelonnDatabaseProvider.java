@@ -85,7 +85,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     public boolean insertMockData() {
         try {
             DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor();
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
             return true;
