@@ -13,6 +13,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
 public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
     private LogService logService;
@@ -29,6 +30,12 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
     	this.dataSourceFactory = dataSourceFactory;
     	if (dataSourceFactory != null) {
             createConnection();
+            UkelonnLiquibase liquibase = new UkelonnLiquibase();
+            try {
+                liquibase.createSchema(connect);
+            } catch (Exception e) {
+                logError("Failed to create derby test database schema", e);
+            }
     	}
     }
 

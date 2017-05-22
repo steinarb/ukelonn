@@ -20,7 +20,20 @@
   </dependency>
   <dependency>
    <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.bundle.db.liquibase</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
    <artifactId>ukelonn.api</artifactId>
+   <version>${project.version}</version>
+   <type>xml</type>
+   <classifier>features</classifier>
+  </dependency>
+  <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.bundle.db.liquibase</artifactId>
    <version>${project.version}</version>
    <type>xml</type>
    <classifier>features</classifier>
@@ -56,6 +69,10 @@
   <dependency>
    <groupId>org.ops4j.pax.jdbc</groupId>
    <artifactId>pax-jdbc</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.liquibase</groupId>
+   <artifactId>liquibase-core</artifactId>
   </dependency>
   <dependency>
    <groupId>org.postgresql</groupId>
