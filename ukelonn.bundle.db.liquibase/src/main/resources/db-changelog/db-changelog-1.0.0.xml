@@ -56,7 +56,7 @@
    <column name="user_id"/>
   </createIndex>
 
-  <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="app" baseTableName="administrators" baseTableSchemaName="app" constraintName="SQL170518210719120" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableCatalogName="app" referencedTableName="users"/>
+  <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="administrators" constraintName="SQL170518210719120" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="users"/>
 
   <createTable tableName="accounts">
    <column autoIncrement="true" name="account_id" type="INTEGER">
@@ -69,7 +69,7 @@
    <column name="user_id"/>
   </createIndex>
 
-  <addForeignKeyConstraint baseColumnNames="user_id" baseTableCatalogName="app" baseTableName="accounts" baseTableSchemaName="app" constraintName="SQL170518210719040" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableCatalogName="app" referencedTableName="users"/>
+  <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="accounts" constraintName="SQL170518210719040" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="users"/>
 
   <createTable tableName="transactions">
    <column autoIncrement="true" name="transaction_id" type="INTEGER">
@@ -97,9 +97,9 @@
    <column name="transaction_type_id"/>
   </createIndex>
 
-  <addForeignKeyConstraint baseColumnNames="account_id" baseTableCatalogName="app" baseTableName="transactions" baseTableSchemaName="app" constraintName="SQL170518210719090" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="account_id" referencedTableCatalogName="app" referencedTableName="accounts"/>
+  <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="transactions" constraintName="SQL170518210719090" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="account_id" referencedTableName="accounts"/>
 
-  <addForeignKeyConstraint baseColumnNames="transaction_type_id" baseTableCatalogName="app" baseTableName="transactions" baseTableSchemaName="app" constraintName="SQL170518210719091" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="transaction_type_id" referencedTableCatalogName="app" referencedTableName="transaction_types"/>
+  <addForeignKeyConstraint baseColumnNames="transaction_type_id" baseTableName="transactions" constraintName="SQL170518210719091" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="transaction_type_id" referencedTableName="transaction_types"/>
 
   <createView fullDefinition="false" viewName="accounts_view">select accounts.account_id, users.user_id, username, first_name, last_name, SUM(transaction_amount) as balance&#13;
   from users&#13;
