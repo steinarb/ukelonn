@@ -81,7 +81,7 @@
    <column name="transaction_type_id" type="INTEGER">
     <constraints nullable="false"/>
    </column>
-   <column defaultValue="current_timestamp" name="transaction_time" type="TIMESTAMP">
+   <column name="transaction_time" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
     <constraints nullable="false"/>
    </column>
    <column name="transaction_amount" type="DOUBLE">
