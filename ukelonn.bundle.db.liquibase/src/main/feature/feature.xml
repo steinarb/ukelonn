@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.db.liquibase">
  <feature name="liquibase-core">
-  <feature prerequisite="true">wrap</feature>
   <bundle start-level="80">mvn:org.yaml/snakeyaml/${snakeyaml.version}</bundle>
-  <bundle start-level="80">wrap:mvn:com.mattbertolini/liquibase-slf4j/${liquibase-slf4j.version}</bundle>
   <bundle start-level="80">mvn:org.liquibase/liquibase-core/${liquibase.version}</bundle>
  </feature>
  <feature name="ukelonn-db-liquibase">
