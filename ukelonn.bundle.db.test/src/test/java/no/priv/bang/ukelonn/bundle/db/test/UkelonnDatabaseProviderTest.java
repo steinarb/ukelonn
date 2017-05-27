@@ -24,11 +24,12 @@ import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import liquibase.changelog.RanChangeSet;
 import liquibase.exception.DatabaseException;
-import no.priv.bang.ukelonn.LiquibaseService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
@@ -50,7 +51,12 @@ public class UkelonnDatabaseProviderTest {
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
-        LiquibaseService liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        Bundle bundle = mock(Bundle.class);
+        BundleWiring wiring = mock(BundleWiring.class);
+        when(wiring.getClassLoader()).thenReturn(getClass().getClassLoader());
+        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(wiring);
+        liquibase.setBundle(bundle);
         provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
 
         // Test the database by making a query using a view
@@ -78,9 +84,14 @@ public class UkelonnDatabaseProviderTest {
     public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        Bundle bundle = mock(Bundle.class);
+        BundleWiring wiring = mock(BundleWiring.class);
+        when(wiring.getClassLoader()).thenReturn(getClass().getClassLoader());
+        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(wiring);
+        liquibase.setBundle(bundle);
+        provider.setLiquibase(liquibase);
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        LiquibaseService liquibase = new UkelonnLiquibase();
-        provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
 
         UkelonnDatabase database = provider.get();
@@ -106,8 +117,13 @@ public class UkelonnDatabaseProviderTest {
     @Test
     public void testInsert() throws SQLException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        LiquibaseService liquibase = new UkelonnLiquibase();
-        provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        Bundle bundle = mock(Bundle.class);
+        BundleWiring wiring = mock(BundleWiring.class);
+        when(wiring.getClassLoader()).thenReturn(getClass().getClassLoader());
+        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(wiring);
+        liquibase.setBundle(bundle);
+        provider.setLiquibase(liquibase);
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
