@@ -1,5 +1,6 @@
 package no.priv.bang.ukelonn.bundle.db.test;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
@@ -22,27 +23,38 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.ukelonn.LiquibaseService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
 public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
     private LogService logService;
     private PooledConnection connect = null;
     private DataSourceFactory dataSourceFactory;
+    private LiquibaseService liquibase;
 
     @Inject
     public void setLogService(LogService logService) {
     	this.logService = logService;
+    	initializeWhenAllOsgiServicesArePresent();
+    }
+
+    @Inject
+    public void setLiquibase(LiquibaseService liquibase) {
+        this.liquibase = liquibase;
+    	initializeWhenAllOsgiServicesArePresent();
     }
 
     @Inject
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
     	this.dataSourceFactory = dataSourceFactory;
-    	if (this.dataSourceFactory != null) {
-            createConnection();
-            UkelonnLiquibase liquibase = new UkelonnLiquibase();
+    	initializeWhenAllOsgiServicesArePresent();
+    }
+
+    private void initializeWhenAllOsgiServicesArePresent() {
+    	if (dataSourceFactory != null && liquibase != null && logService != null) {
+            Connection connection = createConnection();
             try {
-                liquibase.createSchema(connect);
+                liquibase.createSchema(connection);
                 insertMockData();
             } catch (Exception e) {
                 logError("Failed to create derby test database schema", e);
@@ -50,15 +62,18 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
     	}
     }
 
-    void createConnection() {
+    Connection createConnection() {
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         try {
             ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
             connect = dataSource.getPooledConnection();
+            return connect.getConnection();
         } catch (Exception e) {
             logError("Derby mock database failed to create connection", e);
         }
+
+        return null;
     }
 
     /**

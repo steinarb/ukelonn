@@ -12,8 +12,22 @@
 
  <dependencies>
   <dependency>
+   <groupId>no.priv.bang.ukelonn</groupId>
+   <artifactId>ukelonn.api</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
    <groupId>org.liquibase</groupId>
    <artifactId>liquibase-core</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.implementation</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>javax.inject</groupId>
+   <artifactId>javax.inject</artifactId>
   </dependency>
  </dependencies>
 
@@ -40,8 +54,10 @@
      </supportedProjectTypes>
      <instructions>
       <Bundle-SymbolicName>no.priv.bang.ukelonn.db.liquibase</Bundle-SymbolicName>
+      <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Bundle-Version>${project.version}</Bundle-Version>
-      <Export-Package>no.priv.bang.ukelonn.bundle.db.liquibase</Export-Package>
+      <Export-Package>!*</Export-Package>
+      <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
       <_removeheaders>
        Include-Resource,
        Private-Package,

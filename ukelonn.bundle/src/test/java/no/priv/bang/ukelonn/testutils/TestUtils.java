@@ -13,6 +13,8 @@ import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.LiquibaseService;
+import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.mocks.MockLogService;
@@ -45,6 +47,8 @@ public class TestUtils {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
         LogService logservice = new MockLogService();
+        LiquibaseService liquibase = new UkelonnLiquibase();
+        ukelonnDatabaseProvider.setLiquibase(liquibase);
         ukelonnDatabaseProvider.setLogService(logservice);
         WebContainer mockContainer = mock(WebContainer.class);
         try {
