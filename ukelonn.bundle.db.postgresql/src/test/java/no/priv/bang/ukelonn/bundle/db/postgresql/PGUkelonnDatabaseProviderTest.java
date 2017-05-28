@@ -3,6 +3,7 @@ package no.priv.bang.ukelonn.bundle.db.postgresql;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,9 +13,7 @@ import org.junit.Test;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.postgresql.osgi.PGDataSourceFactory;
 
-import no.priv.bang.ukelonn.LiquibaseService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.postgresql.mocks.MockLogService;
 
 public class PGUkelonnDatabaseProviderTest {
@@ -34,34 +33,31 @@ public class PGUkelonnDatabaseProviderTest {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection
+        setPrivateField(provider, "dataSourceFactory", dataSourceFactory); // Avoid side effects of the public setter
         provider.createConnection();
-        LiquibaseService liquibase = new UkelonnLiquibase();
-        provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
         ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
         assertNotNull("Expected returned account JDBC resultset not to be null", onAccount);
-        assertTrue(onAccount.next());
-        int account_id = onAccount.getInt("account_id");
-        int user_id = onAccount.getInt("user_id");
-        String username = onAccount.getString("username");
-        String first_name = onAccount.getString("first_name");
-        String last_name = onAccount.getString("last_name");
-        assertEquals(3, account_id);
-        assertEquals(3, user_id);
-        assertEquals("jad", username);
-        assertEquals("Jane", first_name);
-        assertEquals("Doe", last_name);
+        while (onAccount.next()) {
+            int account_id = onAccount.getInt("account_id");
+            int user_id = onAccount.getInt("user_id");
+            String username = onAccount.getString("username");
+            String first_name = onAccount.getString("first_name");
+            String last_name = onAccount.getString("last_name");
+            assertEquals(3, account_id);
+            assertEquals(3, user_id);
+            assertEquals("jad", username);
+            assertEquals("Jane", first_name);
+            assertEquals("Doe", last_name);
+        }
     }
 
     @Ignore
     @Test
     public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        LiquibaseService liquibase = new UkelonnLiquibase();
-        provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
         provider.setLogService(new MockLogService());
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection
@@ -86,6 +82,12 @@ public class PGUkelonnDatabaseProviderTest {
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
         assertEquals(2, allAdminstratorsViewCount);
+    }
+
+    private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
     }
 
 }
