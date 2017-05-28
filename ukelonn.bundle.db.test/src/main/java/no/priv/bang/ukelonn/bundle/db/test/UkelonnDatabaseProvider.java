@@ -99,9 +99,10 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
 
     public boolean insertMockData() {
         try {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase changelogFinder = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, (Database)null);
-            liquibase.runDBChangelog(connect.getConnection(), changelogFinder.getDatabaseChangeLog());
+            Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            liquibase.update("");
             return true;
         } catch (Exception e) {
             logError("Failed to fill derby test database with data.", e);
