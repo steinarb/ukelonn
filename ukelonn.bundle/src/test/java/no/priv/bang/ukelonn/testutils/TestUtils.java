@@ -1,6 +1,5 @@
 package no.priv.bang.ukelonn.testutils;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import java.io.File;
 import java.lang.reflect.Field;
@@ -11,11 +10,10 @@ import java.sql.SQLException;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.ops4j.pax.web.service.WebContainer;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.LiquibaseService;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
@@ -49,12 +47,7 @@ public class TestUtils {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
         LogService logservice = new MockLogService();
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        Bundle bundle = mock(Bundle.class);
-        BundleWiring wiring = mock(BundleWiring.class);
-        when(wiring.getClassLoader()).thenReturn(TestUtils.class.getClassLoader());
-        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(wiring);
-        liquibase.setBundle(bundle);
+        LiquibaseService liquibase = new UkelonnLiquibase();
         ukelonnDatabaseProvider.setLiquibase(liquibase);
         ukelonnDatabaseProvider.setLogService(logservice);
         WebContainer mockContainer = mock(WebContainer.class);

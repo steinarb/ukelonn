@@ -1,7 +1,6 @@
 package no.priv.bang.ukelonn.bundle.db.postgresql;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,11 +9,10 @@ import java.sql.SQLException;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.postgresql.osgi.PGDataSourceFactory;
 
+import no.priv.bang.ukelonn.LiquibaseService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.postgresql.mocks.MockLogService;
@@ -38,12 +36,7 @@ public class PGUkelonnDatabaseProviderTest {
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection
         provider.createConnection();
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        Bundle bundle = mock(Bundle.class);
-        BundleWiring wiring = mock(BundleWiring.class);
-        when(wiring.getClassLoader()).thenReturn(getClass().getClassLoader());
-        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(wiring);
-        liquibase.setBundle(bundle);
+        LiquibaseService liquibase = new UkelonnLiquibase();
         provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
 
         // Test the database by making a query using a view
@@ -67,12 +60,7 @@ public class PGUkelonnDatabaseProviderTest {
     @Test
     public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        Bundle bundle = mock(Bundle.class);
-        BundleWiring wiring = mock(BundleWiring.class);
-        when(wiring.getClassLoader()).thenReturn(getClass().getClassLoader());
-        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(wiring);
-        liquibase.setBundle(bundle);
+        LiquibaseService liquibase = new UkelonnLiquibase();
         provider.setLiquibase(liquibase); // Simulate injection, test that the order of injections is irrelevant
         provider.setLogService(new MockLogService());
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
