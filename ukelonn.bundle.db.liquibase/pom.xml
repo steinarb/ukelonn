@@ -34,8 +34,10 @@
    <artifactId>javax.inject</artifactId>
   </dependency>
   <dependency>
-   <groupId>com.mattbertolini</groupId>
-   <artifactId>liquibase-slf4j</artifactId>
+   <groupId>no.priv.bang.ukelonn.rebundled</groupId>
+   <artifactId>liquibase-slf4j-osgi</artifactId>
+   <version>${liquibase-slf4j.version}</version>
+   <scope>provided</scope>
   </dependency>
  </dependencies>
 
