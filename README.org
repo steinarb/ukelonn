@@ -49,6 +49,7 @@ Dette trengs for å laste og teste ut denne programvaren
     #+END_EXAMPLE
  6. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
+      feature:install liquibase-core
       feature:install ukelonn-db-derby-test
       feature:install ukelonn
     #+END_EXAMPLE
@@ -124,6 +125,7 @@ Framgangsmåte:
     #+END_EXAMPLE
  4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
+      feature:install liquibase-core
       feature:install ukelonn-db-postgresql
       feature:install ukelonn
     #+END_EXAMPLE
