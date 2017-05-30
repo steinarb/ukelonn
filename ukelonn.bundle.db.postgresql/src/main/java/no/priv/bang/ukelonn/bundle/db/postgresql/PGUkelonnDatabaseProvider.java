@@ -12,6 +12,10 @@ import javax.sql.PooledConnection;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
+import liquibase.Liquibase;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
@@ -33,6 +37,7 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
             try {
                 liquibase.createSchema(connect);
+                insertMockData();
             } catch (Exception e) {
                 logError("Failed to create derby test database schema", e);
             }
@@ -52,6 +57,19 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
 
     public UkelonnDatabase get() {
         return this;
+    }
+
+    boolean insertMockData() {
+        try {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+            Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            liquibase.update("");
+            return true;
+        } catch (Exception e) {
+            logError("Failed to fill PostgreSQL database with initial data.", e);
+            return false;
+        }
     }
 
     @Override
