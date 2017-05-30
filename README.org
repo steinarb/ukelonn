@@ -89,26 +89,13 @@ Prosjektet er et maven-prosjekt med følgende struktur:
 
 * Kjøring på apache karaf med PostgreSQL
 Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstillinger:
- 1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter
- 2. Følgende tabeller må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/tables
- 3. Følgende views må være i databasen ukelonn: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/views
- 4. I tillegg så må eksempeldataene være på plass for å kunne logge inn med brukerene nevnt i eksemplene: https://github.com/steinarb/ukelonn/tree/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data
-    Rekkefølgen dataene skal tas inn i, er:
-    1. example_transaction_types.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transaction_types.sql
-
-       /NB!/ denne fila /må/ inn i databasen som den er for at det skal fungere å legge inn nye brukere
-    2. example_users.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_users.sql
-    3. example_administrators.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_administrators.sql
-    4. example_accounts.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_accounts.sql
-    5. example_transactions.sql: https://github.com/steinarb/ukelonn/blob/using-primefaces/ukelonn.bundle.test.db/src/main/resources/sql/data/example_transactions.sql
-    /OBS/: Her er det en mulighet til å legge inn egne data:
-    - Iallefall legg inn en bruker i example_users.sql
-    - Gjør samme bruker administrator i example_administrators.sql
-    - Behold example_transaction_types.sql (den kan justeres på i ettertid fra AdminUIet)
-    - Logg inn som admin-brukeren og du kan:
-      - legge inn nye jobbtyper,
-      - justere eksisterende jobbtyper (f.eks. beløp)
-      - legge inn nye brukere for ungene (for at disse skal dukke opp så må du ha lagt inn example_transaction_types.sql) som den er
+ 1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter:
+    #+BEGIN_EXAMPLE
+      /bin/sudo -s /bin/bash postgres createuser karaf
+      /bin/sudo -s /bin/bash postgres createdb -O karaf ukelonn
+    #+END_EXAMPLE
+    (kommandoeksempler fra debian, kommandoer kjørt som root)
+ 2. Sett opp autentiseringsmetode trust på windows, ident auth på debian (krever en ident-demon)
 
 Framgangsmåte:
  1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
@@ -121,6 +108,17 @@ Framgangsmåte:
       mvn clean install
     #+END_EXAMPLE
  2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+    #+BEGIN_EXAMPLE
+      adduser karaf
+      cd /tmp
+      wget http://www.apache.org/dyn/closer.lua/karaf/4.1.1/apache-karaf-4.1.1.tar.gz
+      cd ~karaf
+      tar xvfz /tmp/apache-karaf-4.1.1.tar.gz
+      chown -R karaf.karaf apache-karaf-4.1.1
+      cd apache-karaf-4.1.1
+      /bin/sudo karaf bin/karaf
+    #+END_EXAMPLE
+    (kommandoeksempler fra debian, kommandoer kjørt som root)
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
