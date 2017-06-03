@@ -88,37 +88,76 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Vaadin TouchKit og noen av avhengighetene til TouchKit var /ikke/ bundler og måtte rebundles.  Men selve Vaadin og avhengighetene var allerede bundlet.
 
 * Kjøring på apache karaf med PostgreSQL
-Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstillinger:
- 1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter:
+
+Derbydatabasen i [[Utsjekk og bygg]] gjør det mulig å kjøre alt i webappen.  Men ettersom den kun kjører i minnet så er den ikke noe særlig å lagre data i.
+
+For å faktisk bruke webappen så må man ha en database og databasen jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
+
+PostgreSQL er gratis og fri software og er lett å installere
+ 1. På windows, [[https://www.postgresql.org/download/windows/][last ned installeren]] og kjør den
+ 2. På debian GNU/linux, gi følgende kommando som root:
+    #+BEGIN_EXAMPLE
+      apt-get install postgresql
+    #+END_EXAMPLE
+
+Å finne ut av hvordan det gjøres på andre system overlates til leseren... men det er neppe hverken veldig forskjellig fra eksemplene over, eller mer enn et googlesøk unna.
+
+** Litt om PostgreSQL, denne webappen og sikkerhet
+
+OSGi-servicen som implementerer kobling mot PostgreSQL hardkoder en kobling mot localhost på default-porten til PostgreSQL (dvs. port 5432) og har ikke noe brukernavn eller passord lagret i seg. 
+
+Dette betyr:
+ 1. PostgreSQL-serveren må kjøre på samme datamaskin som webappen kjøres på (jeg kjører selv alt på en enkelt "Virtual Private Server" (VPS) hos [[https://www.bytemark.co.uk/cloud-hosting/][Bytemark]] så dette er ikke restriksjon som plager meg)
+ 2. Det må være en PostgreSQL-bruker med samme navn som brukernavnet som webappen kjøres som, dvs. når jeg kjører karaf som min egen bruker "sb", så må jeg ha en postgresql-bruker "sb":
+    #+BEGIN_EXAMPLE
+      /bin/sudo -s /bin/bash postgres createuser sb
+    #+END_EXAMPLE
+    og når jeg kjører karaf som brukeren "karaf" (dvs. når jeg kjører karaf som en service installert med apt-get på debian GNU/linux), så må jeg ha en postgresql-bruker "karaf":
     #+BEGIN_EXAMPLE
       /bin/sudo -s /bin/bash postgres createuser karaf
-      /bin/sudo -s /bin/bash postgres createdb -O karaf ukelonn
+    #+END_EXAMPLE
+ 3. PostgreSQL-serveren må ha en database som heter "ukelonn" og som er eid av brukeren karaf kjøres som, lagd f.eks. slik:
+    #+BEGIN_EXAMPLE
+      /bin/sudo -s /bin/bash postgres createdb -O sb ukelonn
+    #+END_EXAMPLE
+ 4. Autentisering av oppkoblingen må gjøres på en måte som ikke trenger et passord lagret i OSGi-servicen, dvs. en av disse:
+    1. [[https://www.postgresql.org/docs/9.6/static/auth-methods.html#AUTH-TRUST][Trust authentication]] dvs. PostgreSQL stoler på at klienten er brukeren som den sier at den er.  Ikke veldig sikkert, men greit nok for å teste mot PostgreSQL under utvikling
+    2. [[https://www.postgresql.org/docs/9.6/static/auth-methods.html#AUTH-IDENT][Ident authentication]] stol på at svaret på port 113 ("[[https://en.wikipedia.org/wiki/Ident_protocol][ident]]", [[https://www.ietf.org/rfc/rfc1413.txt][RFC 1413]]) om hvilken bruker som har åpnet en forbindelse på en gitt port.  Dette er måten jeg bruker på GNU/linux og er rimelig grei, så lenge jeg kjører alt på en og samme server
+    3. [[https://www.postgresql.org/docs/9.6/static/auth-methods.html#AUTH-PEER][Peer authentication]] Spør OSet om brukeren til prosessen som kobler seg til (fungerer kun for lokale forbindelser som f.eks. unix sockets, og unix sockets støttes ikke av PostgreSQL JDBC-driver)
+    4. [[https://www.postgresql.org/docs/9.6/static/auth-methods.html#GSSAPI-AUTH][GSSAPI Authentication]] bruker kerberos og er notorisk vanskelig å sette opp og få til å fungere (men veldig fint når det er på plass)
+
+Oppsettet videre antar "trust authentication" for kjøring mot PostgreSQL under utvikling og "ident authentication" for kjøring på en debian-server.
+
+** Kjøring av webappen mot postgres lokalt på utviklingsmaskinen
+
+Dette krever at man har en lokal PostgreSQL-installasjon med følgende innstillinger:
+ 1. En database med navn "ukelonn" der brukeren karaf kjører med har alle rettigheter (i eksempelet under er dette min egen bruker "sb"):
+    #+BEGIN_EXAMPLE
+      /bin/sudo -s /bin/bash postgres createuser sb
+      /bin/sudo -s /bin/bash postgres createdb -O sb ukelonn
     #+END_EXAMPLE
     (kommandoeksempler fra debian, kommandoer kjørt som root)
- 2. Sett opp autentiseringsmetode trust på windows, ident auth på debian (krever en ident-demon)
+ 2. [[https://www.postgresql.org/docs/9.6/static/auth-methods.html#AUTH-TRUST][Sett opp autentiseringsmetode trust i PostgreSQL]]
 
 Framgangsmåte:
- 1. Klon og bygg webapplikasjonen (regner med at linux-brukere klarer å oversette til noe passende):
+ 1. Klon og bygg webapplikasjonen (kommandoeksemplene er fra bash på GNU/linux):
     #+BEGIN_EXAMPLE
-      mkdir %HOME%\git
-      cd %HOME%\git
+      mkdir -p ~/git
+      cd ~/git
       git clone https://github.com/steinarb/ukelonn.git
-      cd %HOME%\git\ukelonn
+      cd ~/git/ukelonn
       git checkout using-vaadin
       mvn clean install
     #+END_EXAMPLE
- 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja (karaf vil da kjøre som din egen bruker som stemmer med PostgreSQL-oppsettet i starten av dette avsnittet):
     #+BEGIN_EXAMPLE
-      adduser karaf
       cd /tmp
       wget http://www.apache.org/dyn/closer.lua/karaf/4.1.1/apache-karaf-4.1.1.tar.gz
-      cd ~karaf
+      cd ~
       tar xvfz /tmp/apache-karaf-4.1.1.tar.gz
-      chown -R karaf.karaf apache-karaf-4.1.1
       cd apache-karaf-4.1.1
-      /bin/sudo karaf bin/karaf
+      bin/karaf
     #+END_EXAMPLE
-    (kommandoeksempler fra debian, kommandoer kjørt som root)
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
@@ -130,10 +169,67 @@ Framgangsmåte:
       feature:install ukelonn
     #+END_EXAMPLE
  5. Koble en nettleser mot http://localhost:8181/ukelonn/
-    - For en vanlig bruker, brukernavn/passord: jad/1ad
-      - Vanlig bruker kan registrere nye jobber og sjekke saldo
-    - For en administrator-bruker, brukernavn/passord: on/ola12
+    - Admin-bruker, brukernavn/passord: admin/admin
+      - Denne brukeren blir satt opp når man først kobler seg opp mot en tom PostgreSQL-database: Da sørger [[http://www.liquibase.org][liquibase]] for at skjemaet (tabeller og views) blir satt opp og for at en admin-bruker og noen transaksjonstyper blir lagt inn
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+      - En grei måte å starte på, er:
+        - Endre passord på admin-brukeren
+        - Lage en ny vanlig bruker
+
+** Oppsett av webappen på en server med debian GNU/linux
+
+NB! Har /ikke/ med oppsett av brannmur og oppsett av nginx eller apache med revers-proxy.
+
+(Normalt så vil port 8181 som webappen opererer på være sperret av brannmur på en webserver som står på internett, så man må sette opp en revers-proxy fra nginx eller apache (som lytter på portene 80 og 443) til karaf som lytter på localhost:8181)
+
+Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
+ 1. Installer nødvendig software:
+    #+BEGIN_EXAMPLE
+      apt-get update
+      apt-get install git maven openjdk-8-jdk postgres ruby ruby-dev build-essential
+    #+END_EXAMPLE
+ 2. Lag en deb-pakke for karaf
+    #+BEGIN_EXAMPLE
+      gem install fpm
+      cd /tmp
+      git clone https://github.com/steinarb/karaf-deb-packaging
+      cd karaf-deb-packaging
+      ./dist_karaf.sh
+      mkdir -p /root/debs
+      cp *.deb /root/debs
+    #+END_EXAMPLE
+ 3. Installer deb-pakken for karaf:
+    #+BEGIN_EXAMPLE
+      dpkg --install karaf_4.1.1-1_all.deb
+    #+END_EXAMPLE
+ 4. Sett opp bruker og database i PostgreSQL:
+    #+BEGIN_EXAMPLE
+      /bin/sudo -s /bin/bash postgres createuser karaf
+      /bin/sudo -s /bin/bash postgres createdb -O karaf ukelonn
+    #+END_EXAMPLE
+    (kommandoen blir her kjørt som bruker postgres som ikke kan logges inn til  (derfor "-s /bin/bash"), men har de riktige rettighetene til å sette opp ting i postgres)
+ 5. Sjekk ut og bygg webappen som bruker karaf:
+    #+BEGIN_EXAMPLE
+      /bin/sudo -s /bin/bash karaf (mkdir -p ~/git; cd ~/git; git clone https://github.com/steinarb/ukelonn.git; cd ukelonn; mvn install -DskipTests=1)
+    #+END_EXAMPLE
+ 6. Ta ssh inn til karaf:
+    #+BEGIN_EXAMPLE
+      ssh -p 8101 karaf@localhost
+    #+END_EXAMPLE
+    (passord "karaf" (uten anførselstegn))
+ 7. I karaf kommando-skall, gi følgende kommandoer:
+    #+BEGIN_EXAMPLE
+      feature:install liquibase-core
+      feature:install ukelonn-db-postgresql
+      feature:install ukelonn
+    #+END_EXAMPLE
+
+Nå kjører webappen mot http://localhost:8181/ukelonn/ og databasen har blitt satt opp med admin-bruker, med brukernavn/passord: admin/admin.
+
+Det kan være lurt å starte med å endre passordet her så fort som mulig.
+
+Det kan også være lurt å sette opp en nattlig backup av denne databasen til en annen maskin.
+
 * Lisens
 
 Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.
