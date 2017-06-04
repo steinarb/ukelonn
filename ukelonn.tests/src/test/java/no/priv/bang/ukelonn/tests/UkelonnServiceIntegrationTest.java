@@ -78,8 +78,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         String username = onAccount.getString("username");
         String first_name = onAccount.getString("first_name");
         String last_name = onAccount.getString("last_name");
-        assertEquals(3, account_id);
-        assertEquals(3, user_id);
+        assertEquals(4, account_id);
+        assertEquals(4, user_id);
         assertEquals("jad", username);
         assertEquals("Jane", first_name);
         assertEquals("Doe", last_name);

@@ -59,8 +59,8 @@ public class UkelonnDatabaseProviderTest {
         String username = onAccount.getString("username");
         String first_name = onAccount.getString("first_name");
         String last_name = onAccount.getString("last_name");
-        assertEquals(3, account_id);
-        assertEquals(3, user_id);
+        assertEquals(4, account_id);
+        assertEquals(4, user_id);
         assertEquals("jad", username);
         assertEquals("Jane", first_name);
         assertEquals("Doe", last_name);
@@ -82,19 +82,19 @@ public class UkelonnDatabaseProviderTest {
         ResultSet allUsers = database.query("select * from users");
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
-        assertEquals(4, allUserCount);
+        assertEquals(5, allUserCount);
 
         // Test that the administrators_view is present
         ResultSet allAdministrators = database.query("select * from administrators");
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
-        assertEquals(2, allAdminstratorsCount);
+        assertEquals(3, allAdminstratorsCount);
 
         // Test that the administrators_view is present
         ResultSet allAdministratorsView = database.query("select * from administrators_view");
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
-        assertEquals(2, allAdminstratorsViewCount);
+        assertEquals(3, allAdminstratorsViewCount);
     }
 
     @Test

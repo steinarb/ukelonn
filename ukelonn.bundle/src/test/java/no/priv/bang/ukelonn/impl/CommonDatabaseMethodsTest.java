@@ -26,8 +26,8 @@ public class CommonDatabaseMethodsTest {
     public void testGetAdminUserFromDatabase() {
         AdminUser admin = getAdminUserFromDatabase(getClass(), "on");
         assertEquals("on", admin.getUserName());
-        assertEquals(1, admin.getUserId());
-        assertEquals(1, admin.getAdministratorId());
+        assertEquals(2, admin.getUserId());
+        assertEquals(2, admin.getAdministratorId());
         assertEquals("Ola", admin.getFirstname());
         assertEquals("Nordmann", admin.getSurname());
 
@@ -48,7 +48,7 @@ public class CommonDatabaseMethodsTest {
     public void testGetAccountInfoFromDatabase() {
         Account account = getAccountInfoFromDatabase(getClass(), "jad");
         assertEquals("jad", account.getUsername());
-        assertEquals(3, account.getUserId());
+        assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
 
