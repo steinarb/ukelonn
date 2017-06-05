@@ -42,8 +42,9 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
             createConnection();
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
             try {
-                liquibase.createSchema(connect);
+                liquibase.createInitialSchema(connect);
                 insertMockData();
+                liquibase.updateSchema(connect);
             } catch (Exception e) {
                 logError("Failed to create derby test database schema", e);
             }

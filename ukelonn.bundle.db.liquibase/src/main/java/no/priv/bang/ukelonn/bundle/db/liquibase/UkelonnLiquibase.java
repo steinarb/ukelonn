@@ -11,7 +11,14 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 
 public class UkelonnLiquibase {
 
-    public void createSchema(PooledConnection connect) throws SQLException, LiquibaseException {
+    public void createInitialSchema(PooledConnection connect) throws SQLException, LiquibaseException {
+        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+        Liquibase liquibase = new Liquibase("db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
+        liquibase.update("");
+    }
+
+    public void updateSchema(PooledConnection connect) throws SQLException, LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
         Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
