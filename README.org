@@ -186,7 +186,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  1. Installer nødvendig software:
     #+BEGIN_EXAMPLE
       apt-get update
-      apt-get install git maven openjdk-8-jdk postgres ruby ruby-dev build-essential
+      apt-get install git maven openjdk-8-jdk postgresql ruby ruby-dev build-essential
     #+END_EXAMPLE
  2. Lag en deb-pakke for karaf
     #+BEGIN_EXAMPLE
