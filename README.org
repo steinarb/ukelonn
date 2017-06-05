@@ -210,8 +210,8 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
     (kommandoen blir her kjørt som bruker postgres som ikke kan logges inn til  (derfor "-s /bin/bash"), men har de riktige rettighetene til å sette opp ting i postgres)
  5. Sjekk ut og bygg webappen som bruker karaf:
     #+BEGIN_EXAMPLE
-      /usr/bin/sudo -u karaf /bin/bash -c 'mkdir -p ~/git; cd ~/git; git clone https://github.com/sbang/jsr330activator.git; cd jsr330activator; mvn install -DskipTests=true -Dgpg.skip'
-      /usr/bin/sudo -u karaf /bin/bash -c 'mkdir -p ~/git; cd ~/git; git clone https://github.com/steinarb/ukelonn.git; cd ukelonn; git checkout using-vaadin; mvn install -DskipTests=true'
+      /usr/bin/sudo -u karaf /bin/bash -c 'mkdir -p ~/git; cd ~/git; git clone https://github.com/sbang/jsr330activator.git; cd jsr330activator; mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip'
+      /usr/bin/sudo -u karaf /bin/bash -c 'mkdir -p ~/git; cd ~/git; git clone https://github.com/steinarb/ukelonn.git; cd ukelonn; git checkout using-vaadin; mvn install -DskipTests=true -Dmaven.javadoc.skip=true'
     #+END_EXAMPLE
  6. Ta ssh inn til karaf:
     #+BEGIN_EXAMPLE
