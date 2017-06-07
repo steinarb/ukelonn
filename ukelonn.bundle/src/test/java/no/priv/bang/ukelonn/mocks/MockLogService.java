@@ -27,11 +27,13 @@ public class MockLogService implements LogService {
         exception.printStackTrace();
     }
 
+    @SuppressWarnings("rawtypes")
     public void log(ServiceReference sr, int level, String message) {
         // TODO Auto-generated method stub
 
     }
 
+    @SuppressWarnings("rawtypes")
     public void log(ServiceReference sr, int level, String message, Throwable exception) {
         // TODO Auto-generated method stub
 

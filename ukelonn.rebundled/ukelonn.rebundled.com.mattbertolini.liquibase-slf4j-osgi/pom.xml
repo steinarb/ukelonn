@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xml:space="preserve">
+ <modelVersion>4.0.0</modelVersion>
+ <parent>
+  <artifactId>ukelonn.rebundled</artifactId>
+  <groupId>no.priv.bang.ukelonn.rebundled</groupId>
+  <version>1.0.0-SNAPSHOT</version>
+ </parent>
+
+ <artifactId>liquibase-slf4j-osgi</artifactId>
+ <version>${liquibase-slf4j.version}</version>
+ <packaging>bundle</packaging>
+
+ <name>liquibase-slf4j ${project.version} made an OSGi bundle fragment of org.liquibase.core</name>
+
+ <dependencies>
+  <dependency>
+   <groupId>com.mattbertolini</groupId>
+   <artifactId>liquibase-slf4j</artifactId>
+  </dependency>
+ </dependencies>
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.felix</groupId>
+    <artifactId>maven-bundle-plugin</artifactId>
+    <extensions>true</extensions>
+    <configuration>
+     <instructions>
+      <Bundle-License>MIT</Bundle-License>
+      <Bundle-Vendor>Matt Bertolini</Bundle-Vendor>
+      <_exportcontents>*</_exportcontents>
+      <Import-Package>*;resolution:=optional</Import-Package>
+      <Export-Package>liquibase.ext.logging.slf4j;version="${project.version}"</Export-Package>
+      <Embed-Dependency>*;inline=true</Embed-Dependency>
+      <Import-Package>*;resolution:=optional</Import-Package>
+      <Fragment-Host>org.liquibase.core</Fragment-Host>
+     </instructions>
+    </configuration>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <version>3.0.1</version>
+    <executions>
+     <execution>
+      <id>copy-dependencies</id>
+      <phase>validate</phase>
+      <goals>
+       <goal>copy-dependencies</goal>
+      </goals>
+      <configuration>
+       <classifier>sources</classifier>
+      </configuration>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <version>3.0.0</version>
+    <executions>
+     <execution>
+      <id>attach-artifacts</id>
+      <phase>package</phase>
+      <goals>
+       <goal>attach-artifact</goal>
+      </goals>
+      <configuration>
+       <artifacts>
+        <artifact>
+         <file>target/dependency/liquibase-slf4j-${version}-sources.jar</file>
+         <classifier>sources</classifier>
+        </artifact>
+       </artifacts>
+      </configuration>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+</project>
