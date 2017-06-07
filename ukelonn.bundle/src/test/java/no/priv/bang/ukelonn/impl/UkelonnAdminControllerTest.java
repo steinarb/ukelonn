@@ -71,8 +71,8 @@ public class UkelonnAdminControllerTest {
             ukelonnAdmin.setAdministratorUsername("on");
 
             assertEquals("on", ukelonnAdmin.getAdministratorUsername());
-            assertEquals(1, ukelonnAdmin.getAdministratorUserId());
-            assertEquals(1, ukelonnAdmin.getAdministratorId());
+            assertEquals(2, ukelonnAdmin.getAdministratorUserId());
+            assertEquals(2, ukelonnAdmin.getAdministratorId());
             assertEquals("Ola", ukelonnAdmin.getAdministratorFornavn());
             assertEquals("Nordmann", ukelonnAdmin.getAdministratorEtternavn());
 
@@ -525,7 +525,7 @@ public class UkelonnAdminControllerTest {
 
         // Verify that the list of users have the expected number of items
         List<User> users = ukelonnAdmin.getUsers();
-        assertEquals(4, users.size());
+        assertEquals(5, users.size());
     }
 
     @Test
