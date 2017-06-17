@@ -75,7 +75,8 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Dette er en ikke-persistent SQL-database i minnet som setter opp forventet skjema og fyller opp databasen med test-data (dataene fylles opp som liquibase changesets så det er ok å starte denne basen mange ganger uten at det blir duplikat i dataene)
      Dette er en fullt funksjonell database, men ingenting blir persistert mellom kjøringer.  Den brukes til test både av webappen i gogoshell og brukes som en vanlig jar-fil i enhetstestene i ukelonn.bundle
    - =ukelonn.bundle.db.postgresql/pom.xml=
-     Dette er en OSGi-bundle som forventer å finne en PostgreSQL-base som brukeren som kjører webappen har rettigheter til og som har en database "ukelonn" med forventet skjema
+     Dette er en OSGi-bundle som forventer å finne en PostgreSQL-base som brukeren som kjører webappen har rettigheter til og som har en database "ukelonn".
+     Databasen "ukelonn" vil få riktig skjema og en admin-bruker ved første gangs kjøring.
    - =ukelonn.tests/pom.xml=
      Dette er en Pax Exam integrasjonstest som sjekker at OSGi-bundlene starter og at de tilbyr riktig service.
    - =ukelonn.gogoshell/pom.xml=
