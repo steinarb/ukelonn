@@ -11,7 +11,7 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.ukelonn.bundle.test.db.UkelonnDatabaseProvider;
+import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.ShiroFilterProvider;
 import no.priv.bang.ukelonn.impl.UkelonnServletProvider;
 import no.priv.bang.ukelonn.mocks.MockLogService;
