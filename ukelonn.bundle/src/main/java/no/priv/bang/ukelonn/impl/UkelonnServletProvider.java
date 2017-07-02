@@ -39,10 +39,9 @@ import no.steria.osgi.jsr330activator.ServiceProperty;
  * @author Steinar Bang
  *
  */
-@ServiceProperties({
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_ALIAS, value = "/"),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
+@ServiceProperties({ @ServiceProperty( name = ExtenderConstants.PROPERTY_ALIAS, value = "/"),
+                     @ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
+                     @ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
 public class UkelonnServletProvider extends UIProvider implements Provider<Servlet>, UkelonnService {
     private static final long serialVersionUID = -275959896126008712L;
     private static UkelonnServletProvider instance;
@@ -57,7 +56,7 @@ public class UkelonnServletProvider extends UIProvider implements Provider<Servl
 
     @Inject
     public void setUkelonnDatabase(UkelonnDatabase database) {
-    	this.database = database;
+        this.database = database;
     }
 
     public UkelonnDatabase getDatabase() {
@@ -66,7 +65,7 @@ public class UkelonnServletProvider extends UIProvider implements Provider<Servl
 
     @Inject
     public void setLogservice(LogService logservice) {
-    	this.logservice = logservice;
+        this.logservice = logservice;
     }
 
     public LogService getLogservice() {

@@ -39,10 +39,9 @@ import no.steria.osgi.jsr330activator.ServiceProperty;
  * @author Steinar Bang
  *
  */
-@ServiceProperties({
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/*"}),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
+@ServiceProperties({ @ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/*"}),
+                     @ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
+                     @ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
 public class ShiroFilterProvider implements Provider<Filter> {
 
     private static ShiroFilterProvider instance;
@@ -50,12 +49,12 @@ public class ShiroFilterProvider implements Provider<Filter> {
     private ShiroFilter filter;
 
     public ShiroFilterProvider() {
-    	instance = this;
+        instance = this;
     }
 
     @Inject
     public void setUkelonnDatabase(UkelonnDatabase database) {
-    	this.database = database;
+        this.database = database;
     }
 
     public UkelonnDatabase getDatabase() {

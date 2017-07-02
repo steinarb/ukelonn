@@ -79,21 +79,21 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void shiroFilterIntegrationTest() {
-    	ServiceReference<Filter> servletReference = bundleContext.getServiceReference(Filter.class);
-    	String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
-    	assertEquals(7, servletServicePropertyKeys.length);
-    	String[] actualUrlPatterns = (String[])servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
-    	assertEquals("/*", actualUrlPatterns[0]);
-    	assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
+        ServiceReference<Filter> servletReference = bundleContext.getServiceReference(Filter.class);
+        String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
+        assertEquals(7, servletServicePropertyKeys.length);
+        String[] actualUrlPatterns = (String[])servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
+        assertEquals("/*", actualUrlPatterns[0]);
+        assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
     }
 
     @Test
     public void ukelonnServletIntegrationTest() {
-    	ServiceReference<Servlet> servletReference = bundleContext.getServiceReference(Servlet.class);
-    	String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
-    	assertEquals(7, servletServicePropertyKeys.length);
-    	assertEquals("/", servletReference.getProperty(ExtenderConstants.PROPERTY_ALIAS));
-    	assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
+        ServiceReference<Servlet> servletReference = bundleContext.getServiceReference(Servlet.class);
+        String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
+        assertEquals(7, servletServicePropertyKeys.length);
+        assertEquals("/", servletReference.getProperty(ExtenderConstants.PROPERTY_ALIAS));
+        assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
     }
 
     @Test
@@ -116,15 +116,15 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Ignore
     @Test
     public void webappAccessTest() throws Exception {
-    	Thread.sleep(20*1000);
+        Thread.sleep(20*1000);
         HttpTestClient testclient = HttpTestClientFactory.createDefaultTestClient();
-    	try {
+        try {
             testclient.doGET("http://localhost:8081/ukelonn/").withReturnCode(404);
             String response = testclient.executeTest();
             assertEquals("", response);
-    	} finally {
+        } finally {
             testclient = null;
-    	}
+        }
     }
 
 }
