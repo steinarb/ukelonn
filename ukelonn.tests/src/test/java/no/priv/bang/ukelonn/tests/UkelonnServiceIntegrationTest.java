@@ -79,9 +79,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     public void ukelonnServletIntegrationTest() {
         ServiceReference<Servlet> servletReference = bundleContext.getServiceReference(Servlet.class);
         String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
-        assertEquals(7, servletServicePropertyKeys.length);
-        assertEquals("/", servletReference.getProperty(ExtenderConstants.PROPERTY_ALIAS));
-        assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
+        assertEquals(6, servletServicePropertyKeys.length);
+        assertEquals("ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_SERVLET_NAMES));
+        String[] propertyUrlPatterns = (String[]) servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
+        assertEquals(2, propertyUrlPatterns.length);
     }
 
     @Test
