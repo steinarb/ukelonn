@@ -1,7 +1,6 @@
 package no.priv.bang.ukelonn.impl;
 
-import static no.priv.bang.ukelonn.testutils.TestUtils.releaseFakeOsgiServices;
-import static no.priv.bang.ukelonn.testutils.TestUtils.setupFakeOsgiServices;
+import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -27,10 +26,10 @@ import com.vaadin.server.DefaultDeploymentConfiguration;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
+import com.vaadin.ui.UI;
 import com.vaadin.util.CurrentInstance;
 
 public class UkelonnUITest {
@@ -41,7 +40,7 @@ public class UkelonnUITest {
     @BeforeClass
     public static void setupClass() throws ServiceException, ServletException {
         setupFakeOsgiServices();
-    	VaadinServlet servlet = new VaadinServlet();
+    	UkelonnServlet servlet = new UkelonnServlet(getUkelonnServletProvider());
     	ServletConfig config = mock(ServletConfig.class);
     	ServletContext context = mock(ServletContext.class);
     	when(context.getInitParameterNames()).thenReturn(Collections.emptyEnumeration());
@@ -75,7 +74,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(false);
     	when(user.isAuthenticated()).thenReturn(false);
     	when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -89,7 +88,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(false);
         when(user.isAuthenticated()).thenReturn(true);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -103,7 +102,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(false);
     	when(user.isAuthenticated()).thenReturn(true);
     	when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI();
+        UI ui = getUkelonnServletProvider().createInstance(null);
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         Cookie[] cookies = { new Cookie("cookie", "crumb"), new Cookie("ui-style", "browser")};
@@ -119,7 +118,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(false);
     	when(user.isAuthenticated()).thenReturn(true);
     	when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         when(request.getParameter(eq("ui-style"))).thenReturn("browser");
@@ -135,7 +134,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(false);
     	when(user.isAuthenticated()).thenReturn(true);
     	when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         when(request.getParameter(eq("ui-style"))).thenReturn("mobile");
@@ -151,7 +150,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(true);
     	when(user.isAuthenticated()).thenReturn(false);
     	when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -165,7 +164,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(true);
     	when(user.isAuthenticated()).thenReturn(false);
     	when(user.hasRole(eq("administrator"))).thenReturn(true);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -179,7 +178,7 @@ public class UkelonnUITest {
     	when(user.isRemembered()).thenReturn(true);
     	when(user.isAuthenticated()).thenReturn(false);
     	when(user.hasRole(eq("administrator"))).thenReturn(true);
-        UkelonnUI ui = new UkelonnUI();
+        UkelonnUI ui = new UkelonnUI(getUkelonnServletProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         Cookie[] cookies = { new Cookie("ui-style", "browser")};

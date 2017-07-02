@@ -16,6 +16,11 @@ import com.vaadin.ui.UI;
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
 public class UkelonnUI extends UI {
     private static final long serialVersionUID = 1388525490129647161L;
+    private UkelonnServletProvider provider;
+
+    public UkelonnUI(UkelonnServletProvider ukelonnServletProvider) {
+    	this.provider = ukelonnServletProvider;
+    }
 
     @Override
     protected void init(VaadinRequest request) {
@@ -29,14 +34,14 @@ public class UkelonnUI extends UI {
 
     	// Add all of the different views
     	if (isMobile(uiStyle)) {
-            getNavigator().addView("", new UserView(request));
-            getNavigator().addView("admin", new AdminView(request));
+            getNavigator().addView("", new UserView(provider, request));
+            getNavigator().addView("admin", new AdminView(provider, request));
     	} else {
             setTheme("valo");
-            getNavigator().addView("", new UserFallbackView(request));
-            getNavigator().addView("admin", new AdminFallbackView(request));
+            getNavigator().addView("", new UserFallbackView(provider, request));
+            getNavigator().addView("admin", new AdminFallbackView(provider, request));
     	}
-    	getNavigator().addView("login", new LoginView(request, getNavigator()));
+    	getNavigator().addView("login", new LoginView(provider, request, getNavigator()));
     	if (!isLoggedIn()) {
             getNavigator().navigateTo("login");
     	} else if (isAdministrator()) {

@@ -7,8 +7,9 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.inject.Inject;
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,11 +21,14 @@ import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.web.extender.whiteboard.ExtenderConstants;
 import org.ops4j.pax.web.itest.base.client.HttpTestClient;
 import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
-import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.tests.UkelonnServiceIntegrationTestBase;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -36,7 +40,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     private UkelonnDatabase database;
 
     @Inject
-    UkelonnService ukelonnService;
+    BundleContext bundleContext;
 
     @Configuration
     public Option[] config() {
@@ -49,7 +53,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         return options(
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
-            systemTimeout(60000),
+            systemTimeout(120000),
             logLevel(LogLevel.DEBUG),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
@@ -62,10 +66,23 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     }
 
     @Test
-    public void ukelonnServiceIntegrationTest() {
-    	// Verify that the service could be injected
-    	assertNotNull(ukelonnService);
-    	assertEquals("Hello world!", ukelonnService.getMessage());
+    public void shiroFilterIntegrationTest() {
+        ServiceReference<Filter> servletReference = bundleContext.getServiceReference(Filter.class);
+        String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
+        assertEquals(7, servletServicePropertyKeys.length);
+        String[] actualUrlPatterns = (String[])servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
+        assertEquals("/*", actualUrlPatterns[0]);
+        assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
+    }
+
+    @Test
+    public void ukelonnServletIntegrationTest() {
+        ServiceReference<Servlet> servletReference = bundleContext.getServiceReference(Servlet.class);
+        String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
+        assertEquals(6, servletServicePropertyKeys.length);
+        assertEquals("ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_SERVLET_NAMES));
+        String[] propertyUrlPatterns = (String[]) servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
+        assertEquals(2, propertyUrlPatterns.length);
     }
 
     @Test
@@ -88,15 +105,15 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Ignore
     @Test
     public void webappAccessTest() throws Exception {
-    	Thread.sleep(20*1000);
+        Thread.sleep(20*1000);
         HttpTestClient testclient = HttpTestClientFactory.createDefaultTestClient();
-    	try {
+        try {
             testclient.doGET("http://localhost:8081/ukelonn/").withReturnCode(404);
             String response = testclient.executeTest();
             assertEquals("", response);
-    	} finally {
+        } finally {
             testclient = null;
-    	}
+        }
     }
 
 }

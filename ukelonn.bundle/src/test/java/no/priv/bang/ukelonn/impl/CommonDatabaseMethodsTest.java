@@ -24,20 +24,20 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetAdminUserFromDatabase() {
-        AdminUser admin = getAdminUserFromDatabase(getClass(), "on");
+        AdminUser admin = getAdminUserFromDatabase(getUkelonnServletProvider(), getClass(), "on");
         assertEquals("on", admin.getUserName());
         assertEquals(2, admin.getUserId());
         assertEquals(2, admin.getAdministratorId());
         assertEquals("Ola", admin.getFirstname());
         assertEquals("Nordmann", admin.getSurname());
 
-        AdminUser notAdmin = getAdminUserFromDatabase(getClass(), "jad");
+        AdminUser notAdmin = getAdminUserFromDatabase(getUkelonnServletProvider(), getClass(), "jad");
         assertEquals("jad", notAdmin.getUserName());
         assertEquals(0, notAdmin.getUserId());
         assertEquals("Ikke innlogget", notAdmin.getFirstname());
         assertNull(notAdmin.getSurname());
 
-        AdminUser notInDabase = getAdminUserFromDatabase(getClass(), "unknownuser");
+        AdminUser notInDabase = getAdminUserFromDatabase(getUkelonnServletProvider(), getClass(), "unknownuser");
         assertEquals("unknownuser", notInDabase.getUserName());
         assertEquals(0, notInDabase.getUserId());
         assertEquals("Ikke innlogget", notInDabase.getFirstname());
@@ -46,18 +46,18 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetAccountInfoFromDatabase() {
-        Account account = getAccountInfoFromDatabase(getClass(), "jad");
+        Account account = getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "jad");
         assertEquals("jad", account.getUsername());
         assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
 
-        Account accountForAdmin = getAccountInfoFromDatabase(getClass(), "on");
+        Account accountForAdmin = getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "on");
         assertEquals("on", accountForAdmin.getUsername());
         assertEquals(0, accountForAdmin.getUserId());
         assertEquals("Ikke innlogget", accountForAdmin.getFirstName());
 
-        Account accountNotInDatabase = getAccountInfoFromDatabase(getClass(), "unknownuser");
+        Account accountNotInDatabase = getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "unknownuser");
         assertEquals("unknownuser", accountNotInDatabase.getUsername());
         assertEquals(0, accountNotInDatabase.getUserId());
         assertEquals("Ikke innlogget", accountNotInDatabase.getFirstName());
@@ -66,7 +66,7 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testUpdateUserInDatabase() {
     	try {
-            List<User> users = getUsers(getClass());
+            List<User> users = getUsers(getUkelonnServletProvider(), getClass());
             User jad = findUserInListByName(users, "jad");
             int jadUserid = jad.getUserId();
 
@@ -84,11 +84,11 @@ public class CommonDatabaseMethodsTest {
             // Create a brand new User bean to use for the update (password won't be used in the update)
             User jadToUpdate = new User(jadUserid, newUsername, newEmail, null, newFirstname, newLastname);
             int expectedNumberOfUpdatedRecords = 1;
-            int numberOfUpdatedRecords = updateUserInDatabase(getClass(), jadToUpdate);
+            int numberOfUpdatedRecords = updateUserInDatabase(getUkelonnServletProvider(), getClass(), jadToUpdate);
             assertEquals(expectedNumberOfUpdatedRecords, numberOfUpdatedRecords);
 
             // Read back an updated user and compare with the expected values
-            List<User> usersAfterUpdate = getUsers(getClass());
+            List<User> usersAfterUpdate = getUsers(getUkelonnServletProvider(), getClass());
             assertEquals("Expected no new users added", users.size(), usersAfterUpdate.size());
             User jadAfterUpdate = findUserInListById(usersAfterUpdate, jadUserid);
             assertEquals(newUsername, jadAfterUpdate.getUsername());

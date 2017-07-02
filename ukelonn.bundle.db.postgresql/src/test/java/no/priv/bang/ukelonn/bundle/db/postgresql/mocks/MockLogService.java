@@ -3,6 +3,7 @@ package no.priv.bang.ukelonn.bundle.db.postgresql.mocks;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 
+@SuppressWarnings("rawtypes")
 public class MockLogService implements LogService {
     final String[] errorLevel = {"", "[ERROR] ", "[WARNING] ", "[INFO] ", "[DEBUG] "};
 

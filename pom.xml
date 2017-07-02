@@ -89,15 +89,27 @@
     <scope>provided</scope>
    </dependency>
    <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
     <groupId>org.ops4j.pax.web</groupId>
     <artifactId>pax-web-api</artifactId>
     <version>${dependency.pax.web.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.1.0</version>
+    <groupId>org.ops4j.pax.web</groupId>
+    <artifactId>pax-web-runtime</artifactId>
+    <version>${dependency.pax.web.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.ops4j.pax.web</groupId>
+    <artifactId>pax-web-extender-whiteboard</artifactId>
+    <version>${dependency.pax.web.version}</version>
     <scope>provided</scope>
    </dependency>
    <dependency>
@@ -137,6 +149,12 @@
     <groupId>org.ops4j.pax.exam</groupId>
     <artifactId>pax-exam-link-mvn</artifactId>
     <version>${dependency.pax.exam.version}</version>
+    <scope>test</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-simple</artifactId>
+    <version>1.7.25</version>
     <scope>test</scope>
    </dependency>
    <dependency>
