@@ -7,13 +7,10 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.EventListener;
-
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
-import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,9 +35,6 @@ import no.priv.bang.ukelonn.tests.UkelonnServiceIntegrationTestBase;
 public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
     public static final String RMI_SERVER_PORT = "44445";
     public static final String RMI_REG_PORT = "1100";
-
-    @Inject
-    private EventListener shiroEnviromentLoaderListener;
 
     @Inject
     private UkelonnDatabase database;
@@ -69,12 +63,6 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             junitBundles(),
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
-    }
-
-    @Test
-    public void shiroEnvironmentListenerIntegrationTest() {
-    	Class<? extends EventListener> clazz = shiroEnviromentLoaderListener.getClass();
-    	assertEquals(EnvironmentLoaderListener.class, clazz);
     }
 
     @Test

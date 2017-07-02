@@ -34,7 +34,7 @@ import no.steria.osgi.jsr330activator.ServiceProperty;
  *  5. If the JsrActivator is stopped (e.g. when unloading the bundle), the Jsr330Activator will retract the
  *     servlet OSGi service, and release its hold on the two injected services
  *
- *  See also: {@link ShiroFilterProvider}, {@link ShiroEnvironmentLoaderListenerProvider}
+ *  See also: {@link ShiroFilterProvider}
  *
  * @author Steinar Bang
  *
@@ -87,7 +87,7 @@ public class UkelonnServletProvider extends UIProvider implements Provider<Servl
 
     @Override
     public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
-        throw new UnsupportedOperationException("Not called, this provider creates instances with back pointers.");
+        return UkelonnUI.class;
     }
 
     public static UkelonnServletProvider getInstance() {

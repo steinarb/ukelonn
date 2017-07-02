@@ -3,8 +3,12 @@ package no.priv.bang.ukelonn.impl;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.Filter;
+
+import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.ops4j.pax.web.extender.whiteboard.ExtenderConstants;
+import org.ops4j.pax.web.service.WebContainer;
+import org.osgi.service.http.HttpContext;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
@@ -34,19 +38,23 @@ import no.steria.osgi.jsr330activator.ServiceProperty;
  *  6. If the JsrActivator is stopped (e.g. when unloading the bundle), the Jsr330Activator will retract the
  *     servlet OSGi service, and release its hold on the two injected services
  *
- *  See also: {@link UkelonnServletProvider}, {@link ShiroEnvironmentLoaderListenerProvider}
+ *  See also: {@link UkelonnServletProvider}
  *
  * @author Steinar Bang
  *
  */
-@ServiceProperties({ @ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/*"}),
-                     @ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
-                     @ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
+@ServiceProperties({
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/*"}),
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
 public class ShiroFilterProvider implements Provider<Filter> {
 
     private static ShiroFilterProvider instance;
     private UkelonnDatabase database;
     private ShiroFilter filter;
+    private WebContainer webContainer;
+    private HttpContext httpcontext;
+    private EnvironmentLoaderListener listener;
 
     public ShiroFilterProvider() {
         instance = this;
@@ -59,6 +67,34 @@ public class ShiroFilterProvider implements Provider<Filter> {
 
     public UkelonnDatabase getDatabase() {
         return database;
+    }
+
+    @Inject
+    public void setWebContainer(WebContainer webContainer) {
+        createEnvironmentLoaderListenerAndDefaultContext(webContainer);
+    }
+
+    private void createEnvironmentLoaderListenerAndDefaultContext(WebContainer webContainer) {
+        if (this.webContainer == webContainer) {
+            return; // already registered, nothing to do
+        }
+
+        unregisterExistingEnvironmentLoaderListener();
+
+        this.webContainer = webContainer;
+
+        if (webContainer != null) {
+            httpcontext = webContainer.createDefaultHttpContext();
+            listener = new EnvironmentLoaderListener();
+            webContainer.registerEventListener(listener, httpcontext);
+        }
+    }
+
+    private void unregisterExistingEnvironmentLoaderListener() {
+        if (webContainer != null) {
+            webContainer.unregisterEventListener(listener);
+            listener = null;
+        }
     }
 
     @Override

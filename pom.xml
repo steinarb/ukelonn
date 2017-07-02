@@ -93,6 +93,12 @@
    </dependency>
    <dependency>
     <groupId>org.ops4j.pax.web</groupId>
+    <artifactId>pax-web-api</artifactId>
+    <version>${dependency.pax.web.version}</version>
+    <scope>provided</scope>
+   </dependency>
+   <dependency>
+    <groupId>org.ops4j.pax.web</groupId>
     <artifactId>pax-web-runtime</artifactId>
     <version>${dependency.pax.web.version}</version>
     <scope>provided</scope>
