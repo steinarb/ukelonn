@@ -5,15 +5,10 @@
   <feature prerequisite="true">wrap</feature>
   <feature>pax-http-whiteboard</feature>
   <feature>ukelonn-api</feature>
-  <bundle start-level="80">mvn:org.apache.shiro/shiro-core/${dependency.shiro.version}</bundle>
-  <bundle start-level="80">mvn:org.apache.shiro/shiro-web/${dependency.shiro.version}</bundle>
   <bundle start-level="80">mvn:commons-beanutils/commons-beanutils/${commons.beanutils.version}</bundle>
   <bundle start-level="80">mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
   <bundle start-level="80">mvn:org.jsoup/jsoup/${jsoup.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin/vaadin-shared/${vaadin.version}</bundle>
-  <bundle start-level="80">mvn:com.vaadin/vaadin-server/${vaadin.version}</bundle>
-  <bundle start-level="80">mvn:com.vaadin/vaadin-themes/${vaadin.version}</bundle>
-  <bundle start-level="80">mvn:com.vaadin/vaadin-client-compiled/${vaadin.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin.external.flute/flute/${vaadin.flute.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin.external.streamhtmlparser/streamhtmlparser-jsilver/${vaadin.streamhtmlparser.version}</bundle>
   <bundle start-level="80">mvn:com.vaadin.external.google/guava/${vaadin.guava.version}</bundle>

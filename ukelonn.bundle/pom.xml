@@ -104,10 +104,12 @@
   <dependency>
    <groupId>org.apache.shiro</groupId>
    <artifactId>shiro-core</artifactId>
+   <scope>compile</scope>
   </dependency>
   <dependency>
    <groupId>org.apache.shiro</groupId>
    <artifactId>shiro-web</artifactId>
+   <scope>compile</scope>
   </dependency>
   <dependency>
    <groupId>org.slf4j</groupId>
@@ -118,14 +120,22 @@
   <dependency>
    <groupId>com.vaadin</groupId>
    <artifactId>vaadin-server</artifactId>
+   <scope>compile</scope>
   </dependency>
   <dependency>
    <groupId>com.vaadin</groupId>
    <artifactId>vaadin-themes</artifactId>
+   <scope>compile</scope>
   </dependency>
   <dependency>
    <groupId>com.vaadin</groupId>
    <artifactId>vaadin-client-compiled</artifactId>
+   <scope>compile</scope>
+  </dependency>
+  <dependency>
+   <groupId>com.vaadin</groupId>
+   <artifactId>vaadin-server</artifactId>
+   <scope>compile</scope>
   </dependency>
   <dependency>
    <groupId>com.vaadin.addon</groupId>
