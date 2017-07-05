@@ -1,8 +1,10 @@
 package no.priv.bang.ukelonn.tests;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,6 +31,14 @@ public class UkelonnServiceIntegrationTestBase {
 
     public String getMavenProjectVersion() {
         return mavenProjectVersion;
+    }
+
+    public File getConfigFile(String path) {
+        URL res = this.getClass().getResource(path);
+        if (res == null) {
+            throw new RuntimeException("Config resource " + path + " not found");
+        }
+    	return new File(res.getFile());
     }
 
     /***
