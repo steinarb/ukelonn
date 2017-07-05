@@ -59,6 +59,8 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
             editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
             editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port.secure", httpsPort),
+            replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg", getConfigFile("/etc/org.ops4j.pax.logging.cfg")),
+            systemProperty("org.ops4j.pax.logging.DefaultSer‌​viceLog.level").value("DEBUG"),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
             features(paxJdbcRepo),
@@ -115,5 +117,4 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             testclient = null;
         }
     }
-
 }
