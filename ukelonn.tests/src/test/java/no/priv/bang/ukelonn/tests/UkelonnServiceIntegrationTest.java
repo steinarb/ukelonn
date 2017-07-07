@@ -54,6 +54,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
             systemTimeout(120000),
+            keepRuntimeFolder(),
             logLevel(LogLevel.DEBUG),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
