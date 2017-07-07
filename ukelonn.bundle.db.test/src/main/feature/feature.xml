@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.test.db">
  <feature name="ukelonn-db-derby-test">
-  <feature>pax-jdbc</feature>
   <feature>pax-jdbc-derby</feature>
  </feature>
 </features>
