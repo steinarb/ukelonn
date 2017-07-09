@@ -40,7 +40,7 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
                 insertMockData();
                 liquibase.updateSchema(connect);
             } catch (Exception e) {
-                logError("Failed to create derby test database schema", e);
+                logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
             }
         }
     }
