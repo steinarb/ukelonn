@@ -24,21 +24,30 @@ Jeg har også plan om å lage en branch med en versjon som bruker [[http://spark
 
 Dette trengs for å laste og teste ut denne programvaren
  1. Installer det som trengs:
+    - På debian/ubuntu/mint/etc., logg inn som root og gi følgende kommandoer for å installere alle avhengighetene:
+      #+BEGIN_EXAMPLE
+        apt-get update
+        apt-get install git maven openjdk-8-jdk
+      #+END_EXAMPLE
     - git: https://git-scm.com/download/win
-    - Java SDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    - Java SDK 1.8:
+      http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
     - Apache maven:
       - Download: https://maven.apache.org/download.cgi
       - Install: https://maven.apache.org/install.html
       - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-repositoriet
+ 2. Gjør en klon av git-arkivene som trengs for å bygge applikasjonen (kommandoer for bash (funker også i git bash på windows)):
     #+BEGIN_EXAMPLE
-      mkdir %HOME%\git
-      cd %HOME%\git
+      mkdir -p ~/git
+      cd ~/git
+      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+ 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
     #+BEGIN_EXAMPLE
-      cd %HOME%\git\ukelonn
+      cd ~/git/jsr330activator
+      mvn clean install
+      cd ../ukelonn
       git checkout using-vaadin
       mvn clean install
     #+END_EXAMPLE
@@ -56,7 +65,7 @@ Dette trengs for å laste og teste ut denne programvaren
  7. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
-    - For en administrator-bruker, brukernavn/passord: on/ola12
+    - For en administrator-bruker, brukernavn/passord: admin/admin
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
 
 * Beskrivelse av koden
@@ -91,7 +100,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
 
 Derbydatabasen i [[Utsjekk og bygg]] gjør det mulig å kjøre alt i webappen.  Men ettersom den kun kjører i minnet så er den ikke noe særlig å lagre data i.
 
-For å faktisk bruke webappen så må man ha en database og databasen jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
+For å faktisk bruke webappen så må man ha en database og database-systemet jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
 
 PostgreSQL er gratis og fri software og er lett å installere
  1. På windows, [[https://www.postgresql.org/download/windows/][last ned installeren]] og kjør den
@@ -144,7 +153,10 @@ Framgangsmåte:
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
+      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
+      cd ~/git/jsr330activator
+      mvn clean install
       cd ~/git/ukelonn
       git checkout using-vaadin
       mvn clean install
