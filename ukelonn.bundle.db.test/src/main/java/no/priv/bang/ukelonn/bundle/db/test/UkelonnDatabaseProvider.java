@@ -32,13 +32,13 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
 
     @Inject
     public void setLogService(LogService logService) {
-    	this.logService = logService;
+        this.logService = logService;
     }
 
     @Inject
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-    	this.dataSourceFactory = dataSourceFactory;
-    	if (this.dataSourceFactory != null) {
+        this.dataSourceFactory = dataSourceFactory;
+        if (this.dataSourceFactory != null) {
             createConnection();
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
             try {
@@ -48,7 +48,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
             } catch (Exception e) {
                 logError("Failed to create derby test database schema", e);
             }
-    	}
+        }
     }
 
     void createConnection() {
@@ -69,14 +69,14 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
      * @return A list of all changesets run by liqubase in the derby database
      */
     List<RanChangeSet> getChangeLogHistory() {
-    	try {
+        try {
             DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
             StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
             return logHistoryService.getRanChangeSets();
-    	} catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
-    	}
+        }
     }
 
     public UkelonnDatabase get() {

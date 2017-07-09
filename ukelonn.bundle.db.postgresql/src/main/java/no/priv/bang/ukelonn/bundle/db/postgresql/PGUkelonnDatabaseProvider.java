@@ -26,13 +26,13 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
 
     @Inject
     public void setLogService(LogService logService) {
-    	this.logService = logService;
+        this.logService = logService;
     }
 
     @Inject
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-    	this.dataSourceFactory = dataSourceFactory;
-    	if (dataSourceFactory != null) {
+        this.dataSourceFactory = dataSourceFactory;
+        if (dataSourceFactory != null) {
             createConnection();
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
             try {
@@ -42,7 +42,7 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
             } catch (Exception e) {
                 logError("Failed to create derby test database schema", e);
             }
-    	}
+        }
     }
 
     void createConnection() {

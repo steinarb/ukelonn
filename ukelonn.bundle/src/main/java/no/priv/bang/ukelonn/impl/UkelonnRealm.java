@@ -29,10 +29,10 @@ public class UkelonnRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-    	Set<String> roles = new HashSet<String>();
-    	roles.add("user");
-    	Set<String> administrators = new HashSet<String>();
-    	try {
+        Set<String> roles = new HashSet<String>();
+        roles.add("user");
+        Set<String> administrators = new HashSet<String>();
+        try {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
             ResultSet administratorsResults = ukelonnDatabase.query("select * from administrators_view");
             while (administratorsResults.next()) {
@@ -42,17 +42,17 @@ public class UkelonnRealm extends AuthorizingRealm {
             throw new AuthorizationException(e);
         }
 
-    	Collection<String> usernames = principals.byType(String.class);
-    	boolean allPrincipalsAreAdministrators = true;
-    	for (String username : usernames) {
+        Collection<String> usernames = principals.byType(String.class);
+        boolean allPrincipalsAreAdministrators = true;
+        for (String username : usernames) {
             allPrincipalsAreAdministrators &= administrators.contains(username);
         }
 
-    	if (allPrincipalsAreAdministrators) {
+        if (allPrincipalsAreAdministrators) {
             roles.add("administrator");
-    	}
+        }
 
-    	SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo(roles);
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo(roles);
         return authorizationInfo;
     }
 

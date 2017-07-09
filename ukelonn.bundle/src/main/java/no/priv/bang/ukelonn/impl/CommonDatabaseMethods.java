@@ -60,12 +60,11 @@ public class CommonDatabaseMethods {
     private static TransactionType mapTransactionType(ResultSet resultset) throws SQLException {
         TransactionType transactionType =
             new TransactionType(
-                                resultset.getInt("transaction_type_id"),
-                                resultset.getString("transaction_type_name"),
-                                resultset.getDouble("transaction_amount"),
-                                resultset.getBoolean("transaction_is_work"),
-                                resultset.getBoolean("transaction_is_wage_payment")
-                                );
+                resultset.getInt("transaction_type_id"),
+                resultset.getString("transaction_type_name"),
+                resultset.getDouble("transaction_amount"),
+                resultset.getBoolean("transaction_is_work"),
+                resultset.getBoolean("transaction_is_wage_payment"));
         return transactionType;
     }
 
@@ -188,7 +187,7 @@ public class CommonDatabaseMethods {
     }
 
     private static void makePaymentAmountsPositive(List<Transaction> payments) {
-    	for (Transaction payment : payments) {
+        for (Transaction payment : payments) {
             double amount = Math.abs(payment.getTransactionAmount());
             payment.setTransactionAmount(amount);
         }
@@ -228,37 +227,35 @@ public class CommonDatabaseMethods {
      * @return A list of 10 transactions with empty values for everything
      */
     public static Collection<? extends Transaction> getDummyTransactions() {
-    	int lengthOfDummyList = 10;
-    	TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
-    	ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
-    	for (int i = 0; i < lengthOfDummyList; i++) {
+        int lengthOfDummyList = 10;
+        TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
+        ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
+        for (int i = 0; i < lengthOfDummyList; i++) {
             Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0);
             dummyTransactions.add(dummyTransaction);
         }
 
-    	return (Collection<? extends Transaction>) dummyTransactions;
+        return (Collection<? extends Transaction>) dummyTransactions;
     }
 
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
         Transaction transaction =
             new Transaction(
-                            resultset.getInt("transaction_id"),
-                            mapTransactionType(resultset),
-                            resultset.getDate("transaction_time"),
-                            resultset.getDouble("transaction_amount")
-                            );
+                resultset.getInt("transaction_id"),
+                mapTransactionType(resultset),
+                resultset.getDate("transaction_time"),
+                resultset.getDouble("transaction_amount"));
         return transaction;
     }
 
     public static Account MapAccount(ResultSet results) throws SQLException {
         return new Account(
-                           results.getInt("account_id"),
-                           results.getInt("user_id"),
-                           results.getString("username"),
-                           results.getString("first_name"),
-                           results.getString("last_name"),
-                           results.getDouble("balance")
-                           );
+            results.getInt("account_id"),
+            results.getInt("user_id"),
+            results.getString("username"),
+            results.getString("first_name"),
+            results.getString("last_name"),
+            results.getDouble("balance"));
     }
 
     public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
@@ -277,11 +274,10 @@ public class CommonDatabaseMethods {
 
     public static void addJobTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
         String sql = String.format(
-                                   Locale.US, // Format the double correctly for SQL
-                                   getResourceAsString("/sql/query/insert_new_job_type.sql"),
-                                   newPaymentTypeName,
-                                   newPaymentTypeAmount
-                                   );
+            Locale.US, // Format the double correctly for SQL
+            getResourceAsString("/sql/query/insert_new_job_type.sql"),
+            newPaymentTypeName,
+            newPaymentTypeAmount);
 
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(sql);
@@ -289,14 +285,13 @@ public class CommonDatabaseMethods {
 
     public static void updateTransactionTypeInDatabase(Class<?> clazz, TransactionType modifiedJobType) {
         String sql = String.format(
-                                   Locale.US, // Format the double correctly for SQL
-                                   getResourceAsString("/sql/query/update_transaction_type.sql"),
-                                   modifiedJobType.getTransactionTypeName(),
-                                   modifiedJobType.getTransactionAmount(),
-                                   modifiedJobType.isTransactionIsWork() ? "true" : "false",
-                                   modifiedJobType.isTransactionIsWagePayment() ? "true" : "false",
-                                   modifiedJobType.getId()
-                                   );
+            Locale.US, // Format the double correctly for SQL
+            getResourceAsString("/sql/query/update_transaction_type.sql"),
+            modifiedJobType.getTransactionTypeName(),
+            modifiedJobType.getTransactionAmount(),
+            modifiedJobType.isTransactionIsWork() ? "true" : "false",
+            modifiedJobType.isTransactionIsWagePayment() ? "true" : "false",
+            modifiedJobType.getId());
 
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(sql);
@@ -304,42 +299,38 @@ public class CommonDatabaseMethods {
 
     public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
         String sql = String.format(
-                                   Locale.US, // Format the double correctly for SQL
-                                   getResourceAsString("/sql/query/insert_new_payment_type.sql"),
-                                   newPaymentTypeName,
-                                   newPaymentTypeAmount
-                                   );
+            Locale.US, // Format the double correctly for SQL
+            getResourceAsString("/sql/query/insert_new_payment_type.sql"),
+            newPaymentTypeName,
+            newPaymentTypeAmount);
 
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(sql);
     }
 
     public static void addUserToDatabase(
-                                         Class<?> clazz,
-                                         String newUserUsername,
-                                         String newUserPassword,
-                                         String newUserEmail,
-                                         String newUserFirstname,
-                                         String newUserLastname
-                                         )
+        Class<?> clazz,
+        String newUserUsername,
+        String newUserPassword,
+        String newUserEmail,
+        String newUserFirstname,
+        String newUserLastname)
     {
-      	String salt = getNewSalt();
+        String salt = getNewSalt();
         String hashedPassword = hashPassword(newUserPassword, salt);
 
         String insertUserSql = String.format(
-                                             getResourceAsString("/sql/query/insert_new_user.sql"),
-                                             newUserUsername,
-                                             hashedPassword,
-                                             salt,
-                                             newUserEmail,
-                                             newUserFirstname,
-                                             newUserLastname
-                                             );
+            getResourceAsString("/sql/query/insert_new_user.sql"),
+            newUserUsername,
+            hashedPassword,
+            salt,
+            newUserEmail,
+            newUserFirstname,
+            newUserLastname);
 
         String findUserIdFromUsernameSql = String.format(
-                                                         getResourceAsString("/sql/query/find_user_id_from_username.sql"),
-                                                         newUserUsername
-                                                         );
+            getResourceAsString("/sql/query/find_user_id_from_username.sql"),
+            newUserUsername);
 
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(insertUserSql);
@@ -348,9 +339,8 @@ public class CommonDatabaseMethods {
             if (userIdResultSet.next()) {
                 int userId = userIdResultSet.getInt("user_id");
                 String insertAccountSql = String.format(
-                                                        getResourceAsString("/sql/query/insert_new_account.sql"),
-                                                        userId
-                                                        );
+                    getResourceAsString("/sql/query/insert_new_account.sql"),
+                    userId);
                 database.update(insertAccountSql);
                 addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, userId);
             }
@@ -377,7 +367,7 @@ public class CommonDatabaseMethods {
     }
 
     public static int changePasswordForUser(String username, String password, Class<?> clazz) {
-      	String salt = getNewSalt();
+        String salt = getNewSalt();
         String hashedPassword = hashPassword(password, salt);
         StringBuilder update = sql("update users set password='").append(hashedPassword).append("', salt='").append(salt).append("' where username='").append(username).append("'");
         UkelonnDatabase database = connectionCheck(clazz);
@@ -386,20 +376,19 @@ public class CommonDatabaseMethods {
 
     public static int updateUserInDatabase(Class<?> classForLogging, User userToUpdate) {
         String updateUserSql = String.format(
-                                             getResourceAsString("/sql/query/update_user.sql"),
-                                             userToUpdate.getUsername(),
-                                             userToUpdate.getEmail(),
-                                             userToUpdate.getFirstname(),
-                                             userToUpdate.getLastname(),
-                                             userToUpdate.getUserId()
-                                             );
+            getResourceAsString("/sql/query/update_user.sql"),
+            userToUpdate.getUsername(),
+            userToUpdate.getEmail(),
+            userToUpdate.getFirstname(),
+            userToUpdate.getLastname(),
+            userToUpdate.getUserId());
 
         UkelonnDatabase database = connectionCheck(classForLogging);
         return database.update(updateUserSql.toString());
     }
 
     public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
-    	StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
+        StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
         UkelonnDatabase database = connectionCheck(clazz);
         database.update(deleteQuery.toString());
     }
@@ -445,9 +434,8 @@ public class CommonDatabaseMethods {
      */
     private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
         String sql = String.format(
-                                   getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
-                                   userId
-                                   );
+            getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"),
+            userId);
 
         database.update(sql);
     }
@@ -477,12 +465,11 @@ public class CommonDatabaseMethods {
     private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
         AdminUser adminUser;
         adminUser = new AdminUser(
-                                  resultset.getString("username"),
-                                  resultset.getInt("user_id"),
-                                  resultset.getInt("administrator_id"),
-                                  resultset.getString("first_name"),
-                                  resultset.getString("last_name")
-                                  );
+            resultset.getString("username"),
+            resultset.getInt("user_id"),
+            resultset.getInt("administrator_id"),
+            resultset.getString("first_name"),
+            resultset.getString("last_name"));
         return adminUser;
     }
 
