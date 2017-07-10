@@ -1,5 +1,6 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -23,7 +24,6 @@ import org.apache.shiro.util.ByteSource.Util;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
-import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class UkelonnRealm extends AuthorizingRealm {
 
@@ -34,7 +34,8 @@ public class UkelonnRealm extends AuthorizingRealm {
         Set<String> administrators = new HashSet<String>();
         try {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
-            ResultSet administratorsResults = ukelonnDatabase.query("select * from administrators_view");
+            PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view");
+            ResultSet administratorsResults = ukelonnDatabase.query(statement);
             while (administratorsResults.next()) {
                 administrators.add(administratorsResults.getString("username"));
             }
@@ -65,14 +66,15 @@ public class UkelonnRealm extends AuthorizingRealm {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         Object principal = usernamePasswordToken.getPrincipal();
         String username = usernamePasswordToken.getUsername();
-        StringBuilder passwordQuery = sql("select * from users where username='").append(username).append("'");
-        UkelonnDatabase ukelonnDatabase = connectionCheck();
-        ResultSet passwordResultSet = ukelonnDatabase.query(passwordQuery.toString());
-        if (passwordResultSet == null) {
-            throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
-        }
-
         try {
+            UkelonnDatabase ukelonnDatabase = connectionCheck();
+            PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?");
+            statement.setString(1, username);
+            ResultSet passwordResultSet = ukelonnDatabase.query(statement);
+            if (passwordResultSet == null) {
+                throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
+            }
+
             if (passwordResultSet.next()) {
                 String password = passwordResultSet.getString("password");
                 String salt = passwordResultSet.getString("salt");

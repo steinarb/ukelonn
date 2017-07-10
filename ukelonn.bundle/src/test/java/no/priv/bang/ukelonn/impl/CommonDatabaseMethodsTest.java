@@ -19,7 +19,7 @@ public class CommonDatabaseMethodsTest {
 
     @AfterClass
     public static void teardownForAllTests() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    	releaseFakeOsgiServices();
+        releaseFakeOsgiServices();
     }
 
     @Test
@@ -51,6 +51,10 @@ public class CommonDatabaseMethodsTest {
         assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
+        List<Transaction> jobs = getJobsFromAccount(account, getClass());
+        assertEquals(10, jobs.size());
+        List<Transaction> payments = getPaymentsFromAccount(account, getClass());
+        assertEquals(10, payments.size());
 
         Account accountForAdmin = getAccountInfoFromDatabase(getClass(), "on");
         assertEquals("on", accountForAdmin.getUsername());
@@ -65,7 +69,7 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testUpdateUserInDatabase() {
-    	try {
+        try {
             List<User> users = getUsers(getClass());
             User jad = findUserInListByName(users, "jad");
             int jadUserid = jad.getUserId();
@@ -95,9 +99,48 @@ public class CommonDatabaseMethodsTest {
             assertEquals(newEmail, jadAfterUpdate.getEmail());
             assertEquals(newFirstname, jadAfterUpdate.getFirstname());
             assertEquals(newLastname, jadAfterUpdate.getLastname());
-    	} finally {
+        } finally {
             restoreTestDatabase();
-    	}
+        }
+    }
+
+    @Test
+    public void testAddJobTypeToDatabase() {
+        // Verify precondition
+        List<TransactionType> jobTypesBefore = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        assertEquals(3, jobTypesBefore.size());
+
+        addJobTypeToDatabase(getClass(), "Klippe gress", 45);
+
+        // Verify that a job has been added
+        List<TransactionType> jobTypesAfter = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        assertEquals(4, jobTypesAfter.size());
+    }
+
+    @Test
+    public void testAddPaymentTypeToDatabase() {
+        // Verify precondition
+        List<TransactionType> jobTypesBefore = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        assertEquals(2, jobTypesBefore.size());
+
+        addPaymentTypeToDatabase(getClass(), "Sjekk", null);
+
+        // Verify that a job has been added
+        List<TransactionType> jobTypesAfter = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        assertEquals(3, jobTypesAfter.size());
+    }
+
+    @Test
+    public void testAddUserToDatabase() {
+        // Verify precondition
+        List<User> usersBefore = getUsers(getClass());
+        assertEquals(5, usersBefore.size());
+
+        addUserToDatabase(getClass(), "un", "zecret", "un@gmail.com", "User", "Name");
+
+        // Verify that a user has been added
+        List<User> usersAfter = getUsers(getClass());
+        assertEquals(6, usersAfter.size());
     }
 
     private User findUserInListByName(List<User> users, String username) {

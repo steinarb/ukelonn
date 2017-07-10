@@ -1,7 +1,8 @@
 package no.priv.bang.ukelonn.bundle.db.test;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
@@ -101,25 +102,49 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         return "Ukelonn Derby test database";
     }
 
-    public ResultSet query(String sqlQuery) {
+    @Override
+    public PreparedStatement prepareStatement(String sql) {
         try {
-            Statement statement = connect.getConnection().createStatement();
-            ResultSet result = statement.executeQuery(sqlQuery);
-            return result;
+            return connect.getConnection().prepareStatement(sql);
         } catch (Exception e) {
-            logError("Derby mock database query failed", e);
+            logError("Derby mock database failed to create prepared statement", e);
+            return null;
+        }
+    }
+
+    @Override
+    public ResultSet query(PreparedStatement statement) {
+        if (statement != null) {
+            try {
+                return statement.executeQuery();
+            } catch (SQLException e) {
+                logError("Derby mock database query failed", e);
+            } finally {
+                try {
+                    statement.closeOnCompletion();
+                } catch (SQLException e) {
+                    logError("Derby mock database prepared statement closeOnCompletion failed", e);
+                }
+            }
         }
 
         return null;
     }
 
-    public int update(String sql) {
-        try {
-            Statement statement = connect.getConnection().createStatement();
-            int result = statement.executeUpdate(sql);
-            return result;
-        } catch (Exception e) {
-            logError("Derby mock database query failed", e);
+    @Override
+    public int update(PreparedStatement statement) {
+        if (statement != null) {
+            try {
+                return statement.executeUpdate();
+            } catch (SQLException e) {
+                logError("Derby mock database update failed", e);
+            } finally {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    logError("Derby mock database prepared statement close failed", e);
+                }
+            }
         }
 
         return 0;

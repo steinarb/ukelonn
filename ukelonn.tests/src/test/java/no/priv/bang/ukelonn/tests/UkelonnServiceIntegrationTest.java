@@ -5,6 +5,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 import java.io.File;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -70,7 +71,9 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void testDerbyTestDatabase() throws SQLException {
-        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
+        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        statement.setString(1, "jad");
+        ResultSet onAccount = database.query(statement);
         assertNotNull(onAccount);
         assertTrue(onAccount.next()); // Verify that there is at least one result
         int account_id = onAccount.getInt("account_id");
