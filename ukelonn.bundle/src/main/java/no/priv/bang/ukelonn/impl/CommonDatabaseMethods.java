@@ -215,9 +215,9 @@ public class CommonDatabaseMethods {
         if (null != account) {
             UkelonnDatabase database = connectionCheck(clazz);
             try {
-                PreparedStatement statement = database.prepareStatement(getResourceAsString(sqlTemplate));
+                String sql = String.format(getResourceAsString(sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
+                PreparedStatement statement = database.prepareStatement(sql);
                 statement.setInt(1, account.getAccountId());
-                statement.setInt(2, NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
                 ResultSet resultSet = database.query(statement);
                 if (resultSet != null) {
                     while (resultSet.next()) {
