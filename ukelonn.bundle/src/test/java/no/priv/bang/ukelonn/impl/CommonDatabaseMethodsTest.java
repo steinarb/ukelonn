@@ -6,6 +6,12 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -143,6 +149,34 @@ public class CommonDatabaseMethodsTest {
         assertEquals(6, usersAfter.size());
     }
 
+    @Test
+    public void testChangePasswordForUser() {
+        UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
+        String username = "jad";
+        String originalPassword = "1ad";
+
+        // Verify old password
+        assertTrue(passwordMatcher(realm, username, originalPassword));
+
+        // Change the password
+        String newPassword = "nupass";
+        changePasswordForUser(username, newPassword, getClass());
+
+        // Verify new password
+        assertTrue(passwordMatcher(realm, username, newPassword));
+    }
+
+    private boolean passwordMatcher(UkelonnRealm realm, String username, String password) {
+        AuthenticationToken token = new UsernamePasswordToken(username, password.toCharArray());
+        try {
+            realm.getAuthenticationInfo(token);
+            return true;
+        } catch(AuthenticationException e) {
+            return false;
+        }
+    }
+
     private User findUserInListByName(List<User> users, String username) {
         for (User user : users) {
             if (username.equals(user.getUsername())) {
@@ -161,6 +195,13 @@ public class CommonDatabaseMethodsTest {
         }
 
         return null;
+    }
+
+    private CredentialsMatcher createSha256HashMatcher(int iterations) {
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
+        credentialsMatcher.setStoredCredentialsHexEncoded(false);
+        credentialsMatcher.setHashIterations(iterations);
+        return credentialsMatcher;
     }
 
 }
