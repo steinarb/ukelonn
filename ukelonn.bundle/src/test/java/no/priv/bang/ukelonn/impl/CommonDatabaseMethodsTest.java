@@ -4,9 +4,6 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -18,8 +15,6 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import no.priv.bang.ukelonn.UkelonnDatabase;
 
 public class CommonDatabaseMethodsTest {
 
@@ -155,12 +150,11 @@ public class CommonDatabaseMethodsTest {
     }
 
     @Test
-    public void testChangePasswordForUser() throws SQLException {
+    public void testChangePasswordForUser() {
         UkelonnRealm realm = new UkelonnRealm();
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         String username = "jad";
         String originalPassword = "1ad";
-        printUsersAndPasswords();
 
         // Verify old password
         assertTrue(passwordMatcher(realm, username, originalPassword));
@@ -168,23 +162,9 @@ public class CommonDatabaseMethodsTest {
         // Change the password
         String newPassword = "nupass";
         changePasswordForUser(username, newPassword, getClass());
-        printUsersAndPasswords();
 
         // Verify new password
         assertTrue(passwordMatcher(realm, username, newPassword));
-    }
-
-    private void printUsersAndPasswords() throws SQLException {
-        UkelonnDatabase database = connectionCheck(getClass());
-        PreparedStatement statement = database.prepareStatement("select username, password, salt from users");
-        ResultSet resultSet = database.query(statement);
-        System.out.println("username\tpassword\tsalt");
-        while(resultSet.next()) {
-            String username = resultSet.getString(1);
-            String password = resultSet.getString(2);
-            String salt = resultSet.getString(3);
-            System.out.println(username + "\t" + password + "\t" + salt);
-        }
     }
 
     private boolean passwordMatcher(UkelonnRealm realm, String username, String password) {
