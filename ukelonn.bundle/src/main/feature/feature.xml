@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle">
- <repository>mvn:no.priv.bang.ukelonn/ukelonn.api/${project.version}/xml/features</repository>
- <feature name="ukelonn">
-  <feature prerequisite="true">wrap</feature>
-  <feature>pax-cdi-weld</feature>
-  <feature>pax-jsf-support</feature>
-  <feature>ukelonn-api</feature>
-  <bundle start-level="80">mvn:javax.validation/validation-api/${javax.validation}</bundle>
-  <bundle start-level="80">mvn:org.apache.shiro/shiro-core/${dependency.shiro.version}</bundle>
-  <bundle start-level="80">mvn:org.apache.shiro/shiro-web/${dependency.shiro.version}</bundle>
-  <bundle start-level="80">mvn:org.ops4j.pax.shiro/pax-shiro-faces/${dependency.pax.shiro.version}</bundle>
-  <bundle start-level="80">mvn:org.primefaces/primefaces/${primefaces.version}</bundle>
- </feature>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.api/${project.version}/xml/features</repository>
+    <feature name="ukelonn">
+        <feature prerequisite="true">wrap</feature>
+        <feature>pax-cdi-weld</feature>
+        <feature>pax-jsf-support</feature>
+        <feature>ukelonn-api</feature>
+        <bundle start-level="80">mvn:javax.validation/validation-api/${javax.validation}</bundle>
+        <bundle start-level="80">mvn:org.apache.shiro/shiro-core/${dependency.shiro.version}</bundle>
+        <bundle start-level="80">mvn:org.apache.shiro/shiro-web/${dependency.shiro.version}</bundle>
+        <bundle start-level="80">mvn:org.ops4j.pax.shiro/pax-shiro-faces/${dependency.pax.shiro.version}</bundle>
+        <bundle start-level="80">mvn:org.primefaces/primefaces/${primefaces.version}</bundle>
+    </feature>
 </features>
