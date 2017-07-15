@@ -1,5 +1,6 @@
 package no.priv.bang.ukelonn.impl;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,10 +67,11 @@ public class UkelonnAdminController {
 
     private void getAdministratorUserInfoFromDatabase(String username) {
         UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getClass());
-        StringBuilder query = sql("select * from administrators_view where username='").append(username).append("'");
-        ResultSet resultset = database.query(query.toString());
-        if (resultset != null) {
-            try {
+        PreparedStatement statement = database.prepareStatement("select * from administrators_view where username=?");
+        try {
+            statement.setString(1, username);
+            ResultSet resultset = database.query(statement);
+            if (resultset != null) {
                 if (resultset.next()) {
                     setAdministratorUserId(resultset.getInt("user_id"));
                     setAdministratorId(resultset.getInt("administrator_id"));
@@ -78,9 +80,9 @@ public class UkelonnAdminController {
                 }
 
                 transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-            } catch (SQLException e) {
-                logError(UkelonnAdminController.class, "Error getting administrator user info from the database", e);
             }
+        } catch (SQLException e) {
+            logError(UkelonnAdminController.class, "Error getting administrator user info from the database", e);
         }
     }
 
