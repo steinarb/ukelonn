@@ -64,9 +64,9 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void ukelonnServiceIntegrationTest() {
-    	// Verify that the service could be injected
-    	assertNotNull(ukelonnService);
-    	assertEquals("Hello world!", ukelonnService.getMessage());
+        // Verify that the service could be injected
+        assertNotNull(ukelonnService);
+        assertEquals("Hello world!", ukelonnService.getMessage());
     }
 
     @Test
@@ -91,15 +91,15 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     @Ignore
     @Test
     public void webappAccessTest() throws Exception {
-    	Thread.sleep(20*1000);
+        Thread.sleep(20*1000);
         HttpTestClient testclient = HttpTestClientFactory.createDefaultTestClient();
-    	try {
+        try {
             testclient.doGET("http://localhost:8081/ukelonn/").withReturnCode(404);
             String response = testclient.executeTest();
             assertEquals("", response);
-    	} finally {
+        } finally {
             testclient = null;
-    	}
+        }
     }
 
 }
