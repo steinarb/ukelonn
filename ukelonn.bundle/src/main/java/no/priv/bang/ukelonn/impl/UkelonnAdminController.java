@@ -124,9 +124,9 @@ public class UkelonnAdminController {
     }
 
     private void setBankAsDefaultPaymentTypeWithBalanceAsAmount() {
-    	TransactionType payToBank = findPayToBank(getPaymentTypes());
-    	setNewPaymentType(payToBank);
-    	setNewPayment(getBalanse());
+        TransactionType payToBank = findPayToBank(getPaymentTypes());
+        setNewPaymentType(payToBank);
+        setNewPayment(getBalanse());
     }
 
     TransactionType findPayToBank(List<TransactionType> paymentTypes) {
@@ -141,7 +141,7 @@ public class UkelonnAdminController {
     }
 
     public List<Account> getAccounts() {
-    	return CommonDatabaseMethods.getAccounts(getClass());
+        return CommonDatabaseMethods.getAccounts(getClass());
     }
 
     public double getBalanse() {
@@ -231,19 +231,19 @@ public class UkelonnAdminController {
     }
 
     public void onJobTypeCellEdit(CellEditEvent event) {
-        /*    	if (event.getNewValue() == event.getOldValue()) {
-    		return; // No value change means no updates done
-                }
+        /*     if (event.getNewValue() == event.getOldValue()) {
+               return; // No value change means no updates done
+               }
         */
-    	DataTable dataTable = (DataTable) event.getComponent();
-    	TransactionType editedJobType = (TransactionType) dataTable.getRowData();
-        /*    	String headerText = event.getColumn().getHeaderText();
-                String newValue = (String) event.getNewValue();
-                if (headerText == "Navn") {
-    		editedJobType.setTransactionTypeName(newValue);
-                } else if (headerText == "Beløp") {
-    		editedJobType.setTransactionAmount(Double.valueOf(newValue));
-                }
+        DataTable dataTable = (DataTable) event.getComponent();
+        TransactionType editedJobType = (TransactionType) dataTable.getRowData();
+        /*     String headerText = event.getColumn().getHeaderText();
+               String newValue = (String) event.getNewValue();
+               if (headerText == "Navn") {
+               editedJobType.setTransactionTypeName(newValue);
+               } else if (headerText == "Beløp") {
+               editedJobType.setTransactionAmount(Double.valueOf(newValue));
+               }
         */
         updateTransactionTypeInDatabase(getClass(), editedJobType);
     }
@@ -282,7 +282,7 @@ public class UkelonnAdminController {
     }
 
     public void setNewUserUsername(String username) {
-    	newUserUsername = safeTrim(username);
+        newUserUsername = safeTrim(username);
     }
 
     public String getNewUserPassword1() {
@@ -314,7 +314,7 @@ public class UkelonnAdminController {
     }
 
     public void setNewUserFirstname(String firstname) {
-    	newUserFirstname = safeTrim(firstname);
+        newUserFirstname = safeTrim(firstname);
     }
 
     public String getNewUserLastname() {
@@ -322,7 +322,7 @@ public class UkelonnAdminController {
     }
 
     public void setNewUserLastname(String lastname) {
-    	newUserLastname = safeTrim(lastname);
+        newUserLastname = safeTrim(lastname);
     }
 
     public void registerNewUser(ActionEvent event) {
@@ -335,12 +335,12 @@ public class UkelonnAdminController {
             !isNullEmptyOrBlank(getNewUserLastname()))
         {
             addUserToDatabase(
-                              getClass(),
-                              getNewUserUsername(),
-                              getNewUserPassword1(),
-                              getNewUserEmail(),
-                              getNewUserFirstname(),
-                              getNewUserLastname()
+                getClass(),
+                getNewUserUsername(),
+                getNewUserPassword1(),
+                getNewUserEmail(),
+                getNewUserFirstname(),
+                getNewUserLastname()
                               );
             clearNewUserValues();
         }
@@ -364,11 +364,11 @@ public class UkelonnAdminController {
     }
 
     public void setChangePasswordForUser(User user) {
-    	if (!isTheSameUser(changePasswordForUser, user))
-    	{
+        if (!isTheSameUser(changePasswordForUser, user))
+        {
             this.changePasswordForUser = user;
             blankPasswords();
-    	}
+        }
     }
 
     private void blankPasswords() {
@@ -428,7 +428,7 @@ public class UkelonnAdminController {
         transactionTypes = refreshAccount(getClass(), account);
         if (jobsSelectedForDelete != null) {
             try {
-            	jobsSelectedForDelete.clear();
+                jobsSelectedForDelete.clear();
             } catch(UnsupportedOperationException e) {
                 // The list of jobs to delete was unmodifiable, skip and continue
             }
