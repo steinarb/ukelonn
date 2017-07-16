@@ -16,25 +16,23 @@ public class MockLogService implements LogService {
     }
 
     public void log(int level, String message) {
-    	String messageWithLevel = errorLevel[level] + message;
-    	logmessages.add(messageWithLevel);
+        String messageWithLevel = errorLevel[level] + message;
+        logmessages.add(messageWithLevel);
         System.err.println(messageWithLevel);
     }
 
     public void log(int level, String message, Throwable exception) {
-    	String messageWithLevel = errorLevel[level] + message;
-    	logmessages.add(messageWithLevel);
+        String messageWithLevel = errorLevel[level] + message;
+        logmessages.add(messageWithLevel);
         System.err.println(messageWithLevel);
         exception.printStackTrace();
     }
 
-    @SuppressWarnings("rawtypes")
     public void log(ServiceReference sr, int level, String message) {
         // TODO Auto-generated method stub
 
     }
 
-    @SuppressWarnings("rawtypes")
     public void log(ServiceReference sr, int level, String message, Throwable exception) {
         // TODO Auto-generated method stub
 

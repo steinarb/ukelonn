@@ -22,8 +22,4 @@ public class CommonStringMethods {
         return string.trim();
     }
 
-    public static StringBuilder sql(String initialStatement) {
-    	return new StringBuilder(initialStatement);
-    }
-
 }

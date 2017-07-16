@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -38,7 +39,9 @@ public class PGUkelonnDatabaseProviderTest {
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
-        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
+        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        statement.setString(1, "jad");
+        ResultSet onAccount = database.query(statement);
         assertNotNull("Expected returned account JDBC resultset not to be null", onAccount);
         while (onAccount.next()) {
             int account_id = onAccount.getInt("account_id");
@@ -65,23 +68,26 @@ public class PGUkelonnDatabaseProviderTest {
         UkelonnDatabase database = provider.get();
 
         // Test that the database has users
-        ResultSet allUsers = database.query("select * from users");
+        PreparedStatement statement = database.prepareStatement("select * from users");
+        ResultSet allUsers = database.query(statement);
         assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
         assertThat(allUserCount, greaterThan(0));
 
         // Test that the database administrators table has rows
-        ResultSet allAdministrators = database.query("select * from administrators");
+        PreparedStatement statement2 = database.prepareStatement("select * from administrators");
+        ResultSet allAdministrators = database.query(statement2);
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
         assertThat(allAdminstratorsCount, greaterThan(0));
 
         // Test that the administrators_view is present
-        ResultSet allAdministratorsView = database.query("select * from administrators_view");
+        PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
+        ResultSet allAdministratorsView = database.query(statement3);
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
-        assertEquals(2, allAdminstratorsViewCount);
+        assertEquals(1, allAdminstratorsViewCount);
     }
 
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {

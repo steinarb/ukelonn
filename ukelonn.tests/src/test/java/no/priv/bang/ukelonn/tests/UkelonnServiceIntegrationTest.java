@@ -5,6 +5,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 import java.io.File;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.inject.Inject;
@@ -53,7 +54,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         return options(
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
             configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
-            systemTimeout(120000),
+            systemTimeout(720000),
             keepRuntimeFolder(),
             logLevel(LogLevel.DEBUG),
             editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
@@ -90,7 +91,9 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void testDerbyTestDatabase() throws SQLException {
-        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
+        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        statement.setString(1, "jad");
+        ResultSet onAccount = database.query(statement);
         assertNotNull(onAccount);
         assertTrue(onAccount.next()); // Verify that there is at least one result
         int account_id = onAccount.getInt("account_id");

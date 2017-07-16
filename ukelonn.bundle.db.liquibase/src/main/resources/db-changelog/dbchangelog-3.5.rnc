@@ -690,7 +690,7 @@ start |= addColumn
 addColumn =
   element addColumn {
     element column {
-      columnType,
+      columnAttributes,
       attribute beforeColumn { xsd:string }?,
       attribute afterColumn { xsd:string }?,
       attribute position { xsd:integer }?
