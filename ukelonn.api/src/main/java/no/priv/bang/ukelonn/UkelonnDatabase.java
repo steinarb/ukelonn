@@ -1,13 +1,16 @@
 package no.priv.bang.ukelonn;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public interface UkelonnDatabase {
 
     String getName();
 
-    ResultSet query(String sql);
+    PreparedStatement prepareStatement(String sql);
 
-    int update(String sql);
+    ResultSet query(PreparedStatement statement);
+
+    int update(PreparedStatement statement);
 
 }

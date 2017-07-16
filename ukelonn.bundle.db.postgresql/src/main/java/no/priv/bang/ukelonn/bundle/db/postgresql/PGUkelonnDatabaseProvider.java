@@ -1,7 +1,8 @@
 package no.priv.bang.ukelonn.bundle.db.postgresql;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -26,13 +27,13 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
 
     @Inject
     public void setLogService(LogService logService) {
-    	this.logService = logService;
+        this.logService = logService;
     }
 
     @Inject
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-    	this.dataSourceFactory = dataSourceFactory;
-    	if (dataSourceFactory != null) {
+        this.dataSourceFactory = dataSourceFactory;
+        if (dataSourceFactory != null) {
             createConnection();
             UkelonnLiquibase liquibase = new UkelonnLiquibase();
             try {
@@ -40,9 +41,9 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
                 insertMockData();
                 liquibase.updateSchema(connect);
             } catch (Exception e) {
-                logError("Failed to create derby test database schema", e);
+                logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
             }
-    	}
+        }
     }
 
     void createConnection() {
@@ -78,25 +79,49 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
         return "Ukelonn PostgreSQL database";
     }
 
-    public ResultSet query(String sqlQuery) {
+    @Override
+    public PreparedStatement prepareStatement(String sql) {
         try {
-            Statement statement = connect.getConnection().createStatement();
-            ResultSet result = statement.executeQuery(sqlQuery);
-            return result;
+            return connect.getConnection().prepareStatement(sql);
         } catch (Exception e) {
-            logError("PostgreSQL database query failed", e);
+            logError("PostgreSQL database failed to create prepared statement", e);
+            return null;
+        }
+    }
+
+    @Override
+    public ResultSet query(PreparedStatement statement) {
+        if (statement != null) {
+            try {
+                return statement.executeQuery();
+            } catch (SQLException e) {
+                logError("PostgreSQL database query failed", e);
+            } finally {
+                try {
+                    statement.closeOnCompletion();
+                } catch (SQLException e) {
+                    logError("PostgreSQL database prepared statement closeOnCompletion failed", e);
+                }
+            }
         }
 
         return null;
     }
 
-    public int update(String sql) {
-        try {
-            Statement statement = connect.getConnection().createStatement();
-            int result = statement.executeUpdate(sql);
-            return result;
-        } catch (Exception e) {
-            logError("PostgreSQL database update failed", e);
+    @Override
+    public int update(PreparedStatement statement) {
+        if (statement != null) {
+            try {
+                return statement.executeUpdate();
+            } catch (SQLException e) {
+                logError("PostgreSQL database update failed", e);
+            } finally {
+                try {
+                    statement.closeOnCompletion();
+                } catch (SQLException e) {
+                    logError("PostgreSQL database prepared statement close failed", e);
+                }
+            }
         }
 
         return 0;

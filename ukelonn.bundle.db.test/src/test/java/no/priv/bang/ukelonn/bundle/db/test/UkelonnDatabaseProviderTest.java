@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -51,7 +52,9 @@ public class UkelonnDatabaseProviderTest {
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
-        ResultSet onAccount = database.query("select * from accounts_view where username='jad'");
+        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        statement.setString(1, "jad");
+        ResultSet onAccount = database.query(statement);
         assertNotNull(onAccount);
         assertTrue(onAccount.next());
         int account_id = onAccount.getInt("account_id");
@@ -79,19 +82,22 @@ public class UkelonnDatabaseProviderTest {
 
         UkelonnDatabase database = provider.get();
         // Test that the administrators_view is present
-        ResultSet allUsers = database.query("select * from users");
+        PreparedStatement statement1 = database.prepareStatement("select * from users");
+        ResultSet allUsers = database.query(statement1);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
         assertEquals(5, allUserCount);
 
         // Test that the administrators_view is present
-        ResultSet allAdministrators = database.query("select * from administrators");
+        PreparedStatement statement2 = database.prepareStatement("select * from administrators");
+        ResultSet allAdministrators = database.query(statement2);
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
         assertEquals(3, allAdminstratorsCount);
 
         // Test that the administrators_view is present
-        ResultSet allAdministratorsView = database.query("select * from administrators_view");
+        PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
+        ResultSet allAdministratorsView = database.query(statement3);
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
         assertEquals(3, allAdminstratorsViewCount);
@@ -107,16 +113,27 @@ public class UkelonnDatabaseProviderTest {
         UkelonnDatabase database = provider.get();
 
         // Verify that the user isn't present
-        ResultSet userJjdBeforeInsert = database.query("select * from users where username='jjd'");
+        PreparedStatement statement = database.prepareStatement("select * from users where username=?");
+        statement.setString(1, "jjd");
+        ResultSet userJjdBeforeInsert = database.query(statement);
         int numberOfUserJjdBeforeInsert = 0;
         while (userJjdBeforeInsert.next()) { ++numberOfUserJjdBeforeInsert; }
         assertEquals(0, numberOfUserJjdBeforeInsert);
 
-        int count = provider.update("insert into users (username,password,salt,email,first_name,last_name) values ('jjd','sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=', '9SFDvohxZkZ9eWHiSEoMDw==','jjd@gmail.com','James','Davies')");
+        PreparedStatement updateStatement = database.prepareStatement("insert into users (username,password,salt,email,first_name,last_name) values (?, ?, ?, ?, ?, ?)");
+        updateStatement.setString(1, "jjd");
+        updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
+        updateStatement.setString(3, "9SFDvohxZkZ9eWHiSEoMDw==");
+        updateStatement.setString(4, "jjd@gmail.com");
+        updateStatement.setString(5, "James");
+        updateStatement.setString(6, "Davies");
+        int count = provider.update(updateStatement);
         assertEquals(1, count);
 
         // Verify that the user is now present
-        ResultSet userJjd = database.query("select * from users where username='jjd'");
+        PreparedStatement statement2 = database.prepareStatement("select * from users where username=?");
+        statement2.setString(1, "jjd");
+        ResultSet userJjd = database.query(statement2);
         int numberOfUserJjd = 0;
         while (userJjd.next()) { ++numberOfUserJjd; }
         assertEquals(1, numberOfUserJjd);
@@ -131,12 +148,17 @@ public class UkelonnDatabaseProviderTest {
 
         UkelonnDatabase database = provider.get();
 
-        // A bad select returns a null instead of a resultset
-        ResultSet result = database.query("zelect * from uzers");
+        // A bad select returns a null instead of a prepared statement
+        PreparedStatement statement = database.prepareStatement("zelect * from uzers");
+        assertNull(statement);
+        // A null statement in a query results in a null result (and no other errors)
+        ResultSet result = database.query(statement);
         assertNull(result);
 
         // A bad update returns 0 instead of the number of rows inserted
-        int updateResult = database.update("inzert into uzers (username) values ('zed')");
+        PreparedStatement statement2 = database.prepareStatement("inzert into uzers (username) values ('zed')");
+        assertNull(statement2);
+        int updateResult = database.update(statement2);
         assertEquals(0, updateResult);
     }
 
@@ -147,7 +169,8 @@ public class UkelonnDatabaseProviderTest {
         provider.setDataSourceFactory(null); // Test what happens with a null datasource injection
 
         UkelonnDatabase database = provider.get();
-        ResultSet result = database.query("select * from users");
+        PreparedStatement statement = database.prepareStatement("select * from users");
+        ResultSet result = database.query(statement);
         assertNull(result);
     }
 
@@ -161,7 +184,8 @@ public class UkelonnDatabaseProviderTest {
         provider.setDataSourceFactory(dataSourceFactory); // Test what happens with failing datasource injection
 
         UkelonnDatabase database = provider.get();
-        ResultSet result = database.query("select * from users");
+        PreparedStatement statement = database.prepareStatement("select * from users");
+        ResultSet result = database.query(statement);
         assertNull(result);
     }
 
@@ -189,11 +213,11 @@ public class UkelonnDatabaseProviderTest {
      */
     @Test
     public void testCreateHashedPasswords() {
-    	String[] usernames = { "on", "kn", "jad", "jod" };
-    	String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
-    	RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
-    	System.out.println("username, password, salt");
-    	for (int i=0; i<usernames.length; ++i) {
+     String[] usernames = { "on", "kn", "jad", "jod" };
+     String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
+     RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+     System.out.println("username, password, salt");
+     for (int i=0; i<usernames.length; ++i) {
             // First hash the password
             String username = usernames[i];
             String password = unhashedPasswords[i];
@@ -209,7 +233,7 @@ public class UkelonnDatabaseProviderTest {
 
             // Print out the username, hashed password, and salt
             System.out.println(String.format("'%s', '%s', '%s'", username, hashedPassword, salt));
-    	}
+     }
     }
 
     private CredentialsMatcher createSha256HashMatcher(int iterations) {
