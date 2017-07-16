@@ -388,7 +388,7 @@ public class CommonDatabaseMethods {
         try {
             statement.setString(1, hashedPassword);
             statement.setString(2, salt);
-            statement.setString(3, password);
+            statement.setString(3, username);
             return database.update(statement);
         } catch (SQLException e) {
             logError(clazz, "Failed to set value in prepared statement", e);

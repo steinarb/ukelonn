@@ -4,8 +4,16 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -143,6 +151,98 @@ public class CommonDatabaseMethodsTest {
         assertEquals(6, usersAfter.size());
     }
 
+    @Test
+    public void testChangePasswordForUser() {
+        UkelonnRealm realm = new UkelonnRealm();
+        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
+        String username = "jad";
+        String originalPassword = "1ad";
+
+        // Verify old password
+        assertTrue(passwordMatcher(realm, username, originalPassword));
+
+        // Change the password
+        String newPassword = "nupass";
+        changePasswordForUser(username, newPassword, getClass());
+
+        // Verify new password
+        assertTrue(passwordMatcher(realm, username, newPassword));
+    }
+
+    @Test
+    public void testUpdateTransactionTypeInDatabase() {
+        // Verify the initial state of the transaction type that is to be modified
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        TransactionType transactionTypeBeforeModification = transactionTypes.get(3);
+        assertEquals("Gå med resirk", transactionTypeBeforeModification.getTransactionTypeName());
+        assertEquals(Double.valueOf(35), transactionTypeBeforeModification.getTransactionAmount());
+        assertTrue(transactionTypeBeforeModification.isTransactionIsWork());
+        assertFalse(transactionTypeBeforeModification.isTransactionIsWagePayment());
+
+        // Modify the transaction type
+        transactionTypeBeforeModification.setTransactionTypeName("Vaske tøy");
+        transactionTypeBeforeModification.setTransactionAmount(75.0);
+        updateTransactionTypeInDatabase(getClass(), transactionTypeBeforeModification);
+
+        // Verify the changed state of the transaction type in the database
+        transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        TransactionType transactionTypeAfterModification = transactionTypes.get(3);
+        assertEquals("Vaske tøy", transactionTypeAfterModification.getTransactionTypeName());
+        assertEquals(Double.valueOf(75), transactionTypeAfterModification.getTransactionAmount());
+        assertTrue(transactionTypeAfterModification.isTransactionIsWork());
+        assertFalse(transactionTypeAfterModification.isTransactionIsWagePayment());
+    }
+
+    @Test
+    public void testDeleteTransactions() {
+        // Verify initial job size for a user
+        Account account = getAccountInfoFromDatabase(getClass(), "jod");
+        List<Transaction> initialJobsForJod = getJobsFromAccount(account, getClass());
+        assertEquals(2, initialJobsForJod.size());
+
+        // Add two jobs that are to be deleted later
+        registerNewJobInDatabase(getClass(), account, 1, 45);
+        registerNewJobInDatabase(getClass(), account, 2, 45);
+
+        // Verify the number of jobs for the user in the database before deleting any
+        List<Transaction> jobs = getJobsFromAccount(account, getClass());
+        assertEquals(4, jobs.size());
+
+        // Delete two jobs for the user
+        List<Transaction> jobsToDelete = Arrays.asList(jobs.get(0), jobs.get(2));
+        deleteTransactions(getClass(), jobsToDelete);
+
+        // Verify that the jobs has been deleted
+        List<Transaction> jobsAfterDelete = getJobsFromAccount(account, getClass());
+        assertEquals(2, jobsAfterDelete.size());
+    }
+
+    @Test
+    public void testAddNewPaymentToAccount() {
+        // Verify initial number of payments for a user
+        Account account = getAccountInfoFromDatabase(getClass(), "jod");
+        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(account, getClass());
+        assertEquals(1, initialPaymentsForJod.size());
+
+        // Register a payment
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        addNewPaymentToAccount(getClass(), account, transactionTypes.get(4), account.getBalance());
+
+        // Verify that a payment have been added
+        List<Transaction> paymentsForJod = getPaymentsFromAccount(account, getClass());
+        assertEquals(2, paymentsForJod.size());
+    }
+
+    private boolean passwordMatcher(UkelonnRealm realm, String username, String password) {
+        AuthenticationToken token = new UsernamePasswordToken(username, password.toCharArray());
+        try {
+            realm.getAuthenticationInfo(token);
+            return true;
+        } catch(AuthenticationException e) {
+            return false;
+        }
+    }
+
     private User findUserInListByName(List<User> users, String username) {
         for (User user : users) {
             if (username.equals(user.getUsername())) {
@@ -161,6 +261,13 @@ public class CommonDatabaseMethodsTest {
         }
 
         return null;
+    }
+
+    private CredentialsMatcher createSha256HashMatcher(int iterations) {
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
+        credentialsMatcher.setStoredCredentialsHexEncoded(false);
+        credentialsMatcher.setHashIterations(iterations);
+        return credentialsMatcher;
     }
 
 }
