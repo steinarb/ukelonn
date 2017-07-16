@@ -22,7 +22,6 @@ import org.apache.shiro.util.ByteSource.Util;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
-import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class CommonDatabaseMethods {
 
@@ -415,7 +414,7 @@ public class CommonDatabaseMethods {
     }
 
     public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
-        StringBuilder deleteQuery = sql("delete from transactions where transaction_id in (").append(joinIds(transactions)).append(")");
+        String deleteQuery = "delete from transactions where transaction_id in (" + joinIds(transactions) + ")";
         UkelonnDatabase database = connectionCheck(clazz);
         PreparedStatement statement = database.prepareStatement(deleteQuery.toString());
         database.update(statement);
