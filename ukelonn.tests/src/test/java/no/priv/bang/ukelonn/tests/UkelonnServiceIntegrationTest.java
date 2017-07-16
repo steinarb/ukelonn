@@ -11,6 +11,7 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -20,6 +21,8 @@ import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.web.itest.base.client.HttpTestClient;
+import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
