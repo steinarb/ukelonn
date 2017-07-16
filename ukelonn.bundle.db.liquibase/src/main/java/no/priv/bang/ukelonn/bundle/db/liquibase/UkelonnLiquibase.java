@@ -15,6 +15,7 @@ public class UkelonnLiquibase {
         DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
         Liquibase liquibase = new Liquibase("db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
+        liquibase.clearCheckSums();
         liquibase.update("");
     }
 
