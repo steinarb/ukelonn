@@ -150,6 +150,16 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
         return 0;
     }
 
+    @Override
+    public void forceReleaseLocks() {
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        try {
+            liquibase.forceReleaseLocks(connect);
+        } catch (Exception e) {
+            logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);
+        }
+    }
+
     private void logError(String message, Exception exception) {
         if (logService != null) {
             logService.log(LogService.LOG_ERROR, message, exception);

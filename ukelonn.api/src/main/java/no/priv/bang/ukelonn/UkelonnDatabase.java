@@ -13,4 +13,6 @@ public interface UkelonnDatabase {
 
     int update(PreparedStatement statement);
 
+    void forceReleaseLocks();
+
 }
