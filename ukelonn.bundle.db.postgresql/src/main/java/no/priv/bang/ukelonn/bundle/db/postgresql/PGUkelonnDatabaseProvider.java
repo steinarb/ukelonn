@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016-2017 Steinar Bang
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
 package no.priv.bang.ukelonn.bundle.db.postgresql;
 
 import java.sql.PreparedStatement;
@@ -125,6 +140,16 @@ public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Uke
         }
 
         return 0;
+    }
+
+    @Override
+    public void forceReleaseLocks() {
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        try {
+            liquibase.forceReleaseLocks(connect);
+        } catch (Exception e) {
+            logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);
+        }
     }
 
     private void logError(String message, Exception exception) {
