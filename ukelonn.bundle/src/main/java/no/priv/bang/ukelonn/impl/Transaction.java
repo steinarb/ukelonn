@@ -9,7 +9,7 @@ public class Transaction {
     private double transactionAmount;
 
     public Transaction(int id,TransactionType transactionType, Date transactionTime, double transactionAmount) {
-    	setId(id);
+        setId(id);
         setTransactionType(transactionType);
         setTransactionTime(transactionTime);
         setTransactionAmount(transactionAmount);
@@ -26,7 +26,7 @@ public class Transaction {
     }
 
     public String getName() {
-    	return this.transactionType.getTransactionTypeName();
+        return this.transactionType.getTransactionTypeName();
     }
 
 

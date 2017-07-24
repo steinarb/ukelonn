@@ -35,7 +35,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
 
     @Inject
     public void setUkelonnDatabase(UkelonnDatabase database) {
-    	this.database = database;
+        this.database = database;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
 
     @Inject
     public void setLogservice(LogService logservice) {
-    	this.logservice = logservice;
+        this.logservice = logservice;
     }
 
     @Override

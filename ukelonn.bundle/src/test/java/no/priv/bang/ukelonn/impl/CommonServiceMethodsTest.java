@@ -38,8 +38,8 @@ public class CommonServiceMethodsTest {
 
     @Test
     public void testLogError() {
-    	// First log when there are noe services available
-    	MockLogService logservice = new MockLogService();
+        // First log when there are noe services available
+        MockLogService logservice = new MockLogService();
         CommonServiceMethods.logError(getClass(), "This is an error");
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 
@@ -57,9 +57,9 @@ public class CommonServiceMethodsTest {
 
     @Test
     public void testLogErrorWithException() {
-    	// First log when there are noe services available
-    	Exception exception = new Exception("This is a fake exception");
-    	MockLogService logservice = new MockLogService();
+        // First log when there are noe services available
+        Exception exception = new Exception("This is a fake exception");
+        MockLogService logservice = new MockLogService();
         CommonServiceMethods.logError(getClass(), "This is an error", exception);
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 

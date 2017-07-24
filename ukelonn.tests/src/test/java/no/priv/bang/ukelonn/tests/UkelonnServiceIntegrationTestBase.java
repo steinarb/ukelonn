@@ -19,7 +19,7 @@ public class UkelonnServiceIntegrationTestBase {
     private String mavenProjectVersion;
 
     public UkelonnServiceIntegrationTestBase() {
-    	try {
+        try {
             Properties examProperties = new Properties();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("exam.properties");
             examProperties.load(inputStream);
@@ -38,7 +38,7 @@ public class UkelonnServiceIntegrationTestBase {
         if (res == null) {
             throw new RuntimeException("Config resource " + path + " not found");
         }
-    	return new File(res.getFile());
+        return new File(res.getFile());
     }
 
     /***

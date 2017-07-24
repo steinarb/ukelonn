@@ -30,7 +30,7 @@ public class UkelonnRealmTestMissingServices {
 
     @Before
     public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    	releaseFakeOsgiServices();
+        releaseFakeOsgiServices();
     }
 
     /***

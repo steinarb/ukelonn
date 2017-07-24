@@ -15,14 +15,14 @@ public class MockLogService implements LogService {
     }
 
     public void log(int level, String message) {
-    	String messageWithLevel = errorLevel[level] + message;
-    	logmessages.add(messageWithLevel);
+        String messageWithLevel = errorLevel[level] + message;
+        logmessages.add(messageWithLevel);
         System.err.println(messageWithLevel);
     }
 
     public void log(int level, String message, Throwable exception) {
-    	String messageWithLevel = errorLevel[level] + message;
-    	logmessages.add(messageWithLevel);
+        String messageWithLevel = errorLevel[level] + message;
+        logmessages.add(messageWithLevel);
         System.err.println(messageWithLevel);
         exception.printStackTrace();
     }

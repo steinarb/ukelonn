@@ -66,9 +66,9 @@ public class AdminFallbackView extends AbstractView {
     ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
 
     public AdminFallbackView(VaadinRequest request) {
-    	VerticalLayout content = new VerticalLayout();
-    	content.addStyleName("ukelonn-responsive-layout");
-    	Responsive.makeResponsive(content);
+        VerticalLayout content = new VerticalLayout();
+        content.addStyleName("ukelonn-responsive-layout");
+        Responsive.makeResponsive(content);
         // Display the greeting
         Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
@@ -153,11 +153,11 @@ public class AdminFallbackView extends AbstractView {
                     TransactionType payment = (TransactionType) paymenttype.getValue();
                     if (payment != null) {
                         Double paymentAmount = payment.getTransactionAmount();
-	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                        if (payment.getId() == idOfPayToBank || paymentAmount != null) {
                             amount.setValue(balance.getValue());
-	            	} else {
+                        } else {
                             amount.setValue(paymentAmount);
-	            	}
+                        }
                     }
                 }
             });
@@ -401,7 +401,7 @@ public class AdminFallbackView extends AbstractView {
                 public void buttonClick(ClickEvent event) {
                     if (newUserIsAValidUser())
                     {
-                    	addUserToDatabase(
+                        addUserToDatabase(
                             classForLogMessage,
                             newUserUsername.getValue(),
                             newUserPassword2.getValue(),
@@ -409,9 +409,9 @@ public class AdminFallbackView extends AbstractView {
                             newUserFirstname.getValue(),
                             newUserLastname.getValue());
 
-                    	clearAllNewUserFormElements();
+                        clearAllNewUserFormElements();
 
-                    	refreshListWidgetsAffectedByChangesToUsers();
+                        refreshListWidgetsAffectedByChangesToUsers();
                     }
                 }
 

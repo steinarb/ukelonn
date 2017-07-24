@@ -19,52 +19,52 @@ public class UkelonnUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-    	getPage().setTitle("Ukelønn");
-    	setNavigator(new Navigator(this, this));
-    	Cookie uiStyle = checkForUIStyleCookie(request);
-    	if (isLogout(request)) {
+        getPage().setTitle("Ukelønn");
+        setNavigator(new Navigator(this, this));
+        Cookie uiStyle = checkForUIStyleCookie(request);
+        if (isLogout(request)) {
             SecurityUtils.getSubject().logout();
             getPage().setLocation(getPage().getLocation().resolve(".")); // Clear the "?logout=yes" argument from the URL
-    	}
+        }
 
-    	// Add all of the different views
-    	if (isMobile(uiStyle)) {
+        // Add all of the different views
+        if (isMobile(uiStyle)) {
             getNavigator().addView("", new UserView(request));
             getNavigator().addView("admin", new AdminView(request));
-    	} else {
+        } else {
             setTheme("valo");
             getNavigator().addView("", new UserFallbackView(request));
             getNavigator().addView("admin", new AdminFallbackView(request));
-    	}
-    	getNavigator().addView("login", new LoginView(request, getNavigator()));
-    	if (!isLoggedIn()) {
+        }
+        getNavigator().addView("login", new LoginView(request, getNavigator()));
+        if (!isLoggedIn()) {
             getNavigator().navigateTo("login");
-    	} else if (isAdministrator()) {
+        } else if (isAdministrator()) {
             getNavigator().navigateTo("admin");
-    	} else {
+        } else {
             getNavigator().navigateTo("");
-    	}
+        }
     }
 
     private boolean isLogout(VaadinRequest request) {
-    	// Only an explicit ?logout=yes argument will cause a logout
-    	if ("yes".equals(request.getParameter("logout"))) {
+        // Only an explicit ?logout=yes argument will cause a logout
+        if ("yes".equals(request.getParameter("logout"))) {
             return true;
-    	}
+        }
 
-    	return false;
+        return false;
     }
 
     private boolean isMobile(Cookie uiStyle) {
-    	// The default is mobile.  Only when explicitly set to browser
-    	// will the browser UI be used.
-    	if (uiStyle != null) {
+        // The default is mobile.  Only when explicitly set to browser
+        // will the browser UI be used.
+        if (uiStyle != null) {
             if ("ui-style".equals(uiStyle.getName()) && "browser".equals(uiStyle.getValue())) {
                 return false;
             }
-    	}
+        }
 
-    	return true;
+        return true;
     }
 
     protected boolean isAdministrator() {

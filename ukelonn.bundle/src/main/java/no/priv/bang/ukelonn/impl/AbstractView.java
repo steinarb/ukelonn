@@ -88,13 +88,14 @@ public abstract class AbstractView extends VerticalLayout implements View {
         return horizontalLayout;
     }
 
-    static final StringToDateConverter dateFormatter = new StringToDateConverter() {
-	    private static final long serialVersionUID = -1728291825811483452L;
+    static final StringToDateConverter dateFormatter =
+        new StringToDateConverter() {
+            private static final long serialVersionUID = -1728291825811483452L;
 
-	    @Override
-	    public DateFormat getFormat(Locale locale) {
-	        return new SimpleDateFormat("yyyy-MM-dd");
-	    }
-	};
+            @Override
+            public DateFormat getFormat(Locale locale) {
+                return new SimpleDateFormat("yyyy-MM-dd");
+            }
+        };
 
 }

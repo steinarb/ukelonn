@@ -39,8 +39,8 @@ public class UserFallbackView extends AbstractView {
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
 
     public UserFallbackView(VaadinRequest request) {
-    	// Display the greeting
-    	VerticalLayout content = new VerticalLayout();
+        // Display the greeting
+        VerticalLayout content = new VerticalLayout();
         Component greeting = new Label(greetingProperty);
         greeting.setStyleName("h1");
         content.addComponent(greeting);

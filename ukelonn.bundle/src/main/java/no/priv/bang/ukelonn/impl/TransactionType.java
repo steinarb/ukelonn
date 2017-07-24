@@ -8,7 +8,7 @@ public class TransactionType {
     private boolean transactionIsWagePayment;
 
     public TransactionType(int id, String transactionTypeName, Double transactionAmount, boolean transactionIsWork, boolean transactionIsWagePayment) {
-    	this.id = id;
+        this.id = id;
         setTransactionTypeName(transactionTypeName);
         setTransactionAmount(transactionAmount);
         setTransactionIsWork(transactionIsWork);

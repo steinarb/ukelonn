@@ -36,7 +36,7 @@ public class UserView extends AbstractView {
     private Account account;
 
     public UserView(VaadinRequest request) {
-    	setSizeFull();
+        setSizeFull();
 
         NavigationManager navigationManager = new NavigationManager();
         VerticalComponentGroup balanceAndNewJobGroup = createBalanceAndNewJobForm();

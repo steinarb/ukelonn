@@ -71,7 +71,7 @@ public class AdminView extends AbstractView {
     ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
 
     public AdminView(VaadinRequest request) {
-    	setSizeFull();
+        setSizeFull();
         TabBarView tabs = new TabBarView();
 
         createPaymentRegistrationTab(tabs);
@@ -163,11 +163,11 @@ public class AdminView extends AbstractView {
                     TransactionType payment = (TransactionType) paymenttype.getValue();
                     if (payment != null) {
                         Double paymentAmount = payment.getTransactionAmount();
-	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                        if (payment.getId() == idOfPayToBank || paymentAmount != null) {
                             amount.setValue(balance.getValue());
-	            	} else {
+                        } else {
                             amount.setValue(paymentAmount);
-	            	}
+                        }
                     }
                 }
             });
@@ -311,7 +311,7 @@ public class AdminView extends AbstractView {
         Class<? extends AdminView> classForLogMessage = getClass();
         TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
         newpaymenttypeForm.addComponent(newPaymentTypeNameField);
-	TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
+        TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
         newpaymenttypeForm.addComponent(newPaymentTypeAmountField);
         newpaymenttypeForm.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
                 private static final long serialVersionUID = -2160144195348196823L;
