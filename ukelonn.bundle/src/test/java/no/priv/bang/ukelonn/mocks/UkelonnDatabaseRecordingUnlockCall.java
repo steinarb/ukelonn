@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.mocks;
 
-public class CommonStringMethods {
+import no.priv.bang.ukelonn.UkelonnDatabase;
 
-    public static boolean isNullEmptyOrBlank(String string) {
-        if (string == null) {
-            return true;
-        }
+public abstract class UkelonnDatabaseRecordingUnlockCall implements UkelonnDatabase {
 
-        if (string.trim().isEmpty()) {
-            return true;
-        }
+    private boolean forceReleaseLocksCalled;
 
-        return false;
+    public UkelonnDatabaseRecordingUnlockCall() {
+        this.forceReleaseLocksCalled = false;
     }
 
-    public static String safeTrim(String string) {
-        if (string == null) {
-            return null;
-        }
+    public boolean isForceReleaseLocksCalled() {
+        return forceReleaseLocksCalled;
+    }
 
-        return string.trim();
+    @Override
+    public void forceReleaseLocks() {
+        forceReleaseLocksCalled = true;
     }
 
 }

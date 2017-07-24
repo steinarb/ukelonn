@@ -15,23 +15,23 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import org.osgi.service.log.LogService;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.UkelonnService;
 
-public class UkelonnServiceBase implements UkelonnService {
+@Command(scope="ukelonn", name="release-liquibase-lock", description = "Forcibly release the Liquibase changelog lock")
+@Service
+public class KarafReleaseLiquibaseLockCommand implements Action {
+    @Reference
+    UkelonnDatabase database;
 
-    public String getMessage() {
-        return "Hello world!";
-    }
-
-    public UkelonnDatabase getDatabase() {
+    @Override
+    public Object execute() throws Exception {
+        database.forceReleaseLocks();
+        System.out.println("Forcibly unlocked the Liquibase changelog lock");
         return null;
     }
-
-    public LogService getLogservice() {
-        return null;
-    }
-
 }
