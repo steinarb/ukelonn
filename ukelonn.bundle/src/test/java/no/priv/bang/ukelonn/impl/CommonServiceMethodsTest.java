@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016-2017 Steinar Bang
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
 package no.priv.bang.ukelonn.impl;
 
 import static org.junit.Assert.*;
@@ -38,8 +53,8 @@ public class CommonServiceMethodsTest {
 
     @Test
     public void testLogError() {
-    	// First log when there are noe services available
-    	MockLogService logservice = new MockLogService();
+        // First log when there are noe services available
+        MockLogService logservice = new MockLogService();
         CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is an error");
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 
@@ -57,9 +72,9 @@ public class CommonServiceMethodsTest {
 
     @Test
     public void testLogErrorWithException() {
-    	// First log when there are noe services available
-    	Exception exception = new Exception("This is a fake exception");
-    	MockLogService logservice = new MockLogService();
+        // First log when there are noe services available
+        Exception exception = new Exception("This is a fake exception");
+        MockLogService logservice = new MockLogService();
         CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is an error", exception);
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 

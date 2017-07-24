@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016-2017 Steinar Bang
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
 package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
@@ -72,14 +87,14 @@ public class AdminView extends AbstractView {
     ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
 
     public AdminView(UkelonnServletProvider provider, VaadinRequest request) {
-    	this.provider = provider;
-    	accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(provider, getClass()));
-    	transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-    	editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
-    	editUserUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
-    	paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-    	jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
-    	setSizeFull();
+        this.provider = provider;
+        accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(provider, getClass()));
+        transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+        editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
+        editUserUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
+        paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+        setSizeFull();
         TabBarView tabs = new TabBarView();
 
         createPaymentRegistrationTab(tabs);
@@ -171,11 +186,11 @@ public class AdminView extends AbstractView {
                     TransactionType payment = (TransactionType) paymenttype.getValue();
                     if (payment != null) {
                         Double paymentAmount = payment.getTransactionAmount();
-	            	if (payment.getId() == idOfPayToBank || paymentAmount != null) {
+                        if (payment.getId() == idOfPayToBank || paymentAmount != null) {
                             amount.setValue(balance.getValue());
-	            	} else {
+                        } else {
                             amount.setValue(paymentAmount);
-	            	}
+                        }
                     }
                 }
             });
@@ -319,7 +334,7 @@ public class AdminView extends AbstractView {
         Class<? extends AdminView> classForLogMessage = getClass();
         TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
         newpaymenttypeForm.addComponent(newPaymentTypeNameField);
-	TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
+        TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
         newpaymenttypeForm.addComponent(newPaymentTypeAmountField);
         newpaymenttypeForm.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
                 private static final long serialVersionUID = -2160144195348196823L;
