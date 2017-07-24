@@ -31,9 +31,9 @@ public class UkelonnServlet extends TouchKitServlet {
     private void addSessionInitListenerThatWillSetUIProviderOnSession() {
         VaadinServletService service = getService();
         service.addSessionInitListener(new SessionInitListener() {
-			private static final long serialVersionUID = -5085594781477821868L;
+                private static final long serialVersionUID = -5085594781477821868L;
 
-				@Override
+                @Override
                 public void sessionInit(SessionInitEvent sessionInitEvent) throws ServiceException {
                     VaadinSession session = sessionInitEvent.getSession();
                     removeDefaultUIProvider(session);
@@ -41,12 +41,12 @@ public class UkelonnServlet extends TouchKitServlet {
                 }
 
                 private void removeDefaultUIProvider(VaadinSession session) {
-                	List<UIProvider> uiProviders = new ArrayList<UIProvider>(session.getUIProviders());
-                	for (UIProvider uiProvider : uiProviders) {
-						if (DefaultUIProvider.class.getCanonicalName().equals(uiProvider.getClass().getCanonicalName())) {
-							session.removeUIProvider(uiProvider);
-						}
-					}
+                    List<UIProvider> uiProviders = new ArrayList<UIProvider>(session.getUIProviders());
+                    for (UIProvider uiProvider : uiProviders) {
+                        if (DefaultUIProvider.class.getCanonicalName().equals(uiProvider.getClass().getCanonicalName())) {
+                            session.removeUIProvider(uiProvider);
+                        }
+                    }
                 }
             });
     }
