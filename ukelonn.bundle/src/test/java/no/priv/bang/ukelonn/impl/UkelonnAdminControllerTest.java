@@ -34,7 +34,7 @@ public class UkelonnAdminControllerTest {
 
     @AfterClass
     public static void teardownForAllTests() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    	releaseFakeOsgiServices();
+        releaseFakeOsgiServices();
     }
 
     @Test
@@ -64,7 +64,7 @@ public class UkelonnAdminControllerTest {
 
     @Test
     public void testUserIsAdministrator() {
-    	try {
+        try {
             UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
 
             // Set administrator user
@@ -530,7 +530,7 @@ public class UkelonnAdminControllerTest {
 
     @Test
     public void testChangeUserPassword() {
-    	try {
+        try {
             UkelonnAdminController ukelonnAdmin = new UkelonnAdminController();
 
             User jad = findUserWithUsername(ukelonnAdmin.getUsers(), "jad");
@@ -600,9 +600,9 @@ public class UkelonnAdminControllerTest {
             assertNull(ukelonnAdmin.getChangePasswordForUser());
             assertNull(ukelonnAdmin.getChangePasswordForUserPassword1());
             assertNull(ukelonnAdmin.getChangePasswordForUserPassword2());
-    	} finally {
+        } finally {
             restoreTestDatabase();
-    	}
+        }
     }
 
     /***
@@ -709,18 +709,18 @@ public class UkelonnAdminControllerTest {
     }
 
     static List<Transaction> copyOf(List<Transaction> original) {
-    	List<Transaction> copy = new ArrayList<Transaction>(original);
+        List<Transaction> copy = new ArrayList<Transaction>(original);
         return copy;
     }
 
     private User findUserWithUsername(List<User> users, String username) {
-    	for (User user : users) {
+        for (User user : users) {
             if (username.equals(user.getUsername())) {
                 return user;
             }
         }
 
-    	return null;
+        return null;
     }
 
     private Account findAccountWithUsername(List<Account> accounts, String username) {

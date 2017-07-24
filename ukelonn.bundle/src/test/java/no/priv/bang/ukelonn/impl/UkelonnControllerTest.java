@@ -26,7 +26,7 @@ public class UkelonnControllerTest {
 
     @AfterClass
     public static void teardownForAllTests() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    	releaseFakeOsgiServices();
+        releaseFakeOsgiServices();
     }
 
     /**
@@ -36,14 +36,14 @@ public class UkelonnControllerTest {
     @Test
     public void testNoUsername() {
         UkelonnController ukelonn = new UkelonnController();
-    	assertNull(ukelonn.getUsername());
-    	assertEquals(0, ukelonn.getUserId());
-    	assertEquals("Ikke innlogget", ukelonn.getFornavn());
-    	assertEquals("", ukelonn.getEtternavn());
-    	assertEquals(Double.valueOf(0.0), ukelonn.getBalanse());
-    	assertEquals(0, ukelonn.getAccountId());
-    	assertEquals(0, ukelonn.getJobTypes().size());
-    	assertEquals(0, ukelonn.getJobs().size());
+        assertNull(ukelonn.getUsername());
+        assertEquals(0, ukelonn.getUserId());
+        assertEquals("Ikke innlogget", ukelonn.getFornavn());
+        assertEquals("", ukelonn.getEtternavn());
+        assertEquals(Double.valueOf(0.0), ukelonn.getBalanse());
+        assertEquals(0, ukelonn.getAccountId());
+        assertEquals(0, ukelonn.getJobTypes().size());
+        assertEquals(0, ukelonn.getJobs().size());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class UkelonnControllerTest {
 
     @Test
     public void testAddJob() {
-    	try {
+        try {
             UkelonnController ukelonn = new UkelonnController();
 
             // Simulate logging in as a non-admin user
@@ -97,9 +97,9 @@ public class UkelonnControllerTest {
             // the job has been registered
             assertNull(ukelonn.getNewJobType());
             assertEquals(0.0, ukelonn.getNewJobWages(), 0.1);
-    	} finally {
+        } finally {
             dropTestDatabase();
-    	}
+        }
     }
 
     @Test

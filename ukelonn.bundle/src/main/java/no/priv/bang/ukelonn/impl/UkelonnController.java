@@ -51,7 +51,7 @@ public class UkelonnController {
 
     public void setUsername(String username) {
         account = getAccountInfoFromDatabase(getClass(), username);
-    	transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
     }
 
     public String getFornavn() {
@@ -71,14 +71,14 @@ public class UkelonnController {
     }
 
     public void redirectAdministratorsToAdminPage() throws IOException {
-    	if (isAdministrator()) {
+        if (isAdministrator()) {
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
             ec.redirect(ec.getRequestContextPath() + "/admin/index.xhtml");
-    	}
+        }
     }
 
     private boolean isAdministrator() {
-    	return FacesContext.getCurrentInstance().getExternalContext().isUserInRole("administrator");
+        return FacesContext.getCurrentInstance().getExternalContext().isUserInRole("administrator");
     }
 
     public Double getBalanse() {
