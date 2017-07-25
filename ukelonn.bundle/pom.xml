@@ -65,7 +65,6 @@
         <dependency>
             <groupId>no.steria.osgi.jsr330activator</groupId>
             <artifactId>jsr330activator.implementation</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
