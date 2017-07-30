@@ -228,11 +228,11 @@ public class UkelonnDatabaseProviderTest {
      */
     @Test
     public void testCreateHashedPasswords() {
-     String[] usernames = { "on", "kn", "jad", "jod" };
-     String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
-     RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
-     System.out.println("username, password, salt");
-     for (int i=0; i<usernames.length; ++i) {
+        String[] usernames = { "on", "kn", "jad", "jod" };
+        String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
+        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        System.out.println("username, password, salt");
+        for (int i=0; i<usernames.length; ++i) {
             // First hash the password
             String username = usernames[i];
             String password = unhashedPasswords[i];
@@ -248,7 +248,7 @@ public class UkelonnDatabaseProviderTest {
 
             // Print out the username, hashed password, and salt
             System.out.println(String.format("'%s', '%s', '%s'", username, hashedPassword, salt));
-     }
+        }
     }
 
     private CredentialsMatcher createSha256HashMatcher(int iterations) {
