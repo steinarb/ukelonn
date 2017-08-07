@@ -28,12 +28,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn.rebundled</groupId>
-            <artifactId>liquibase-slf4j-osgi</artifactId>
-            <version>${liquibase-slf4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
