@@ -74,6 +74,9 @@
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
+                <configuration>
+                    <featuresToInstall>ukelonn-db-derby-test,ukelonn</featuresToInstall>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-features-file</id>
