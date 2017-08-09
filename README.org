@@ -20,7 +20,7 @@ I øyeblikket er det tre hoved-brancher:
 
 Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det bør la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
-* Utsjekk og bygg
+* Utsjekk og kjapp test av programvaren
 
 Dette trengs for å laste og teste ut denne programvaren
  1. Installer det som trengs:
@@ -32,31 +32,25 @@ Dette trengs for å laste og teste ut denne programvaren
       - Run: https://maven.apache.org/run.html
  2. Gjør en klon av git-repositoriet
     #+BEGIN_EXAMPLE
-      mkdir %HOME%\git
-      cd %HOME%\git
+      mkdir -p ~/git
+      cd ~/git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
  3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
     #+BEGIN_EXAMPLE
-      cd %HOME%\git\ukelonn
+      cd ~/git/ukelonn/
       mvn clean install
+      cd ukelonn.karaf
+      mvn clean install karaf:run
     #+END_EXAMPLE
- 4. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
- 5. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
-    #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
-    #+END_EXAMPLE
- 6. Installer webapplikasjonen:
-    #+BEGIN_EXAMPLE
-      feature:install liquibase-core
-      feature:install ukelonn-db-derby-test
-      feature:install ukelonn
-    #+END_EXAMPLE
- 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+ 4. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
-    - For en administrator-bruker, brukernavn/passord: on/ola12
+    - For en administrator-bruker, brukernavn/passord: admin/admin
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+ 5. Når man er ferdig med å teste så kan webappen stoppes med Ctrl-C
+
+NB! Databasen som brukes av "mvn karaf:run" er en ordentlig SQL-database med ekte data. Men databasen kjører kun i minnet, så ingen endringer blir persistert når prosesssen stoppes.
 
 * Beskrivelse av koden
 (/Beskriver versjonen fra using-vaadin/)
@@ -87,9 +81,47 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Apache Karaf har muligheter til å auto-bundle jar-filer ved lasting, men integrasjonstestene i ukelonn.tests og gogoshell-kjøring av prosjektet trenger begge avhengigheter som OSGi-bundler.
      Vaadin TouchKit og noen av avhengighetene til TouchKit var /ikke/ bundler og måtte rebundles.  Men selve Vaadin og avhengighetene var allerede bundlet.
 
-* Kjøring på apache karaf med PostgreSQL
+* Kjøring på apache karaf med derby
 
-Derbydatabasen i [[Utsjekk og bygg]] gjør det mulig å kjøre alt i webappen.  Men ettersom den kun kjører i minnet så er den ikke noe særlig å lagre data i.
+For å teste og debugge, så kan man kjøre med samme database som enhetstestene og integrasjonstestene bruker.  Derby-databasen kjører i minnet og blir satt opp med faste data ved hjelp av liquibase, hver gang den blir startet.
+
+Dette trengs for å bygge og kjøre programvaren
+ 1. Installer det som trengs:
+    - git: https://git-scm.com/download/win
+    - Java SDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    - Apache maven:
+      - Download: https://maven.apache.org/download.cgi
+      - Install: https://maven.apache.org/install.html
+      - Run: https://maven.apache.org/run.html
+ 2. Gjør en klon av git-repositoriet
+    #+BEGIN_EXAMPLE
+      mkdir %HOME%\git
+      cd %HOME%\git
+      git clone https://github.com/steinarb/ukelonn.git
+    #+END_EXAMPLE
+ 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+    #+BEGIN_EXAMPLE
+      cd %HOME%\git\ukelonn
+      mvn clean install
+    #+END_EXAMPLE
+ 4. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.2]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
+ 5. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+    #+END_EXAMPLE
+ 6. Installer webapplikasjonen:
+    #+BEGIN_EXAMPLE
+      feature:install ukelonn-db-derby-test
+      feature:install ukelonn
+    #+END_EXAMPLE
+ 7. Koble en nettleser mot http://localhost:8181/ukelonn/
+    - For en vanlig bruker, brukernavn/passord: jad/1ad
+      - Vanlig bruker kan registrere nye jobber og sjekke saldo
+    - For en administrator-bruker, brukernavn/passord: on/ola12
+      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+
+* Kjøring på apache karaf med PostgreSQL
+Derbydatabasen i [[Kjøring på apache karaf med derby]] gjør det mulig å kjøre alt i webappen.  Men ettersom den kun kjører i minnet så er den ikke noe særlig å lagre data i.
 
 For å faktisk bruke webappen så må man ha en database og databasen jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
 
@@ -148,13 +180,13 @@ Framgangsmåte:
       cd ~/git/ukelonn
       mvn clean install
     #+END_EXAMPLE
- 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.1]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja (karaf vil da kjøre som din egen bruker som stemmer med PostgreSQL-oppsettet i starten av dette avsnittet):
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.2]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja (karaf vil da kjøre som din egen bruker som stemmer med PostgreSQL-oppsettet i starten av dette avsnittet):
     #+BEGIN_EXAMPLE
       cd /tmp
-      wget http://www.apache.org/dyn/closer.lua/karaf/4.1.1/apache-karaf-4.1.1.tar.gz
+      wget http://www.apache.org/dyn/closer.lua/karaf/4.1.2/apache-karaf-4.1.2.tar.gz
       cd ~
-      tar xvfz /tmp/apache-karaf-4.1.1.tar.gz
-      cd apache-karaf-4.1.1
+      tar xvfz /tmp/apache-karaf-4.1.2.tar.gz
+      cd apache-karaf-4.1.2
       bin/karaf
     #+END_EXAMPLE
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
@@ -163,7 +195,6 @@ Framgangsmåte:
     #+END_EXAMPLE
  4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:install liquibase-core
       feature:install ukelonn-db-postgresql
       feature:install ukelonn
     #+END_EXAMPLE
@@ -199,7 +230,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
     #+END_EXAMPLE
  3. Installer deb-pakken for karaf:
     #+BEGIN_EXAMPLE
-      dpkg --install karaf_4.1.1-1_all.deb
+      dpkg --install karaf_4.1.2-1_all.deb
     #+END_EXAMPLE
  4. Sett opp bruker og database i PostgreSQL:
     #+BEGIN_EXAMPLE
@@ -220,7 +251,6 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  7. I karaf kommando-skall, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
-      feature:install liquibase-core
       feature:install ukelonn-db-postgresql
       feature:install ukelonn
     #+END_EXAMPLE
