@@ -27,6 +27,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
+import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -38,13 +39,20 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import liquibase.Liquibase;
 import liquibase.changelog.RanChangeSet;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
@@ -249,6 +257,49 @@ public class UkelonnDatabaseProviderTest {
             // Print out the username, hashed password, and salt
             System.out.println(String.format("'%s', '%s', '%s'", username, hashedPassword, salt));
         }
+    }
+    
+    /**
+     * Not an actual unit test.
+     * 
+     * This test is a convenient way to populate a derby network server
+     * running on localhost, with the ukelonn schema and test data, using 
+     * liquibase.
+     * 
+     * To use this test:
+     *  1. Start a derby network server
+     *  2. Remove the @Ignore annotation of this test
+     *  3. Run the test
+     * 
+     * After this test has been run the derby network server will have
+     * a database named "ukelonn" containing the ukelonn schema
+     * and the test data used by unit tests.
+     * 
+     * @throws SQLException 
+     * @throws LiquibaseException 
+     * @throws ClassNotFoundException 
+     */
+    //@Ignore
+    @Test
+    public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException {
+        boolean createUkelonnDatabase = true; 
+        Properties properties = new Properties();
+        String jdbcURL = "jdbc:derby://localhost:1527/ukelonn";
+        if (createUkelonnDatabase) {
+            jdbcURL += ";create=true";
+        }
+        
+        properties.setProperty(DataSourceFactory.JDBC_URL, jdbcURL);
+        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
+        PooledConnection connect = dataSource.getPooledConnection();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        liquibase.createInitialSchema(connect);
+        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+        Liquibase liquibase2 = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+        liquibase2.update("");
+        liquibase.updateSchema(connect);
     }
 
     private CredentialsMatcher createSha256HashMatcher(int iterations) {
