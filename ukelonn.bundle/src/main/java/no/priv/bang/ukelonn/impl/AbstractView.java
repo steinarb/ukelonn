@@ -82,6 +82,8 @@ public abstract class AbstractView extends VerticalLayout implements View {
         HorizontalLayout links = new HorizontalLayout();
         links.setSpacing(true);
         links.setWidth("100%");
+        Link linkToTop = new Link("Tilbake til topp", new ExternalResource(request.getContextPath() + "/.."));
+        links.addComponent(linkToTop);
         Link linkToBrowserFriendlyUI = new Link(uiStyleName, new ExternalResource(request.getContextPath() + "?ui-style=" + uiStyle));
         links.addComponent(linkToBrowserFriendlyUI);
         Link linkToLogout = new Link("Logg ut", new ExternalResource(request.getContextPath() + "?logout=yes"));
