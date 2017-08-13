@@ -27,9 +27,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
-import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -258,40 +258,39 @@ public class UkelonnDatabaseProviderTest {
             System.out.println(String.format("'%s', '%s', '%s'", username, hashedPassword, salt));
         }
     }
-    
+
     /**
      * Not an actual unit test.
-     * 
+     *
      * This test is a convenient way to populate a derby network server
-     * running on localhost, with the ukelonn schema and test data, using 
+     * running on localhost, with the ukelonn schema and test data, using
      * liquibase.
-     * 
+     *
      * To use this test:
      *  1. Start a derby network server
      *  2. Remove the @Ignore annotation of this test
      *  3. Run the test
-     * 
+     *
      * After this test has been run the derby network server will have
      * a database named "ukelonn" containing the ukelonn schema
      * and the test data used by unit tests.
-     * 
-     * @throws SQLException 
-     * @throws LiquibaseException 
-     * @throws ClassNotFoundException 
+     *
+     * @throws SQLException
+     * @throws LiquibaseException
+     * @throws ClassNotFoundException
      */
-    //@Ignore
+    @Ignore
     @Test
     public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException {
-        boolean createUkelonnDatabase = true; 
-        Properties properties = new Properties();
-        String jdbcURL = "jdbc:derby://localhost:1527/ukelonn";
+        boolean createUkelonnDatabase = true;
+        ClientConnectionPoolDataSource dataSource = new ClientConnectionPoolDataSource();
+        dataSource.setServerName("localhost");
+        dataSource.setDatabaseName("ukelonn");
+        dataSource.setPortNumber(1527);
         if (createUkelonnDatabase) {
-            jdbcURL += ";create=true";
+            dataSource.setCreateDatabase("create");
         }
-        
-        properties.setProperty(DataSourceFactory.JDBC_URL, jdbcURL);
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
+
         PooledConnection connect = dataSource.getPooledConnection();
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
         liquibase.createInitialSchema(connect);
