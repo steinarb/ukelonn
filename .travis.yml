@@ -1,2 +1,7 @@
 language: java
 script: mvn cobertura:cobertura coveralls:report
+
+deploy:
+    provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
