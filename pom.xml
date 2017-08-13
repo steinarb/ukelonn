@@ -405,4 +405,15 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>packagecloud-travis</id>
+            <url>packagecloud+https://packagecloud.io/steinarb/ukelonn</url>
+        </repository>
+        <snapshotRepository>
+            <id>packagecloud-travis</id>
+            <url>packagecloud+https://packagecloud.io/steinarb/ukelonn</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
