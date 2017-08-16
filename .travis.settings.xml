@@ -4,8 +4,9 @@
                               http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
-            <id>packagecloud-travis</id>
-            <password>${env.PACKAGECLOUD_TOKEN}</password>
+            <id>ftp-maven-travis</id>
+            <username>${env.FTPUSER}</username>
+            <password>${env.FTPPASSWD}</password>
         </server>
     </servers>
 </settings>
