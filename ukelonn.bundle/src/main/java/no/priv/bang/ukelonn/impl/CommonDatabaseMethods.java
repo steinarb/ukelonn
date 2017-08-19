@@ -220,10 +220,10 @@ public class CommonDatabaseMethods {
         return getTransactionsFromAccount(account, clazz, "/sql/query/jobs_last_n.sql", "job");
     }
 
-    private static List<Transaction> getTransactionsFromAccount(Account account,
-                                                                Class<?> clazz,
-                                                                String sqlTemplate,
-                                                                String transactionType)
+    static List<Transaction> getTransactionsFromAccount(Account account,
+                                                        Class<?> clazz,
+                                                        String sqlTemplate,
+                                                        String transactionType)
     {
         List<Transaction> transactions = new ArrayList<Transaction>();
         if (null != account) {
@@ -232,6 +232,7 @@ public class CommonDatabaseMethods {
                 String sql = String.format(getResourceAsString(sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
                 PreparedStatement statement = database.prepareStatement(sql);
                 statement.setInt(1, account.getAccountId());
+                try { statement.setInt(2, account.getAccountId()); } catch(SQLException e) {};
                 ResultSet resultSet = database.query(statement);
                 if (resultSet != null) {
                     while (resultSet.next()) {
