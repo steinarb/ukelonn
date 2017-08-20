@@ -96,7 +96,7 @@ public class UserFallbackView extends AbstractView {
 
         // Updatable containers
         recentJobs.addAll(getJobsFromAccount(account, getClass()));
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
         lastJobsTable.setImmediate(true);
         recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
         Class<?> classForLogMessage = getClass();
@@ -125,7 +125,7 @@ public class UserFallbackView extends AbstractView {
         accordion.addTab(lastJobsTab, "Siste jobber");
 
         VerticalLayout lastPaymentsTab = new VerticalLayout();
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
         lastPaymentsTab.addComponent(lastPaymentsTable);
         accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
 

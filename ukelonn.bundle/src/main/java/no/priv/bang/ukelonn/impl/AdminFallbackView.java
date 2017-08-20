@@ -204,11 +204,11 @@ public class AdminFallbackView extends AbstractView {
 
         registerPaymentTab.addTab(userinfo, "Brukerinfo");
         VerticalLayout jobsTab = new VerticalLayout();
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
         jobsTab.addComponent(lastJobsTable);
         registerPaymentTab.addTab(jobsTab, "Siste jobber");
         VerticalLayout paymentsTab = new VerticalLayout();
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
         paymentsTab.addComponent(lastPaymentsTable);
         registerPaymentTab.addTab(paymentsTab, "Siste utbetalinger");
         accordion.addTab(wrapInPanel(registerPaymentTab), "Registrere utbetaling");

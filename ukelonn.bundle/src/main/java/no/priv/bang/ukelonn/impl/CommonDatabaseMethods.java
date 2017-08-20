@@ -257,7 +257,7 @@ public class CommonDatabaseMethods {
         TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
         ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
         for (int i = 0; i < lengthOfDummyList; i++) {
-            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0);
+            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0, false);
             dummyTransactions.add(dummyTransaction);
         }
 
@@ -270,7 +270,8 @@ public class CommonDatabaseMethods {
                 resultset.getInt("transaction_id"),
                 mapTransactionType(resultset),
                 resultset.getDate("transaction_time"),
-                resultset.getDouble("transaction_amount"));
+                resultset.getDouble("transaction_amount"),
+                resultset.getBoolean("paid_out"));
         return transaction;
     }
 
