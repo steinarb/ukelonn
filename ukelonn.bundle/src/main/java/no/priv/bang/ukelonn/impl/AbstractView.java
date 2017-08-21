@@ -59,12 +59,27 @@ public abstract class AbstractView extends VerticalLayout implements View {
         ArrayList<String> visibleColumns = new ArrayList<String>(Arrays.asList("transactionTime", "name", "transactionAmount"));
         if (addPaidOutColumn) {
             transactionsTable.addContainerProperty("paidOut", CheckBox.class, null, "Utbetalt", null, null);
-            visibleColumns.add("paidOut");
         }
 
         transactionsTable.setConverter("transactionTime", dateFormatter);
         transactionsTable.setContainerDataSource(transactions);
         transactionsTable.setVisibleColumns(visibleColumns.toArray(new Object[visibleColumns.size()]));
+        if (addPaidOutColumn) {
+            transactionsTable.addGeneratedColumn("paidOut", new Table.ColumnGenerator() {
+                    private static final long serialVersionUID = -932068875568403416L;
+
+                    @Override
+                    public Object generateCell(Table source, Object itemId, Object columnId) {
+                        Boolean checked = (Boolean) source.getItem(itemId).getItemProperty(columnId).getValue();
+                        CheckBox checkBox = new CheckBox();
+                        checkBox.setValue(checked);
+                        checkBox.setEnabled(false);
+                        checkBox.setHeight("25px");
+                        return checkBox;
+                    }
+                });
+        }
+
         transactionsTable.setPageLength(CommonDatabaseMethods.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
         return transactionsTable;
     }
