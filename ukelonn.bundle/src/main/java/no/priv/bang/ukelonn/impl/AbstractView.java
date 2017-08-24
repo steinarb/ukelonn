@@ -73,7 +73,6 @@ public abstract class AbstractView extends VerticalLayout implements View {
                         Boolean checked = (Boolean) source.getItem(itemId).getItemProperty(columnId).getValue();
                         CheckBox checkBox = new CheckBox();
                         checkBox.setValue(checked);
-                        checkBox.setEnabled(false);
                         checkBox.setHeight("25px");
                         return checkBox;
                     }
