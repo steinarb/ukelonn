@@ -18,6 +18,8 @@ package no.priv.bang.ukelonn.impl;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,6 +33,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -48,22 +51,42 @@ public abstract class AbstractView extends VerticalLayout implements View {
         return newURI;
     }
 
-    protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions) {
+    protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions, boolean addPaidOutColumn) {
         Table transactionsTable = new Table();
         transactionsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
         transactionsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
         transactionsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        ArrayList<String> visibleColumns = new ArrayList<String>(Arrays.asList("transactionTime", "name", "transactionAmount"));
+        if (addPaidOutColumn) {
+            transactionsTable.addContainerProperty("paidOut", CheckBox.class, null, "Utbetalt", null, null);
+        }
+
         transactionsTable.setConverter("transactionTime", dateFormatter);
         transactionsTable.setContainerDataSource(transactions);
-        transactionsTable.setVisibleColumns("transactionTime", "name", "transactionAmount");
+        transactionsTable.setVisibleColumns(visibleColumns.toArray(new Object[visibleColumns.size()]));
+        if (addPaidOutColumn) {
+            transactionsTable.addGeneratedColumn("paidOut", new Table.ColumnGenerator() {
+                    private static final long serialVersionUID = -932068875568403416L;
+
+                    @Override
+                    public Object generateCell(Table source, Object itemId, Object columnId) {
+                        Boolean checked = (Boolean) source.getItem(itemId).getItemProperty(columnId).getValue();
+                        CheckBox checkBox = new CheckBox();
+                        checkBox.setValue(checked);
+                        checkBox.setHeight("25px");
+                        return checkBox;
+                    }
+                });
+        }
+
         transactionsTable.setPageLength(CommonDatabaseMethods.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
         return transactionsTable;
     }
 
-    protected NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, BeanItemContainer<Transaction> transactions, String navigationViewCaption) {
+    protected NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, BeanItemContainer<Transaction> transactions, String navigationViewCaption, boolean addPaidOutColumn) {
         CssLayout transactionTableForm = new CssLayout();
         VerticalComponentGroup transactionTableGroup = new VerticalComponentGroup();
-        Table transactionTable = createTransactionTable(tableTitle, transactions);
+        Table transactionTable = createTransactionTable(tableTitle, transactions, addPaidOutColumn);
         transactionTableGroup.addComponent(transactionTable);
         transactionTableForm.addComponent(transactionTableGroup);
         NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableForm);

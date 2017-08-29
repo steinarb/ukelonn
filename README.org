@@ -261,6 +261,9 @@ Det kan være lurt å starte med å endre passordet her så fort som mulig.
 
 Det kan også være lurt å sette opp en nattlig backup av denne databasen til en annen maskin.
 
+* Status
+[[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]
+
 * Lisens
 
 Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.

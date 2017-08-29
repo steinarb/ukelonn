@@ -63,8 +63,8 @@ public class UserView extends AbstractView {
         String lastPaymentsLabel = "Siste utbetalinger";
 
         // Create Subviews with tables
-        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, lastJobsLabel);
-        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, lastPaymentsLabel);
+        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, lastJobsLabel, true);
+        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, lastPaymentsLabel, false);
 
         // Add buttons to the top view, linking to the subviews
         balanceAndNewJobGroup.addComponent(createNavigationButton(lastJobsLabel, lastJobsView));
