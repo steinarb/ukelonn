@@ -1,4 +1,4 @@
-select t1.transaction_id, t1.account_id, t1.transaction_type_id, tt.transaction_type_name, tt.transaction_is_work, tt.transaction_is_wage_payment, t1.transaction_amount, t2.transaction_time is not null and t1.transaction_time<t2.transaction_time as paid_out from transactions as t1
+select t1.transaction_id, t1.account_id, t1.transaction_type_id, tt.transaction_type_name, tt.transaction_is_work, tt.transaction_is_wage_payment, t1.transaction_amount, t1.transaction_time, t2.transaction_time is not null and t1.transaction_time<t2.transaction_time as paid_out from transactions as t1
   join transaction_types as tt on tt.transaction_type_id=t1.transaction_type_id
   left outer join (select t.* from
                    (select t3.transaction_id, t3.account_id, t3.transaction_time, sum(t4.transaction_amount) as balance from transactions as t3
