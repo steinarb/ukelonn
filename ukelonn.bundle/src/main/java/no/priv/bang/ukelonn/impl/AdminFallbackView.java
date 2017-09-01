@@ -194,6 +194,8 @@ public class AdminFallbackView extends AbstractView {
                                    addNewPaymentToAccount(classForLogMessage, account, payment, amount.getValue());
                                    recentPayments.removeAllItems();
                                    recentPayments.addAll(getPaymentsFromAccount(account, classForLogMessage));
+                                   recentJobs.removeAllItems();
+                                   recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
                                    refreshAccount(classForLogMessage, account);
                                    balance.setValue(account.getBalance());
                                    amount.setValue(0.0);
