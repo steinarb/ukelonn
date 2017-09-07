@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import javax.sql.PooledConnection;
 
+import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -38,13 +39,20 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import liquibase.Liquibase;
 import liquibase.changelog.RanChangeSet;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
@@ -228,11 +236,11 @@ public class UkelonnDatabaseProviderTest {
      */
     @Test
     public void testCreateHashedPasswords() {
-     String[] usernames = { "on", "kn", "jad", "jod" };
-     String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
-     RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
-     System.out.println("username, password, salt");
-     for (int i=0; i<usernames.length; ++i) {
+        String[] usernames = { "on", "kn", "jad", "jod" };
+        String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
+        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        System.out.println("username, password, salt");
+        for (int i=0; i<usernames.length; ++i) {
             // First hash the password
             String username = usernames[i];
             String password = unhashedPasswords[i];
@@ -248,7 +256,49 @@ public class UkelonnDatabaseProviderTest {
 
             // Print out the username, hashed password, and salt
             System.out.println(String.format("'%s', '%s', '%s'", username, hashedPassword, salt));
-     }
+        }
+    }
+
+    /**
+     * Not an actual unit test.
+     *
+     * This test is a convenient way to populate a derby network server
+     * running on localhost, with the ukelonn schema and test data, using
+     * liquibase.
+     *
+     * To use this test:
+     *  1. Start a derby network server
+     *  2. Remove the @Ignore annotation of this test
+     *  3. Run the test
+     *
+     * After this test has been run the derby network server will have
+     * a database named "ukelonn" containing the ukelonn schema
+     * and the test data used by unit tests.
+     *
+     * @throws SQLException
+     * @throws LiquibaseException
+     * @throws ClassNotFoundException
+     */
+    @Ignore
+    @Test
+    public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException {
+        boolean createUkelonnDatabase = true;
+        ClientConnectionPoolDataSource dataSource = new ClientConnectionPoolDataSource();
+        dataSource.setServerName("localhost");
+        dataSource.setDatabaseName("ukelonn");
+        dataSource.setPortNumber(1527);
+        if (createUkelonnDatabase) {
+            dataSource.setCreateDatabase("create");
+        }
+
+        PooledConnection connect = dataSource.getPooledConnection();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        liquibase.createInitialSchema(connect);
+        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+        Liquibase liquibase2 = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+        liquibase2.update("");
+        liquibase.updateSchema(connect);
     }
 
     private CredentialsMatcher createSha256HashMatcher(int iterations) {

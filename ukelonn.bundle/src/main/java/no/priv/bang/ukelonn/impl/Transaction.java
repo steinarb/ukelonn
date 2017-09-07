@@ -22,12 +22,14 @@ public class Transaction {
     private TransactionType transactionType;
     private Date transactionTime;
     private double transactionAmount;
+    private boolean paidOut;
 
-    public Transaction(int id,TransactionType transactionType, Date transactionTime, double transactionAmount) {
+    public Transaction(int id,TransactionType transactionType, Date transactionTime, double transactionAmount, boolean paidOut) {
         setId(id);
         setTransactionType(transactionType);
         setTransactionTime(transactionTime);
         setTransactionAmount(transactionAmount);
+        setPaidOut(paidOut);
     }
 
 
@@ -69,6 +71,14 @@ public class Transaction {
 
     public void setTransactionAmount(double transactionAmount) {
         this.transactionAmount = transactionAmount;
+    }
+
+    public boolean isPaidOut() {
+        return paidOut;
+    }
+
+    public void setPaidOut(boolean paidOut) {
+        this.paidOut = paidOut;
     }
 
 
