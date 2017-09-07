@@ -15,6 +15,8 @@
  */
 package no.priv.bang.ukelonn.testutils;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import java.io.File;
 import java.lang.reflect.Field;
@@ -22,14 +24,31 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Properties;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
+import com.vaadin.server.DefaultDeploymentConfiguration;
+import com.vaadin.server.ServiceException;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletService;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WrappedSession;
+
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
+import no.priv.bang.ukelonn.impl.UkelonnUI;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
 /**
@@ -107,5 +126,35 @@ public class TestUtils {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
     }
+
+    public static VaadinSession createSession() throws ServletException, ServiceException {
+        VaadinServlet servlet = new VaadinServlet();
+        ServletConfig config = mock(ServletConfig.class);
+        ServletContext context = mock(ServletContext.class);
+        when(context.getInitParameterNames()).thenReturn(Collections.emptyEnumeration());
+        when(config.getServletContext()).thenReturn(context);
+        when(config.getInitParameterNames()).thenReturn(Collections.emptyEnumeration());
+        servlet.init(config);
+        VaadinServletService service = new VaadinServletService(servlet,
+                                                                new DefaultDeploymentConfiguration(UkelonnUI.class,
+                                                                                                   new Properties()));
+        VaadinSession session = new VaadinSession(service);
+        WrappedSession wrappedsession = mock(WrappedSession.class);
+        ReentrantLock lock = new ReentrantLock();
+        lock.lock();
+        when(wrappedsession.getAttribute(anyString())).thenReturn(lock);
+        session.refreshTransients(wrappedsession, service);
+
+        return session;
+    }
+
+
+    public static VaadinRequest createMockVaadinRequest(String location) {
+        VaadinRequest request = mock(VaadinRequest.class);
+        when(request.getCookies()).thenReturn(new Cookie[0]);
+        when(request.getParameter(eq("v-loc"))).thenReturn(location);
+        return request;
+    }
+
 
 }

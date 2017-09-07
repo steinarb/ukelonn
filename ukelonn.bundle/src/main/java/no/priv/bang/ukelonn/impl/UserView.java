@@ -44,11 +44,11 @@ public class UserView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
     // Updatable containers
     private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
-    private ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
+    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
     private BeanItemContainer<TransactionType> jobTypesContainer;
     private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
     private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
-    private Account account;
+    Account account;
 
     public UserView(VaadinRequest request) {
         setSizeFull();
@@ -125,33 +125,40 @@ public class UserView extends AbstractView {
                 private static final long serialVersionUID = 3145027593224884343L;
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    if (jobtypeSelector.getValue() == null) {
-                        newJobAmount.setValue(0.0);
-                    } else {
-                        newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
-                    }
+                    changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, newJobAmount);
                 }
             });
 
         // Have a clickable button
-        Class<? extends UserView> classForLogMessage = getClass();
         balanceAndNewJobGroup.addComponent(new Button("Registrer jobb",
                                                       new Button.ClickListener() {
                                                           private static final long serialVersionUID = 2723190031041985566L;
 
                                                           @Override
                                                           public void buttonClick(ClickEvent e) {
-                                                              TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
-                                                              if (jobType != null) {
-                                                                  registerNewJobInDatabase(classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
-                                                                  jobtypeSelector.setValue(null);
-                                                                  balance.setValue(account.getBalance());
-                                                                  recentJobs.removeAllItems();
-                                                                  recentJobs.addAll(getJobsFromAccount(account, classForLogMessage));
-                                                              }
+                                                              registerJobInDatabase(jobtypeSelector);
                                                           }
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
         return balanceAndNewJobGroup;
+    }
+
+    void changeJobAmountWhenJobTypeIsChanged(NativeSelect jobtypeSelector, ObjectProperty<Double> newJobAmount) {
+        if (jobtypeSelector.getValue() == null) {
+            newJobAmount.setValue(0.0);
+        } else {
+            newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
+        }
+    }
+
+    void registerJobInDatabase(NativeSelect jobtypeSelector) {
+        TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
+        if (jobType != null) {
+            registerNewJobInDatabase(getClass(), account, jobType.getId(), jobType.getTransactionAmount());
+            jobtypeSelector.setValue(null);
+            balance.setValue(account.getBalance());
+            recentJobs.removeAllItems();
+            recentJobs.addAll(getJobsFromAccount(account, getClass()));
+        }
     }
 }
