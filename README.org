@@ -246,7 +246,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  6. I karaf kommando-skall, legg til maven-repo som holder snapshots av ukelonn, bygd fra travis CI-bygg av det som blir pushet til master:
     #+BEGIN_EXAMPLE
       config:edit org.ops4j.pax.url.mvn
-      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@snapshots, http://maven.vaadin.com/vaadin-addons"
+      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots, http://maven.vaadin.com/vaadin-addons@id=vaadin"
       config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
       config:update
     #+END_EXAMPLE
