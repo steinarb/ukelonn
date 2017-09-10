@@ -48,6 +48,9 @@
         <vaadin.guava.version>16.0.1.vaadin1</vaadin.guava.version>
         <vaadin.gwt-user.version>2.7.0.vaadin4</vaadin.gwt-user.version>
         <vaadin.touchkit.version>4.1.0</vaadin.touchkit.version>
+        <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
+        <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
+        <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
     </properties>
 
     <dependencyManagement>
@@ -313,6 +316,24 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.cjnygard</groupId>
+                    <artifactId>rest-maven-plugin</artifactId>
+                    <version>${rest-maven-plugin-version}</version>
+                    <configuration>
+                        <endpoint>${ukelonn-server-url}</endpoint>
+                        <headers>
+                            <Authorization>Basic ${ukelonn-server-basic-auth-token}</Authorization>
+                        </headers>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.cjnygard</groupId>
+                            <artifactId>rest-maven-plugin</artifactId>
+                            <version>${rest-maven-plugin-version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
