@@ -24,6 +24,10 @@
 
     <name>Ukelonn webapp OSGi service definitions OSGi bundle</name>
 
+    <properties>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.api</Bundle-SymbolicName>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -43,7 +47,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>no.priv.bang.ukelonn.api</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
                         <Export-Package>no.priv.bang.ukelonn</Export-Package>
                         <_removeheaders>
                             Private-Package,

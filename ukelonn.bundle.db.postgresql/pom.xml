@@ -23,6 +23,10 @@
 
     <name>Ukelonn webapp PostgreSQL database connection OSGi bundle</name>
 
+    <properties>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.postgresql</Bundle-SymbolicName>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>

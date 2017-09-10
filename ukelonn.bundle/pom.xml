@@ -24,6 +24,10 @@
 
     <name>Ukelonn webapp OSGi bundle</name>
 
+    <properties>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn</Bundle-SymbolicName>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
@@ -161,7 +165,7 @@
                     </supportedProjectTypes>
                     <instructions>
                         <_wab>src/main/webapp</_wab>
-                        <Bundle-SymbolicName>no.priv.bang.ukelonn</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Karaf-Commands>*</Karaf-Commands>
