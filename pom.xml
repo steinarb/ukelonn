@@ -398,4 +398,15 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>file-local-deploy</id>
+            <url>file:///home/sb/maven/repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>file-local-deploy</id>
+            <url>file:///home/sb/maven/repository</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
