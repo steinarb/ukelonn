@@ -422,11 +422,11 @@
     <distributionManagement>
         <repository>
             <id>file-local-deploy</id>
-            <url>file:///home/sb/maven/repository</url>
+            <url>file:///var/www-maven/repository</url>
         </repository>
         <snapshotRepository>
             <id>file-local-deploy</id>
-            <url>file:///home/sb/maven/repository</url>
+            <url>file:///var/www-maven/repository</url>
         </snapshotRepository>
     </distributionManagement>
 
