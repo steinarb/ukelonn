@@ -108,9 +108,12 @@
                         <configuration>
                             <resource>system/console/bundles/${Bundle-SymbolicName}</resource>
                             <method>POST</method>
-                            <queryMethods>
-                                <action>update</action>
-                            </queryMethods>
+                            <fileset>
+                                <directory>${project.build.directory}</directory>
+                                <includes>
+                                    <include>karaf-console-rest-post-update-arguments</include>
+                                </includes>
+                            </fileset>
                         </configuration>
                     </execution>
                 </executions>
