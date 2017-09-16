@@ -26,6 +26,7 @@
 
     <properties>
         <Bundle-SymbolicName>no.priv.bang.ukelonn</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn</karaf-feature-name>
     </properties>
 
     <dependencies>
@@ -231,7 +232,7 @@
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>ukelonn</primaryFeatureName>
+                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
             </plugin>
             <plugin>

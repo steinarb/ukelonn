@@ -25,6 +25,7 @@
 
     <properties>
         <Bundle-SymbolicName>no.priv.bang.ukelonn.db.postgresql</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-db-postgresql</karaf-feature-name>
     </properties>
 
     <dependencies>
@@ -148,7 +149,7 @@
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>ukelonn-db-postgresql</primaryFeatureName>
+                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
             </plugin>
             <plugin>

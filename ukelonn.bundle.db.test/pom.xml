@@ -25,6 +25,7 @@
 
     <properties>
         <Bundle-SymbolicName>no.priv.bang.ukelonn.db.test</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-db-derby-test</karaf-feature-name>
     </properties>
 
     <dependencies>
@@ -163,7 +164,7 @@
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>ukelonn-db-derby-test</primaryFeatureName>
+                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
             </plugin>
         </plugins>
