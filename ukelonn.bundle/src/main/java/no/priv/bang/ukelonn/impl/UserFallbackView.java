@@ -44,7 +44,7 @@ import com.vaadin.ui.Button.ClickEvent;
 public class UserFallbackView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
     private UkelonnServletProvider provider;
-    private Account account;
+    Account account;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
     private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
@@ -88,20 +88,15 @@ public class UserFallbackView extends AbstractView {
                 private static final long serialVersionUID = 3145027593224884343L;
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    if (jobtypeSelector.getValue() == null) {
-                        newJobAmount.setValue(0.0);
-                    } else {
-                        newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
-                    }
+                    changeJobAmountWhenJobTypeIsChanged(jobtypeSelector);
                 }
             });
 
         // Updatable containers
         recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs);
+        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
         lastJobsTable.setImmediate(true);
         recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
-        Class<?> classForLogMessage = getClass();
 
         // Have a clickable button
         balanceAndNewJobTab.addComponent(new Button("Registrer jobb",
@@ -110,14 +105,7 @@ public class UserFallbackView extends AbstractView {
 
                                                         @Override
                                                         public void buttonClick(ClickEvent e) {
-                                                            TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
-                                                            if (jobType != null) {
-                                                                registerNewJobInDatabase(provider, classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
-                                                                balance.setValue(account.getBalance());
-                                                                jobtypeSelector.setValue(null);
-                                                                recentJobs.removeAllItems();
-                                                                recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
-                                                            }
+                                                            registerJobInDatabase(jobtypeSelector);
                                                         }
                                                     }));
         accordion.addTab(balanceAndNewJobTab, "Registrere jobb");
@@ -127,7 +115,7 @@ public class UserFallbackView extends AbstractView {
         accordion.addTab(lastJobsTab, "Siste jobber");
 
         VerticalLayout lastPaymentsTab = new VerticalLayout();
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments);
+        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
         lastPaymentsTab.addComponent(lastPaymentsTable);
         accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
 
@@ -150,5 +138,24 @@ public class UserFallbackView extends AbstractView {
         recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
         recentPayments.removeAllItems();
         recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+    }
+
+    void changeJobAmountWhenJobTypeIsChanged(ComboBox jobtypeSelector) {
+        if (jobtypeSelector.getValue() == null) {
+            newJobAmount.setValue(0.0);
+        } else {
+            newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
+        }
+    }
+
+    void registerJobInDatabase(ComboBox jobtypeSelector) {
+        TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
+        if (jobType != null) {
+            registerNewJobInDatabase(provider, getClass(), account, jobType.getId(), jobType.getTransactionAmount());
+            balance.setValue(account.getBalance());
+            jobtypeSelector.setValue(null);
+            recentJobs.removeAllItems();
+            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+        }
     }
 }

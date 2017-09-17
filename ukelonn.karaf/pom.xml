@@ -26,6 +26,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.priv.bang.karaf</groupId>
+            <artifactId>liquibase-core-karaf</artifactId>
+            <version>LATEST</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.api</artifactId>
             <version>${project.version}</version>
@@ -67,6 +74,9 @@
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
+                <configuration>
+                    <featuresToInstall>ukelonn-db-derby-test,ukelonn</featuresToInstall>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-features-file</id>

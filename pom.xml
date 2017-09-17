@@ -25,7 +25,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.bundle.plugin.version>2.5.3</maven.bundle.plugin.version>
-        <karaf.version>4.1.1</karaf.version>
+        <karaf.version>4.1.2</karaf.version>
         <liquibase.version>3.5.3</liquibase.version>
         <liquibase-slf4j.version>2.0.0</liquibase-slf4j.version>
         <snakeyaml.version>1.17</snakeyaml.version>
@@ -48,6 +48,9 @@
         <vaadin.guava.version>16.0.1.vaadin1</vaadin.guava.version>
         <vaadin.gwt-user.version>2.7.0.vaadin4</vaadin.gwt-user.version>
         <vaadin.touchkit.version>4.1.0</vaadin.touchkit.version>
+        <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
+        <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
+        <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
     </properties>
 
     <dependencyManagement>
@@ -309,7 +312,7 @@
                 <plugin>
                     <groupId>org.eluder.coveralls</groupId>
                     <artifactId>coveralls-maven-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>4.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
@@ -331,6 +334,55 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.cjnygard</groupId>
+                    <artifactId>rest-maven-plugin</artifactId>
+                    <version>${rest-maven-plugin-version}</version>
+                    <configuration>
+                        <endpoint>${ukelonn-server-url}</endpoint>
+                        <requestType>
+                            <type>application</type>
+                            <subtype>x-www-form-urlencoded</subtype>
+                        </requestType>
+                        <headers>
+                            <Authorization>Basic ${ukelonn-server-basic-auth-token}</Authorization>
+                        </headers>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.cjnygard</groupId>
+                            <artifactId>rest-maven-plugin</artifactId>
+                            <version>${rest-maven-plugin-version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>ru.yaal.maven</groupId>
+                                        <artifactId>write-text-files-maven-plugin</artifactId>
+                                        <versionRange>[1.1,)</versionRange>
+                                        <goals>
+                                            <goal>
+                                                write-text-files
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -396,11 +448,34 @@
                     </coberturaReports>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>ru.yaal.maven</groupId>
+                <artifactId>write-text-files-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-rest-post-arguments</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>write-text-files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <files>
+                        <file>
+                            <path>target/karaf-console-rest-post-update-arguments</path>
+                            <lines>
+                                <line>action=update&amp;dummy=dummy</line>
+                            </lines>
+                        </file>
+                    </files>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <modules>
-        <module>ukelonn.rebundled</module>
         <module>ukelonn.api</module>
         <module>ukelonn.bundle</module>
         <module>ukelonn.tests</module>
@@ -416,5 +491,16 @@
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>file-local-deploy</id>
+            <url>file:///var/www-maven/repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>file-local-deploy</id>
+            <url>file:///var/www-maven/repository</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

@@ -45,11 +45,11 @@ public class UserView extends AbstractView {
     private UkelonnServletProvider provider;
     // Updatable containers
     private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
-    private ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
+    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
     private BeanItemContainer<TransactionType> jobTypesContainer;
     private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
     private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
-    private Account account;
+    Account account;
 
     public UserView(UkelonnServletProvider provider, VaadinRequest request) {
         this.provider = provider;
@@ -65,8 +65,8 @@ public class UserView extends AbstractView {
         String lastPaymentsLabel = "Siste utbetalinger";
 
         // Create Subviews with tables
-        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, lastJobsLabel);
-        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, lastPaymentsLabel);
+        NavigationView lastJobsView = createNavigationViewWithTable(navigationManager, "Jobber", recentJobs, lastJobsLabel, true);
+        NavigationView lastPaymentsView = createNavigationViewWithTable(navigationManager, "Utbetalinger", recentPayments, lastPaymentsLabel, false);
 
         // Add buttons to the top view, linking to the subviews
         balanceAndNewJobGroup.addComponent(createNavigationButton(lastJobsLabel, lastJobsView));
@@ -127,33 +127,40 @@ public class UserView extends AbstractView {
                 private static final long serialVersionUID = 3145027593224884343L;
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    if (jobtypeSelector.getValue() == null) {
-                        newJobAmount.setValue(0.0);
-                    } else {
-                        newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
-                    }
+                    changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, newJobAmount);
                 }
             });
 
         // Have a clickable button
-        Class<? extends UserView> classForLogMessage = getClass();
         balanceAndNewJobGroup.addComponent(new Button("Registrer jobb",
                                                       new Button.ClickListener() {
                                                           private static final long serialVersionUID = 2723190031041985566L;
 
                                                           @Override
                                                           public void buttonClick(ClickEvent e) {
-                                                              TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
-                                                              if (jobType != null) {
-                                                                  registerNewJobInDatabase(provider, classForLogMessage, account, jobType.getId(), jobType.getTransactionAmount());
-                                                                  jobtypeSelector.setValue(null);
-                                                                  balance.setValue(account.getBalance());
-                                                                  recentJobs.removeAllItems();
-                                                                  recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
-                                                              }
+                                                              registerJobInDatabase(jobtypeSelector);
                                                           }
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
         return balanceAndNewJobGroup;
+    }
+
+    void changeJobAmountWhenJobTypeIsChanged(NativeSelect jobtypeSelector, ObjectProperty<Double> newJobAmount) {
+        if (jobtypeSelector.getValue() == null) {
+            newJobAmount.setValue(0.0);
+        } else {
+            newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
+        }
+    }
+
+    void registerJobInDatabase(NativeSelect jobtypeSelector) {
+        TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
+        if (jobType != null) {
+            registerNewJobInDatabase(provider, getClass(), account, jobType.getId(), jobType.getTransactionAmount());
+            jobtypeSelector.setValue(null);
+            balance.setValue(account.getBalance());
+            recentJobs.removeAllItems();
+            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+        }
     }
 }

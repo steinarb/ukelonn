@@ -23,6 +23,11 @@
 
     <name>Ukelonn webapp derby test database OSGi bundle</name>
 
+    <properties>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.test</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-db-derby-test</karaf-feature-name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
@@ -96,6 +101,12 @@
             <artifactId>derby</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>${derby.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <scope>test</scope>
@@ -115,7 +126,7 @@
                         <supportedProjectType>war</supportedProjectType>
                     </supportedProjectTypes>
                     <instructions>
-                        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.test</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Export-Package>!*</Export-Package>
@@ -153,7 +164,7 @@
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>ukelonn-db-derby-test</primaryFeatureName>
+                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
             </plugin>
         </plugins>

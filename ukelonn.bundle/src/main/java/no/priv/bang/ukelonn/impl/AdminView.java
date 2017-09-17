@@ -124,8 +124,8 @@ public class AdminView extends AbstractView {
         tabs.addTab(registerPaymentTab, "Registrere utbetaling");
         VerticalComponentGroup registerPaymentTabGroup = createRegisterPaymentForm(registerPaymentTab);
 
-        NavigationView lastJobsForUserView = createNavigationViewWithTable(registerPaymentTab, "Jobber", recentJobs, "Siste jobber");
-        NavigationView lastPaymentsForUserView = createNavigationViewWithTable(registerPaymentTab, "Utbetalinger", recentPayments, "Siste utbetalinger");
+        NavigationView lastJobsForUserView = createNavigationViewWithTable(registerPaymentTab, "Jobber", recentJobs, "Siste jobber", true);
+        NavigationView lastPaymentsForUserView = createNavigationViewWithTable(registerPaymentTab, "Utbetalinger", recentPayments, "Siste utbetalinger", false);
 
         registerPaymentTabGroup.addComponent(createNavigationButton("Siste jobber for bruker", lastJobsForUserView));
         registerPaymentTabGroup.addComponent(createNavigationButton("Siste utbetalinger til bruker", lastPaymentsForUserView));
@@ -141,7 +141,6 @@ public class AdminView extends AbstractView {
         registerPaymentTabGroup.addComponent(greeting);
 
         NativeSelect paymenttype = new NativeSelect("Registrer utbetaling", paymentTypes);
-        Class<? extends AdminView> classForLogMessage = getClass();
         NativeSelect accountSelector = new NativeSelect("Velg hvem det skal betales til", accountsContainer);
         accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
         accountSelector.setItemCaptionPropertyId("fullName");
@@ -150,22 +149,7 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    Account account = (Account) accountSelector.getValue();
-                    jobTypes.removeAllItems();
-                    paymentTypes.removeAllItems();
-                    recentJobs.removeAllItems();
-                    recentPayments.removeAllItems();
-                    if (account != null) {
-                        refreshAccount(provider, classForLogMessage, account);
-                        balance.setValue(account.getBalance());
-                        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, classForLogMessage);
-                        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-                        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-                        paymenttype.select(transactionTypes.get(idOfPayToBank));
-                        amount.setValue(balance.getValue());
-                        recentJobs.addAll(getJobsFromAccount(provider, account, classForLogMessage));
-                        recentPayments.addAll(getPaymentsFromAccount(provider, account, classForLogMessage));
-                    }
+                    updateFormsAfterAccountIsSelected(paymenttype, accountSelector);
                 }
             });
         registerPaymentTabGroup.addComponent(accountSelector);
@@ -183,15 +167,7 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    TransactionType payment = (TransactionType) paymenttype.getValue();
-                    if (payment != null) {
-                        Double paymentAmount = payment.getTransactionAmount();
-                        if (payment.getId() == idOfPayToBank || paymentAmount != null) {
-                            amount.setValue(balance.getValue());
-                        } else {
-                            amount.setValue(paymentAmount);
-                        }
-                    }
+                    updateVisiblePaymentPropertiesWhenPaymentTypeIsSelected(paymenttype);
                 }
             });
         paymentLayout.addComponent(paymenttype);
@@ -205,16 +181,7 @@ public class AdminView extends AbstractView {
 
                                                   @Override
                                                   public void buttonClick(ClickEvent event) {
-                                                      Account account = (Account) accountSelector.getValue();
-                                                      TransactionType payment = (TransactionType) paymenttype.getValue();
-                                                      if (account != null && payment != null) {
-                                                          addNewPaymentToAccount(provider, classForLogMessage, account, payment, amount.getValue());
-                                                          recentPayments.removeAllItems();
-                                                          recentPayments.addAll(getPaymentsFromAccount(provider, account, classForLogMessage));
-                                                          refreshAccount(provider, classForLogMessage, account);
-                                                          balance.setValue(account.getBalance());
-                                                          amount.setValue(0.0);
-                                                      }
+                                                      registerPaymentInDatabase(paymenttype, accountSelector);
                                                   }
                                               }));
         registerPaymentTabGroup.addComponent(paymentLayout);
@@ -226,7 +193,6 @@ public class AdminView extends AbstractView {
     }
 
     private void createJobtypeAdminstrationTab(TabBarView tabs) {
-        Class<? extends AdminView> classForLogMessage = getClass();
         NavigationManager jobtypeAdminTab = new NavigationManager();
         VerticalComponentGroup jobtypeAdminContent = createVerticalComponentGroupWithCssLayoutAndNavigationView(jobtypeAdminTab, new NavigationView(), "Administrere jobbtyper");
 
@@ -244,14 +210,7 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    String jobname = newJobTypeName.getValue();
-                    Double jobamount = newJobTypeAmount.getValue();
-                    if (!"".equals(jobname) && !Double.valueOf(0.0).equals(jobamount)) {
-                        addJobTypeToDatabase(provider, classForLogMessage, jobname, jobamount);
-                        newJobTypeName.setValue("");
-                        newJobTypeAmount.setValue(0.0);
-                        refreshJobTypesFromDatabase();
-                    }
+                    makeNewJobType();
                 }
             }));
 
@@ -287,38 +246,26 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
-                    if (transactionType != null) {
-                        if (!"".equals(editJobTypeNameField.getValue()) &&
-                            !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
-                        {
-                            transactionType.setTransactionTypeName(editedJobTypeName.getValue());
-                            transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
-                            updateTransactionTypeInDatabase(provider, classForLogMessage, transactionType);
-                            jobtypesTable.setValue(null);
-                            editedJobTypeName.setValue("");
-                            editedJobTypeAmount.setValue(0.0);
-                            refreshJobTypesFromDatabase();
-                        }
-                    }
+                    saveChangesToJobType(jobtypesTable, editJobTypeNameField);
                 }
 
-                private boolean identicalToExistingValues(TransactionType transactionType, ObjectProperty<String> transactionTypeName, ObjectProperty<Double> transactionTypeAmount) {
-                    if (transactionType == null || transactionType.getTransactionTypeName() == null || transactionType.getTransactionAmount() == null) {
-                        return false; // Nothing to compare against, always false
-                    }
-
-                    boolean isIdentical =
-                        transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
-                        transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
-                    return isIdentical;
-                }
             }));
         jobtypesform.addComponent(editJobLayout);
 
         jobtypeAdminContent.addComponent(createNavigationButton(newJobtypeLabel, newJobTypeTab));
         jobtypeAdminContent.addComponent(createNavigationButton(modifyJobtypesLabel, jobtypesTab));
         tabs.addTab(jobtypeAdminTab, "Administrere jobbtyper");
+    }
+
+    boolean identicalToExistingValues(TransactionType transactionType, ObjectProperty<String> transactionTypeName, ObjectProperty<Double> transactionTypeAmount) {
+        if (transactionType == null || transactionType.getTransactionTypeName() == null || transactionType.getTransactionAmount() == null) {
+            return false; // Nothing to compare against, always false
+        }
+
+        boolean isIdentical =
+            transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
+            transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
+        return isIdentical;
     }
 
     private void createPaymenttypeAdministrationTab(TabBarView tabs) {
@@ -331,7 +278,6 @@ public class AdminView extends AbstractView {
 
         NavigationView newpaymenttypeTab = new NavigationView();
         VerticalComponentGroup newpaymenttypeForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, newpaymenttypeTab, newPaymenttypeLabel);
-        Class<? extends AdminView> classForLogMessage = getClass();
         TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
         newpaymenttypeForm.addComponent(newPaymentTypeNameField);
         TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
@@ -341,15 +287,7 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    String paymentName = newPaymentTypeName.getValue();
-                    Double rawPaymentAmount = newPaymentTypeAmount.getValue();
-                    Double paymentAmount = Double.valueOf(0.0).equals(rawPaymentAmount) ? null : rawPaymentAmount;
-                    if (!"".equals(paymentName)) {
-                        addPaymentTypeToDatabase(provider, classForLogMessage, paymentName, paymentAmount);
-                        newPaymentTypeName.setValue("");
-                        newPaymentTypeAmount.setValue(0.0);
-                        refreshPaymentTypesFromDatabase();
-                    }
+                    createPaymentType();
                 }
             }));
 
@@ -366,11 +304,7 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
-                    if (transactionType != null) {
-                        editedPaymentTypeName.setValue(transactionType.getTransactionTypeName());
-                        editedPaymentTypeAmount.setValue(transactionType.getTransactionAmount());
-                    }
+                    updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypesTable);
                 }
             });
         paymentTypesTable.setPageLength(paymentTypes.size());
@@ -385,31 +319,7 @@ public class AdminView extends AbstractView {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
-                    if (transactionType != null) {
-                        if (!"".equals(editPaymentTypeNameField.getValue()) &&
-                            !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
-                        {
-                            transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
-                            transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
-                            updateTransactionTypeInDatabase(provider, classForLogMessage, transactionType);
-                            paymentTypesTable.setValue(null);
-                            editedPaymentTypeName.setValue("");
-                            editedPaymentTypeAmount.setValue(0.0);
-                            refreshPaymentTypesFromDatabase();
-                        }
-                    }
-                }
-
-                private boolean identicalToExistingValues(TransactionType transactionType, ObjectProperty<String> transactionTypeName, ObjectProperty<Double> transactionTypeAmount) {
-                    if (transactionType == null || transactionType.getTransactionTypeName() == null || transactionType.getTransactionAmount() == null) {
-                        return false; // Nothing to compare against, always false
-                    }
-
-                    boolean isIdentical =
-                        transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
-                        transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
-                    return isIdentical;
+                    saveChangesToPaymentTypes(paymentTypesTable, editPaymentTypeNameField);
                 }
             }));
         paymenttypesform.addComponent(editPaymentsLayout);
@@ -639,6 +549,117 @@ public class AdminView extends AbstractView {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         paymentTypes.removeAllItems();
         paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+    }
+
+    void updateFormsAfterAccountIsSelected(NativeSelect paymenttype, NativeSelect accountSelector) {
+        Account account = (Account) accountSelector.getValue();
+        jobTypes.removeAllItems();
+        paymentTypes.removeAllItems();
+        recentJobs.removeAllItems();
+        recentPayments.removeAllItems();
+        if (account != null) {
+            refreshAccount(provider, getClass(), account);
+            balance.setValue(account.getBalance());
+            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+            paymenttype.select(transactionTypes.get(idOfPayToBank));
+            amount.setValue(balance.getValue());
+            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+            recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+        }
+    }
+
+    void updateVisiblePaymentPropertiesWhenPaymentTypeIsSelected(NativeSelect paymenttype) {
+        TransactionType payment = (TransactionType) paymenttype.getValue();
+        if (payment != null) {
+            Double paymentAmount = payment.getTransactionAmount();
+            if (payment.getId() == idOfPayToBank || paymentAmount == null) {
+                amount.setValue(balance.getValue());
+            } else {
+                amount.setValue(paymentAmount);
+            }
+        }
+    }
+
+    void registerPaymentInDatabase(NativeSelect paymenttype, NativeSelect accountSelector) {
+        Account account = (Account) accountSelector.getValue();
+        TransactionType payment = (TransactionType) paymenttype.getValue();
+        if (account != null && payment != null) {
+            addNewPaymentToAccount(provider, getClass(), account, payment, amount.getValue());
+            recentPayments.removeAllItems();
+            recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+            recentJobs.removeAllItems();
+            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+            refreshAccount(provider, getClass(), account);
+            balance.setValue(account.getBalance());
+            amount.setValue(0.0);
+        }
+    }
+
+    void makeNewJobType() {
+        String jobname = newJobTypeName.getValue();
+        Double jobamount = newJobTypeAmount.getValue();
+        if (!"".equals(jobname) && !Double.valueOf(0.0).equals(jobamount)) {
+            addJobTypeToDatabase(provider, getClass(), jobname, jobamount);
+            newJobTypeName.setValue("");
+            newJobTypeAmount.setValue(0.0);
+            refreshJobTypesFromDatabase();
+        }
+    }
+
+    void saveChangesToJobType(Table jobtypesTable, TextField editJobTypeNameField) {
+        TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
+        if (transactionType != null) {
+            if (!"".equals(editJobTypeNameField.getValue()) &&
+                !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
+            {
+                transactionType.setTransactionTypeName(editedJobTypeName.getValue());
+                transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
+                updateTransactionTypeInDatabase(provider, getClass(), transactionType);
+                jobtypesTable.setValue(null);
+                editedJobTypeName.setValue("");
+                editedJobTypeAmount.setValue(0.0);
+                refreshJobTypesFromDatabase();
+            }
+        }
+    }
+
+    void createPaymentType() {
+        String paymentName = newPaymentTypeName.getValue();
+        Double rawPaymentAmount = newPaymentTypeAmount.getValue();
+        Double paymentAmount = Double.valueOf(0.0).equals(rawPaymentAmount) ? null : rawPaymentAmount;
+        if (!"".equals(paymentName)) {
+            addPaymentTypeToDatabase(provider, getClass(), paymentName, paymentAmount);
+            newPaymentTypeName.setValue("");
+            newPaymentTypeAmount.setValue(0.0);
+            refreshPaymentTypesFromDatabase();
+        }
+    }
+
+    void updatePaymentForEditWhenPaymentTypeIsSelected(Table paymentTypesTable) {
+        TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
+        if (transactionType != null) {
+            editedPaymentTypeName.setValue(transactionType.getTransactionTypeName());
+            editedPaymentTypeAmount.setValue(transactionType.getTransactionAmount());
+        }
+    }
+
+    void saveChangesToPaymentTypes(Table paymentTypesTable, TextField editPaymentTypeNameField) {
+        TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
+        if (transactionType != null) {
+            if (!"".equals(editPaymentTypeNameField.getValue()) &&
+                !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
+            {
+                transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
+                transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
+                updateTransactionTypeInDatabase(provider, getClass(), transactionType);
+                paymentTypesTable.setValue(null);
+                editedPaymentTypeName.setValue("");
+                editedPaymentTypeAmount.setValue(0.0);
+                refreshPaymentTypesFromDatabase();
+            }
+        }
     }
 
 }

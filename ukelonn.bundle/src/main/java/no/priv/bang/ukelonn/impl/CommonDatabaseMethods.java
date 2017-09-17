@@ -220,7 +220,7 @@ public class CommonDatabaseMethods {
         return getTransactionsFromAccount(provider, account, clazz, "/sql/query/jobs_last_n.sql", "job");
     }
 
-    private static List<Transaction> getTransactionsFromAccount(
+    static List<Transaction> getTransactionsFromAccount(
         UkelonnService provider,
         Account account,
         Class<?> clazz,
@@ -234,6 +234,7 @@ public class CommonDatabaseMethods {
                 String sql = String.format(getResourceAsString(provider, sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
                 PreparedStatement statement = database.prepareStatement(sql);
                 statement.setInt(1, account.getAccountId());
+                try { statement.setInt(2, account.getAccountId()); } catch(SQLException e) {};
                 ResultSet resultSet = database.query(statement);
                 if (resultSet != null) {
                     while (resultSet.next()) {
@@ -258,7 +259,7 @@ public class CommonDatabaseMethods {
         TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
         ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
         for (int i = 0; i < lengthOfDummyList; i++) {
-            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0);
+            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0, false);
             dummyTransactions.add(dummyTransaction);
         }
 
@@ -271,7 +272,8 @@ public class CommonDatabaseMethods {
                 resultset.getInt("transaction_id"),
                 mapTransactionType(resultset),
                 resultset.getDate("transaction_time"),
-                resultset.getDouble("transaction_amount"));
+                resultset.getDouble("transaction_amount"),
+                resultset.getBoolean("paid_out"));
         return transaction;
     }
 
