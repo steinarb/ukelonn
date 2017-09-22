@@ -87,6 +87,9 @@ public abstract class AbstractView extends VerticalLayout implements View {
         CssLayout transactionTableForm = new CssLayout();
         VerticalComponentGroup transactionTableGroup = new VerticalComponentGroup();
         Table transactionTable = createTransactionTable(tableTitle, transactions, addPaidOutColumn);
+        if (addPaidOutColumn) {
+            reduceWidthOfNameColumn(transactionTable);
+        }
         transactionTableGroup.addComponent(transactionTable);
         transactionTableForm.addComponent(transactionTableGroup);
         NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableForm);
@@ -94,6 +97,11 @@ public abstract class AbstractView extends VerticalLayout implements View {
         navigationManager.navigateTo(transactionTableView);
         navigationManager.navigateBack();
         return transactionTableView;
+    }
+
+    private void reduceWidthOfNameColumn(Table transactionTable) {
+        transactionTable.setColumnExpandRatio("name", 80);
+        transactionTable.setColumnExpandRatio("paidOut", 8);
     }
 
     protected NavigationButton createNavigationButton(String caption, NavigationView targetView) {

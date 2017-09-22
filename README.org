@@ -6,16 +6,18 @@ Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/develo
 
 * Hva ligger på de forskjellige branchene
 
-I øyeblikket er det tre hoved-brancher:
- 1. using-vaadin
+I øyeblikket er det fire hoved-brancher:
+ 1. master
+    Dette er branchen som er i produksjon.  Hver push av denne branchen forårsaker [[https://travis-ci.org/steinarb/ukelonn][et bygg på travis-ci]] (dette er den eneste branchen med en [[https://github.com/steinarb/ukelonn/blob/master/.travis.yml][.travis.yml]]-fil) med snapshot deploy til et eget maven-repository, som er [[Oppsett av webappen på en server med debian GNU/linux][det som brukes til å installere applikasjonen i karaf-instansen på produksjonsserveren]].  Det som ligger på master er i øyeblikket en litt eldre versjon av using-vaadin.  Forskjellen er at det som ligger på master har packaging war og er konfigurert med en web.xml-fil, mens det som ligger på using-vaadin har packaging jar og forsøker å bruke [[http://ops4j.github.io/pax/web/SNAPSHOT/User-Guide.html#whiteboard-extender][Pax web whiteboard extender]] der servlet'er og filtre blir publisert som OSGi-servicer og plukket opp av pax web (det har ikke vært helt lett til å få til å fungere fordi OSGi-servicene kommer i tilfeldig rekkefølge og HttpContext må lages før Shiro-filteret blir lagd)
+ 2. using-vaadin
     Denne branchen bruker [[https://vaadin.com/home][vaadin]] og er iferd med å nærme seg primefaces-branchen i funksjonalitet.
     Her brukes Vaadins [[https://vaadin.com/docs/-/part/touchkit/mobile-components.html][Mobile User Interface Components]] for å få noe som ser "app-aktig" ut, iallefall på registrering av jobber, gjort av ungene.
     Admin-grensesnittet er også blitt mer mobilt men vil trives bedre på en tablet enn på en mobil (det er mer som skal vises fram).
     Denne branchen er i skrivende stund "i produksjon" i heimen.
- 2. using-primefaces
+ 3. using-primefaces
     Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og var den første som var ferdig.
     Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet ser litt rart ut)
- 3. using-rendersnake
+ 4. using-rendersnake
     Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet
 
 Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det bør la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
@@ -246,7 +248,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  6. I karaf kommando-skall, legg til maven-repo som holder snapshots av ukelonn, bygd fra travis CI-bygg av det som blir pushet til master:
     #+BEGIN_EXAMPLE
       config:edit org.ops4j.pax.url.mvn
-      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@snapshots, http://maven.vaadin.com/vaadin-addons"
+      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots, http://maven.vaadin.com/vaadin-addons@id=vaadin"
       config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
       config:update
     #+END_EXAMPLE
@@ -267,10 +269,7 @@ Det kan også være lurt å sette opp en nattlig backup av denne databasen til e
 
 For å oppdatere til nyeste snapshot, ta "ssh -p 8101 karaf@localhost" og gi følgende kommandoer:
 #+BEGIN_EXAMPLE
-  bundle:update no.priv.bang.ukelonn.api
-  bundle:update no.priv.bang.ukelonn.db.liquibase
-  bundle:update no.priv.bang.ukelonn.db.postgresql
-  bundle:update no.priv.bang.ukelonn
+  bundle:update no.priv.bang.ukelonn.api; bundle:update no.priv.bang.ukelonn.db.liquibase; bundle:update no.priv.bang.ukelonn.db.postgresql; bundle:update no.priv.bang.ukelonn
 #+END_EXAMPLE
 
 (/Merk:/ Man kan ikke bruke "bundle:watch *" etter å ha installert -snapshot-versjoner fra et maven-repository man når med http, fordi "hundle:watch *" fungerer kun for automatisk oppdatering av snapshot-versjoner installert i det lokale maven-repoet i ~karaf/.m2/repository/ )
