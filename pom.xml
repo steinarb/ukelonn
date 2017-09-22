@@ -317,28 +317,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>com.github.cjnygard</groupId>
-                    <artifactId>rest-maven-plugin</artifactId>
-                    <version>${rest-maven-plugin-version}</version>
-                    <configuration>
-                        <endpoint>${ukelonn-server-url}</endpoint>
-                        <requestType>
-                            <type>application</type>
-                            <subtype>x-www-form-urlencoded</subtype>
-                        </requestType>
-                        <headers>
-                            <Authorization>Basic ${ukelonn-server-basic-auth-token}</Authorization>
-                        </headers>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.github.cjnygard</groupId>
-                            <artifactId>rest-maven-plugin</artifactId>
-                            <version>${rest-maven-plugin-version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -428,30 +406,6 @@
                     <coberturaReports>
                         <coberturaReport>${basedir}/target/coverage.xml</coberturaReport>
                     </coberturaReports>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>ru.yaal.maven</groupId>
-                <artifactId>write-text-files-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <id>generate-rest-post-arguments</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>write-text-files</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <files>
-                        <file>
-                            <path>target/karaf-console-rest-post-update-arguments</path>
-                            <lines>
-                                <line>action=update&amp;dummy=dummy</line>
-                            </lines>
-                        </file>
-                    </files>
                 </configuration>
             </plugin>
         </plugins>
