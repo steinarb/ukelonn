@@ -40,7 +40,7 @@ insert into transactions (account_id,transaction_type_id,transaction_time,transa
 insert into transactions (account_id,transaction_type_id,transaction_time,transaction_amount) values (4,2,'2016-09-24 22:01:00', 45);
 insert into transactions (account_id,transaction_type_id,transaction_time,transaction_amount) values (4,3,'2016-09-24 22:01:00', 35);
 insert into transactions (account_id,transaction_type_id,transaction_time,transaction_amount) values (4,4,'2016-09-25 22:01:00',-125);
-insert into transactions (account_id,transaction_type_id,transaction_amount) values (4,1,45);
+insert into transactions (account_id,transaction_type_id,transaction_amount) values (4,6,45);
 insert into transactions (account_id,transaction_type_id,transaction_amount) values (4,2,45);
 insert into transactions (account_id,transaction_type_id,transaction_amount) values (4,3,35);
 insert into transactions (account_id,transaction_type_id,transaction_amount) values (5,3,35);

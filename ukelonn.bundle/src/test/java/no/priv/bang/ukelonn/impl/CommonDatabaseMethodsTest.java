@@ -131,13 +131,13 @@ public class CommonDatabaseMethodsTest {
     public void testAddJobTypeToDatabase() {
         // Verify precondition
         List<TransactionType> jobTypesBefore = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getUkelonnServletProvider(), getClass()).values());
-        assertEquals(3, jobTypesBefore.size());
+        assertEquals(4, jobTypesBefore.size());
 
         addJobTypeToDatabase(getUkelonnServletProvider(), getClass(), "Klippe gress", 45);
 
         // Verify that a job has been added
         List<TransactionType> jobTypesAfter = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getUkelonnServletProvider(), getClass()).values());
-        assertEquals(4, jobTypesAfter.size());
+        assertEquals(5, jobTypesAfter.size());
     }
 
     @Test
