@@ -113,6 +113,8 @@ public class TestUtils {
             ukelonnServiceInstanceField.set(null, null);
         }
 
+        ShiroFilterProvider shiroFilterProvider = new ShiroFilterProvider();
+        shiroFilterProvider.setUkelonnDatabase(null);
         dropTestDatabase();
     }
 
