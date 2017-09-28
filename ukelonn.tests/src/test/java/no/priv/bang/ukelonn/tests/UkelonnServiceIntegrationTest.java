@@ -88,10 +88,9 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     public void shiroFilterIntegrationTest() {
         ServiceReference<Filter> servletReference = bundleContext.getServiceReference(Filter.class);
         String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
-        assertEquals(7, servletServicePropertyKeys.length);
+        assertEquals(6, servletServicePropertyKeys.length);
         String[] actualUrlPatterns = (String[])servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
-        assertEquals("/*", actualUrlPatterns[0]);
-        assertEquals("/ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH));
+        assertEquals("/ukelonn/*", actualUrlPatterns[0]);
     }
 
     @Test

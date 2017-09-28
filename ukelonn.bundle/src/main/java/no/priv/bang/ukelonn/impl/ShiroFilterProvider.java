@@ -59,9 +59,8 @@ import no.steria.osgi.jsr330activator.ServiceProperty;
  *
  */
 @ServiceProperties({
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/*"}),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn"),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_HTTP_CONTEXT_PATH, value = "/ukelonn")})
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/ukelonn/*"}),
+	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn")})
 public class ShiroFilterProvider implements Provider<Filter> {
 
     private static ShiroFilterProvider instance;
