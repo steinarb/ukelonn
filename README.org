@@ -11,6 +11,8 @@ Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/develo
 
 Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.
 
+Se fila LICENSE for teksten på lisensen.
+
 * Hva ligger på de forskjellige branchene
 
 I øyeblikket er det fire hoved-brancher:
