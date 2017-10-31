@@ -1,5 +1,11 @@
 language: java
-script: mvn cobertura:cobertura coveralls:report
+addons:
+    sonarcloud:
+        organization: steinarb-github
+        token: $SONAR_TOKEN
+script:
+    - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+    - mvn cobertura:cobertura coveralls:report
 
 deploy:
     provider: script
