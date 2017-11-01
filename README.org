@@ -4,6 +4,18 @@ Tanken er at ungene skal kunne registrere jobber de gjør i hjemmet og at foreld
 
 Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/developer/architecture/][OSGi]] runtime, og er ment å være responsive slik at den er lett å kjøre på mobiltelefoner og nettbrett.
 
+* Status
+[[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]
+
+** SonarCloud
+[[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=lines#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=coverage#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_coverage#.svg]]
+
+* Lisens
+
+Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.
+
+Se fila LICENSE for teksten på lisensen.
+
 * Hva ligger på de forskjellige branchene
 
 I øyeblikket er det fire hoved-brancher:
@@ -273,10 +285,3 @@ For å oppdatere til nyeste snapshot, ta "ssh -p 8101 karaf@localhost" og gi fø
 #+END_EXAMPLE
 
 (/Merk:/ Man kan ikke bruke "bundle:watch *" etter å ha installert -snapshot-versjoner fra et maven-repository man når med http, fordi "hundle:watch *" fungerer kun for automatisk oppdatering av snapshot-versjoner installert i det lokale maven-repoet i ~karaf/.m2/repository/ )
-
-* Status
-[[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]
-
-* Lisens
-
-Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.
