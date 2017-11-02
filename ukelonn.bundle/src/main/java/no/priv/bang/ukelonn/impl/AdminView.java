@@ -47,43 +47,45 @@ import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class AdminView extends AbstractView {
+    private static final String TRANSACTION_AMOUNT = "transactionAmount";
+    private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     private static final long serialVersionUID = -1581589472749242129L;
-    final int idOfPayToBank = 4;
+    static final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn admin UI, bruker: ????");
-    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(getClass()));
-    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
-    ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
-    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
-    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
+    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<>(Account.class, getAccounts(getClass()));
+    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
+    ObjectProperty<Double> amount = new ObjectProperty<>(0.0);
+    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
+    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
     Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
 
     // Data model for the admin tasks
-    ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> newUserUsername = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserPassword1 = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserPassword2 = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(getClass()));
-    ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class, getUsers(getClass()));
-    ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
+    ObjectProperty<String> newJobTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> editedJobTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> newUserUsername = new ObjectProperty<>("");
+    ObjectProperty<String> newUserPassword1 = new ObjectProperty<>("");
+    ObjectProperty<String> newUserPassword2 = new ObjectProperty<>("");
+    ObjectProperty<String> newUserEmail = new ObjectProperty<>("");
+    ObjectProperty<String> newUserFirstname = new ObjectProperty<>("");
+    ObjectProperty<String> newUserLastname = new ObjectProperty<>("");
+    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<>(User.class, getUsers(getClass()));
+    ObjectProperty<String> editUserPassword1 = new ObjectProperty<>("");
+    ObjectProperty<String> editUserPassword2 = new ObjectProperty<>("");
+    BeanItemContainer<User> editUserUsers = new BeanItemContainer<>(User.class, getUsers(getClass()));
+    ObjectProperty<String> editUserUsername = new ObjectProperty<>("");
+    ObjectProperty<String> editUserEmail = new ObjectProperty<>("");
+    ObjectProperty<String> editUserFirstname = new ObjectProperty<>("");
+    ObjectProperty<String> editUserLastname = new ObjectProperty<>("");
 
     public AdminView(VaadinRequest request) {
         setSizeFull();
@@ -153,7 +155,7 @@ public class AdminView extends AbstractView {
         paymentLayout.addComponent(balanceDisplay);
 
         paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        paymenttype.setItemCaptionPropertyId("transactionTypeName");
+        paymenttype.setItemCaptionPropertyId(TRANSACTION_TYPE_NAME);
         paymenttype.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -8306551057458139402L;
 
@@ -209,10 +211,10 @@ public class AdminView extends AbstractView {
         NavigationView jobtypesTab = new NavigationView();
         VerticalComponentGroup jobtypesform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(jobtypeAdminTab, jobtypesTab, modifyJobtypesLabel);
         Table jobtypesTable = new Table();
-        jobtypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
-        jobtypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        jobtypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
+        jobtypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
         jobtypesTable.setContainerDataSource(jobTypes);
-        jobtypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        jobtypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
         jobtypesTable.setSelectable(true);
         jobtypesTable.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -8324617275480799162L;
@@ -254,10 +256,9 @@ public class AdminView extends AbstractView {
             return false; // Nothing to compare against, always false
         }
 
-        boolean isIdentical =
+        return
             transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
             transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
-        return isIdentical;
     }
 
     private void createPaymenttypeAdministrationTab(TabBarView tabs) {
@@ -286,10 +287,10 @@ public class AdminView extends AbstractView {
         NavigationView paymentstypeTab = new NavigationView();
         VerticalComponentGroup paymenttypesform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, paymentstypeTab, modifyPayementtypesLabel);
         Table paymentTypesTable = new Table();
-        paymentTypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
-        paymentTypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        paymentTypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
+        paymentTypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
         paymentTypesTable.setContainerDataSource(paymentTypes);
-        paymentTypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        paymentTypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
         paymentTypesTable.setSelectable(true);
         paymentTypesTable.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -1432137451555587595L;
@@ -426,14 +427,13 @@ public class AdminView extends AbstractView {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     User user = (User) editUserPasswordUsersField.getValue();
-                    if (user != null) {
-                        if (!"".equals(editUserPassword1Field.getValue()) &&
-                            editUserPassword2Field.isValid())
-                        {
-                            changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
-                            editUserPassword1.setValue("");
-                            editUserPassword2.setValue("");
-                        }
+                    if (user != null &&
+                        !"".equals(editUserPassword1Field.getValue()) &&
+                        editUserPassword2Field.isValid())
+                    {
+                        changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
+                        editUserPassword1.setValue("");
+                        editUserPassword2.setValue("");
                     }
                 }
             }));
@@ -530,9 +530,9 @@ public class AdminView extends AbstractView {
     }
 
     private void refreshJobTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(getClass());
         jobTypes.removeAllItems();
-        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
     }
 
     private void refreshPaymentTypesFromDatabase() {
@@ -550,10 +550,10 @@ public class AdminView extends AbstractView {
         if (account != null) {
             refreshAccount(getClass(), account);
             balance.setValue(account.getBalance());
-            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-            paymenttype.select(transactionTypes.get(idOfPayToBank));
+            Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(getClass());
+            jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
+            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactiontypes.values()));
+            paymenttype.select(transactiontypes.get(idOfPayToBank));
             amount.setValue(balance.getValue());
             recentJobs.addAll(getJobsFromAccount(account, getClass()));
             recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
@@ -600,18 +600,17 @@ public class AdminView extends AbstractView {
 
     void saveChangesToJobType(Table jobtypesTable, TextField editJobTypeNameField) {
         TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
-        if (transactionType != null) {
-            if (!"".equals(editJobTypeNameField.getValue()) &&
-                !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
-            {
-                transactionType.setTransactionTypeName(editedJobTypeName.getValue());
-                transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
-                updateTransactionTypeInDatabase(getClass(), transactionType);
-                jobtypesTable.setValue(null);
-                editedJobTypeName.setValue("");
-                editedJobTypeAmount.setValue(0.0);
-                refreshJobTypesFromDatabase();
-            }
+        if (transactionType != null &&
+            !"".equals(editJobTypeNameField.getValue()) &&
+            !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
+        {
+            transactionType.setTransactionTypeName(editedJobTypeName.getValue());
+            transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
+            updateTransactionTypeInDatabase(getClass(), transactionType);
+            jobtypesTable.setValue(null);
+            editedJobTypeName.setValue("");
+            editedJobTypeAmount.setValue(0.0);
+            refreshJobTypesFromDatabase();
         }
     }
 
@@ -637,18 +636,17 @@ public class AdminView extends AbstractView {
 
     void saveChangesToPaymentTypes(Table paymentTypesTable, TextField editPaymentTypeNameField) {
         TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
-        if (transactionType != null) {
-            if (!"".equals(editPaymentTypeNameField.getValue()) &&
-                !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
-            {
-                transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
-                transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
-                updateTransactionTypeInDatabase(getClass(), transactionType);
-                paymentTypesTable.setValue(null);
-                editedPaymentTypeName.setValue("");
-                editedPaymentTypeAmount.setValue(0.0);
-                refreshPaymentTypesFromDatabase();
-            }
+        if (transactionType != null &&
+            !"".equals(editPaymentTypeNameField.getValue()) &&
+            !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
+        {
+            transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
+            transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
+            updateTransactionTypeInDatabase(getClass(), transactionType);
+            paymentTypesTable.setValue(null);
+            editedPaymentTypeName.setValue("");
+            editedPaymentTypeAmount.setValue(0.0);
+            refreshPaymentTypesFromDatabase();
         }
     }
 

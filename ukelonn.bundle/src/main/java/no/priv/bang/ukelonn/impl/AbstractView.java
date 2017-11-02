@@ -44,28 +44,29 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
 public abstract class AbstractView extends VerticalLayout implements View {
+    private static final String PAID_OUT = "paidOut";
+    private static final String TRANSACTION_TIME = "transactionTime";
     private static final long serialVersionUID = 267153275586375959L;
     public static URI addPathToURI(URI location, String path) {
         String combinedPath = location.getPath() + path;
-        URI newURI = location.resolve(combinedPath);
-        return newURI;
+        return location.resolve(combinedPath);
     }
 
     protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions, boolean addPaidOutColumn) {
         Table transactionsTable = new Table();
-        transactionsTable.addContainerProperty("transactionTime", Date.class, null, "Dato", null, null);
+        transactionsTable.addContainerProperty(TRANSACTION_TIME, Date.class, null, "Dato", null, null);
         transactionsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
         transactionsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        ArrayList<String> visibleColumns = new ArrayList<String>(Arrays.asList("transactionTime", "name", "transactionAmount"));
+        ArrayList<String> visibleColumns = new ArrayList<>(Arrays.asList(TRANSACTION_TIME, "name", "transactionAmount"));
         if (addPaidOutColumn) {
-            transactionsTable.addContainerProperty("paidOut", CheckBox.class, null, "Utbetalt", null, null);
+            transactionsTable.addContainerProperty(PAID_OUT, CheckBox.class, null, "Utbetalt", null, null);
         }
 
-        transactionsTable.setConverter("transactionTime", dateFormatter);
+        transactionsTable.setConverter(TRANSACTION_TIME, dateFormatter);
         transactionsTable.setContainerDataSource(transactions);
         transactionsTable.setVisibleColumns(visibleColumns.toArray(new Object[visibleColumns.size()]));
         if (addPaidOutColumn) {
-            transactionsTable.addGeneratedColumn("paidOut", new Table.ColumnGenerator() {
+            transactionsTable.addGeneratedColumn(PAID_OUT, new Table.ColumnGenerator() {
                     private static final long serialVersionUID = -932068875568403416L;
 
                     @Override
@@ -101,12 +102,11 @@ public abstract class AbstractView extends VerticalLayout implements View {
 
     private void reduceWidthOfNameColumn(Table transactionTable) {
         transactionTable.setColumnExpandRatio("name", 80);
-        transactionTable.setColumnExpandRatio("paidOut", 8);
+        transactionTable.setColumnExpandRatio(PAID_OUT, 8);
     }
 
     protected NavigationButton createNavigationButton(String caption, NavigationView targetView) {
-        NavigationButton button = new NavigationButton(caption, targetView);
-        return button;
+        return new NavigationButton(caption, targetView);
     }
 
     protected HorizontalLayout createLinksToBrowserVersionAndLogout(VaadinRequest request, String uiStyle, String uiStyleName) {
