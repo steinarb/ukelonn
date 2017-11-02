@@ -57,7 +57,7 @@ public abstract class AbstractView extends VerticalLayout implements View {
         transactionsTable.addContainerProperty(TRANSACTION_TIME, Date.class, null, "Dato", null, null);
         transactionsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
         transactionsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        ArrayList<String> visibleColumns = new ArrayList<String>(Arrays.asList(TRANSACTION_TIME, "name", "transactionAmount"));
+        ArrayList<String> visibleColumns = new ArrayList<>(Arrays.asList(TRANSACTION_TIME, "name", "transactionAmount"));
         if (addPaidOutColumn) {
             transactionsTable.addContainerProperty(PAID_OUT, CheckBox.class, null, "Utbetalt", null, null);
         }

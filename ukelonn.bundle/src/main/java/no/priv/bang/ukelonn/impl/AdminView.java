@@ -53,39 +53,39 @@ public class AdminView extends AbstractView {
     final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn admin UI, bruker: ????");
-    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(getClass()));
-    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
-    ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
-    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
-    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class, getDummyTransactions());
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
+    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<>(Account.class, getAccounts(getClass()));
+    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
+    ObjectProperty<Double> amount = new ObjectProperty<>(0.0);
+    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
+    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
     Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
 
     // Data model for the admin tasks
-    ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> newUserUsername = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserPassword1 = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserPassword2 = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(getClass()));
-    ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class, getUsers(getClass()));
-    ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
+    ObjectProperty<String> newJobTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> editedJobTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> newUserUsername = new ObjectProperty<>("");
+    ObjectProperty<String> newUserPassword1 = new ObjectProperty<>("");
+    ObjectProperty<String> newUserPassword2 = new ObjectProperty<>("");
+    ObjectProperty<String> newUserEmail = new ObjectProperty<>("");
+    ObjectProperty<String> newUserFirstname = new ObjectProperty<>("");
+    ObjectProperty<String> newUserLastname = new ObjectProperty<>("");
+    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<>(User.class, getUsers(getClass()));
+    ObjectProperty<String> editUserPassword1 = new ObjectProperty<>("");
+    ObjectProperty<String> editUserPassword2 = new ObjectProperty<>("");
+    BeanItemContainer<User> editUserUsers = new BeanItemContainer<>(User.class, getUsers(getClass()));
+    ObjectProperty<String> editUserUsername = new ObjectProperty<>("");
+    ObjectProperty<String> editUserEmail = new ObjectProperty<>("");
+    ObjectProperty<String> editUserFirstname = new ObjectProperty<>("");
+    ObjectProperty<String> editUserLastname = new ObjectProperty<>("");
 
     public AdminView(VaadinRequest request) {
         setSizeFull();
