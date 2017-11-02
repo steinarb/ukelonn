@@ -44,9 +44,9 @@ public class UkelonnRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        Set<String> roles = new HashSet<String>();
+        Set<String> roles = new HashSet<>();
         roles.add("user");
-        Set<String> administrators = new HashSet<String>();
+        Set<String> administrators = new HashSet<>();
         try {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
             PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view");

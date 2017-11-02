@@ -40,8 +40,8 @@ import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 public class LoginView extends AbstractView {
     private static final long serialVersionUID = 4812377913694429252L;
-    ObjectProperty<String> username = new ObjectProperty<String>("");
-    ObjectProperty<String> password = new ObjectProperty<String>("");
+    ObjectProperty<String> username = new ObjectProperty<>("");
+    ObjectProperty<String> password = new ObjectProperty<>("");
 
     public LoginView(VaadinRequest request, Navigator navigator) {
         FormLayout content = new FormLayout();

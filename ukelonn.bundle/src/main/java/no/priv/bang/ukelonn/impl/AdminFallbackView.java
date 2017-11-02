@@ -64,7 +64,7 @@ public class AdminFallbackView extends AbstractView {
     ObjectProperty<String> editedJobTypeName = new ObjectProperty<>("");
     ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<>(0.0);
     ObjectProperty<String> newPaymentTypeName = new ObjectProperty<>("");
-    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
+    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<>(0.0);
     ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<>("");
     ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<>(0.0);
     ObjectProperty<String> newUserUsername = new ObjectProperty<>("");

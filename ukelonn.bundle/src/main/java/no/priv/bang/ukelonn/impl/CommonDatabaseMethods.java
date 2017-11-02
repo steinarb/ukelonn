@@ -85,7 +85,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<TransactionType> getJobTypesFromTransactionTypes(Collection<TransactionType> transactionTypes) {
-        ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
+        ArrayList<TransactionType> jobTypes = new ArrayList<>();
         for (TransactionType transactionType : transactionTypes) {
             if (transactionType.isTransactionIsWork()) {
                 jobTypes.add(transactionType);
@@ -96,7 +96,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<TransactionType> getPaymentTypesFromTransactionTypes(Collection<TransactionType> transactionTypes) {
-        ArrayList<TransactionType> jobTypes = new ArrayList<TransactionType>();
+        ArrayList<TransactionType> jobTypes = new ArrayList<>();
         for (TransactionType transactionType : transactionTypes) {
             if (transactionType.isTransactionIsWagePayment()) {
                 jobTypes.add(transactionType);
@@ -184,7 +184,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<Account> getAccounts(Class<?> clazz) {
-        ArrayList<Account> accounts = new ArrayList<Account>();
+        ArrayList<Account> accounts = new ArrayList<>();
         try {
             UkelonnDatabase connection = connectionCheck(clazz);
             PreparedStatement statement = connection.prepareStatement("select * from accounts_view");
@@ -225,7 +225,7 @@ public class CommonDatabaseMethods {
                                                         String sqlTemplate,
                                                         String transactionType)
     {
-        List<Transaction> transactions = new ArrayList<Transaction>();
+        List<Transaction> transactions = new ArrayList<>();
         if (null != account) {
             UkelonnDatabase database = connectionCheck(clazz);
             try {
@@ -255,7 +255,7 @@ public class CommonDatabaseMethods {
     public static Collection<? extends Transaction> getDummyTransactions() {
         int lengthOfDummyList = 10;
         TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
-        ArrayList<Transaction> dummyTransactions = new ArrayList<Transaction>(lengthOfDummyList);
+        ArrayList<Transaction> dummyTransactions = new ArrayList<>(lengthOfDummyList);
         for (int i = 0; i < lengthOfDummyList; i++) {
             Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0, false);
             dummyTransactions.add(dummyTransaction);
@@ -380,7 +380,7 @@ public class CommonDatabaseMethods {
     }
 
     public static List<User> getUsers(Class<?> clazz) {
-        ArrayList<User> users = new ArrayList<User>();
+        ArrayList<User> users = new ArrayList<>();
         UkelonnDatabase database = connectionCheck(clazz);
         PreparedStatement statement = database.prepareStatement("select * from users order by user_id");
         ResultSet resultSet = database.query(statement);
