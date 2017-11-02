@@ -48,7 +48,7 @@ public class AdminFallbackView extends AbstractView {
     private static final String TRANSACTION_AMOUNT = "transactionAmount";
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     private static final long serialVersionUID = -1581589472749242129L;
-    static final int idOfPayToBank = 4;
+    static final int IdOfPayToBank = 4;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
@@ -510,7 +510,7 @@ public class AdminFallbackView extends AbstractView {
             Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
             jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
             paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-            paymenttype.select(transactionTypes.get(idOfPayToBank));
+            paymenttype.select(transactionTypes.get(IdOfPayToBank));
             amount.setValue(balance.getValue());
             recentJobs.addAll(getJobsFromAccount(account, getClass()));
             recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
@@ -521,7 +521,7 @@ public class AdminFallbackView extends AbstractView {
         TransactionType payment = (TransactionType) paymenttype.getValue();
         if (payment != null) {
             Double paymentAmount = payment.getTransactionAmount();
-            if (payment.getId() == idOfPayToBank || paymentAmount == null) {
+            if (payment.getId() == IdOfPayToBank || paymentAmount == null) {
                 amount.setValue(balance.getValue());
             } else {
                 amount.setValue(paymentAmount);
