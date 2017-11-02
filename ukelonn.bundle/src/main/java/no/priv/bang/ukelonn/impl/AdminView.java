@@ -50,7 +50,7 @@ public class AdminView extends AbstractView {
     private static final String TRANSACTION_AMOUNT = "transactionAmount";
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     private static final long serialVersionUID = -1581589472749242129L;
-    final int idOfPayToBank = 4;
+    static final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
