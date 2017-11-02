@@ -427,14 +427,13 @@ public class AdminView extends AbstractView {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     User user = (User) editUserPasswordUsersField.getValue();
-                    if (user != null) {
-                        if (!"".equals(editUserPassword1Field.getValue()) &&
-                            editUserPassword2Field.isValid())
-                        {
-                            changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
-                            editUserPassword1.setValue("");
-                            editUserPassword2.setValue("");
-                        }
+                    if (user != null &&
+                        !"".equals(editUserPassword1Field.getValue()) &&
+                        editUserPassword2Field.isValid())
+                    {
+                        changePasswordForUser(user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
+                        editUserPassword1.setValue("");
+                        editUserPassword2.setValue("");
                     }
                 }
             }));
@@ -601,18 +600,17 @@ public class AdminView extends AbstractView {
 
     void saveChangesToJobType(Table jobtypesTable, TextField editJobTypeNameField) {
         TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
-        if (transactionType != null) {
-            if (!"".equals(editJobTypeNameField.getValue()) &&
-                !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
-            {
-                transactionType.setTransactionTypeName(editedJobTypeName.getValue());
-                transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
-                updateTransactionTypeInDatabase(getClass(), transactionType);
-                jobtypesTable.setValue(null);
-                editedJobTypeName.setValue("");
-                editedJobTypeAmount.setValue(0.0);
-                refreshJobTypesFromDatabase();
-            }
+        if (transactionType != null &&
+            !"".equals(editJobTypeNameField.getValue()) &&
+            !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
+        {
+            transactionType.setTransactionTypeName(editedJobTypeName.getValue());
+            transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
+            updateTransactionTypeInDatabase(getClass(), transactionType);
+            jobtypesTable.setValue(null);
+            editedJobTypeName.setValue("");
+            editedJobTypeAmount.setValue(0.0);
+            refreshJobTypesFromDatabase();
         }
     }
 
@@ -638,18 +636,17 @@ public class AdminView extends AbstractView {
 
     void saveChangesToPaymentTypes(Table paymentTypesTable, TextField editPaymentTypeNameField) {
         TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
-        if (transactionType != null) {
-            if (!"".equals(editPaymentTypeNameField.getValue()) &&
-                !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
-            {
-                transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
-                transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
-                updateTransactionTypeInDatabase(getClass(), transactionType);
-                paymentTypesTable.setValue(null);
-                editedPaymentTypeName.setValue("");
-                editedPaymentTypeAmount.setValue(0.0);
-                refreshPaymentTypesFromDatabase();
-            }
+        if (transactionType != null &&
+            !"".equals(editPaymentTypeNameField.getValue()) &&
+            !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
+        {
+            transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
+            transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
+            updateTransactionTypeInDatabase(getClass(), transactionType);
+            paymentTypesTable.setValue(null);
+            editedPaymentTypeName.setValue("");
+            editedPaymentTypeAmount.setValue(0.0);
+            refreshPaymentTypesFromDatabase();
         }
     }
 
