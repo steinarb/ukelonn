@@ -17,6 +17,7 @@ package no.priv.bang.ukelonn.impl;
 
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 
 public class CommonServiceMethods {
@@ -27,7 +28,7 @@ public class CommonServiceMethods {
         String className = clazz.getSimpleName();
         UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
         if (ukelonnService == null) {
-            throw new RuntimeException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
+            throw new UkelonnException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
         }
 
         return ukelonnService;

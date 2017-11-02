@@ -35,6 +35,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource.Util;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
@@ -50,7 +51,7 @@ public class CommonDatabaseMethods {
         UkelonnDatabase database = ukelonnService.getDatabase();
         if (database == null) {
             String className = clazz.getSimpleName();
-            throw new RuntimeException(className + " bean unable to find OSGi service UkelonnDatabase, giving up");
+            throw new UkelonnException(className + " bean unable to find OSGi service UkelonnDatabase, giving up");
         }
 
         return database;
@@ -371,7 +372,7 @@ public class CommonDatabaseMethods {
                 addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, userId);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new UkelonnException(e);
         }
     }
 
@@ -386,7 +387,7 @@ public class CommonDatabaseMethods {
                 users.add(user);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new UkelonnException(e);
         }
 
         return users;
@@ -495,7 +496,7 @@ public class CommonDatabaseMethods {
             firstname = resultSet.getString("first_name");
             lastname = resultSet.getString("last_name");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new UkelonnException(e);
         }
 
         return new User(userId, username, email, password, firstname, lastname);
