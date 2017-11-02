@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +58,7 @@ public class CommonDatabaseMethods {
     }
 
     public static Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase(Class<?> clazz) {
-        Map<Integer, TransactionType> transactiontypes = new Hashtable<Integer, TransactionType>();
+        Map<Integer, TransactionType> transactiontypes = new HashMap<>();
         UkelonnDatabase database = connectionCheck(clazz);
         PreparedStatement statement = database.prepareStatement("select * from transaction_types");
         ResultSet resultSet = database.query(statement);
