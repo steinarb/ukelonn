@@ -149,11 +149,10 @@ public class CommonDatabaseMethods {
             PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
             statement.setString(1, username);
             ResultSet resultset = database.query(statement);
-            if (resultset != null) {
-                if (resultset.next()) {
-                    Account newaccount = MapAccount(resultset);
-                    return newaccount;
-                }
+            if (resultset != null &&
+                resultset.next())
+            {
+                return MapAccount(resultset);
             }
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, "Error getting a single account from the database", e);
@@ -168,11 +167,10 @@ public class CommonDatabaseMethods {
             PreparedStatement statement = database.prepareStatement("select * from administrators_view where username=?");
             statement.setString(1, username);
             ResultSet resultset = database.query(statement);
-            if (resultset != null) {
-                if (resultset.next()) {
-                    AdminUser adminUser = mapAdminUser(resultset);
-                    return adminUser;
-                }
+            if (resultset != null &&
+                resultset.next())
+            {
+                return mapAdminUser(resultset);
             }
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, "Error getting administrator user info from the database", e);
