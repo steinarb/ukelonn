@@ -47,8 +47,7 @@ public abstract class AbstractView extends VerticalLayout implements View {
     private static final long serialVersionUID = 267153275586375959L;
     public static URI addPathToURI(URI location, String path) {
         String combinedPath = location.getPath() + path;
-        URI newURI = location.resolve(combinedPath);
-        return newURI;
+        return location.resolve(combinedPath);
     }
 
     protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions, boolean addPaidOutColumn) {
@@ -105,8 +104,7 @@ public abstract class AbstractView extends VerticalLayout implements View {
     }
 
     protected NavigationButton createNavigationButton(String caption, NavigationView targetView) {
-        NavigationButton button = new NavigationButton(caption, targetView);
-        return button;
+        return new NavigationButton(caption, targetView);
     }
 
     protected HorizontalLayout createLinksToBrowserVersionAndLogout(VaadinRequest request, String uiStyle, String uiStyleName) {

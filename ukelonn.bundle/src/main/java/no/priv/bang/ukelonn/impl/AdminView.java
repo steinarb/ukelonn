@@ -254,10 +254,9 @@ public class AdminView extends AbstractView {
             return false; // Nothing to compare against, always false
         }
 
-        boolean isIdentical =
+        return
             transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
             transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
-        return isIdentical;
     }
 
     private void createPaymenttypeAdministrationTab(TabBarView tabs) {
