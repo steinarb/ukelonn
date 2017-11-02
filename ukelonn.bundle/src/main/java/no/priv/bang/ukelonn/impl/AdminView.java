@@ -530,9 +530,9 @@ public class AdminView extends AbstractView {
     }
 
     private void refreshJobTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(getClass());
         jobTypes.removeAllItems();
-        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
     }
 
     private void refreshPaymentTypesFromDatabase() {
@@ -550,10 +550,10 @@ public class AdminView extends AbstractView {
         if (account != null) {
             refreshAccount(getClass(), account);
             balance.setValue(account.getBalance());
-            Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-            paymenttype.select(transactionTypes.get(idOfPayToBank));
+            Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(getClass());
+            jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
+            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactiontypes.values()));
+            paymenttype.select(transactiontypes.get(idOfPayToBank));
             amount.setValue(balance.getValue());
             recentJobs.addAll(getJobsFromAccount(account, getClass()));
             recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
