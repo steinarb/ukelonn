@@ -68,8 +68,7 @@ public class UkelonnRealm extends AuthorizingRealm {
             roles.add("administrator");
         }
 
-        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo(roles);
-        return authorizationInfo;
+        return new SimpleAuthorizationInfo(roles);
     }
 
     @Override

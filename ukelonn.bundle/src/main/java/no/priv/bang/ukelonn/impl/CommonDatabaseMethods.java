@@ -74,14 +74,13 @@ public class CommonDatabaseMethods {
     }
 
     private static TransactionType mapTransactionType(ResultSet resultset) throws SQLException {
-        TransactionType transactionType =
+        return
             new TransactionType(
                 resultset.getInt("transaction_type_id"),
                 resultset.getString("transaction_type_name"),
                 resultset.getDouble("transaction_amount"),
                 resultset.getBoolean("transaction_is_work"),
                 resultset.getBoolean("transaction_is_wage_payment"));
-        return transactionType;
     }
 
     public static List<TransactionType> getJobTypesFromTransactionTypes(Collection<TransactionType> transactionTypes) {
@@ -141,8 +140,7 @@ public class CommonDatabaseMethods {
 
     public static Map<Integer, TransactionType> refreshAccount(Class<?> clazz, Account account) {
         updateBalanseFromDatabase(clazz, account);
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(clazz);
-        return transactionTypes;
+        return getTransactionTypesFromUkelonnDatabase(clazz);
     }
 
     public static Account getAccountInfoFromDatabase(Class<?> clazz, String username) {
@@ -265,14 +263,13 @@ public class CommonDatabaseMethods {
     }
 
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
-        Transaction transaction =
+        return
             new Transaction(
                 resultset.getInt("transaction_id"),
                 mapTransactionType(resultset),
                 resultset.getDate("transaction_time"),
                 resultset.getDouble("transaction_amount"),
                 resultset.getBoolean("paid_out"));
-        return transaction;
     }
 
     public static Account MapAccount(ResultSet results) throws SQLException {
@@ -295,8 +292,7 @@ public class CommonDatabaseMethods {
             database.update(statement);
 
             // Update the list of jobs and the updated balance from the DB
-            Map<Integer, TransactionType> transactionTypes = refreshAccount(clazz, account);
-            return transactionTypes;
+            return refreshAccount(clazz, account);
         } catch (SQLException exception) {
             logError(clazz, "Failed to set value in prepared statement", exception);
         }
@@ -458,14 +454,12 @@ public class CommonDatabaseMethods {
 
     private static String hashPassword(String newUserPassword, String salt) {
         Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
-        String hashedPassword = new Sha256Hash(newUserPassword, decodedSaltUsedWhenHashing, 1024).toBase64();
-        return hashedPassword;
+        return new Sha256Hash(newUserPassword, decodedSaltUsedWhenHashing, 1024).toBase64();
     }
 
     private static String getNewSalt() {
         RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
-        String salt = randomNumberGenerator.nextBytes().toBase64();
-        return salt;
+        return randomNumberGenerator.nextBytes().toBase64();
     }
 
     /**
@@ -504,8 +498,7 @@ public class CommonDatabaseMethods {
             throw new RuntimeException(e);
         }
 
-        User user = new User(userId, username, email, password, firstname, lastname);
-        return user;
+        return new User(userId, username, email, password, firstname, lastname);
     }
 
     private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
