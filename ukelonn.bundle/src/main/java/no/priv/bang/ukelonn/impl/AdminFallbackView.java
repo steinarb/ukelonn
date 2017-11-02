@@ -45,6 +45,8 @@ import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class AdminFallbackView extends AbstractView {
+    private static final String TRANSACTION_AMOUNT = "transactionAmount";
+    private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     private static final long serialVersionUID = -1581589472749242129L;
     final int idOfPayToBank = 4;
 
@@ -143,7 +145,7 @@ public class AdminFallbackView extends AbstractView {
         paymentLayout.addComponent(balanceDisplay);
 
         paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        paymenttype.setItemCaptionPropertyId("transactionTypeName");
+        paymenttype.setItemCaptionPropertyId(TRANSACTION_TYPE_NAME);
         paymenttype.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -8306551057458139402L;
 
@@ -200,10 +202,10 @@ public class AdminFallbackView extends AbstractView {
         jobtypes.addTab(newJobTypeTab, "Lag ny jobbtype");
         VerticalLayout jobtypesform = new VerticalLayout();
         Table jobtypesTable = new Table();
-        jobtypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
-        jobtypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        jobtypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
+        jobtypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
         jobtypesTable.setContainerDataSource(jobTypes);
-        jobtypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        jobtypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
         jobtypesTable.setSelectable(true);
         jobtypesTable.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -8324617275480799162L;
@@ -267,10 +269,10 @@ public class AdminFallbackView extends AbstractView {
         paymentstypeadmin.addTab(newpaymenttypeTab, "Lag ny utbetalingstype");
         VerticalLayout paymenttypesform = new VerticalLayout();
         Table paymentTypesTable = new Table();
-        paymentTypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
-        paymentTypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        paymentTypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
+        paymentTypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
         paymentTypesTable.setContainerDataSource(paymentTypes);
-        paymentTypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        paymentTypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
         paymentTypesTable.setSelectable(true);
         paymentTypesTable.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -1432137451555587595L;
