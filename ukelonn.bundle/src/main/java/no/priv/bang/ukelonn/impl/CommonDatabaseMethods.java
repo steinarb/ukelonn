@@ -42,6 +42,8 @@ public class CommonDatabaseMethods {
 
     static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
 
+    private CommonDatabaseMethods() {}
+
     public static UkelonnDatabase connectionCheck(Class<?> clazz) {
         UkelonnService ukelonnService = CommonServiceMethods.connectionCheck(clazz);
 

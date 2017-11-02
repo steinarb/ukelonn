@@ -21,6 +21,8 @@ import no.priv.bang.ukelonn.UkelonnService;
 
 public class CommonServiceMethods {
 
+    private CommonServiceMethods() {}
+
     public static UkelonnService connectionCheck(Class<?> clazz) {
         String className = clazz.getSimpleName();
         UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();

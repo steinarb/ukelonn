@@ -17,6 +17,8 @@ package no.priv.bang.ukelonn.impl;
 
 public class CommonStringMethods {
 
+    private CommonStringMethods() {}
+
     public static boolean isNullEmptyOrBlank(String string) {
         if (string == null) {
             return true;
