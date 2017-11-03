@@ -99,33 +99,35 @@ public class Account {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+
+        if (obj == null ||
+            getClass() != obj.getClass())
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
+
         Account other = (Account) obj;
-        if (accountId != other.accountId)
-            return false;
-        if (firstName == null) {
-            if (other.firstName != null)
-                return false;
-        } else if (!firstName.equals(other.firstName))
-            return false;
-        if (lastName == null) {
-            if (other.lastName != null)
-                return false;
-        } else if (!lastName.equals(other.lastName))
-            return false;
-        if (userId != other.userId)
-            return false;
-        if (username == null) {
-            if (other.username != null)
-                return false;
-        } else if (!username.equals(other.username))
-            return false;
-        return true;
+        return
+            accountId == other.accountId &&
+            nullSafeEquals(firstName, other.firstName) &&
+            nullSafeEquals(lastName, other.lastName) &&
+            userId == other.userId &&
+            nullSafeEquals(username, other.username);
+    }
+
+    boolean nullSafeEquals(String a, String b) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null) {
+            return false; // Can't both be null
+        }
+
+        return a.equals(b);
     }
 
     @Override
