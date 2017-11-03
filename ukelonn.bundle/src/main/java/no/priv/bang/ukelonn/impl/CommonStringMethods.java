@@ -24,11 +24,7 @@ public class CommonStringMethods {
             return true;
         }
 
-        if (string.trim().isEmpty()) {
-            return true;
-        }
-
-        return false;
+        return (string.trim().isEmpty());
     }
 
     public static String safeTrim(String string) {

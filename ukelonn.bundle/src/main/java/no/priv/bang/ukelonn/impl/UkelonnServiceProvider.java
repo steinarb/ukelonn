@@ -17,8 +17,6 @@ package no.priv.bang.ukelonn.impl;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.servlet.ServletException;
-
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
@@ -69,7 +67,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     }
 
     @Inject
-    public void setWebContainer(WebContainer webcontainer) throws ClassNotFoundException, ServletException, NamespaceException {
+    public void setWebContainer(WebContainer webcontainer) throws NamespaceException {
         webContainer = webcontainer;
         httpContext = webContainer.createDefaultHttpContext();
 

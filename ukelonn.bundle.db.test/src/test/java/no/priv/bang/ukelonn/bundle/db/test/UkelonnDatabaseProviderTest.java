@@ -277,9 +277,8 @@ public class UkelonnDatabaseProviderTest {
      *
      * @throws SQLException
      * @throws LiquibaseException
-     * @throws ClassNotFoundException
      */
-    @Ignore
+    @Ignore("Not an actual unit test. This test is a convenient way to populate a derby network server running on localhost, with the ukelonn schema and test data, using liquibase.")
     @Test
     public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException {
         boolean createUkelonnDatabase = true;
