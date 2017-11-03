@@ -41,6 +41,11 @@ import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 public class CommonDatabaseMethods {
 
+    private static final String FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT = "Failed to set value in prepared statement";
+    private static final String LAST_NAME = "last_name";
+    private static final String FIRST_NAME = "first_name";
+    private static final String USERNAME = "username";
+    private static final String USER_ID = "user_id";
     static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
 
     private CommonDatabaseMethods() {}
@@ -276,10 +281,10 @@ public class CommonDatabaseMethods {
     public static Account MapAccount(ResultSet results) throws SQLException {
         return new Account(
             results.getInt("account_id"),
-            results.getInt("user_id"),
-            results.getString("username"),
-            results.getString("first_name"),
-            results.getString("last_name"),
+            results.getInt(USER_ID),
+            results.getString(USERNAME),
+            results.getString(FIRST_NAME),
+            results.getString(LAST_NAME),
             results.getDouble("balance"));
     }
 
@@ -295,7 +300,7 @@ public class CommonDatabaseMethods {
             // Update the list of jobs and the updated balance from the DB
             return refreshAccount(clazz, account);
         } catch (SQLException exception) {
-            logError(clazz, "Failed to set value in prepared statement", exception);
+            logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, exception);
         }
 
         return Collections.emptyMap();
@@ -309,7 +314,7 @@ public class CommonDatabaseMethods {
             statement.setDouble(2, newPaymentTypeAmount);
             database.update(statement);
         } catch (SQLException e) {
-            logError(clazz, "Failed to set value in prepared statement", e);
+            logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
     }
 
@@ -324,7 +329,7 @@ public class CommonDatabaseMethods {
             statement.setInt(5, modifiedJobType.getId());
             database.update(statement);
         } catch (SQLException e) {
-            logError(clazz, "Failed to set value in prepared statement", e);
+            logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
     }
 
@@ -336,7 +341,7 @@ public class CommonDatabaseMethods {
             statement.setObject(2, newPaymentTypeAmount);
             database.update(statement);
         } catch (SQLException e) {
-            logError(clazz, "Failed to set value in prepared statement", e);
+            logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
     }
 
@@ -365,7 +370,7 @@ public class CommonDatabaseMethods {
             findUserIdFromUsernameSql.setString(1, newUserUsername);
             ResultSet userIdResultSet = database.query(findUserIdFromUsernameSql);
             if (userIdResultSet.next()) {
-                int userId = userIdResultSet.getInt("user_id");
+                int userId = userIdResultSet.getInt(USER_ID);
                 PreparedStatement insertAccountSql = database.prepareStatement("insert into accounts (user_id) values (?)");
                 insertAccountSql.setInt(1, userId);
                 database.update(insertAccountSql);
@@ -404,7 +409,7 @@ public class CommonDatabaseMethods {
             statement.setString(3, username);
             return database.update(statement);
         } catch (SQLException e) {
-            logError(clazz, "Failed to set value in prepared statement", e);
+            logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
 
         return 0;
@@ -421,7 +426,7 @@ public class CommonDatabaseMethods {
             updateUserSql.setInt(5, userToUpdate.getUserId());
             return database.update(updateUserSql);
         } catch (SQLException e) {
-            logError(classForLogging, "Failed to set value in prepared statement", e);
+            logError(classForLogging, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
 
         return 0;
@@ -489,12 +494,12 @@ public class CommonDatabaseMethods {
         String firstname;
         String lastname;
         try {
-            userId = resultSet.getInt("user_id");
-            username = resultSet.getString("username");
+            userId = resultSet.getInt(USER_ID);
+            username = resultSet.getString(USERNAME);
             password = resultSet.getString("password");
             email = resultSet.getString("email");
-            firstname = resultSet.getString("first_name");
-            lastname = resultSet.getString("last_name");
+            firstname = resultSet.getString(FIRST_NAME);
+            lastname = resultSet.getString(LAST_NAME);
         } catch (SQLException e) {
             throw new UkelonnException(e);
         }
@@ -505,11 +510,11 @@ public class CommonDatabaseMethods {
     private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
         AdminUser adminUser;
         adminUser = new AdminUser(
-            resultset.getString("username"),
-            resultset.getInt("user_id"),
+            resultset.getString(USERNAME),
+            resultset.getInt(USER_ID),
             resultset.getInt("administrator_id"),
-            resultset.getString("first_name"),
-            resultset.getString("last_name"));
+            resultset.getString(FIRST_NAME),
+            resultset.getString(LAST_NAME));
         return adminUser;
     }
 
