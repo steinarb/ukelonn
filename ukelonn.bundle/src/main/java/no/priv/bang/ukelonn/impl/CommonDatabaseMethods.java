@@ -160,7 +160,7 @@ public class CommonDatabaseMethods {
             if (resultset != null &&
                 resultset.next())
             {
-                return MapAccount(resultset);
+                return mapAccount(resultset);
             }
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, "Error getting a single account from the database", e);
@@ -195,7 +195,7 @@ public class CommonDatabaseMethods {
             ResultSet results = connection.query(statement);
             if (results != null) {
                 while(results.next()) {
-                    Account newaccount = MapAccount(results);
+                    Account newaccount = mapAccount(results);
                     accounts.add(newaccount);
                 }
             }
@@ -278,7 +278,7 @@ public class CommonDatabaseMethods {
                 resultset.getBoolean("paid_out"));
     }
 
-    public static Account MapAccount(ResultSet results) throws SQLException {
+    public static Account mapAccount(ResultSet results) throws SQLException {
         return new Account(
             results.getInt("account_id"),
             results.getInt(USER_ID),
