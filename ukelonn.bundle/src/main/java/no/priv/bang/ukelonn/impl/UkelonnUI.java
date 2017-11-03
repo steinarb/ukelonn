@@ -30,6 +30,8 @@ import com.vaadin.ui.UI;
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
 public class UkelonnUI extends UI {
+    private static final String UI_STYLE = "ui-style";
+    private static final String ADMIN = "admin";
     private static final long serialVersionUID = 1388525490129647161L;
 
     @Override
@@ -45,17 +47,17 @@ public class UkelonnUI extends UI {
         // Add all of the different views
         if (isMobile(uiStyle)) {
             getNavigator().addView("", new UserView(request));
-            getNavigator().addView("admin", new AdminView(request));
+            getNavigator().addView(ADMIN, new AdminView(request));
         } else {
             setTheme("valo");
             getNavigator().addView("", new UserFallbackView(request));
-            getNavigator().addView("admin", new AdminFallbackView(request));
+            getNavigator().addView(ADMIN, new AdminFallbackView(request));
         }
         getNavigator().addView("login", new LoginView(request, getNavigator()));
         if (!isLoggedIn()) {
             getNavigator().navigateTo("login");
         } else if (isAdministrator()) {
-            getNavigator().navigateTo("admin");
+            getNavigator().navigateTo(ADMIN);
         } else {
             getNavigator().navigateTo("");
         }
@@ -73,10 +75,11 @@ public class UkelonnUI extends UI {
     private boolean isMobile(Cookie uiStyle) {
         // The default is mobile.  Only when explicitly set to browser
         // will the browser UI be used.
-        if (uiStyle != null) {
-            if ("ui-style".equals(uiStyle.getName()) && "browser".equals(uiStyle.getValue())) {
-                return false;
-            }
+        if (uiStyle != null &&
+            UI_STYLE.equals(uiStyle.getName()) &&
+            uiStyle.getValue().equals("browser"))
+        {
+            return false;
         }
 
         return true;
@@ -95,15 +98,15 @@ public class UkelonnUI extends UI {
     }
 
     private Cookie checkForUIStyleCookie(VaadinRequest request) {
-        Cookie uiStyle = getCookieByName(request, "ui-style");
+        Cookie uiStyle = getCookieByName(request, UI_STYLE);
 
         // The URI request parameter "ui-style" can be used to switch between UIs
-        String uiStyleParam = request.getParameter("ui-style");
+        String uiStyleParam = request.getParameter(UI_STYLE);
         if (uiStyleParam != null) {
             if ("browser".equals(uiStyleParam)) {
-                uiStyle = new Cookie("ui-style", "browser");
+                uiStyle = new Cookie(UI_STYLE, "browser");
             } else {
-                uiStyle = new Cookie("ui-style", "mobile");
+                uiStyle = new Cookie(UI_STYLE, "mobile");
             }
 
             // Save cookie with updated value

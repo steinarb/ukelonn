@@ -43,11 +43,11 @@ import com.vaadin.ui.Button.ClickEvent;
 public class UserView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
     // Updatable containers
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
-    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");
+    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
     private BeanItemContainer<TransactionType> jobTypesContainer;
-    private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
-    private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+    private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
+    private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
     Account account;
 
     public UserView(VaadinRequest request) {
@@ -111,13 +111,13 @@ public class UserView extends AbstractView {
         // Initialize the list of job types
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
         List<TransactionType> jobTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
-        jobTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class, jobTypes);
+        jobTypesContainer = new BeanItemContainer<>(TransactionType.class, jobTypes);
         NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", jobTypesContainer);
         jobtypeSelector.setValue("Item " + 2);
         jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
         jobtypeSelector.setNullSelectionAllowed(true);
         balanceAndNewJobGroup.addComponent(jobtypeSelector);
-        ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
+        ObjectProperty<Double> newJobAmount = new ObjectProperty<>(0.0);
         TextField newAmountDisplay = new TextField(newJobAmount);
         newAmountDisplay.setReadOnly(true);
         balanceAndNewJobGroup.addComponent(newAmountDisplay);
