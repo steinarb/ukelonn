@@ -65,24 +65,16 @@ public class UkelonnUI extends UI {
 
     private boolean isLogout(VaadinRequest request) {
         // Only an explicit ?logout=yes argument will cause a logout
-        if ("yes".equals(request.getParameter("logout"))) {
-            return true;
-        }
-
-        return false;
+        return ("yes".equals(request.getParameter("logout")));
     }
 
     private boolean isMobile(Cookie uiStyle) {
         // The default is mobile.  Only when explicitly set to browser
         // will the browser UI be used.
-        if (uiStyle != null &&
-            UI_STYLE.equals(uiStyle.getName()) &&
-            uiStyle.getValue().equals("browser"))
-        {
-            return false;
-        }
-
-        return true;
+        return
+            !(uiStyle != null &&
+              UI_STYLE.equals(uiStyle.getName()) &&
+              uiStyle.getValue().equals("browser"));
     }
 
     protected boolean isAdministrator() {
