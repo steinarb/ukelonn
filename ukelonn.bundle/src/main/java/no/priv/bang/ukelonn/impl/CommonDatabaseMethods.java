@@ -435,7 +435,7 @@ public class CommonDatabaseMethods {
     public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
         String deleteQuery = "delete from transactions where transaction_id in (" + joinIds(transactions) + ")";
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement(deleteQuery.toString());
+        PreparedStatement statement = database.prepareStatement(deleteQuery);
         database.update(statement);
     }
 
