@@ -106,7 +106,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         assertEquals("Doe", last_name);
     }
 
-    @Ignore
+    @Ignore("I haven't been able to make this one work yet but hope I will.")
     @Test
     public void webappAccessTest() throws Exception {
         Thread.sleep(20*1000);
