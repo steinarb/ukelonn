@@ -30,6 +30,7 @@ import com.vaadin.ui.UI;
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
 public class UkelonnUI extends UI {
+    private static final String BROWSER = "browser";
     private static final String UI_STYLE = "ui-style";
     private static final String ADMIN = "admin";
     private static final long serialVersionUID = 1388525490129647161L;
@@ -74,7 +75,7 @@ public class UkelonnUI extends UI {
         return
             !(uiStyle != null &&
               UI_STYLE.equals(uiStyle.getName()) &&
-              uiStyle.getValue().equals("browser"));
+              uiStyle.getValue().equals(BROWSER));
     }
 
     protected boolean isAdministrator() {
@@ -95,8 +96,8 @@ public class UkelonnUI extends UI {
         // The URI request parameter "ui-style" can be used to switch between UIs
         String uiStyleParam = request.getParameter(UI_STYLE);
         if (uiStyleParam != null) {
-            if ("browser".equals(uiStyleParam)) {
-                uiStyle = new Cookie(UI_STYLE, "browser");
+            if (BROWSER.equals(uiStyleParam)) {
+                uiStyle = new Cookie(UI_STYLE, BROWSER);
             } else {
                 uiStyle = new Cookie(UI_STYLE, "mobile");
             }
