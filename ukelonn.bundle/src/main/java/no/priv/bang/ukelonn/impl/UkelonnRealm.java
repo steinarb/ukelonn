@@ -72,7 +72,7 @@ public class UkelonnRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) {
         if (!(token instanceof UsernamePasswordToken)) {
             throw new AuthenticationException("UkelonnRealm shiro realm only accepts UsernamePasswordToken");
         }
