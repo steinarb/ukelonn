@@ -265,7 +265,7 @@ public class CommonDatabaseMethods {
             dummyTransactions.add(dummyTransaction);
         }
 
-        return (Collection<? extends Transaction>) dummyTransactions;
+        return dummyTransactions;
     }
 
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {
