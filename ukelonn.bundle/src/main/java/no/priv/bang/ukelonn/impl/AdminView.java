@@ -49,8 +49,8 @@ import com.vaadin.ui.Button.ClickEvent;
 public class AdminView extends AbstractView {
     private static final String TRANSACTION_AMOUNT = "transactionAmount";
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
+    static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
-    static final int IdOfPayToBank = 4;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
@@ -553,7 +553,7 @@ public class AdminView extends AbstractView {
             Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(getClass());
             jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
             paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactiontypes.values()));
-            paymenttype.select(transactiontypes.get(IdOfPayToBank));
+            paymenttype.select(transactiontypes.get(ID_OF_PAY_TO_BANK));
             amount.setValue(balance.getValue());
             recentJobs.addAll(getJobsFromAccount(account, getClass()));
             recentPayments.addAll(getPaymentsFromAccount(account, getClass()));
@@ -564,7 +564,7 @@ public class AdminView extends AbstractView {
         TransactionType payment = (TransactionType) paymenttype.getValue();
         if (payment != null) {
             Double paymentAmount = payment.getTransactionAmount();
-            if (payment.getId() == IdOfPayToBank || paymentAmount == null) {
+            if (payment.getId() == ID_OF_PAY_TO_BANK || paymentAmount == null) {
                 amount.setValue(balance.getValue());
             } else {
                 amount.setValue(paymentAmount);
