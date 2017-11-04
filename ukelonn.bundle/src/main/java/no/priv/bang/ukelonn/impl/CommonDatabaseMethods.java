@@ -498,14 +498,12 @@ public class CommonDatabaseMethods {
     private static User mapUser(ResultSet resultSet) {
         int userId;
         String username;
-        String password;
         String email;
         String firstname;
         String lastname;
         try {
             userId = resultSet.getInt(USER_ID);
             username = resultSet.getString(USERNAME);
-            password = resultSet.getString("password");
             email = resultSet.getString("email");
             firstname = resultSet.getString(FIRST_NAME);
             lastname = resultSet.getString(LAST_NAME);
@@ -513,7 +511,7 @@ public class CommonDatabaseMethods {
             throw new UkelonnException(e);
         }
 
-        return new User(userId, username, email, password, firstname, lastname);
+        return new User(userId, username, email, firstname, lastname);
     }
 
     private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {

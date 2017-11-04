@@ -109,7 +109,7 @@ public class CommonDatabaseMethodsTest {
             assertNotEquals(newLastname, jad.getLastname());
 
             // Create a brand new User bean to use for the update (password won't be used in the update)
-            User jadToUpdate = new User(jadUserid, newUsername, newEmail, null, newFirstname, newLastname);
+            User jadToUpdate = new User(jadUserid, newUsername, newEmail, newFirstname, newLastname);
             int expectedNumberOfUpdatedRecords = 1;
             int numberOfUpdatedRecords = updateUserInDatabase(getClass(), jadToUpdate);
             assertEquals(expectedNumberOfUpdatedRecords, numberOfUpdatedRecords);

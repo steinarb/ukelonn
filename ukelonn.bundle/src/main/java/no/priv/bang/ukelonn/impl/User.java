@@ -21,16 +21,14 @@ public class User {
     private int userId;
     private String username;
     private String email;
-    private String password;
     private String firstname;
     private String lastname;
 
-    public User(int userId, String username, String email, String password, String firstname, String lastname) {
+    public User(int userId, String username, String email, String firstname, String lastname) {
         super();
         this.userId = userId;
         this.username = username;
         this.email = email;
-        this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
     }
@@ -45,10 +43,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getEmail() {
@@ -86,7 +80,6 @@ public class User {
         result = prime * result + ((email == null) ? 0 : email.hashCode());
         result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
         result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
-        result = prime * result + ((password == null) ? 0 : password.hashCode());
         result = prime * result + userId;
         result = prime * result + ((username == null) ? 0 : username.hashCode());
         return result;
@@ -109,14 +102,12 @@ public class User {
             nullSafeEquals(email, other.email) &&
             nullSafeEquals(firstname, other.firstname) &&
             nullSafeEquals(lastname, other.lastname) &&
-            nullSafeEquals(password, other.password) &&
             userId == other.userId &&
             nullSafeEquals(username, other.username);
     }
 
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", password=" + password
-            + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+        return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname + "]";
     }
 }
