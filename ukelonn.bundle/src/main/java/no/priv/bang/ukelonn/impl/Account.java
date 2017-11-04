@@ -15,6 +15,8 @@
  */
 package no.priv.bang.ukelonn.impl;
 
+import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
+
 public class Account {
     int accountId;
     int userId;
@@ -116,18 +118,6 @@ public class Account {
             nullSafeEquals(lastName, other.lastName) &&
             userId == other.userId &&
             nullSafeEquals(username, other.username);
-    }
-
-    boolean nullSafeEquals(String a, String b) {
-        if (a == b) {
-            return true;
-        }
-
-        if (a == null) {
-            return false; // Can't both be null
-        }
-
-        return a.equals(b);
     }
 
     @Override
