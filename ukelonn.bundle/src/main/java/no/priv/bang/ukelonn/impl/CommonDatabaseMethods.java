@@ -236,7 +236,7 @@ public class CommonDatabaseMethods {
                 String sql = String.format(getResourceAsString(sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
                 PreparedStatement statement = database.prepareStatement(sql);
                 statement.setInt(1, account.getAccountId());
-                try { statement.setInt(2, account.getAccountId()); } catch(SQLException e) {};
+                trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, account.getAccountId());
                 ResultSet resultSet = database.query(statement);
                 if (resultSet != null) {
                     while (resultSet.next()) {
@@ -249,6 +249,15 @@ public class CommonDatabaseMethods {
         }
 
         return transactions;
+    }
+
+    private static void trySettingPreparedStatementParameterThatMayNotBePresent(PreparedStatement statement, int parameterId, int parameterValue) {
+        try {
+            statement.setInt(parameterId, parameterValue);
+        } catch(SQLException e) {
+            // Oops! The parameter wasn't present!
+            // Continue as if nothing happened
+        };
     }
 
     /***
