@@ -15,6 +15,8 @@
  */
 package no.priv.bang.ukelonn.impl;
 
+import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
+
 public class User {
     private int userId;
     private String username;
@@ -100,41 +102,24 @@ public class User {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+
+        if (obj == null ||
+            getClass() != obj.getClass())
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
+
         User other = (User) obj;
-        if (email == null) {
-            if (other.email != null)
-                return false;
-        } else if (!email.equals(other.email))
-            return false;
-        if (firstname == null) {
-            if (other.firstname != null)
-                return false;
-        } else if (!firstname.equals(other.firstname))
-            return false;
-        if (lastname == null) {
-            if (other.lastname != null)
-                return false;
-        } else if (!lastname.equals(other.lastname))
-            return false;
-        if (password == null) {
-            if (other.password != null)
-                return false;
-        } else if (!password.equals(other.password))
-            return false;
-        if (userId != other.userId)
-            return false;
-        if (username == null) {
-            if (other.username != null)
-                return false;
-        } else if (!username.equals(other.username))
-            return false;
-        return true;
+        return
+            nullSafeEquals(email, other.email) &&
+            nullSafeEquals(firstname, other.firstname) &&
+            nullSafeEquals(lastname, other.lastname) &&
+            nullSafeEquals(password, other.password) &&
+            userId == other.userId &&
+            nullSafeEquals(username, other.username);
     }
 
     @Override
