@@ -257,7 +257,7 @@ public class CommonDatabaseMethods {
         } catch(SQLException e) {
             // Oops! The parameter wasn't present!
             // Continue as if nothing happened
-        };
+        }
     }
 
     /***
