@@ -35,4 +35,16 @@ public class CommonStringMethods {
         return string.trim();
     }
 
+    public static boolean nullSafeEquals(String a, String b) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null) {
+            return false; // Can't both be null
+        }
+
+        return a.equals(b);
+    }
+
 }
