@@ -265,7 +265,7 @@ public class CommonDatabaseMethods {
      *
      * @return A list of 10 transactions with empty values for everything
      */
-    public static Collection<? extends Transaction> getDummyTransactions() {
+    public static Collection<Transaction> getDummyTransactions() {
         int lengthOfDummyList = 10;
         TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
         ArrayList<Transaction> dummyTransactions = new ArrayList<>(lengthOfDummyList);
