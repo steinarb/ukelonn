@@ -207,7 +207,7 @@
                             VAADIN.widgetsets,
                             *
                         </Import-Package>
-                        <Export-Package>!*</Export-Package>
+                        <Export-Package>no.priv.bang.ukelonn.impl</Export-Package>
                         <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
                         <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
                         <Web-ContextPath>ukelonn</Web-ContextPath>
