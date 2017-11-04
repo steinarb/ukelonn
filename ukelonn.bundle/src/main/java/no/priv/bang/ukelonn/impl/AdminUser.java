@@ -37,40 +37,20 @@ public class AdminUser {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public int getUserId() {
         return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public int getAdministratorId() {
         return administratorId;
     }
 
-    public void setAdministratorId(int administratorId) {
-        this.administratorId = administratorId;
-    }
-
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
     public String getSurname() {
         return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     @Override
@@ -108,8 +88,7 @@ public class AdminUser {
 
     @Override
     public String toString() {
-        return "AdminUser [userName=" + userName + ", userId=" + userId + ", administratorId=" + administratorId
-            + ", firstname=" + firstname + ", surname=" + surname + "]";
+        return "AdminUser [userName=" + userName + ", userId=" + userId + ", administratorId=" + administratorId + ", firstname=" + firstname + ", surname=" + surname + "]";
     }
 
 }
