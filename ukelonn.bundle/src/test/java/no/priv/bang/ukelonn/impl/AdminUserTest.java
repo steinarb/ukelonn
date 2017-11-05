@@ -28,4 +28,20 @@ public class AdminUserTest {
         assertNotEquals(user, "");
     }
 
+    @Test
+    public void testHashCode() {
+        AdminUser user = new AdminUser("jad", 1, 1, "Jane", "Doe");
+        assertEquals(-66719528, user.hashCode());
+        AdminUser userWithNullStrings = new AdminUser(null, 1, 1, null, null);
+        assertEquals(29552703, userWithNullStrings.hashCode());
+    }
+
+    @Test
+    public void testToString() {
+        AdminUser user = new AdminUser("jad", 1, 1, "Jane", "Doe");
+        assertEquals("AdminUser [userName=jad, userId=1, administratorId=1, firstname=Jane, surname=Doe]", user.toString());
+        AdminUser userWithNullStrings = new AdminUser(null, 1, 1, null, null);
+        assertEquals("AdminUser [userName=null, userId=1, administratorId=1, firstname=null, surname=null]", userWithNullStrings.toString());
+    }
+
 }

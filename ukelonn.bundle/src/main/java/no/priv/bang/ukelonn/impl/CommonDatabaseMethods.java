@@ -48,6 +48,8 @@ public class CommonDatabaseMethods {
     private static final String USER_ID = "user_id";
     static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
 
+    public static final int UPDATE_FAILED = -1;
+
     private CommonDatabaseMethods() {}
 
     public static UkelonnDatabase connectionCheck(Class<?> clazz) {
@@ -130,7 +132,8 @@ public class CommonDatabaseMethods {
         }
     }
 
-    public static void addNewPaymentToAccount(Class<?> clazz, Account account, TransactionType paymentType, double payment) {
+    public static int addNewPaymentToAccount(Class<?> clazz, Account account, TransactionType paymentType, double payment) {
+        int updateResult = UPDATE_FAILED;
         int accountId = account.getAccountId();
         int transactionTypeId = paymentType.getId();
         double amount = 0 - payment;
@@ -140,10 +143,12 @@ public class CommonDatabaseMethods {
             statement.setInt(1, accountId);
             statement.setInt(2, transactionTypeId);
             statement.setDouble(3, amount);
-            database.update(statement);
+            updateResult = database.update(statement);
         } catch (SQLException e) {
             logError(clazz, "Failed to set prepared statements value", e);
         }
+
+        return updateResult;
     }
 
     public static Map<Integer, TransactionType> refreshAccount(Class<?> clazz, Account account) {
@@ -257,7 +262,7 @@ public class CommonDatabaseMethods {
         } catch(SQLException e) {
             // Oops! The parameter wasn't present!
             // Continue as if nothing happened
-        };
+        }
     }
 
     /***
@@ -315,19 +320,21 @@ public class CommonDatabaseMethods {
         return Collections.emptyMap();
     }
 
-    public static void addJobTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
+    public static int addJobTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
         UkelonnDatabase database = connectionCheck(clazz);
         PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)");
         try {
             statement.setString(1, newPaymentTypeName);
             statement.setDouble(2, newPaymentTypeAmount);
-            database.update(statement);
+            return database.update(statement);
         } catch (SQLException e) {
             logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
+
+        return UPDATE_FAILED;
     }
 
-    public static void updateTransactionTypeInDatabase(Class<?> clazz, TransactionType modifiedJobType) {
+    public static int updateTransactionTypeInDatabase(Class<?> clazz, TransactionType modifiedJobType) {
         UkelonnDatabase database = connectionCheck(clazz);
         PreparedStatement statement = database.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=?, transaction_is_wage_payment=? where transaction_type_id=?");
         try {
@@ -336,22 +343,26 @@ public class CommonDatabaseMethods {
             statement.setBoolean(3, modifiedJobType.isTransactionIsWork());
             statement.setBoolean(4, modifiedJobType.isTransactionIsWagePayment());
             statement.setInt(5, modifiedJobType.getId());
-            database.update(statement);
+            return database.update(statement);
         } catch (SQLException e) {
             logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
+
+        return UPDATE_FAILED;
     }
 
-    public static void addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
+    public static int addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
         UkelonnDatabase database = connectionCheck(clazz);
         PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)");
         try {
             statement.setString(1, newPaymentTypeName);
             statement.setObject(2, newPaymentTypeAmount);
-            database.update(statement);
+            return database.update(statement);
         } catch (SQLException e) {
             logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
+
+        return UPDATE_FAILED;
     }
 
     public static void addUserToDatabase(
@@ -421,7 +432,7 @@ public class CommonDatabaseMethods {
             logError(clazz, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
 
-        return 0;
+        return UPDATE_FAILED;
     }
 
     public static int updateUserInDatabase(Class<?> classForLogging, User userToUpdate) {
@@ -438,7 +449,7 @@ public class CommonDatabaseMethods {
             logError(classForLogging, FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT, e);
         }
 
-        return 0;
+        return UPDATE_FAILED;
     }
 
     public static void deleteTransactions(Class<?> clazz, List<Transaction> transactions) {
@@ -448,7 +459,7 @@ public class CommonDatabaseMethods {
         database.update(statement);
     }
 
-    private static StringBuilder joinIds(List<Transaction> transactions) {
+    static StringBuilder joinIds(List<Transaction> transactions) {
         StringBuilder commaList = new StringBuilder();
         if (transactions == null) {
             return commaList;
@@ -484,28 +495,29 @@ public class CommonDatabaseMethods {
      * payment of 0 kroner.
      * @param database The {@link UkelonnDatabase} to register the payment in
      * @param userId Used as the key to do the update to the account
+     * @return the update status
      */
-    private static void addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
+    static int addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
         PreparedStatement statement = database.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"));
         try {
             statement.setInt(1, userId);
-            database.update(statement);
+            return database.update(statement);
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, "Failed to set prepared statement argument", e);
         }
+
+        return UPDATE_FAILED;
     }
 
-    private static User mapUser(ResultSet resultSet) {
+    static User mapUser(ResultSet resultSet) {
         int userId;
         String username;
-        String password;
         String email;
         String firstname;
         String lastname;
         try {
             userId = resultSet.getInt(USER_ID);
             username = resultSet.getString(USERNAME);
-            password = resultSet.getString("password");
             email = resultSet.getString("email");
             firstname = resultSet.getString(FIRST_NAME);
             lastname = resultSet.getString(LAST_NAME);
@@ -513,7 +525,7 @@ public class CommonDatabaseMethods {
             throw new UkelonnException(e);
         }
 
-        return new User(userId, username, email, password, firstname, lastname);
+        return new User(userId, username, email, firstname, lastname);
     }
 
     private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
@@ -527,7 +539,7 @@ public class CommonDatabaseMethods {
         return adminUser;
     }
 
-    private static String getResourceAsString(String resourceName) {
+    static String getResourceAsString(String resourceName) {
         ByteArrayOutputStream resource = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;

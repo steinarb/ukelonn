@@ -72,8 +72,9 @@ public class TestUtils {
 
     /***
      * Fake injected OSGi services.
+     * @return the serviceprovider implmenting the UkelonnService
      */
-    public static void setupFakeOsgiServices() {
+    public static UkelonnServiceProvider setupFakeOsgiServices() {
         UkelonnServiceProvider ukelonnServiceSingleton = new UkelonnServiceProvider();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
@@ -88,6 +89,7 @@ public class TestUtils {
         }
 
         ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+        return ukelonnServiceSingleton;
     }
 
     /***
