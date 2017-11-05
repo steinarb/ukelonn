@@ -102,8 +102,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account [getAccountId()=" + getAccountId() + ", getUserId()=" + getUserId() + ", getUsername()="
-            + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
+        return "Account [getAccountId()=" + getAccountId() + ", getUserId()=" + getUserId() + ", getUsername()=" + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
     }
 
 }
