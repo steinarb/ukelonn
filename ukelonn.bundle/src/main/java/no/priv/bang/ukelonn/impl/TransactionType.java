@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.impl;
 
 public class TransactionType {
-    private int id;
+	private int id;
     private String transactionTypeName;
     private Double transactionAmount;
     private boolean transactionIsWork;

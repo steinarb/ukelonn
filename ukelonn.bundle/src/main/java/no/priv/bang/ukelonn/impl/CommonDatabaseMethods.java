@@ -41,6 +41,7 @@ import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 public class CommonDatabaseMethods {
 
+    private static final double XMAS_BONUS_FACTOR = 2;
     private static final String FAILED_TO_SET_VALUE_IN_PREPARED_STATEMENT = "Failed to set value in prepared statement";
     private static final String LAST_NAME = "last_name";
     private static final String FIRST_NAME = "first_name";
@@ -304,11 +305,12 @@ public class CommonDatabaseMethods {
 
     public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
         UkelonnDatabase database = connectionCheck(clazz);
+        double wagesWithBonus = newJobWages * XMAS_BONUS_FACTOR;
         PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)");
         try {
             statement.setInt(1, account.getAccountId());
             statement.setInt(2, newJobTypeId);
-            statement.setDouble(3, newJobWages);
+            statement.setDouble(3, wagesWithBonus);
             database.update(statement);
 
             // Update the list of jobs and the updated balance from the DB
