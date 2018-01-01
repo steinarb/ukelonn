@@ -84,7 +84,7 @@ public class UserView extends AbstractView {
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
         account = getAccountInfoFromDatabase(getClass(), currentUser);
 
-        greetingProperty.setValue(String.format("Ukelønn for %s, dobbelt julebonus!", account.getFirstName()));
+        greetingProperty.setValue("Ukelønn for " + account.getFirstName());
         balance.setValue(account.getBalance());
         recentJobs.removeAllItems();
         recentJobs.addAll(getJobsFromAccount(account, getClass()));
