@@ -227,24 +227,19 @@ NB! Har /ikke/ med oppsett av brannmur og oppsett av nginx eller apache med reve
 (Normalt så vil port 8181 som webappen opererer på være sperret av brannmur på en webserver som står på internett, så man må sette opp en revers-proxy fra nginx eller apache (som lytter på portene 80 og 443) til karaf som lytter på localhost:8181)
 
 Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
- 1. Installer nødvendig software:
+ 1. Legg til nøkkel for apt-repo'et som inneholder karaf
+    #+BEGIN_EXAMPLE
+      wget -O - https://apt.bang.priv.no/apt_pub.gpg | apt-key add -
+    #+END_EXAMPLE
+ 2. Legg til følgende linjer i /etc/apt/sources.list :
+    #+BEGIN_EXAMPLE
+      # APT archive for apache karaf
+      deb http://apt.bang.priv.no/public stable main
+    #+END_EXAMPLE
+ 3. Installer nødvendig software:
     #+BEGIN_EXAMPLE
       apt-get update
-      apt-get install git maven openjdk-8-jdk postgresql ruby ruby-dev build-essential
-    #+END_EXAMPLE
- 2. Lag en deb-pakke for karaf
-    #+BEGIN_EXAMPLE
-      gem install fpm
-      cd /tmp
-      git clone https://github.com/steinarb/karaf-deb-packaging
-      cd karaf-deb-packaging
-      ./dist_karaf.sh
-      mkdir -p /root/debs
-      cp *.deb /root/debs
-    #+END_EXAMPLE
- 3. Installer deb-pakken for karaf:
-    #+BEGIN_EXAMPLE
-      dpkg --install karaf_4.1.2-1_all.deb
+      apt-get install openjdk-8-jdk postgresql karaf
     #+END_EXAMPLE
  4. Sett opp bruker og database i PostgreSQL:
     #+BEGIN_EXAMPLE
