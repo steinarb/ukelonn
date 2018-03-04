@@ -23,6 +23,11 @@
 
     <name>Ukelonn webapp PostgreSQL database connection OSGi bundle</name>
 
+    <properties>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.postgresql</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-db-postgresql</karaf-feature-name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
@@ -144,8 +149,31 @@
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>ukelonn-db-postgresql</primaryFeatureName>
+                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.cjnygard</groupId>
+                <artifactId>rest-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>update-bundle</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>rest-request</goal>
+                        </goals>
+                        <configuration>
+                            <resource>system/console/bundles/${Bundle-SymbolicName}</resource>
+                            <method>POST</method>
+                            <fileset>
+                                <directory>${project.build.directory}</directory>
+                                <includes>
+                                    <include>karaf-console-rest-post-update-arguments</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

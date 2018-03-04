@@ -38,4 +38,16 @@ public class CommonStringMethodsTest {
         assertEquals("abc", CommonStringMethods.safeTrim("  abc  \r\t\n "));
     }
 
+    @Test
+    public void testNullSafeEquals() {
+        assertTrue(CommonStringMethods.nullSafeEquals(null, null));
+        assertFalse(CommonStringMethods.nullSafeEquals(null, ""));
+        assertFalse(CommonStringMethods.nullSafeEquals("", null));
+        String sameStringObject = "This is the same string object";
+        assertTrue(CommonStringMethods.nullSafeEquals(sameStringObject, sameStringObject));
+        assertTrue(CommonStringMethods.nullSafeEquals("identical string", "identical string"));
+        assertTrue(CommonStringMethods.nullSafeEquals("", ""));
+        assertFalse(CommonStringMethods.nullSafeEquals("not identical", "to this"));
+    }
+
 }

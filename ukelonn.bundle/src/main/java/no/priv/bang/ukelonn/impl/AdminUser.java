@@ -15,6 +15,8 @@
  */
 package no.priv.bang.ukelonn.impl;
 
+import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
+
 public class AdminUser {
     private String userName;
     private int userId = 0;
@@ -35,40 +37,20 @@ public class AdminUser {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public int getUserId() {
         return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public int getAdministratorId() {
         return administratorId;
     }
 
-    public void setAdministratorId(int administratorId) {
-        this.administratorId = administratorId;
-    }
-
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
     public String getSurname() {
         return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     @Override
@@ -85,39 +67,28 @@ public class AdminUser {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+
+        if (obj == null ||
+            getClass() != obj.getClass())
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
+
         AdminUser other = (AdminUser) obj;
-        if (administratorId != other.administratorId)
-            return false;
-        if (firstname == null) {
-            if (other.firstname != null)
-                return false;
-        } else if (!firstname.equals(other.firstname))
-            return false;
-        if (surname == null) {
-            if (other.surname != null)
-                return false;
-        } else if (!surname.equals(other.surname))
-            return false;
-        if (userId != other.userId)
-            return false;
-        if (userName == null) {
-            if (other.userName != null)
-                return false;
-        } else if (!userName.equals(other.userName))
-            return false;
-        return true;
+        return
+            administratorId == other.administratorId &&
+            userId == other.userId &&
+            nullSafeEquals(userName, other.userName) &&
+            nullSafeEquals(firstname, other.firstname) &&
+            nullSafeEquals(surname, other.surname);
     }
 
     @Override
     public String toString() {
-        return "AdminUser [userName=" + userName + ", userId=" + userId + ", administratorId=" + administratorId
-            + ", firstname=" + firstname + ", surname=" + surname + "]";
+        return "AdminUser [userName=" + userName + ", userId=" + userId + ", administratorId=" + administratorId + ", firstname=" + firstname + ", surname=" + surname + "]";
     }
 
 }

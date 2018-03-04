@@ -71,7 +71,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
     }
 
     @Inject
-    public void setWebContainer(WebContainer webcontainer) throws ClassNotFoundException, ServletException, NamespaceException {
+    public void setWebContainer(WebContainer webcontainer) throws NamespaceException {
         webContainer = webcontainer;
         if (webcontainer != null ) {
             final HttpContext httpContext = webContainer.createDefaultHttpContext();
