@@ -42,6 +42,9 @@
         <dependency.myfaces.version>2.2.6</dependency.myfaces.version>
         <javax.validation>1.1.0.Final</javax.validation>
         <primefaces.version>6.0</primefaces.version>
+        <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
+        <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
+        <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
     </properties>
 
     <dependencyManagement>
@@ -49,7 +52,7 @@
             <dependency>
                 <groupId>no.steria.osgi.jsr330activator</groupId>
                 <artifactId>jsr330activator.implementation</artifactId>
-                <version>1.0.1</version>
+                <version>1.1.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -320,6 +323,55 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.cjnygard</groupId>
+                    <artifactId>rest-maven-plugin</artifactId>
+                    <version>${rest-maven-plugin-version}</version>
+                    <configuration>
+                        <endpoint>${ukelonn-server-url}</endpoint>
+                        <requestType>
+                            <type>application</type>
+                            <subtype>x-www-form-urlencoded</subtype>
+                        </requestType>
+                        <headers>
+                            <Authorization>Basic ${ukelonn-server-basic-auth-token}</Authorization>
+                        </headers>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.cjnygard</groupId>
+                            <artifactId>rest-maven-plugin</artifactId>
+                            <version>${rest-maven-plugin-version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>ru.yaal.maven</groupId>
+                                        <artifactId>write-text-files-maven-plugin</artifactId>
+                                        <versionRange>[1.1,)</versionRange>
+                                        <goals>
+                                            <goal>
+                                                write-text-files
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -382,6 +434,30 @@
                     <coberturaReports>
                         <coberturaReport>${basedir}/target/coverage.xml</coberturaReport>
                     </coberturaReports>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>ru.yaal.maven</groupId>
+                <artifactId>write-text-files-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-rest-post-arguments</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>write-text-files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <files>
+                        <file>
+                            <path>target/karaf-console-rest-post-update-arguments</path>
+                            <lines>
+                                <line>action=update&amp;dummy=dummy</line>
+                            </lines>
+                        </file>
+                    </files>
                 </configuration>
             </plugin>
         </plugins>

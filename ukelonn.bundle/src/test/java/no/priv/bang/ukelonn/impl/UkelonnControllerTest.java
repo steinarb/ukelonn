@@ -105,7 +105,7 @@ public class UkelonnControllerTest {
             ukelonn.registerNewJob(mock(ActionEvent.class));
 
             // Verify that balance and the job list is modified
-            assertEquals(Double.valueOf(35), ukelonn.getBalanse());
+            assertEquals(Double.valueOf(45), ukelonn.getBalanse());
             assertEquals(3, ukelonn.getJobs().size());
 
             // Verify that the job registration form is blanked when

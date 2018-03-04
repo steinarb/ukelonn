@@ -243,7 +243,7 @@ public class UkelonnAdminControllerTest {
             // Verify expected initial state
             assertNull(ukelonnAdmin.getNewJobTypeName());
             assertEquals(0.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
-            int initialNumberOfJobTypes = 3;
+            int initialNumberOfJobTypes = 4;
             assertEquals(initialNumberOfJobTypes, ukelonnAdmin.getJobTypes().size());
 
             // Try registering an new job type without a name and an amount (should fail)
@@ -314,7 +314,7 @@ public class UkelonnAdminControllerTest {
             // Verify expected initial state
             assertNull(ukelonnAdmin.getNewJobTypeName());
             assertEquals(0.0, ukelonnAdmin.getNewJobTypeAmount(), 0.1);
-            int initialNumberOfJobTypes = 3;
+            int initialNumberOfJobTypes = 4;
             List<TransactionType> jobTypes = ukelonnAdmin.getJobTypes();
             assertEquals(initialNumberOfJobTypes, jobTypes.size());
 
