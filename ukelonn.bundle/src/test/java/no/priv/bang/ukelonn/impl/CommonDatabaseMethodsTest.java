@@ -18,8 +18,13 @@ package no.priv.bang.ukelonn.impl;
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +38,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
+
 public class CommonDatabaseMethodsTest {
 
     @BeforeClass
@@ -43,6 +51,651 @@ public class CommonDatabaseMethodsTest {
     @AfterClass
     public static void teardownForAllTests() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         releaseFakeOsgiServices();
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#connectionCheck(Class)}
+     * method when no UkelonnDatabase OSGi service has been injected.
+     */
+    @Test(expected=UkelonnException.class)
+    public void testConnectionCheckFailed() {
+        // Swap the real derby database with a null
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            getUkelonnServletProvider().setUkelonnDatabase(null);
+            UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getUkelonnServletProvider(), getClass());
+            assertNotNull(database); // Will never get here will throw exception on connectionCheck()
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getTransactionTypesFromUkelonnDatabase(Class)}
+     * method when a null resultset is returned from the {@link UkelonnDatabase#query(PreparedStatement)}
+     * method.
+     *
+     * Expect no exception to be thrown, and a non-null empty map to be returned.
+     */
+    @Test()
+    public void testGetTransactionTypesFromUkelonnDatabaseNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getUkelonnServletProvider(), getClass());
+            assertEquals("Expected a non-null, empty map", 0, transactiontypes.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getTransactionTypesFromUkelonnDatabase(Class)}
+     * methid when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a non-null empty map to be returned.
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testGetTransactionTypesFromUkelonnDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getUkelonnServletProvider(), getClass());
+            assertEquals("Expected a non-null, empty map", 0, transactiontypes.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateBalanseFromDatabase(Class, Account)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and the account balance to be unchanged.
+     */
+    @Test()
+    public void testUpdateBalanseFromDatabaseNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            double originalBalance = 42.5;
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
+            CommonDatabaseMethods.updateBalanseFromDatabase(getUkelonnServletProvider(), getClass(), account);
+            assertEquals("Expected balance to be unchanged", originalBalance, account.getBalance(), 0.0);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateBalanseFromDatabase(Class, Account)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and the account balance to be unchanged.
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testUpdateBalanseFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            double originalBalance = 42.5;
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
+            CommonDatabaseMethods.updateBalanseFromDatabase(getUkelonnServletProvider(), getClass(), account);
+            assertEquals("Expected balance to be unchanged", originalBalance, account.getBalance(), 0.0);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#addNewPaymentToAccount(Class, Account, TransactionType, double)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and the method to return {@link CommonDatabaseMethods#UPDATE_FAILED}.
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testAddNewPaymentToAccountWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            double originalBalance = 42.5;
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
+            TransactionType jobType = new TransactionType(1, "Støvsuging 1. etasje", 45.0, true, false);
+            int updateStatus = CommonDatabaseMethods.addNewPaymentToAccount(getUkelonnServletProvider(), getClass(), account, jobType, 45.0);
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAccountInfoFromDatabase(Class, String)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a dummy {@link Account} object to be returned.
+     */
+    @Test()
+    public void testGetAccountInfoFromDatabaseNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "jad");
+            assertEquals("Ikke innlogget", account.getFirstName());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateBalanseFromDatabase(Class, Account)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a dummy {@link Account} object to be returned.
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "jad");
+            assertEquals("Ikke innlogget", account.getFirstName());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAdminUserFromDatabase(Class, String)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a dummy {@link AdminUser} object to be returned.
+     */
+    @Test()
+    public void testGetAdminUserFromDatabaseNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getUkelonnServletProvider(), getClass(), "on");
+            assertEquals("Ikke innlogget", user.getFirstname());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateBalanseFromDatabase(Class, Account)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a dummy {@link AdminUser} object to be returned.
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testGetAdminUserFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getUkelonnServletProvider(), getClass(), "on");
+            assertEquals("Ikke innlogget", user.getFirstname());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAccounts(Class)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     */
+    @Test()
+    public void testGetAccountsNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            List<Account> accounts = CommonDatabaseMethods.getAccounts(getUkelonnServletProvider(), getClass());
+            assertEquals("Expected a non-null, empty list", 0, accounts.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAccounts(Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            List<Account> accounts = CommonDatabaseMethods.getAccounts(getUkelonnServletProvider(), getClass());
+            assertEquals("Expected a non-null, empty list", 0, accounts.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getPaymentsFromAccount(Account, Class)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     */
+    @Test()
+    public void testGetPaymentsFromAccountNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(getUkelonnServletProvider(), account, getClass());
+            assertEquals("Expected a non-null, empty list", 0, payments.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getPaymentsFromAccount(Account, Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testGetPaymentsFromAccountWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(getUkelonnServletProvider(), account, getClass());
+            assertEquals("Expected a non-null, empty list", 0, payments.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getJobsFromAccount(Account, Class)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     */
+    @Test()
+    public void testGetJobsFromAccountNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(getUkelonnServletProvider(), account, getClass());
+            assertEquals("Expected a non-null, empty list", 0, jobs.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getJobsFromAccount(Account, Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testGetJobsFromAccountWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(getUkelonnServletProvider(), account, getClass());
+            assertEquals("Expected a non-null, empty list", 0, jobs.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#registerNewJobInDatabase(Class, Account, int, double)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty map to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
+            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getUkelonnServletProvider(), getClass(), account, 1, 45.0);
+            assertEquals("Expected a non-null, empty map", 0, transactionTypes.size());
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#addJobTypeToDatabase(Class, String, double)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testAddJobTypeToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.addJobTypeToDatabase(getUkelonnServletProvider(), getClass(), "Vaske vindu", 50.0);
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateTransactionTypeInDatabase(Class, TransactionType)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testUpdateTransactionTypeInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            TransactionType transactionType = new TransactionType(1, "Ny jobbtekst", 41.0, true, false);
+            int updateStatus = CommonDatabaseMethods.updateTransactionTypeInDatabase(getUkelonnServletProvider(), getClass(), transactionType);
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#addPaymentTypeToDatabase(Class, String, Double)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testAddPaymentTypeToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.addPaymentTypeToDatabase(getUkelonnServletProvider(), getClass(), "Vipps", null);
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#addUserToDatabase(Class, String, String, String, String, String)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect an {@link UkelonnException} to be thrown
+     *
+     * @throws SQLException
+     */
+    @Test(expected=UkelonnException.class)
+    public void testAddUserToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            CommonDatabaseMethods.addUserToDatabase(getUkelonnServletProvider(), getClass(), "jdeere", "bamb1", "deere@forest.com", "Julia", "Deere");
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getUsers(Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect an {@link UkelonnException} to be thrown
+     *
+     * @throws SQLException
+     */
+    @Test(expected=UkelonnException.class)
+    public void testGetUsersWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            List<User> users = CommonDatabaseMethods.getUsers(getUkelonnServletProvider(), getClass());
+            assertEquals(0, users.size()); // Will never get here, using the return value so the IDE won't complain
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#changePasswordForUser(String, String, Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testChangePasswordForUserWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.changePasswordForUser(getUkelonnServletProvider(), "jad", "zecret0", getClass());
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateUserInDatabase(Class, User)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testUupdateUserInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe");
+            int updateStatus = CommonDatabaseMethods.updateUserInDatabase(getUkelonnServletProvider(), getClass(), user);
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
     }
 
     @Test
@@ -109,7 +762,7 @@ public class CommonDatabaseMethodsTest {
             assertNotEquals(newLastname, jad.getLastname());
 
             // Create a brand new User bean to use for the update (password won't be used in the update)
-            User jadToUpdate = new User(jadUserid, newUsername, newEmail, null, newFirstname, newLastname);
+            User jadToUpdate = new User(jadUserid, newUsername, newEmail, newFirstname, newLastname);
             int expectedNumberOfUpdatedRecords = 1;
             int numberOfUpdatedRecords = updateUserInDatabase(getUkelonnServletProvider(), getClass(), jadToUpdate);
             assertEquals(expectedNumberOfUpdatedRecords, numberOfUpdatedRecords);
@@ -233,6 +886,15 @@ public class CommonDatabaseMethodsTest {
     }
 
     @Test
+    public void testJoinIds() {
+        assertEquals("", CommonDatabaseMethods.joinIds(null).toString());
+        assertEquals("", CommonDatabaseMethods.joinIds(Collections.emptyList()).toString());
+        Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "jad");
+        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(getUkelonnServletProvider(), account, getClass());
+        assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", CommonDatabaseMethods.joinIds(jobs).toString());
+    }
+
+    @Test
     public void testAddNewPaymentToAccount() {
         // Verify initial number of payments for a user
         Account account = getAccountInfoFromDatabase(getUkelonnServletProvider(), getClass(), "jod");
@@ -246,6 +908,52 @@ public class CommonDatabaseMethodsTest {
         // Verify that a payment have been added
         List<Transaction> paymentsForJod = getPaymentsFromAccount(getUkelonnServletProvider(), account, getClass());
         assertEquals(2, paymentsForJod.size());
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase, int)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @Test()
+    public void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnDatabase originalDatabase = getUkelonnServletProvider().getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(getUkelonnServletProvider(), database, 1);
+            assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
+        } finally {
+            // Restore the real derby database
+            getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test for {@link CommonDatabaseMethods#mapUser}
+     *
+     * @throws SQLException
+     */
+    @Test(expected=UkelonnException.class)
+    public void testMapUserWhenSQLExceptionIsThrown() throws SQLException {
+        ResultSet resultset = mock(ResultSet.class);
+        when(resultset.getInt(anyString())).thenThrow(SQLException.class);
+        User user = CommonDatabaseMethods.mapUser(resultset);
+        assertNull(user); // Should never get here because a UkelonnException is thrown
+    }
+
+    @Test
+    public void testGetResourceAsStringNoResource() {
+        String resource = CommonDatabaseMethods.getResourceAsString(getUkelonnServletProvider(), "finnesikke");
+        assertNull(resource);
     }
 
     private boolean passwordMatcher(UkelonnRealm realm, String username, String password) {

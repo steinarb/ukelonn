@@ -39,6 +39,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
 public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
@@ -91,7 +92,7 @@ public class UkelonnDatabaseProvider implements Provider<UkelonnDatabase>, Ukelo
             StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
             return logHistoryService.getRanChangeSets();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new UkelonnException(e);
         }
     }
 

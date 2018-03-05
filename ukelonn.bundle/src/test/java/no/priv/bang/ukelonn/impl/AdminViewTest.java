@@ -90,7 +90,7 @@ public class AdminViewTest {
         // Set up the mock for repeated calls
         double paidAmount = 215;
         TransactionType transactionType = mock(TransactionType.class);
-        when(transactionType.getId()).thenReturn(view.idOfPayToBank, -1, -1);
+        when(transactionType.getId()).thenReturn(AdminView.ID_OF_PAY_TO_BANK, -1, -1);
         when(transactionType.getTransactionAmount()).thenReturn(null, null, paidAmount);
         when(paymenttype.getValue()).thenReturn(transactionType);
 

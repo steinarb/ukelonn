@@ -43,7 +43,7 @@ public class PGUkelonnDatabaseProviderTest {
         assertEquals("Ukelonn PostgreSQL database", databaseName);
     }
 
-    @Ignore
+    @Ignore("Test requires a running PostgreSQL server, so more of an integration test")
     @Test
     public void testDatabase() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -72,7 +72,7 @@ public class PGUkelonnDatabaseProviderTest {
         }
     }
 
-    @Ignore
+    @Ignore("Test requires a running PostgreSQL server, so more of an integration test")
     @Test
     public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();

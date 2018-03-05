@@ -17,16 +17,14 @@ package no.priv.bang.ukelonn.impl;
 
 public class CommonStringMethods {
 
+    private CommonStringMethods() {}
+
     public static boolean isNullEmptyOrBlank(String string) {
         if (string == null) {
             return true;
         }
 
-        if (string.trim().isEmpty()) {
-            return true;
-        }
-
-        return false;
+        return (string.trim().isEmpty());
     }
 
     public static String safeTrim(String string) {
@@ -35,6 +33,18 @@ public class CommonStringMethods {
         }
 
         return string.trim();
+    }
+
+    public static boolean nullSafeEquals(String a, String b) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null) {
+            return false; // Can't both be null
+        }
+
+        return a.equals(b);
     }
 
 }

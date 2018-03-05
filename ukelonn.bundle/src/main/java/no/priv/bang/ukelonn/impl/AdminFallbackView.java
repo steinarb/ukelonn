@@ -45,41 +45,44 @@ import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
 public class AdminFallbackView extends AbstractView {
+    private static final String TRANSACTION_AMOUNT = "transactionAmount";
+    private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
+    static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
     private UkelonnServletProvider provider;
     final int idOfPayToBank = 4;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn admin UI, bruker: ????");
-    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
-    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
-    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
-    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class);
-    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class);
-    ObjectProperty<Double> amount = new ObjectProperty<Double>(0.0);
-    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<Account>(Account.class);
-    ObjectProperty<String> newJobTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> editedJobTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<String>("");
-    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<Double>(0.0);
-    ObjectProperty<String> newUserUsername = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserPassword1 = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserPassword2 = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserEmail = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserFirstname = new ObjectProperty<String>("");
-    ObjectProperty<String> newUserLastname = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<User>(User.class);
-    ObjectProperty<String> editUserPassword1 = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserPassword2 = new ObjectProperty<String>("");
-    BeanItemContainer<User> editUserUsers = new BeanItemContainer<User>(User.class);
-    ObjectProperty<String> editUserUsername = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserEmail = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserFirstname = new ObjectProperty<String>("");
-    ObjectProperty<String> editUserLastname = new ObjectProperty<String>("");
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
+    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
+    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
+    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
+    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<>(TransactionType.class);
+    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<>(TransactionType.class);
+    ObjectProperty<Double> amount = new ObjectProperty<>(0.0);
+    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<>(Account.class);
+    ObjectProperty<String> newJobTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> editedJobTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<>("");
+    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<>(0.0);
+    ObjectProperty<String> newUserUsername = new ObjectProperty<>("");
+    ObjectProperty<String> newUserPassword1 = new ObjectProperty<>("");
+    ObjectProperty<String> newUserPassword2 = new ObjectProperty<>("");
+    ObjectProperty<String> newUserEmail = new ObjectProperty<>("");
+    ObjectProperty<String> newUserFirstname = new ObjectProperty<>("");
+    ObjectProperty<String> newUserLastname = new ObjectProperty<>("");
+    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<>(User.class);
+    ObjectProperty<String> editUserPassword1 = new ObjectProperty<>("");
+    ObjectProperty<String> editUserPassword2 = new ObjectProperty<>("");
+    BeanItemContainer<User> editUserUsers = new BeanItemContainer<>(User.class);
+    ObjectProperty<String> editUserUsername = new ObjectProperty<>("");
+    ObjectProperty<String> editUserEmail = new ObjectProperty<>("");
+    ObjectProperty<String> editUserFirstname = new ObjectProperty<>("");
+    ObjectProperty<String> editUserLastname = new ObjectProperty<>("");
 
     public AdminFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
         this.provider = provider;
@@ -145,7 +148,7 @@ public class AdminFallbackView extends AbstractView {
         paymentLayout.addComponent(balanceDisplay);
 
         paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        paymenttype.setItemCaptionPropertyId("transactionTypeName");
+        paymenttype.setItemCaptionPropertyId(TRANSACTION_TYPE_NAME);
         paymenttype.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -8306551057458139402L;
 
@@ -202,10 +205,10 @@ public class AdminFallbackView extends AbstractView {
         jobtypes.addTab(newJobTypeTab, "Lag ny jobbtype");
         VerticalLayout jobtypesform = new VerticalLayout();
         Table jobtypesTable = new Table();
-        jobtypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
-        jobtypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        jobtypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
+        jobtypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
         jobtypesTable.setContainerDataSource(jobTypes);
-        jobtypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        jobtypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
         jobtypesTable.setSelectable(true);
         jobtypesTable.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -8324617275480799162L;
@@ -244,10 +247,9 @@ public class AdminFallbackView extends AbstractView {
             return false; // Nothing to compare against, always false
         }
 
-        boolean isIdentical =
+        return
             transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
             transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
-        return isIdentical;
     }
 
     private void createPaymenttypesAdminTab(Accordion accordion) {
@@ -269,10 +271,10 @@ public class AdminFallbackView extends AbstractView {
         paymentstypeadmin.addTab(newpaymenttypeTab, "Lag ny utbetalingstype");
         VerticalLayout paymenttypesform = new VerticalLayout();
         Table paymentTypesTable = new Table();
-        paymentTypesTable.addContainerProperty("transactionTypeName", String.class, null, "Navn", null, null);
-        paymentTypesTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
+        paymentTypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
+        paymentTypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
         paymentTypesTable.setContainerDataSource(paymentTypes);
-        paymentTypesTable.setVisibleColumns("transactionTypeName", "transactionAmount");
+        paymentTypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
         paymentTypesTable.setSelectable(true);
         paymentTypesTable.addValueChangeListener(new ValueChangeListener() {
                 private static final long serialVersionUID = -1432137451555587595L;
@@ -403,14 +405,13 @@ public class AdminFallbackView extends AbstractView {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     User user = (User) editUserPasswordUsersField.getValue();
-                    if (user != null) {
-                        if (!"".equals(editUserPassword1Field.getValue()) &&
-                            editUserPassword2Field.isValid())
-                        {
-                            changePasswordForUser(provider, user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
-                            editUserPassword1.setValue("");
-                            editUserPassword2.setValue("");
-                        }
+                    if (user != null &&
+                        !"".equals(editUserPassword1Field.getValue()) &&
+                        editUserPassword2Field.isValid())
+                    {
+                        changePasswordForUser(provider, user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
+                        editUserPassword1.setValue("");
+                        editUserPassword2.setValue("");
                     }
                 }
             }));
@@ -511,7 +512,7 @@ public class AdminFallbackView extends AbstractView {
             Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
             jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
             paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-            paymenttype.select(transactionTypes.get(idOfPayToBank));
+            paymenttype.select(transactionTypes.get(ID_OF_PAY_TO_BANK));
             amount.setValue(balance.getValue());
             recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
             recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
@@ -522,7 +523,7 @@ public class AdminFallbackView extends AbstractView {
         TransactionType payment = (TransactionType) paymenttype.getValue();
         if (payment != null) {
             Double paymentAmount = payment.getTransactionAmount();
-            if (payment.getId() == idOfPayToBank || paymentAmount == null) {
+            if (payment.getId() == ID_OF_PAY_TO_BANK || paymentAmount == null) {
                 amount.setValue(balance.getValue());
             } else {
                 amount.setValue(paymentAmount);
@@ -558,18 +559,17 @@ public class AdminFallbackView extends AbstractView {
 
     void saveChangesToJobType(Table jobtypesTable, TextField editJobTypeNameField) {
         TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
-        if (transactionType != null) {
-            if (!"".equals(editJobTypeNameField.getValue()) &&
-                !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
-            {
-                transactionType.setTransactionTypeName(editedJobTypeName.getValue());
-                transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
-                updateTransactionTypeInDatabase(provider, getClass(), transactionType);
-                jobtypesTable.setValue(null);
-                editedJobTypeName.setValue("");
-                editedJobTypeAmount.setValue(0.0);
-                refreshJobTypesFromDatabase();
-            }
+        if (transactionType != null &&
+            !"".equals(editJobTypeNameField.getValue()) &&
+            !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
+        {
+            transactionType.setTransactionTypeName(editedJobTypeName.getValue());
+            transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
+            updateTransactionTypeInDatabase(provider, getClass(), transactionType);
+            jobtypesTable.setValue(null);
+            editedJobTypeName.setValue("");
+            editedJobTypeAmount.setValue(0.0);
+            refreshJobTypesFromDatabase();
         }
     }
 
@@ -594,18 +594,17 @@ public class AdminFallbackView extends AbstractView {
 
     void saveChangesToPaymentTypes(Table paymentTypesTable, TextField editPaymentTypeNameField) {
         TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
-        if (transactionType != null) {
-            if (!"".equals(editPaymentTypeNameField.getValue()) &&
-                !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
-            {
-                transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
-                transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
-                updateTransactionTypeInDatabase(provider, getClass(), transactionType);
-                paymentTypesTable.setValue(null);
-                editedPaymentTypeName.setValue("");
-                editedPaymentTypeAmount.setValue(0.0);
-                refreshPaymentTypesFromDatabase();
-            }
+        if (transactionType != null &&
+            !"".equals(editPaymentTypeNameField.getValue()) &&
+            !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
+        {
+            transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
+            transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
+            updateTransactionTypeInDatabase(provider, getClass(), transactionType);
+            paymentTypesTable.setValue(null);
+            editedPaymentTypeName.setValue("");
+            editedPaymentTypeAmount.setValue(0.0);
+            refreshPaymentTypesFromDatabase();
         }
     }
 

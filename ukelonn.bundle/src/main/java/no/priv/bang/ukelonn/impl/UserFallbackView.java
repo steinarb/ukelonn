@@ -47,12 +47,12 @@ public class UserFallbackView extends AbstractView {
     Account account;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<String>("Ukelønn for ????");;
-    ObjectProperty<Double> balance = new ObjectProperty<Double>(0.0);
-    BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<TransactionType>(TransactionType.class);
-    ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(0.0);
-    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<Transaction>(Transaction.class);
-    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<Transaction>(Transaction.class);
+    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");
+    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
+    BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<>(TransactionType.class);
+    ObjectProperty<Double> newJobAmount = new ObjectProperty<>(0.0);
+    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
+    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
 
     public UserFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
         this.provider = provider;

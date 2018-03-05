@@ -17,14 +17,17 @@ package no.priv.bang.ukelonn.impl;
 
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 
 public class CommonServiceMethods {
 
+    private CommonServiceMethods() {}
+
     public static UkelonnService connectionCheck(UkelonnService provider, Class<?> clazz) {
         String className = clazz.getSimpleName();
         if (provider == null) {
-            throw new RuntimeException(className + " unable to find OSGi service Ukelonnservice, giving up");
+            throw new UkelonnException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
         }
 
         return provider;

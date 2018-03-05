@@ -78,6 +78,7 @@ public class TestUtils {
 
     /***
      * Fake injected OSGi services.
+     * @return the serviceprovider implmenting the UkelonnService
      */
     public static void setupFakeOsgiServices() {
         ukelonnServletProvider = new UkelonnServletProvider();
