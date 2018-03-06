@@ -13,6 +13,7 @@
 
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.test.db">
     <feature name="ukelonn-db-derby-test">
+        <feature>scr</feature>
         <feature>pax-jdbc-derby</feature>
     </feature>
 </features>

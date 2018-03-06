@@ -20,11 +20,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
@@ -35,17 +35,18 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
-public class PGUkelonnDatabaseProvider implements Provider<UkelonnDatabase>, UkelonnDatabase {
+@Component(service=UkelonnDatabase.class, immediate=true)
+public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
     private PooledConnection connect = null;
     private DataSourceFactory dataSourceFactory;
 
-    @Inject
+    @Reference
     public void setLogService(LogService logService) {
         this.logService = logService;
     }
 
-    @Inject
+    @Reference
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
         if (dataSourceFactory != null) {

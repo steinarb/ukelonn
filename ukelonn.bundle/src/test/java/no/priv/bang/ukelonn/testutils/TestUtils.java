@@ -76,6 +76,7 @@ public class TestUtils {
      */
     public static UkelonnServiceProvider setupFakeOsgiServices() {
         UkelonnServiceProvider ukelonnServiceSingleton = new UkelonnServiceProvider();
+        ukelonnServiceSingleton.activate();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
