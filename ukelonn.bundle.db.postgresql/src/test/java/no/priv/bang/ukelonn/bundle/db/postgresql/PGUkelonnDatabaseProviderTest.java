@@ -23,6 +23,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,6 +34,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import org.postgresql.osgi.PGDataSourceFactory;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
 import no.priv.bang.ukelonn.bundle.db.postgresql.mocks.MockLogService;
 
 public class PGUkelonnDatabaseProviderTest {
@@ -50,7 +55,7 @@ public class PGUkelonnDatabaseProviderTest {
         provider.setLogService(new MockLogService());
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
         setPrivateField(provider, "dataSourceFactory", dataSourceFactory); // Avoid side effects of the public setter
-        provider.createConnection();
+        provider.createConnection(null);
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
@@ -103,6 +108,33 @@ public class PGUkelonnDatabaseProviderTest {
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
         assertEquals(1, allAdminstratorsViewCount);
+    }
+
+    @Test
+    public void testCreateDatabaseConnectionPropertiesDefaultValues() {
+        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
+        Properties connectionProperties = provider.createDatabaseConnectionProperties(Collections.emptyMap());
+        assertEquals(1, connectionProperties.size());
+    }
+
+    @Test
+    public void testCreateDatabaseConnectionPropertiesRemoteDatabase() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(UkelonnDatabaseConstants.UKELONN_JDBC_URL, "jdbc:postgresql://lorenzo.hjemme.lan/sonarcollector");
+        config.put(UkelonnDatabaseConstants.UKELONN_JDBC_USER, "karaf");
+        config.put(UkelonnDatabaseConstants.UKELONN_JDBC_PASSWORD, "karaf");
+        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
+        Properties connectionProperties = provider.createDatabaseConnectionProperties(config);
+        assertEquals(3, connectionProperties.size());
+    }
+
+    @Test
+    public void testActivate() {
+        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.activate(Collections.emptyMap());
+        assertEquals(2, logservice.getLogmessagecount());
     }
 
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {

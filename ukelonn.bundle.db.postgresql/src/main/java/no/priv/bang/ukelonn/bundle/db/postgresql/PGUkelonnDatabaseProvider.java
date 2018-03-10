@@ -18,11 +18,13 @@ package no.priv.bang.ukelonn.bundle.db.postgresql;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -33,6 +35,7 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import static no.priv.bang.ukelonn.UkelonnDatabaseConstants.*;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
 
 @Component(service=UkelonnDatabase.class, immediate=true)
@@ -49,28 +52,47 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     @Reference
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
-        if (dataSourceFactory != null) {
-            createConnection();
-            UkelonnLiquibase liquibase = new UkelonnLiquibase();
-            try {
-                liquibase.createInitialSchema(connect);
-                insertMockData();
-                liquibase.updateSchema(connect);
-            } catch (Exception e) {
-                logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
-            }
+    }
+
+    @Activate
+    public void activate(Map<String, Object> config) {
+        createConnection(config);
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        try {
+            liquibase.createInitialSchema(connect);
+            insertMockData();
+            liquibase.updateSchema(connect);
+        } catch (Exception e) {
+            logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
         }
     }
 
-    void createConnection() {
-        Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:postgresql:///ukelonn");
+    void createConnection(Map<String, Object> config) {
+        Properties properties = createDatabaseConnectionProperties(config);
+
         try {
             ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
             connect = dataSource.getPooledConnection();
         } catch (Exception e) {
             logError("PostgreSQL database service failed to create connection to local DB server", e);
         }
+    }
+
+    Properties createDatabaseConnectionProperties(Map<String, Object> config) {
+        String jdbcUrl = (String) config.getOrDefault(UKELONN_JDBC_URL, "jdbc:postgresql:///ukelonn");
+        String jdbcUser = (String) config.get(UKELONN_JDBC_USER);
+        String jdbcPassword = (String) config.get(UKELONN_JDBC_PASSWORD);
+        Properties properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, jdbcUrl);
+        if (jdbcUser != null) {
+            properties.setProperty(DataSourceFactory.JDBC_USER, jdbcUser);
+        }
+
+        if (jdbcPassword != null) {
+            properties.setProperty(DataSourceFactory.JDBC_PASSWORD, jdbcPassword);
+        }
+
+        return properties;
     }
 
     public UkelonnDatabase get() {
