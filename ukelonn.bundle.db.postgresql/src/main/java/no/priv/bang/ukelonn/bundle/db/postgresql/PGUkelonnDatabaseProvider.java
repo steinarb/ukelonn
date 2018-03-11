@@ -60,7 +60,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
         try {
             liquibase.createInitialSchema(connect);
-            insertMockData();
+            insertInitialDataInDatabase();
             liquibase.updateSchema(connect);
         } catch (Exception e) {
             logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
@@ -99,7 +99,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         return this;
     }
 
-    boolean insertMockData() {
+    boolean insertInitialDataInDatabase() {
         try {
             DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
