@@ -33,7 +33,9 @@ import org.osgi.service.log.LogService;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.ResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import static no.priv.bang.ukelonn.UkelonnDatabaseConstants.*;
 import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
@@ -43,6 +45,8 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
     private PooledConnection connect = null;
     private DataSourceFactory dataSourceFactory;
+    private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
+    private LiquibaseFactory liquibaseFactory;
 
     @Reference
     public void setLogService(LogService logService) {
@@ -57,7 +61,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     @Activate
     public void activate(Map<String, Object> config) {
         createConnection(config);
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = createUkelonnLiquibase();
         try {
             liquibase.createInitialSchema(connect);
             insertInitialDataInDatabase();
@@ -103,7 +107,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         try {
             DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            Liquibase liquibase = createLiquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
             return true;
         } catch (Exception e) {
@@ -167,12 +171,46 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
 
     @Override
     public void forceReleaseLocks() {
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = createUkelonnLiquibase();
         try {
             liquibase.forceReleaseLocks(connect);
         } catch (Exception e) {
             logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);
         }
+    }
+
+    UkelonnLiquibase createUkelonnLiquibase() {
+        if (ukelonnLiquibaseFactory == null) {
+            ukelonnLiquibaseFactory = new UkelonnLiquibaseFactory() { // NOSONAR
+                    @Override
+                    public UkelonnLiquibase create() {
+                        return new UkelonnLiquibase();
+                    }
+                };
+        }
+
+        return ukelonnLiquibaseFactory.create();
+    }
+
+    void setUkelonnLiquibaseFactory(UkelonnLiquibaseFactory ukelonnLiquibaseFactory) {
+        this.ukelonnLiquibaseFactory = ukelonnLiquibaseFactory;
+    }
+
+    Liquibase createLiquibase(String changelogfile, ResourceAccessor resourceAccessor, DatabaseConnection databaseConnection) throws LiquibaseException {
+        if (liquibaseFactory == null) {
+            liquibaseFactory = new LiquibaseFactory() {
+                    @Override
+                    public Liquibase create(String changelogfile, ResourceAccessor resourceAccessor, DatabaseConnection databaseConnection) throws LiquibaseException {
+                        return new Liquibase(changelogfile, resourceAccessor, databaseConnection);
+                    }
+                };
+        }
+
+        return liquibaseFactory.create(changelogfile, resourceAccessor, databaseConnection);
+    }
+
+    void setLiquibaseFactory(LiquibaseFactory liquibaseFactory) {
+        this.liquibaseFactory = liquibaseFactory;
     }
 
     private void logError(String message, Exception exception) {
