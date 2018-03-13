@@ -20,14 +20,21 @@ import org.osgi.service.log.LogService;
 
 public class MockLogService implements LogService {
     final String[] errorLevel = {"", "[ERROR] ", "[WARNING] ", "[INFO] ", "[DEBUG] "};
+    int logmessagecount = 0;
+
+    public int getLogmessagecount() {
+        return logmessagecount;
+    }
 
     public void log(int level, String message) {
         System.err.println(errorLevel[level] + message);
+        ++logmessagecount;
     }
 
     public void log(int level, String message, Throwable exception) {
         System.err.println(errorLevel[level] + message + "  Exception:");
         exception.printStackTrace();
+        ++logmessagecount;
     }
 
     @SuppressWarnings("rawtypes")

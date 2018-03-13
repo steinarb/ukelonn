@@ -219,7 +219,6 @@ Framgangsmåte:
       - En grei måte å starte på, er:
         - Endre passord på admin-brukeren
         - Lage en ny vanlig bruker
-
 ** Oppsett av webappen på en server med debian GNU/linux
 
 NB! Har /ikke/ med oppsett av brannmur og oppsett av nginx eller apache med revers-proxy.
@@ -280,3 +279,38 @@ For å oppdatere til nyeste snapshot, ta "ssh -p 8101 karaf@localhost" og gi fø
 #+END_EXAMPLE
 
 (/Merk:/ Man kan ikke bruke "bundle:watch *" etter å ha installert -snapshot-versjoner fra et maven-repository man når med http, fordi "hundle:watch *" fungerer kun for automatisk oppdatering av snapshot-versjoner installert i det lokale maven-repoet i ~karaf/.m2/repository/ )
+
+** Koble webapp mot database på en annen maskin
+Uansett hvilken setting man bruker PostgreSQL i (utvikler-oppsett eller oppsett på server), så er det mulig å peke på en PostgreSQL-database som kjører på en annen server.
+
+Framgangsmåte:
+ 1. Sørg for at PostgreSQL godtar tilkoblinger fra alle nettverksadresser (ut av boksen på debian, så godtar PostgreSQL kun tilkoblinger fra localhost):
+    1. su til bruker postgres for å få riktig eierskap på filene
+       #+BEGIN_EXAMPLE
+         su - postgres
+       #+END_EXAMPLE
+    2. Endre fila /etc/postgresql/9.6/main/postgresql.conf, utkommenter linja med listen_address line og endre den til den ser sånn ut
+       #+BEGIN_SRC conf
+         listen_addresses = '*'                  # what IP address(es) to listen on;
+       #+END_SRC
+    3. Endre fila /etc/postgresql/9.6/main/pg_hba.conf, og legg til følgende linjer
+       #+BEGIN_SRC conf
+         # IPv4 network connection allow password authentication
+         host    all             all             0.0.0.0/0               md5
+       #+END_SRC
+    4. Logg som bruker postgres (bare root kan ta omstart av postgresql):
+       #+BEGIN_EXAMPLE
+         exit
+       #+END_EXAMPLE
+    5. Ta omstart av postgresql
+       #+BEGIN_EXAMPLE
+         systemctl restart postgresql
+       #+END_EXAMPLE
+ 2. Fra karaf-konsollet, gi følgende kommandoer:
+    #+BEGIN_EXAMPLE
+      config:edit no.priv.bang.ukelonn.bundle.db.postgresql.PGUkelonnDatabaseProvider
+      config:property-set ukelonn.db.jdbc.url "jdbc:postgresql://lorenzo.hjemme.lan/ukelonn
+      config:property-set ukelonn.db.jdbc.user "karaf"
+      config:property-set ukelonn.db.jdbc.password "karaf"
+      config:update
+    #+END_EXAMPLE
