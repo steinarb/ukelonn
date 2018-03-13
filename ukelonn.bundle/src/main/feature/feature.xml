@@ -16,5 +16,6 @@
     <feature name="ukelonn">
         <feature prerequisite="true">wrap</feature>
         <feature>pax-http</feature>
+        <feature>scr</feature>
     </feature>
 </features>

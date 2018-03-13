@@ -32,6 +32,7 @@
         <derby.version>10.11.1.1</derby.version>
         <postgresql.version>9.4.1211.jre7</postgresql.version>
         <dependency.osgi.version>6.0.0</dependency.osgi.version>
+        <osgi.service.version>1.3.0</osgi.service.version>
         <dependency.osgi.log.version>1.3.0</dependency.osgi.log.version>
         <dependency.osgi.jdbc.version>1.0.0</dependency.osgi.jdbc.version>
         <dependency.pax.web.version>6.0.3</dependency.pax.web.version>
@@ -45,18 +46,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>no.steria.osgi.jsr330activator</groupId>
-                <artifactId>jsr330activator.implementation</artifactId>
-                <version>1.1.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>1</version>
-                <scope>provided</scope>
-            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -79,6 +68,12 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>${dependency.osgi.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.component.annotations</artifactId>
+                <version>${osgi.service.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -237,6 +232,14 @@
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>${maven.bundle.plugin.version}</version>
+                    <configuration>
+                        <instructions>
+                            <!-- Enable processing of OSGI DS component annotations -->
+                            <_dsannotations>*</_dsannotations>
+                            <!-- Enable processing of OSGI metatype annotations -->
+                            <_metatypeannotations>*</_metatypeannotations>
+                        </instructions>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

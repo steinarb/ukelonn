@@ -18,39 +18,39 @@ package no.priv.bang.ukelonn.impl;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.servlet.ServletException;
 
 import org.ops4j.pax.web.service.WebContainer;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.NamespaceException;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.steria.osgi.jsr330activator.Jsr330Activator;
 
 /**
- * A thin wrapper around {@link UkelonnServiceBase} that will
- * be picked up by the {@link Jsr330Activator} and be presented
- * in OSGi as a {@link UkelonnService} service.
+ * The OSGi component that listens for a {@link WebContainer} service
+ * and registers a servlet with the web container.
  *
  * @author Steinar Bang
  *
  */
-public class UkelonnServiceProvider extends UkelonnServiceBase implements Provider<UkelonnService> {
+@Component(service=UkelonnService.class, immediate=true)
+public class UkelonnServiceProvider extends UkelonnServiceBase {
     private static UkelonnServiceProvider instance;
     private WebContainer webContainer;
     private UkelonnDatabase database;
     private LogService logservice;
 
-    public UkelonnServiceProvider() {
-        super();
+    @Activate
+    public void activate() {
         instance = this;
     }
 
-    @Inject
+    @Reference
     public void setUkelonnDatabase(UkelonnDatabase database) {
         this.database = database;
     }
@@ -60,7 +60,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
         return database;
     }
 
-    @Inject
+    @Reference
     public void setLogservice(LogService logservice) {
         this.logservice = logservice;
     }
@@ -70,7 +70,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase implements Provid
         return logservice;
     }
 
-    @Inject
+    @Reference
     public void setWebContainer(WebContainer webcontainer) throws NamespaceException {
         webContainer = webcontainer;
         if (webcontainer != null ) {
