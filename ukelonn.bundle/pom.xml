@@ -61,20 +61,15 @@
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.log</artifactId>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.steria.osgi.jsr330activator</groupId>
-            <artifactId>jsr330activator.implementation</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -171,7 +166,6 @@
                     <instructions>
                         <_wab>src/main/webapp</_wab>
                         <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
-                        <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Karaf-Commands>*</Karaf-Commands>
                         <Import-Package>
@@ -201,7 +195,6 @@
                             *
                         </Import-Package>
                         <Export-Package>!*</Export-Package>
-                        <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true,*;scope=runtime,type!=pom</Embed-Dependency>
                         <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
                         <Web-ContextPath>ukelonn</Web-ContextPath>
                         <Require-Bundle>
