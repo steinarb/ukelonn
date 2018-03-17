@@ -31,8 +31,6 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
  * be put in front of the servlet provided by the {@link UkelonnServletProvider}, and
  * will handle authentication and authorization from the servlet.
  *
- *  See also: {@link UkelonnServletProvider}
- *
  * @author Steinar Bang
  *
  */
