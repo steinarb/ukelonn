@@ -41,15 +41,15 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=Filter.class,
     immediate=true
 )
-public class ShiroFilterProvider extends ShiroFilter {
+public class UkelonnShiroFilter extends ShiroFilter {
 
-    private static ShiroFilterProvider instance;
+    private static UkelonnShiroFilter instance;
     private UkelonnDatabase database;
     private WebContainer webContainer;
     private HttpContext httpcontext;
     private EnvironmentLoaderListener listener;
 
-    public ShiroFilterProvider() {
+    public UkelonnShiroFilter() {
         instance = this;
     }
 
@@ -90,7 +90,7 @@ public class ShiroFilterProvider extends ShiroFilter {
         }
     }
 
-    public static ShiroFilterProvider getInstance() {
+    public static UkelonnShiroFilter getInstance() {
         return instance;
     }
 

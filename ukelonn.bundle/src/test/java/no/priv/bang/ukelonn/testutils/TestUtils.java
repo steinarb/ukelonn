@@ -44,7 +44,7 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedSession;
 
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
-import no.priv.bang.ukelonn.impl.ShiroFilterProvider;
+import no.priv.bang.ukelonn.impl.UkelonnShiroFilter;
 import no.priv.bang.ukelonn.impl.UkelonnServlet;
 import no.priv.bang.ukelonn.impl.UkelonnServletProvider;
 import no.priv.bang.ukelonn.impl.UkelonnUI;
@@ -89,7 +89,7 @@ public class TestUtils {
         ukelonnDatabaseProvider.setLogService(logservice);
         ukelonnServlet.setLogservice(logservice);
 
-        ShiroFilterProvider shiroFilterProvider = new ShiroFilterProvider();
+        UkelonnShiroFilter shiroFilterProvider = new UkelonnShiroFilter();
         shiroFilterProvider.setUkelonnDatabase(ukelonnDatabaseProvider);
     }
 
@@ -112,7 +112,7 @@ public class TestUtils {
             ukelonnServiceInstanceField.set(null, null);
         }
 
-        ShiroFilterProvider shiroFilterProvider = new ShiroFilterProvider();
+        UkelonnShiroFilter shiroFilterProvider = new UkelonnShiroFilter();
         shiroFilterProvider.setUkelonnDatabase(null);
         dropTestDatabase();
     }

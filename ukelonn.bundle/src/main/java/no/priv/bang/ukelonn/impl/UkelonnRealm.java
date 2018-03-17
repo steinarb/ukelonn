@@ -102,7 +102,7 @@ public class UkelonnRealm extends AuthorizingRealm {
     }
 
     private UkelonnDatabase connectionCheck() {
-        ShiroFilterProvider shiroFilterProvider = ShiroFilterProvider.getInstance();
+        UkelonnShiroFilter shiroFilterProvider = UkelonnShiroFilter.getInstance();
         if (shiroFilterProvider == null) {
             throw new AuthenticationException("UkelonnRealm shiro realm unable to find the ShiroFilterProvider, giving up");
         }
