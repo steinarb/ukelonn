@@ -26,7 +26,14 @@ import java.sql.SQLException;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.shiro.web.servlet.ShiroFilter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,14 +44,12 @@ import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.web.extender.whiteboard.ExtenderConstants;
 import org.ops4j.pax.web.itest.base.client.HttpTestClient;
 import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.tests.UkelonnServiceIntegrationTestBase;
+import no.priv.bang.ukelonn.tests.mocks.MockHttpServletRequest;
+import no.priv.bang.ukelonn.tests.mocks.MockHttpServletResponse;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -56,7 +61,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     private UkelonnDatabase database;
 
     @Inject
-    BundleContext bundleContext;
+    Filter filter;
+
+    @Inject
+    Servlet servlet;
 
     @Configuration
     public Option[] config() {
@@ -86,21 +94,19 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void shiroFilterIntegrationTest() {
-        ServiceReference<Filter> servletReference = bundleContext.getServiceReference(Filter.class);
-        String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
-        assertEquals(6, servletServicePropertyKeys.length);
-        String[] actualUrlPatterns = (String[])servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
-        assertEquals("/ukelonn/*", actualUrlPatterns[0]);
+        ShiroFilter shirofilter = (ShiroFilter) filter;
+        WebSecurityManager securitymanager = shirofilter.getSecurityManager();
+        AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
+        AuthenticationInfo info = securitymanager.authenticate(token);
+        assertEquals(1, info.getPrincipals().asList().size());
     }
 
     @Test
-    public void ukelonnServletIntegrationTest() {
-        ServiceReference<Servlet> servletReference = bundleContext.getServiceReference(Servlet.class);
-        String[] servletServicePropertyKeys = servletReference.getPropertyKeys();
-        assertEquals(6, servletServicePropertyKeys.length);
-        assertEquals("ukelonn", servletReference.getProperty(ExtenderConstants.PROPERTY_SERVLET_NAMES));
-        String[] propertyUrlPatterns = (String[]) servletReference.getProperty(ExtenderConstants.PROPERTY_URL_PATTERNS);
-        assertEquals(2, propertyUrlPatterns.length);
+    public void ukelonnServletIntegrationTest() throws Exception {
+        HttpServletRequest request = new MockHttpServletRequest("http://localhost:8181/ukelonn/");
+        HttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(410, response.getStatus());
     }
 
     @Test
