@@ -35,8 +35,6 @@ import javax.servlet.http.Cookie;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-import org.osgi.service.log.LogService;
-
 import com.vaadin.server.DefaultDeploymentConfiguration;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
@@ -47,6 +45,7 @@ import com.vaadin.server.WrappedSession;
 
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.ShiroFilterProvider;
+import no.priv.bang.ukelonn.impl.UkelonnServlet;
 import no.priv.bang.ukelonn.impl.UkelonnServletProvider;
 import no.priv.bang.ukelonn.impl.UkelonnUI;
 import no.priv.bang.ukelonn.mocks.MockLogService;
@@ -59,10 +58,10 @@ import no.priv.bang.ukelonn.mocks.MockLogService;
  */
 public class TestUtils {
 
-    private static UkelonnServletProvider ukelonnServletProvider;
+    private static UkelonnServlet ukelonnServlet;
 
-    public static UkelonnServletProvider getUkelonnServletProvider() {
-        return ukelonnServletProvider;
+    public static UkelonnServlet getUkelonnServlet() {
+        return ukelonnServlet;
     }
 
     /**
@@ -78,21 +77,20 @@ public class TestUtils {
 
     /***
      * Fake injected OSGi services.
-     * @return the serviceprovider implmenting the UkelonnService
+     * @return the serviceprovider implementing the UkelonnService
      */
     public static void setupFakeOsgiServices() {
-        ukelonnServletProvider = new UkelonnServletProvider();
+        ukelonnServlet = new UkelonnServlet();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
-        LogService logservice = new MockLogService();
+        ukelonnServlet.setUkelonnDatabase(ukelonnDatabaseProvider);
+        MockLogService logservice = new MockLogService();
         ukelonnDatabaseProvider.setLogService(logservice);
-
-        ukelonnServletProvider.setUkelonnDatabase(ukelonnDatabaseProvider.get());
-        ukelonnServletProvider.setLogservice(logservice);
+        ukelonnServlet.setLogservice(logservice);
 
         ShiroFilterProvider shiroFilterProvider = new ShiroFilterProvider();
-        shiroFilterProvider.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+        shiroFilterProvider.setUkelonnDatabase(ukelonnDatabaseProvider);
     }
 
     /***

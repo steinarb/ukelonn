@@ -15,57 +15,38 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.servlet.Filter;
-
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
-import org.ops4j.pax.web.extender.whiteboard.ExtenderConstants;
 import org.ops4j.pax.web.service.WebContainer;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.steria.osgi.jsr330activator.Jsr330Activator;
-import no.steria.osgi.jsr330activator.ServiceProperties;
-import no.steria.osgi.jsr330activator.ServiceProperty;
 
 /**
- * This class will be be picked and instantiated up by the {@link Jsr330Activator} and be presented
- * in OSGi as a {@link Filter} service.  This filter service will be but in front of the servlet
- * exposed by the {@link UkelonnServletProvider}, and will handle authentication and authorizatio
- * from the servlet.
- *
- * The way it works, is:
- *  1. The Jsr330Activator will start by instantiating this class
- *  2. The Jsr330Activator will then register listeners for the two dependent services (log and database services)
- *  3. When the dependent services become available the Jsr330Activator will call the get() method of this class
- *     to get the filter instance, which is then registered as an OSGi service, which is picked up by the
- *     pax web whiteboard extender
- *  4. When the filter is starting, it will look for a file called shiro.ini at the root of the classpath,
- *     in the shiro.ini file the filter will find that it should use the {@link PasswordCompareValidator}
- *     for authentication.  This class is used instead of the built-in JdbcCompareValidator, because
- *     there is an extra database OSGi service layer in this application, that handles:
- *      1. Switching between the Derby test database and PostgreSQL
- *      2. Abstracts database authentication for the PostgreSQL base, and handles JDBC pooling
- *  5. If one or both of the dependent services go away, the servlet instance will be registered as going away
- *     (and will hopefully be removed in the pax web whiteboard extender)
- *  6. If the JsrActivator is stopped (e.g. when unloading the bundle), the Jsr330Activator will retract the
- *     servlet OSGi service, and release its hold on the two injected services
+ * This is an OSGi DS component that provides a {@link Filter} service.  This filter service will
+ * be put in front of the servlet provided by the {@link UkelonnServletProvider}, and
+ * will handle authentication and authorization from the servlet.
  *
  *  See also: {@link UkelonnServletProvider}
  *
  * @author Steinar Bang
  *
  */
-@ServiceProperties({
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_URL_PATTERNS, values = {"/ukelonn/*"}),
-	@ServiceProperty( name = ExtenderConstants.PROPERTY_SERVLET_NAMES, value = "ukelonn")})
-public class ShiroFilterProvider implements Provider<Filter> {
+@Component(
+    property= {
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/ukelonn/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_SERVLET+"=ukelonn"},
+    service=Filter.class,
+    immediate=true
+)
+public class ShiroFilterProvider extends ShiroFilter {
 
     private static ShiroFilterProvider instance;
     private UkelonnDatabase database;
-    private ShiroFilter filter;
     private WebContainer webContainer;
     private HttpContext httpcontext;
     private EnvironmentLoaderListener listener;
@@ -74,7 +55,7 @@ public class ShiroFilterProvider implements Provider<Filter> {
         instance = this;
     }
 
-    @Inject
+    @Reference
     public void setUkelonnDatabase(UkelonnDatabase database) {
         this.database = database;
     }
@@ -83,7 +64,7 @@ public class ShiroFilterProvider implements Provider<Filter> {
         return database;
     }
 
-    @Inject
+    @Reference
     public void setWebContainer(WebContainer webContainer) {
         createEnvironmentLoaderListenerAndDefaultContext(webContainer);
     }
@@ -109,15 +90,6 @@ public class ShiroFilterProvider implements Provider<Filter> {
             webContainer.unregisterEventListener(listener);
             listener = null;
         }
-    }
-
-    @Override
-    public Filter get() {
-        if (filter == null) {
-            filter = new ShiroFilter();
-        }
-
-        return filter;
     }
 
     public static ShiroFilterProvider getInstance() {

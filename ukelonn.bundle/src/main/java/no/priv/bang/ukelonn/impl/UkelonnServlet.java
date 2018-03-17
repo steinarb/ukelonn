@@ -18,7 +18,13 @@ package no.priv.bang.ukelonn.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.log.LogService;
 
 import com.vaadin.addon.touchkit.server.TouchKitServlet;
 import com.vaadin.server.DefaultUIProvider;
@@ -29,18 +35,38 @@ import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 
+import no.priv.bang.ukelonn.UkelonnDatabase;
+
+@Component(
+    property= {
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/ukelonn/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/VAADIN/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonn"},
+    service=Servlet.class,
+    immediate=true
+)
 public class UkelonnServlet extends TouchKitServlet {
     private static final long serialVersionUID = 2305317590355701822L;
-    private UkelonnServletProvider ukelonnServletProvider;
+    final private UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
 
-    public UkelonnServlet(UkelonnServletProvider ukelonnServletProvider) {
-        this.ukelonnServletProvider = ukelonnServletProvider;
+    public UkelonnServletProvider getUkelonnServletProvider() {
+        return ukelonnServletProvider;
     }
 
     @Override
     protected void servletInitialized() throws ServletException {
         super.servletInitialized();
         addSessionInitListenerThatWillSetUIProviderOnSession();
+    }
+
+    @Reference
+    public void setUkelonnDatabase(UkelonnDatabase database) {
+        ukelonnServletProvider.setUkelonnDatabase(database);
+    }
+
+    @Reference
+    public void setLogservice(LogService logservice) {
+        ukelonnServletProvider.setLogservice(logservice);
     }
 
     private void addSessionInitListenerThatWillSetUIProviderOnSession() {

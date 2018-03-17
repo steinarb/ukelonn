@@ -44,7 +44,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testUpdateFormsAfterAccountIsSelected() throws ServiceException, ServletException {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -71,7 +71,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testUpdateVisiblePaymentPropertiesWhenPaymentTypeIsSelected() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -118,7 +118,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testRegisterPaymentInDatabase() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -156,7 +156,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testMakeNewJobType() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -195,7 +195,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testSaveChangesToJobType() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -237,7 +237,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testCreatePaymentType() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -263,7 +263,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testUpdatePaymentForEditWhenPaymentTypeIsSelected() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);
@@ -298,7 +298,7 @@ public class AdminFallbackViewTest {
 
     @Test
     public void testSaveChangesToPaymentTypes() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminFallbackView view = new AdminFallbackView(provider, request);

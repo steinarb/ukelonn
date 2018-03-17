@@ -41,7 +41,7 @@ public class UserFallbackViewTest {
 
     @Test
     public void testChangeJobAmountWhenJobTypeIsChanged() throws ServiceException, ServletException {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         UserFallbackView view = new UserFallbackView(provider, request);
@@ -72,7 +72,7 @@ public class UserFallbackViewTest {
 
     @Test
     public void testRegisterJobInDatabase() {
-        UkelonnServletProvider provider = getUkelonnServletProvider();
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         UserFallbackView view = new UserFallbackView(provider, request);

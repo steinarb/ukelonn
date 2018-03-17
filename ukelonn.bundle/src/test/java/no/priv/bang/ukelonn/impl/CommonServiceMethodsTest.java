@@ -47,7 +47,7 @@ public class CommonServiceMethodsTest {
     @Test
     public void testConnectionCheck() {
         setupFakeOsgiServices();
-        UkelonnService service = CommonServiceMethods.connectionCheck(getUkelonnServletProvider(), getClass());
+        UkelonnService service = CommonServiceMethods.connectionCheck(getUkelonnServlet().getUkelonnServletProvider(), getClass());
         assertNotNull(service);
     }
 
@@ -55,18 +55,18 @@ public class CommonServiceMethodsTest {
     public void testLogError() {
         // First log when there are noe services available
         MockLogService logservice = new MockLogService();
-        CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is an error");
+        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "This is an error");
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService but is no logservice
         setupFakeOsgiServices();
-        CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is another error");
+        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "This is another error");
         assertEquals("Still expected nothing logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService with an injected logservice
         UkelonnServletProvider ukelonnService = (UkelonnServletProvider) UkelonnServletProvider.getInstance();
         ukelonnService.setLogservice(logservice);
-        CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is yet another error");
+        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "This is yet another error");
         assertEquals("Expected a single message to have been logged", 1, logservice.getLogmessages().size());
     }
 
@@ -75,18 +75,18 @@ public class CommonServiceMethodsTest {
         // First log when there are noe services available
         Exception exception = new Exception("This is a fake exception");
         MockLogService logservice = new MockLogService();
-        CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is an error", exception);
+        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "This is an error", exception);
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService but is no logservice
         setupFakeOsgiServices();
-        CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is another error", exception);
+        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "This is another error", exception);
         assertEquals("Still expected nothing logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService with an injected logservice
         UkelonnServletProvider ukelonnService = (UkelonnServletProvider) UkelonnServletProvider.getInstance();
         ukelonnService.setLogservice(logservice);
-        CommonServiceMethods.logError(getUkelonnServletProvider(), getClass(), "This is yet another error", exception);
+        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "This is yet another error", exception);
         assertEquals("Expected a single message to have been logged", 1, logservice.getLogmessages().size());
     }
 
