@@ -37,7 +37,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 @Component(
     property= {
         HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/ukelonn/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_SERVLET+"=ukelonn"},
+        "servletNames=ukelonn"},
     service=Filter.class,
     immediate=true
 )
