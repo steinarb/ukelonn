@@ -16,12 +16,12 @@
 package no.priv.bang.ukelonn.impl;
 
 import javax.servlet.Filter;
-import org.apache.shiro.web.env.EnvironmentLoaderListener;
-import org.apache.shiro.web.servlet.ShiroFilter;
-import org.ops4j.pax.web.service.WebContainer;
+import org.apache.shiro.web.filter.mgt.FilterChainResolver;
+import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
@@ -41,16 +41,24 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=Filter.class,
     immediate=true
 )
-public class UkelonnShiroFilter extends ShiroFilter {
+public class UkelonnShiroFilter extends AbstractShiroFilter {
 
     private static UkelonnShiroFilter instance;
     private UkelonnDatabase database;
-    private WebContainer webContainer;
-    private HttpContext httpcontext;
-    private EnvironmentLoaderListener listener;
+    WebSecurityManager securitymanager;
+    FilterChainResolver resolver;
 
     public UkelonnShiroFilter() {
         instance = this;
+    }
+
+    @Activate
+    public void activate() {
+        setSecurityManager(securitymanager);
+
+        if (resolver != null) {
+            setFilterChainResolver(resolver);
+        }
     }
 
     @Reference
@@ -63,31 +71,13 @@ public class UkelonnShiroFilter extends ShiroFilter {
     }
 
     @Reference
-    public void setWebContainer(WebContainer webContainer) {
-        createEnvironmentLoaderListenerAndDefaultContext(webContainer);
+    public void setSecuritymanager(WebSecurityManager securitymanager) {
+        this.securitymanager = securitymanager;
     }
 
-    private void createEnvironmentLoaderListenerAndDefaultContext(WebContainer webContainer) {
-        if (this.webContainer == webContainer) {
-            return; // already registered, nothing to do
-        }
-
-        unregisterExistingEnvironmentLoaderListener();
-
-        this.webContainer = webContainer;
-
-        if (webContainer != null) {
-            httpcontext = webContainer.createDefaultHttpContext();
-            listener = new EnvironmentLoaderListener();
-            webContainer.registerEventListener(listener, httpcontext);
-        }
-    }
-
-    private void unregisterExistingEnvironmentLoaderListener() {
-        if (webContainer != null) {
-            webContainer.unregisterEventListener(listener);
-            listener = null;
-        }
+    @Reference
+    public void setResolver(FilterChainResolver resolver) {
+        this.resolver = resolver;
     }
 
     public static UkelonnShiroFilter getInstance() {
