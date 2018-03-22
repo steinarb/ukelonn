@@ -15,13 +15,22 @@
  */
 package no.priv.bang.ukelonn.impl;
 
+import java.io.IOException;
+
 import javax.servlet.Filter;
-import org.apache.shiro.web.filter.mgt.FilterChainResolver;
-import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import org.apache.shiro.web.env.EnvironmentLoaderListener;
+import org.apache.shiro.web.servlet.ShiroFilter;
+import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
@@ -41,24 +50,48 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=Filter.class,
     immediate=true
 )
-public class UkelonnShiroFilter extends AbstractShiroFilter {
+public class UkelonnShiroFilter implements Filter {
 
+    private ShiroFilter wrappedShiroFilter;
     private static UkelonnShiroFilter instance;
     private UkelonnDatabase database;
-    WebSecurityManager securitymanager;
-    FilterChainResolver resolver;
+    private WebContainer webContainer;
+    private FilterConfig filterConfig;
 
     public UkelonnShiroFilter() {
+        wrappedShiroFilter = new ShiroFilter();
         instance = this;
     }
 
-    @Activate
-    public void activate() {
-        setSecurityManager(securitymanager);
-
-        if (resolver != null) {
-            setFilterChainResolver(resolver);
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        this.filterConfig = filterConfig;
+        if (bothInitAndActivateHasBeenCalled()) {
+            runAfterBothInitAndActivate();
         }
+    }
+
+    @Activate
+    public void activate() throws ServletException {
+        if (bothInitAndActivateHasBeenCalled()) {
+            runAfterBothInitAndActivate();
+        }
+    }
+
+    private boolean bothInitAndActivateHasBeenCalled() {
+        return (filterConfig != null && webContainer != null);
+    }
+
+    private void runAfterBothInitAndActivate() throws ServletException {
+        ensureEnvironmentLoaderIsPresentBeforeShiroFilterInit();
+        wrappedShiroFilter.init(filterConfig);
+    }
+
+    private void ensureEnvironmentLoaderIsPresentBeforeShiroFilterInit() {
+    	String httpContextPath = filterConfig.getServletContext().getContextPath();
+        HttpContext httpcontext = webContainer.createDefaultHttpContext(httpContextPath);
+        EnvironmentLoaderListener listener = new EnvironmentLoaderListener();
+        webContainer.registerEventListener(listener, httpcontext);
     }
 
     @Reference
@@ -71,13 +104,18 @@ public class UkelonnShiroFilter extends AbstractShiroFilter {
     }
 
     @Reference
-    public void setSecuritymanager(WebSecurityManager securitymanager) {
-        this.securitymanager = securitymanager;
+    public void setWebContainer(WebContainer webContainer) {
+        this.webContainer = webContainer;
     }
 
-    @Reference
-    public void setResolver(FilterChainResolver resolver) {
-        this.resolver = resolver;
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        wrappedShiroFilter.doFilter(request, response, chain);
+    }
+
+    @Override
+    public void destroy() {
+        wrappedShiroFilter.destroy();
     }
 
     public static UkelonnShiroFilter getInstance() {
