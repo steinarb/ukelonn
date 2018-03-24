@@ -33,6 +33,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,6 +48,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.web.itest.base.client.HttpTestClient;
 import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.impl.UkelonnShiroFilter;
 import no.priv.bang.ukelonn.tests.UkelonnServiceIntegrationTestBase;
 import no.priv.bang.ukelonn.tests.mocks.MockHttpServletRequest;
 import no.priv.bang.ukelonn.tests.mocks.MockHttpServletResponse;
@@ -94,7 +96,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void shiroFilterIntegrationTest() {
-        ShiroFilter shirofilter = (ShiroFilter) filter;
+        AbstractShiroFilter shirofilter = (AbstractShiroFilter) filter;
         WebSecurityManager securitymanager = shirofilter.getSecurityManager();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo info = securitymanager.authenticate(token);

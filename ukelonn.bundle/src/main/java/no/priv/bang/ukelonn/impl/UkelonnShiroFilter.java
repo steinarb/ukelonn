@@ -15,22 +15,20 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import java.io.IOException;
-
 import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
-import org.apache.shiro.web.env.EnvironmentLoaderListener;
-import org.apache.shiro.web.servlet.ShiroFilter;
-import org.ops4j.pax.web.service.WebContainer;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.config.IniFilterChainResolverFactory;
+import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
+import org.apache.shiro.web.filter.mgt.FilterChainResolver;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
@@ -50,48 +48,33 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=Filter.class,
     immediate=true
 )
-public class UkelonnShiroFilter implements Filter {
+public class UkelonnShiroFilter extends AbstractShiroFilter {
 
-    private ShiroFilter wrappedShiroFilter;
+    private static final Ini INI_FILE = new Ini();
+    static {
+        // Can't use the Ini.fromResourcePath(String) method because it can't find "shiro.ini" on the classpath in an OSGi context
+        INI_FILE.load(UkelonnShiroFilter.class.getClassLoader().getResourceAsStream("shiro.ini"));
+    }
     private static UkelonnShiroFilter instance;
     private UkelonnDatabase database;
-    private WebContainer webContainer;
-    private FilterConfig filterConfig;
 
     public UkelonnShiroFilter() {
-        wrappedShiroFilter = new ShiroFilter();
         instance = this;
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        this.filterConfig = filterConfig;
-        if (bothInitAndActivateHasBeenCalled()) {
-            runAfterBothInitAndActivate();
-        }
     }
 
     @Activate
     public void activate() throws ServletException {
-        if (bothInitAndActivateHasBeenCalled()) {
-            runAfterBothInitAndActivate();
+        WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(INI_FILE);
+        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) securityManagerFactory.createInstance();
+        setSecurityManager(securityManager);
+        UkelonnRealm realm = createRealmProgramaticallyBecauseOfShiroIniClassCastException();
+        securityManager.setRealm(realm);
+
+        IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE);
+        FilterChainResolver resolver = filterChainResolverFactory.createInstance();
+        if (resolver != null) {
+            setFilterChainResolver(resolver);
         }
-    }
-
-    private boolean bothInitAndActivateHasBeenCalled() {
-        return (filterConfig != null && webContainer != null);
-    }
-
-    private void runAfterBothInitAndActivate() throws ServletException {
-        ensureEnvironmentLoaderIsPresentBeforeShiroFilterInit();
-        wrappedShiroFilter.init(filterConfig);
-    }
-
-    private void ensureEnvironmentLoaderIsPresentBeforeShiroFilterInit() {
-    	String httpContextPath = filterConfig.getServletContext().getContextPath();
-        HttpContext httpcontext = webContainer.createDefaultHttpContext(httpContextPath);
-        EnvironmentLoaderListener listener = new EnvironmentLoaderListener();
-        webContainer.registerEventListener(listener, httpcontext);
     }
 
     @Reference
@@ -103,23 +86,25 @@ public class UkelonnShiroFilter implements Filter {
         return database;
     }
 
-    @Reference
-    public void setWebContainer(WebContainer webContainer) {
-        this.webContainer = webContainer;
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        wrappedShiroFilter.doFilter(request, response, chain);
-    }
-
-    @Override
-    public void destroy() {
-        wrappedShiroFilter.destroy();
-    }
-
     public static UkelonnShiroFilter getInstance() {
         return instance;
+    }
+
+    /**
+     * Creating the {@link UkelonnRealm} was moved out of shiro.ini and into
+     * code, because the code interpreting the shiro.ini was unable to
+     * cast {@link UkelonnRealm} to {@link Realm}.
+     *
+     * @return The realm that is used to authenticate and authorize ukelonn users
+     */
+    private UkelonnRealm createRealmProgramaticallyBecauseOfShiroIniClassCastException() {
+        UkelonnRealm realm = new UkelonnRealm();
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+        credentialsMatcher.setHashAlgorithmName("SHA-256");
+        credentialsMatcher.setStoredCredentialsHexEncoded(false); // base64 encoding, not hex
+        credentialsMatcher.setHashIterations(1024);
+        realm.setCredentialsMatcher(credentialsMatcher);
+        return realm;
     }
 
 }
