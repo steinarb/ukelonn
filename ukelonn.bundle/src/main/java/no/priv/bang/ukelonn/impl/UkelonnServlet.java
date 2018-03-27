@@ -47,7 +47,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 )
 public class UkelonnServlet extends TouchKitServlet {
     private static final long serialVersionUID = 2305317590355701822L;
-    final private UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
+    private final UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
 
     public UkelonnServletProvider getUkelonnServletProvider() {
         return ukelonnServletProvider;
@@ -82,7 +82,7 @@ public class UkelonnServlet extends TouchKitServlet {
                 }
 
                 private void removeDefaultUIProvider(VaadinSession session) {
-                    List<UIProvider> uiProviders = new ArrayList<UIProvider>(session.getUIProviders());
+                    List<UIProvider> uiProviders = new ArrayList<>(session.getUIProviders());
                     for (UIProvider uiProvider : uiProviders) {
                         if (DefaultUIProvider.class.getCanonicalName().equals(uiProvider.getClass().getCanonicalName())) {
                             session.removeUIProvider(uiProvider);

@@ -44,7 +44,7 @@ import com.vaadin.ui.Button.ClickEvent;
 public class UserFallbackView extends AbstractView {
     private static final long serialVersionUID = 1388525490129647161L;
     private UkelonnServletProvider provider;
-    Account account;
+    Account account; // NOSONAR
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");

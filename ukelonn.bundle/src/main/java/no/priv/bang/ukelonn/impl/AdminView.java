@@ -52,7 +52,7 @@ public class AdminView extends AbstractView {
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
     private UkelonnServletProvider provider;
-    final int idOfPayToBank = 4;
+    static final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
@@ -61,7 +61,7 @@ public class AdminView extends AbstractView {
     ObjectProperty<Double> amount = new ObjectProperty<>(0.0);
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
-    Map<Integer, TransactionType> transactionTypes;
+    Map<Integer, TransactionType> transactionTypes; // NOSONAR
     BeanItemContainer<TransactionType> paymentTypes;
     BeanItemContainer<TransactionType> jobTypes;
 
@@ -91,12 +91,12 @@ public class AdminView extends AbstractView {
 
     public AdminView(UkelonnServletProvider provider, VaadinRequest request) {
         this.provider = provider;
-        accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(provider, getClass()));
+        accountsContainer = new BeanItemContainer<>(Account.class, getAccounts(provider, getClass()));
         transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-        editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
-        editUserUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
-        paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-        jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+        editUserPasswordUsers = new BeanItemContainer<>(User.class, getUsers(provider, getClass()));
+        editUserUsers = new BeanItemContainer<>(User.class, getUsers(provider, getClass()));
+        paymentTypes = new BeanItemContainer<>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes = new BeanItemContainer<>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
         setSizeFull();
         TabBarView tabs = new TabBarView();
 
@@ -542,15 +542,15 @@ public class AdminView extends AbstractView {
     }
 
     private void refreshJobTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+        Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         jobTypes.removeAllItems();
-        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
     }
 
     private void refreshPaymentTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+        Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         paymentTypes.removeAllItems();
-        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactiontypes.values()));
     }
 
     void updateFormsAfterAccountIsSelected(NativeSelect paymenttype, NativeSelect accountSelector) {

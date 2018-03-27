@@ -28,8 +28,8 @@ import no.priv.bang.ukelonn.UkelonnService;
 public class UkelonnServletProvider extends UIProvider implements UkelonnService {
     private static final long serialVersionUID = -275959896126008712L;
     private static UkelonnServletProvider instance;
-    private UkelonnDatabase database;
-    private LogService logservice;
+    private UkelonnDatabase database; // NOSONAR
+    private LogService logservice; // NOSONAR
 
     public UkelonnServletProvider() {
         super();
