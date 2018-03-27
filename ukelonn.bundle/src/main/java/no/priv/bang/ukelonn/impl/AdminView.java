@@ -61,7 +61,7 @@ public class AdminView extends AbstractView {
     ObjectProperty<Double> amount = new ObjectProperty<>(0.0);
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class, getDummyTransactions());
-    Map<Integer, TransactionType> transactionTypes;
+    Map<Integer, TransactionType> transactionTypes; // NOSONAR
     BeanItemContainer<TransactionType> paymentTypes;
     BeanItemContainer<TransactionType> jobTypes;
 

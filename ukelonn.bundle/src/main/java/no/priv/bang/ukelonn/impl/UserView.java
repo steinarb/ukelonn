@@ -49,7 +49,7 @@ public class UserView extends AbstractView {
     private BeanItemContainer<TransactionType> jobTypesContainer;
     private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
     private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
-    Account account;
+    Account account; // NOSONAR
 
     public UserView(UkelonnServletProvider provider, VaadinRequest request) {
         this.provider = provider;
