@@ -24,33 +24,32 @@ public class CommonServiceMethods {
 
     private CommonServiceMethods() {}
 
-    public static UkelonnService connectionCheck(Class<?> clazz) {
+    public static UkelonnService connectionCheck(UkelonnService provider, Class<?> clazz) {
         String className = clazz.getSimpleName();
-        UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
-        if (ukelonnService == null) {
+        if (provider == null) {
             throw new UkelonnException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
         }
 
-        return ukelonnService;
+        return provider;
     }
 
-    public static void logError(Class<?> clazz, String message) {
-        LogService logservice = logserviceConnectionCheck(clazz);
+    public static void logError(UkelonnService provider, Class<?> clazz, String message) {
+        LogService logservice = logserviceConnectionCheck(provider, clazz);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message);
         }
     }
 
-    public static void logError(Class<?> clazz, String message, Throwable exception) {
-        LogService logservice = logserviceConnectionCheck(clazz);
+    public static void logError(UkelonnService provider, Class<?> clazz, String message, Throwable exception) {
+        LogService logservice = logserviceConnectionCheck(provider, clazz);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message, exception);
         }
     }
 
-    private static LogService logserviceConnectionCheck(Class<?> clazz) {
+    private static LogService logserviceConnectionCheck(UkelonnService provider, Class<?> clazz) {
         try {
-            UkelonnService ukelonnService = connectionCheck(clazz);
+            UkelonnService ukelonnService = connectionCheck(provider, clazz);
 
             return ukelonnService.getLogservice();
         } catch (RuntimeException e) {

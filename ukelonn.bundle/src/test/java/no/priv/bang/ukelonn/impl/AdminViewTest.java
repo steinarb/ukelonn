@@ -44,9 +44,10 @@ public class AdminViewTest {
 
     @Test
     public void testUpdateFormsAfterAccountIsSelected() throws ServiceException, ServletException {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Verify preconditions
         assertEquals(Double.valueOf(0.0), view.balance.getValue());
@@ -60,7 +61,7 @@ public class AdminViewTest {
         assertEquals(Double.valueOf(0.0), view.balance.getValue());
 
         // Try selecting with a real account
-        Account account = getAccountInfoFromDatabase(getClass(), "jad");
+        Account account = getAccountInfoFromDatabase(provider, getClass(), "jad");
         when(accountSelector.getValue()).thenReturn(account);
         view.updateFormsAfterAccountIsSelected(paymenttype, accountSelector);
 
@@ -70,9 +71,10 @@ public class AdminViewTest {
 
     @Test
     public void testUpdateVisiblePaymentPropertiesWhenPaymentTypeIsSelected() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
         view.balance.setValue(100.0);
 
         // Verify preconditions
@@ -116,9 +118,10 @@ public class AdminViewTest {
 
     @Test
     public void testRegisterPaymentInDatabase() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Set up the mock for repeated calls
         NativeSelect paymenttype = mock(NativeSelect.class);
@@ -153,9 +156,10 @@ public class AdminViewTest {
 
     @Test
     public void testMakeNewJobType() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Verify initial conditions
         assertEquals("", view.newJobTypeName.getValue());
@@ -191,9 +195,10 @@ public class AdminViewTest {
 
     @Test
     public void testSaveChangesToJobType() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Create mocks
         Table jobtypesTable = mock(Table.class);
@@ -232,9 +237,10 @@ public class AdminViewTest {
 
     @Test
     public void testCreatePaymentType() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Set the new payment value
         view.newPaymentTypeAmount.setValue(Double.valueOf(10));
@@ -257,9 +263,10 @@ public class AdminViewTest {
 
     @Test
     public void testUpdatePaymentForEditWhenPaymentTypeIsSelected() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Mock argument to the method
         String expectedPaymentTypeName = "Postgiro";
@@ -291,9 +298,10 @@ public class AdminViewTest {
 
     @Test
     public void testSaveChangesToPaymentTypes() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        AdminView view = new AdminView(request);
+        AdminView view = new AdminView(provider, request);
 
         // Create mocks
         Table jobtypesTable = mock(Table.class);

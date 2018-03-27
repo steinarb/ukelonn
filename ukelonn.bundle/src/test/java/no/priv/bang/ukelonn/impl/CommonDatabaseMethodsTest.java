@@ -43,11 +43,9 @@ import no.priv.bang.ukelonn.UkelonnException;
 
 public class CommonDatabaseMethodsTest {
 
-    private static UkelonnServiceProvider provider;
-
     @BeforeClass
     public static void setupForAllTests() {
-        provider = setupFakeOsgiServices();
+        setupFakeOsgiServices();
     }
 
     @AfterClass
@@ -62,14 +60,14 @@ public class CommonDatabaseMethodsTest {
     @Test(expected=UkelonnException.class)
     public void testConnectionCheckFailed() {
         // Swap the real derby database with a null
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
-            provider.setUkelonnDatabase(null);
-            UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(null);
+            UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertNotNull(database); // Will never get here will throw exception on connectionCheck()
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -83,15 +81,15 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testGetTransactionTypesFromUkelonnDatabaseNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
-            provider.setUkelonnDatabase(database);
-            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertEquals("Expected a non-null, empty map", 0, transactiontypes.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -104,21 +102,22 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetTransactionTypesFromUkelonnDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
-            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertEquals("Expected a non-null, empty map", 0, transactiontypes.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -132,19 +131,19 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testUpdateBalanseFromDatabaseNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             double originalBalance = 42.5;
             Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
-            CommonDatabaseMethods.updateBalanseFromDatabase(getClass(), account);
+            CommonDatabaseMethods.updateBalanseFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account);
             assertEquals("Expected balance to be unchanged", originalBalance, account.getBalance(), 0.0);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -157,10 +156,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testUpdateBalanseFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -168,14 +168,14 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             double originalBalance = 42.5;
             Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
-            CommonDatabaseMethods.updateBalanseFromDatabase(getClass(), account);
+            CommonDatabaseMethods.updateBalanseFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account);
             assertEquals("Expected balance to be unchanged", originalBalance, account.getBalance(), 0.0);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -188,10 +188,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testAddNewPaymentToAccountWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -199,15 +200,15 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             double originalBalance = 42.5;
             Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
             TransactionType jobType = new TransactionType(1, "Støvsuging 1. etasje", 45.0, true, false);
-            int updateStatus = CommonDatabaseMethods.addNewPaymentToAccount(getClass(), account, jobType, 45.0);
+            int updateStatus = CommonDatabaseMethods.addNewPaymentToAccount(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account, jobType, 45.0);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -221,17 +222,17 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testGetAccountInfoFromDatabaseNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
-            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), "jad");
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jad");
             assertEquals("Ikke innlogget", account.getFirstName());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -244,10 +245,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -255,12 +257,12 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
-            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), "jad");
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jad");
             assertEquals("Ikke innlogget", account.getFirstName());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -274,17 +276,17 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testGetAdminUserFromDatabaseNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
-            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), "on");
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "on");
             assertEquals("Ikke innlogget", user.getFirstname());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -297,10 +299,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAdminUserFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -308,12 +311,12 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
-            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), "on");
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "on");
             assertEquals("Ikke innlogget", user.getFirstname());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -327,17 +330,17 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testGetAccountsNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
-            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            List<Account> accounts = CommonDatabaseMethods.getAccounts(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -350,10 +353,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -361,12 +365,12 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
-            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            List<Account> accounts = CommonDatabaseMethods.getAccounts(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -380,18 +384,18 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testGetPaymentsFromAccountNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass());
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
             assertEquals("Expected a non-null, empty list", 0, payments.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -404,10 +408,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetPaymentsFromAccountWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -415,13 +420,13 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass());
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
             assertEquals("Expected a non-null, empty list", 0, payments.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -435,18 +440,18 @@ public class CommonDatabaseMethodsTest {
     @Test()
     public void testGetJobsFromAccountNullResultSet() {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass());
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
             assertEquals("Expected a non-null, empty list", 0, jobs.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -459,10 +464,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetJobsFromAccountWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -470,13 +476,13 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass());
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
             assertEquals("Expected a non-null, empty list", 0, jobs.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -489,22 +495,23 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getClass(), account, 1, 45.0);
+            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account, 1, 45.0);
             assertEquals("Expected a non-null, empty map", 0, transactionTypes.size());
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -517,21 +524,22 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testAddJobTypeToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.addJobTypeToDatabase(getClass(), "Vaske vindu", 50.0);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.addJobTypeToDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "Vaske vindu", 50.0);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -544,22 +552,23 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testUpdateTransactionTypeInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             TransactionType transactionType = new TransactionType(1, "Ny jobbtekst", 41.0, true, false);
-            int updateStatus = CommonDatabaseMethods.updateTransactionTypeInDatabase(getClass(), transactionType);
+            int updateStatus = CommonDatabaseMethods.updateTransactionTypeInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), transactionType);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -572,21 +581,22 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testAddPaymentTypeToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.addPaymentTypeToDatabase(getClass(), "Vipps", null);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.addPaymentTypeToDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "Vipps", null);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -599,20 +609,21 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
     public void testAddUserToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
-            CommonDatabaseMethods.addUserToDatabase(getClass(), "jdeere", "bamb1", "deere@forest.com", "Julia", "Deere");
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            CommonDatabaseMethods.addUserToDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jdeere", "bamb1", "deere@forest.com", "Julia", "Deere");
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -625,10 +636,11 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
     public void testGetUsersWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
@@ -636,12 +648,12 @@ public class CommonDatabaseMethodsTest {
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
-            List<User> users = CommonDatabaseMethods.getUsers(getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            List<User> users = CommonDatabaseMethods.getUsers(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertEquals(0, users.size()); // Will never get here, using the return value so the IDE won't complain
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -654,21 +666,22 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testChangePasswordForUserWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.changePasswordForUser("jad", "zecret0", getClass());
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.changePasswordForUser(getUkelonnServlet().getUkelonnServletProvider(), "jad", "zecret0", getClass());
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -681,41 +694,42 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testUupdateUserInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
             User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe");
-            int updateStatus = CommonDatabaseMethods.updateUserInDatabase(getClass(), user);
+            int updateStatus = CommonDatabaseMethods.updateUserInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), user);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
     @Test
     public void testGetAdminUserFromDatabase() {
-        AdminUser admin = getAdminUserFromDatabase(getClass(), "on");
+        AdminUser admin = getAdminUserFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "on");
         assertEquals("on", admin.getUserName());
         assertEquals(2, admin.getUserId());
         assertEquals(2, admin.getAdministratorId());
         assertEquals("Ola", admin.getFirstname());
         assertEquals("Nordmann", admin.getSurname());
 
-        AdminUser notAdmin = getAdminUserFromDatabase(getClass(), "jad");
+        AdminUser notAdmin = getAdminUserFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jad");
         assertEquals("jad", notAdmin.getUserName());
         assertEquals(0, notAdmin.getUserId());
         assertEquals("Ikke innlogget", notAdmin.getFirstname());
         assertNull(notAdmin.getSurname());
 
-        AdminUser notInDabase = getAdminUserFromDatabase(getClass(), "unknownuser");
+        AdminUser notInDabase = getAdminUserFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "unknownuser");
         assertEquals("unknownuser", notInDabase.getUserName());
         assertEquals(0, notInDabase.getUserId());
         assertEquals("Ikke innlogget", notInDabase.getFirstname());
@@ -724,22 +738,22 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetAccountInfoFromDatabase() {
-        Account account = getAccountInfoFromDatabase(getClass(), "jad");
+        Account account = getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jad");
         assertEquals("jad", account.getUsername());
         assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
-        List<Transaction> jobs = getJobsFromAccount(account, getClass());
+        List<Transaction> jobs = getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(10, jobs.size());
-        List<Transaction> payments = getPaymentsFromAccount(account, getClass());
+        List<Transaction> payments = getPaymentsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(10, payments.size());
 
-        Account accountForAdmin = getAccountInfoFromDatabase(getClass(), "on");
+        Account accountForAdmin = getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "on");
         assertEquals("on", accountForAdmin.getUsername());
         assertEquals(0, accountForAdmin.getUserId());
         assertEquals("Ikke innlogget", accountForAdmin.getFirstName());
 
-        Account accountNotInDatabase = getAccountInfoFromDatabase(getClass(), "unknownuser");
+        Account accountNotInDatabase = getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "unknownuser");
         assertEquals("unknownuser", accountNotInDatabase.getUsername());
         assertEquals(0, accountNotInDatabase.getUserId());
         assertEquals("Ikke innlogget", accountNotInDatabase.getFirstName());
@@ -748,7 +762,7 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testUpdateUserInDatabase() {
         try {
-            List<User> users = getUsers(getClass());
+            List<User> users = getUsers(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             User jad = findUserInListByName(users, "jad");
             int jadUserid = jad.getUserId();
 
@@ -766,11 +780,11 @@ public class CommonDatabaseMethodsTest {
             // Create a brand new User bean to use for the update (password won't be used in the update)
             User jadToUpdate = new User(jadUserid, newUsername, newEmail, newFirstname, newLastname);
             int expectedNumberOfUpdatedRecords = 1;
-            int numberOfUpdatedRecords = updateUserInDatabase(getClass(), jadToUpdate);
+            int numberOfUpdatedRecords = updateUserInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), jadToUpdate);
             assertEquals(expectedNumberOfUpdatedRecords, numberOfUpdatedRecords);
 
             // Read back an updated user and compare with the expected values
-            List<User> usersAfterUpdate = getUsers(getClass());
+            List<User> usersAfterUpdate = getUsers(getUkelonnServlet().getUkelonnServletProvider(), getClass());
             assertEquals("Expected no new users added", users.size(), usersAfterUpdate.size());
             User jadAfterUpdate = findUserInListById(usersAfterUpdate, jadUserid);
             assertEquals(newUsername, jadAfterUpdate.getUsername());
@@ -785,39 +799,39 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testAddJobTypeToDatabase() {
         // Verify precondition
-        List<TransactionType> jobTypesBefore = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesBefore = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass()).values());
         assertEquals(4, jobTypesBefore.size());
 
-        addJobTypeToDatabase(getClass(), "Klippe gress", 45);
+        addJobTypeToDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "Klippe gress", 45);
 
         // Verify that a job has been added
-        List<TransactionType> jobTypesAfter = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesAfter = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass()).values());
         assertEquals(5, jobTypesAfter.size());
     }
 
     @Test
     public void testAddPaymentTypeToDatabase() {
         // Verify precondition
-        List<TransactionType> jobTypesBefore = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesBefore = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass()).values());
         assertEquals(2, jobTypesBefore.size());
 
-        addPaymentTypeToDatabase(getClass(), "Sjekk", null);
+        addPaymentTypeToDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "Sjekk", null);
 
         // Verify that a job has been added
-        List<TransactionType> jobTypesAfter = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesAfter = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass()).values());
         assertEquals(3, jobTypesAfter.size());
     }
 
     @Test
     public void testAddUserToDatabase() {
         // Verify precondition
-        List<User> usersBefore = getUsers(getClass());
+        List<User> usersBefore = getUsers(getUkelonnServlet().getUkelonnServletProvider(), getClass());
         assertEquals(5, usersBefore.size());
 
-        addUserToDatabase(getClass(), "un", "zecret", "un@gmail.com", "User", "Name");
+        addUserToDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "un", "zecret", "un@gmail.com", "User", "Name");
 
         // Verify that a user has been added
-        List<User> usersAfter = getUsers(getClass());
+        List<User> usersAfter = getUsers(getUkelonnServlet().getUkelonnServletProvider(), getClass());
         assertEquals(6, usersAfter.size());
     }
 
@@ -833,7 +847,7 @@ public class CommonDatabaseMethodsTest {
 
         // Change the password
         String newPassword = "nupass";
-        changePasswordForUser(username, newPassword, getClass());
+        changePasswordForUser(getUkelonnServlet().getUkelonnServletProvider(), username, newPassword, getClass());
 
         // Verify new password
         assertTrue(passwordMatcher(realm, username, newPassword));
@@ -842,7 +856,7 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testUpdateTransactionTypeInDatabase() {
         // Verify the initial state of the transaction type that is to be modified
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass());
         TransactionType transactionTypeBeforeModification = transactionTypes.get(3);
         assertEquals("Gå med resirk", transactionTypeBeforeModification.getTransactionTypeName());
         assertEquals(Double.valueOf(35), transactionTypeBeforeModification.getTransactionAmount());
@@ -852,10 +866,10 @@ public class CommonDatabaseMethodsTest {
         // Modify the transaction type
         transactionTypeBeforeModification.setTransactionTypeName("Vaske tøy");
         transactionTypeBeforeModification.setTransactionAmount(75.0);
-        updateTransactionTypeInDatabase(getClass(), transactionTypeBeforeModification);
+        updateTransactionTypeInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), transactionTypeBeforeModification);
 
         // Verify the changed state of the transaction type in the database
-        transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        transactionTypes = getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass());
         TransactionType transactionTypeAfterModification = transactionTypes.get(3);
         assertEquals("Vaske tøy", transactionTypeAfterModification.getTransactionTypeName());
         assertEquals(Double.valueOf(75), transactionTypeAfterModification.getTransactionAmount());
@@ -866,24 +880,24 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testDeleteTransactions() {
         // Verify initial job size for a user
-        Account account = getAccountInfoFromDatabase(getClass(), "jod");
-        List<Transaction> initialJobsForJod = getJobsFromAccount(account, getClass());
+        Account account = getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jod");
+        List<Transaction> initialJobsForJod = getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(2, initialJobsForJod.size());
 
         // Add two jobs that are to be deleted later
-        registerNewJobInDatabase(getClass(), account, 1, 45);
-        registerNewJobInDatabase(getClass(), account, 2, 45);
+        registerNewJobInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account, 1, 45);
+        registerNewJobInDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account, 2, 45);
 
         // Verify the number of jobs for the user in the database before deleting any
-        List<Transaction> jobs = getJobsFromAccount(account, getClass());
+        List<Transaction> jobs = getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(4, jobs.size());
 
         // Delete two jobs for the user
         List<Transaction> jobsToDelete = Arrays.asList(jobs.get(0), jobs.get(2));
-        deleteTransactions(getClass(), jobsToDelete);
+        deleteTransactions(getUkelonnServlet().getUkelonnServletProvider(), getClass(), jobsToDelete);
 
         // Verify that the jobs has been deleted
-        List<Transaction> jobsAfterDelete = getJobsFromAccount(account, getClass());
+        List<Transaction> jobsAfterDelete = getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(2, jobsAfterDelete.size());
     }
 
@@ -891,24 +905,24 @@ public class CommonDatabaseMethodsTest {
     public void testJoinIds() {
         assertEquals("", CommonDatabaseMethods.joinIds(null).toString());
         assertEquals("", CommonDatabaseMethods.joinIds(Collections.emptyList()).toString());
-        Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), "jad");
-        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass());
+        Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jad");
+        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", CommonDatabaseMethods.joinIds(jobs).toString());
     }
 
     @Test
     public void testAddNewPaymentToAccount() {
         // Verify initial number of payments for a user
-        Account account = getAccountInfoFromDatabase(getClass(), "jod");
-        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(account, getClass());
+        Account account = getAccountInfoFromDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass(), "jod");
+        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(1, initialPaymentsForJod.size());
 
         // Register a payment
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-        addNewPaymentToAccount(getClass(), account, transactionTypes.get(4), account.getBalance());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider(), getClass());
+        addNewPaymentToAccount(getUkelonnServlet().getUkelonnServletProvider(), getClass(), account, transactionTypes.get(4), account.getBalance());
 
         // Verify that a payment have been added
-        List<Transaction> paymentsForJod = getPaymentsFromAccount(account, getClass());
+        List<Transaction> paymentsForJod = getPaymentsFromAccount(getUkelonnServlet().getUkelonnServletProvider(), account, getClass());
         assertEquals(2, paymentsForJod.size());
     }
 
@@ -921,21 +935,22 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
+        UkelonnDatabase originalDatabase = getUkelonnServlet().getUkelonnServletProvider().getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
-            provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, 1);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(database);
+            int updateStatus = CommonDatabaseMethods.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(getUkelonnServlet().getUkelonnServletProvider(), database, 1);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
+            getUkelonnServlet().getUkelonnServletProvider().setUkelonnDatabase(originalDatabase);
         }
     }
 
@@ -944,6 +959,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
     public void testMapUserWhenSQLExceptionIsThrown() throws SQLException {
         ResultSet resultset = mock(ResultSet.class);
@@ -954,7 +970,7 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetResourceAsStringNoResource() {
-        String resource = CommonDatabaseMethods.getResourceAsString("finnesikke");
+        String resource = CommonDatabaseMethods.getResourceAsString(getUkelonnServlet().getUkelonnServletProvider(), "finnesikke");
         assertNull(resource);
     }
 

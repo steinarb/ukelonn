@@ -92,7 +92,6 @@
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle</artifactId>
             <version>${project.version}</version>
-            <type>war</type>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -108,13 +107,24 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-extender-whiteboard</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.web.itest</groupId>
             <artifactId>pax-web-itest-base</artifactId>
             <version>${dependency.pax.web.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
     </dependencies>
-
     <build>
         <testResources>
             <testResource>

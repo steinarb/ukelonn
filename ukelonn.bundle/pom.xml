@@ -20,7 +20,7 @@
     </parent>
 
     <artifactId>ukelonn.bundle</artifactId>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
 
     <name>Ukelonn webapp OSGi bundle</name>
 
@@ -84,12 +84,20 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-extender-whiteboard</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
@@ -113,28 +121,36 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.21</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiled</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-server</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin.addon</groupId>
@@ -160,22 +176,13 @@
                         <supportedProjectType>war</supportedProjectType>
                     </supportedProjectTypes>
                     <instructions>
-                        <_wab>src/main/webapp</_wab>
                         <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Karaf-Commands>*</Karaf-Commands>
                         <Import-Package>
                             no.priv.bang.ukelonn,
-                            javax.el,
-                            javax.servlet.jsp;version="[2.2.0,3.0.0)",
-                            javax.servlet.jsp.jstl.core;version="1.2",
-                            javax.servlet.jsp.jstl.fmt;version="1.2",
-                            javax.servlet.jsp.jstl.tlv;version="1.2",
-                            javax.servlet;version="[2.6.0,4.0.0)",
                             javax.servlet.http;version="[2.6.0,4.0.0)",
                             com.vaadin.shared,
-                            org.apache.shiro.web.env,
-                            org.apache.shiro.web.servlet,
                             com.vaadin.server,
                             com.vaadin.addon.touchkit.server,
                             com.vaadin.addon.touchkit.settings,
@@ -201,9 +208,7 @@
                             VAADIN.widgetsets,
                             *
                         </Import-Package>
-                        <Export-Package>no.priv.bang.ukelonn.impl</Export-Package>
-                        <Bundle-Classpath>WEB-INF/classes, WEB-INF/lib</Bundle-Classpath>
-                        <Web-ContextPath>ukelonn</Web-ContextPath>
+                        <Export-Package>!*</Export-Package>
                         <_removeheaders>
                             Include-Resource,
                             Private-Package,
@@ -212,14 +217,6 @@
                         </_removeheaders>
                     </instructions>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle</id>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>

@@ -15,71 +15,54 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import org.ops4j.pax.web.service.WebContainer;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.NamespaceException;
 import org.osgi.service.log.LogService;
+
+import com.vaadin.server.UIClassSelectionEvent;
+import com.vaadin.server.UICreateEvent;
+import com.vaadin.server.UIProvider;
+import com.vaadin.ui.UI;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 
-/**
- * The OSGi component that listens for a {@link WebContainer} service
- * and registers a servlet with the web container.
- *
- * @author Steinar Bang
- *
- */
-@Component(service=UkelonnService.class, immediate=true)
-public class UkelonnServiceProvider extends UkelonnServiceBase {
-    private static UkelonnServiceProvider instance;
-    private WebContainer webContainer;
-    private HttpContext httpContext;
+public class UkelonnServletProvider extends UIProvider implements UkelonnService {
+    private static final long serialVersionUID = -275959896126008712L;
+    private static UkelonnServletProvider instance;
     private UkelonnDatabase database;
     private LogService logservice;
 
-    @Activate
-    public void activate() {
+    public UkelonnServletProvider() {
+        super();
         instance = this;
     }
 
-    @Reference
     public void setUkelonnDatabase(UkelonnDatabase database) {
         this.database = database;
     }
 
-    @Override
     public UkelonnDatabase getDatabase() {
         return database;
     }
 
-    @Reference
     public void setLogservice(LogService logservice) {
         this.logservice = logservice;
     }
 
-    @Override
     public LogService getLogservice() {
         return logservice;
     }
 
-    @Reference
-    public void setWebContainer(WebContainer webcontainer) throws NamespaceException {
-        webContainer = webcontainer;
-        httpContext = webContainer.createDefaultHttpContext();
-
-        // register images as resources
-        webContainer.registerResources("/images", "/images", httpContext);
+    @Override
+    public UI createInstance(UICreateEvent event) {
+        return new UkelonnUI(this);
     }
 
-    public UkelonnService get() {
-        return this;
+    @Override
+    public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
+        return UkelonnUI.class;
     }
 
-    public static UkelonnService getInstance() {
+    public static UkelonnServletProvider getInstance() {
         return instance;
     }
 

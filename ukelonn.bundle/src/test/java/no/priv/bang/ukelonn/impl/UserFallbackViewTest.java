@@ -41,9 +41,10 @@ public class UserFallbackViewTest {
 
     @Test
     public void testChangeJobAmountWhenJobTypeIsChanged() throws ServiceException, ServletException {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        UserFallbackView view = new UserFallbackView(request);
+        UserFallbackView view = new UserFallbackView(provider, request);
 
         // Mock the vaadin component
         ComboBox jobtypeSelector = mock(ComboBox.class);
@@ -71,9 +72,10 @@ public class UserFallbackViewTest {
 
     @Test
     public void testRegisterJobInDatabase() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        UserFallbackView view = new UserFallbackView(request);
+        UserFallbackView view = new UserFallbackView(provider, request);
 
         // Mock setup
         ComboBox jobtypeSelector = mock(ComboBox.class);

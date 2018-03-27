@@ -20,39 +20,50 @@ Se fila LICENSE for teksten på lisensen.
 
 I øyeblikket er det fire hoved-brancher:
  1. master
-    Dette er branchen som er i produksjon.  Hver push av denne branchen forårsaker [[https://travis-ci.org/steinarb/ukelonn][et bygg på travis-ci]] (dette er den eneste branchen med en [[https://github.com/steinarb/ukelonn/blob/master/.travis.yml][.travis.yml]]-fil) med snapshot deploy til et eget maven-repository, som er [[Oppsett av webappen på en server med debian GNU/linux][det som brukes til å installere applikasjonen i karaf-instansen på produksjonsserveren]].  Det som ligger på master er i øyeblikket en litt eldre versjon av using-vaadin.  Forskjellen er at det som ligger på master har packaging war og er konfigurert med en web.xml-fil, mens det som ligger på using-vaadin har packaging jar og forsøker å bruke [[http://ops4j.github.io/pax/web/SNAPSHOT/User-Guide.html#whiteboard-extender][Pax web whiteboard extender]] der servlet'er og filtre blir publisert som OSGi-servicer og plukket opp av pax web (det har ikke vært helt lett til å få til å fungere fordi OSGi-servicene kommer i tilfeldig rekkefølge og HttpContext må lages før Shiro-filteret blir lagd)
+    Dette er branchen som er i produksjon.  Hver push av denne branchen forårsaker [[https://travis-ci.org/steinarb/ukelonn][et bygg på travis-ci]] (dette er den eneste branchen med en [[https://github.com/steinarb/ukelonn/blob/master/.travis.yml][.travis.yml]]-fil) med snapshot deploy til et eget maven-repository, som er [[Oppsett av webappen på en server med debian GNU/linux][det som brukes til å installere applikasjonen i karaf-instansen på produksjonsserveren]].  Det som ligger på master er i øyeblikket en litt eldre versjon av using-vaadin.
  2. using-vaadin
-    Denne branchen bruker [[https://vaadin.com/home][vaadin]] og er iferd med å nærme seg primefaces-branchen i funksjonalitet.
+    Denne branchen bruker [[https://vaadin.com/home][vaadin]] og er den mest komplette.
     Her brukes Vaadins [[https://vaadin.com/docs/-/part/touchkit/mobile-components.html][Mobile User Interface Components]] for å få noe som ser "app-aktig" ut, iallefall på registrering av jobber, gjort av ungene.
     Admin-grensesnittet er også blitt mer mobilt men vil trives bedre på en tablet enn på en mobil (det er mer som skal vises fram).
-    Denne branchen er i skrivende stund "i produksjon" i heimen.
+    Denne branchen er i skrivende stund "i produksjon" i heimen (i den litt eldre versjonen som ligger på master).
+    Denne branchen bruker [[http://ops4j.github.io/pax/web/SNAPSHOT/User-Guide.html#whiteboard-extender][Pax web whiteboard extender]] der servlet'er og filtre blir publisert som OSGi-servicer som blir plukket opp av pax web.  For å lage servicene som plukkes opp av Pax Web, brukes OSGi Declarative Services (DS).
  3. using-primefaces
     Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og var den første som var ferdig.
-    Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet ser litt rart ut)
+    Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet så litt rart ut). Branchen bygger fortsatt og har fått alle databasendringene men har mest historisk interesse idag
  4. using-rendersnake
-    Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet
+    Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Når det blir jobb på denne så blir det nok ikke rendersnake.  Det blir nok antagelig et eller annet JS-rammeverk på frontend og REST-tjenster på backend
 
-Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det bør la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
+Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
 * Utsjekk og kjapp test av programvaren
 
 Dette trengs for å laste og teste ut denne programvaren
  1. Installer det som trengs:
+    - På debian/ubuntu/mint/etc., logg inn som root og gi følgende kommandoer for å installere alle avhengighetene:
+      #+BEGIN_EXAMPLE
+        apt-get update
+        apt-get install git maven openjdk-8-jdk
+      #+END_EXAMPLE
     - git: https://git-scm.com/download/win
-    - Java SDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    - Java SDK 1.8:
+      http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
     - Apache maven:
       - Download: https://maven.apache.org/download.cgi
       - Install: https://maven.apache.org/install.html
       - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-repositoriet
+ 2. Gjør en klon av git-arkivene som trengs for å bygge applikasjonen (kommandoer for bash (funker også i git bash på windows)):
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
+      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+ 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
     #+BEGIN_EXAMPLE
-      cd ~/git/ukelonn/
+      cd ~/git/jsr330activator
+      mvn clean install
+      cd ../ukelonn
+      git checkout using-vaadin
       mvn clean install
       cd ukelonn.karaf
       mvn clean install karaf:run
@@ -137,7 +148,7 @@ Dette trengs for å bygge og kjøre programvaren
 * Kjøring på apache karaf med PostgreSQL
 Derbydatabasen i [[Kjøring på apache karaf med derby]] gjør det mulig å kjøre alt i webappen.  Men ettersom den kun kjører i minnet så er den ikke noe særlig å lagre data i.
 
-For å faktisk bruke webappen så må man ha en database og databasen jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
+For å faktisk bruke webappen så må man ha en database og database-systemet jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
 
 PostgreSQL er gratis og fri software og er lett å installere
  1. På windows, [[https://www.postgresql.org/download/windows/][last ned installeren]] og kjør den
@@ -190,7 +201,10 @@ Framgangsmåte:
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
+      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
+      cd ~/git/jsr330activator
+      mvn clean install
       cd ~/git/ukelonn
       mvn clean install
     #+END_EXAMPLE
@@ -298,7 +312,7 @@ Framgangsmåte:
          # IPv4 network connection allow password authentication
          host    all             all             0.0.0.0/0               md5
        #+END_SRC
-    4. Logg som bruker postgres (bare root kan ta omstart av postgresql):
+    4. Logg ut som bruker postgres (bare root kan ta omstart av postgresql):
        #+BEGIN_EXAMPLE
          exit
        #+END_EXAMPLE

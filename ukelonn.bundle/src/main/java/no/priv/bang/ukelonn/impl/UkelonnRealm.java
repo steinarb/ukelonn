@@ -38,7 +38,6 @@ import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.UkelonnService;
 
 public class UkelonnRealm extends AuthorizingRealm {
 
@@ -103,12 +102,12 @@ public class UkelonnRealm extends AuthorizingRealm {
     }
 
     private UkelonnDatabase connectionCheck() {
-        UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
-        if (ukelonnService == null) {
-            throw new AuthenticationException("UkelonnRealm shiro realm unable to find OSGi service Ukelonnservice, giving up");
+        UkelonnShiroFilter shiroFilterProvider = UkelonnShiroFilter.getInstance();
+        if (shiroFilterProvider == null) {
+            throw new AuthenticationException("UkelonnRealm shiro realm unable to find the ShiroFilterProvider, giving up");
         }
 
-        UkelonnDatabase database = ukelonnService.getDatabase();
+        UkelonnDatabase database = shiroFilterProvider.getDatabase();
         if (database == null) {
             throw new AuthenticationException("UkelonnRealm shiro realm unable to find OSGi service UkelonnDatabase, giving up");
         }

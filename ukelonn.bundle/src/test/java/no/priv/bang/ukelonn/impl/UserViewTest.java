@@ -42,9 +42,10 @@ public class UserViewTest {
 
     @Test
     public void testChangeJobAmountWhenJobTypeIsChanged() throws ServiceException, ServletException {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        UserView view = new UserView(request);
+        UserView view = new UserView(provider, request);
 
         // Mock the vaadin component
         NativeSelect jobtypeSelector = mock(NativeSelect.class);
@@ -72,9 +73,10 @@ public class UserViewTest {
 
     @Test
     public void testRegisterJobInDatabase() {
+        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
-        UserView view = new UserView(request);
+        UserView view = new UserView(provider, request);
 
         // Mock setup
         NativeSelect jobtypeSelector = mock(NativeSelect.class);

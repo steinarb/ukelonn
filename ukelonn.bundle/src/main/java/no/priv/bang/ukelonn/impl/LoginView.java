@@ -43,7 +43,7 @@ public class LoginView extends AbstractView {
     ObjectProperty<String> username = new ObjectProperty<>("");
     ObjectProperty<String> password = new ObjectProperty<>("");
 
-    public LoginView(VaadinRequest request, Navigator navigator) {
+    public LoginView(UkelonnServletProvider provider, VaadinRequest request, Navigator navigator) {
         FormLayout content = new FormLayout();
         TextField usernameField = new TextField("Username", username);
         content.addComponent(usernameField);
@@ -72,16 +72,16 @@ public class LoginView extends AbstractView {
                         }
                     } catch(UnknownAccountException e) {
                         notification("Unknown account");
-                        logError(classForLogging, "Login error: unknown account", e);
+                        logError(provider, classForLogging, "Login error: unknown account", e);
                     } catch (IncorrectCredentialsException  e) {
                         notification("Wrong password");
-                        logError(classForLogging, "Login error: wrong password", e);
+                        logError(provider, classForLogging, "Login error: wrong password", e);
                     } catch (LockedAccountException  e) {
                         notification("Locked account");
-                        logError(classForLogging, "Login error: locked account", e);
+                        logError(provider, classForLogging, "Login error: locked account", e);
                     } catch (AuthenticationException e) {
                         notification("Unknown error");
-                        logError(classForLogging, "Login error: unknown error", e);
+                        logError(provider, classForLogging, "Login error: unknown error", e);
                     } finally {
                         token.clear();
                     }
