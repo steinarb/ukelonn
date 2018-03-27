@@ -47,7 +47,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 )
 public class UkelonnServlet extends TouchKitServlet {
     private static final long serialVersionUID = 2305317590355701822L;
-    final private UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
+    private final UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
 
     public UkelonnServletProvider getUkelonnServletProvider() {
         return ukelonnServletProvider;
