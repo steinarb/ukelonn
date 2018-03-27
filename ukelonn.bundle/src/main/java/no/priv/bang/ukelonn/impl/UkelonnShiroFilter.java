@@ -16,8 +16,6 @@
 package no.priv.bang.ukelonn.impl;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletException;
-
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.realm.Realm;
@@ -63,7 +61,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter {
     }
 
     @Activate
-    public void activate() throws ServletException {
+    public void activate() {
         WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(INI_FILE);
         DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) securityManagerFactory.createInstance();
         setSecurityManager(securityManager);
