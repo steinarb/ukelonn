@@ -52,7 +52,7 @@ public class AdminView extends AbstractView {
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
     private UkelonnServletProvider provider;
-    final int idOfPayToBank = 4;
+    static final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
