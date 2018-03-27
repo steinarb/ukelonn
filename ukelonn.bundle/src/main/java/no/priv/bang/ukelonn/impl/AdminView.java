@@ -542,15 +542,15 @@ public class AdminView extends AbstractView {
     }
 
     private void refreshJobTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+        Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         jobTypes.removeAllItems();
-        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
     }
 
     private void refreshPaymentTypesFromDatabase() {
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
+        Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         paymentTypes.removeAllItems();
-        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactiontypes.values()));
     }
 
     void updateFormsAfterAccountIsSelected(NativeSelect paymenttype, NativeSelect accountSelector) {
