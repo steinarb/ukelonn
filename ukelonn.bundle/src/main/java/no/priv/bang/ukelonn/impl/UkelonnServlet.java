@@ -82,7 +82,7 @@ public class UkelonnServlet extends TouchKitServlet {
                 }
 
                 private void removeDefaultUIProvider(VaadinSession session) {
-                    List<UIProvider> uiProviders = new ArrayList<UIProvider>(session.getUIProviders());
+                    List<UIProvider> uiProviders = new ArrayList<>(session.getUIProviders());
                     for (UIProvider uiProvider : uiProviders) {
                         if (DefaultUIProvider.class.getCanonicalName().equals(uiProvider.getClass().getCanonicalName())) {
                             session.removeUIProvider(uiProvider);

@@ -91,12 +91,12 @@ public class AdminView extends AbstractView {
 
     public AdminView(UkelonnServletProvider provider, VaadinRequest request) {
         this.provider = provider;
-        accountsContainer = new BeanItemContainer<Account>(Account.class, getAccounts(provider, getClass()));
+        accountsContainer = new BeanItemContainer<>(Account.class, getAccounts(provider, getClass()));
         transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-        editUserPasswordUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
-        editUserUsers = new BeanItemContainer<User>(User.class, getUsers(provider, getClass()));
-        paymentTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-        jobTypes = new BeanItemContainer<TransactionType>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
+        editUserPasswordUsers = new BeanItemContainer<>(User.class, getUsers(provider, getClass()));
+        editUserUsers = new BeanItemContainer<>(User.class, getUsers(provider, getClass()));
+        paymentTypes = new BeanItemContainer<>(TransactionType.class, getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes = new BeanItemContainer<>(TransactionType.class, getJobTypesFromTransactionTypes(transactionTypes.values()));
         setSizeFull();
         TabBarView tabs = new TabBarView();
 

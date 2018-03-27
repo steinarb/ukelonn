@@ -64,7 +64,7 @@ public class CommonDatabaseMethods {
     }
 
     public static Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase(UkelonnService provider, Class<?> clazz) {
-        Map<Integer, TransactionType> transactiontypes = new Hashtable<Integer, TransactionType>();
+        Map<Integer, TransactionType> transactiontypes = new Hashtable<>();
         UkelonnDatabase database = connectionCheck(provider, clazz);
         PreparedStatement statement = database.prepareStatement("select * from transaction_types");
         ResultSet resultSet = database.query(statement);
