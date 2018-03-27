@@ -46,7 +46,7 @@ public class UserView extends AbstractView {
     // Updatable containers
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");
     ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
-    private BeanItemContainer<TransactionType> jobTypesContainer;
+    private BeanItemContainer<TransactionType> jobTypesContainer; // NOSONAR
     private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
     private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
     Account account; // NOSONAR
