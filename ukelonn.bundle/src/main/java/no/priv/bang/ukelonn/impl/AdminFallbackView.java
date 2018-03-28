@@ -50,7 +50,6 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
     private UkelonnServletProvider provider;
-    static final int idOfPayToBank = 4;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
