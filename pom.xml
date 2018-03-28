@@ -52,6 +52,14 @@
         <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
         <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
         <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
+        <sonar.cpd.exclusions>
+            **/AdminFallbackView.java,
+            **/AdminView.java,
+            **/UserFallbackView.java,
+            **/UserView.java,
+            **/PGUkelonnDatabaseProvider.java,
+            **/UkelonnDatabaseProvider.java
+        </sonar.cpd.exclusions>
     </properties>
 
     <dependencyManagement>
