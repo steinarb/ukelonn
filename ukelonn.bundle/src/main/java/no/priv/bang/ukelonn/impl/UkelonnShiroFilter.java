@@ -46,7 +46,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=Filter.class,
     immediate=true
 )
-public class UkelonnShiroFilter extends AbstractShiroFilter {
+public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
 
     private static final Ini INI_FILE = new Ini();
     static {

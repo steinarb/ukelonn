@@ -40,7 +40,7 @@ import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class UserView extends AbstractView {
+public class UserView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 1388525490129647161L;
     private UkelonnServletProvider provider;
     // Updatable containers

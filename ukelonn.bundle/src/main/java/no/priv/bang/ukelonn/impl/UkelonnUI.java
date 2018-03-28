@@ -29,7 +29,7 @@ import com.vaadin.ui.UI;
 
 @Theme("touchkit")
 @Widgetset("com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet")
-public class UkelonnUI extends UI {
+public class UkelonnUI extends UI { // NOSONAR
     private static final String BROWSER = "browser";
     private static final String UI_STYLE = "ui-style";
     private static final String ADMIN = "admin";

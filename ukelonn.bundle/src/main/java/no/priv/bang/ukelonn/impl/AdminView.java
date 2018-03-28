@@ -46,7 +46,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class AdminView extends AbstractView {
+public class AdminView extends AbstractView { // NOSONAR
     private static final String TRANSACTION_AMOUNT = "transactionAmount";
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     static final int ID_OF_PAY_TO_BANK = 4;
