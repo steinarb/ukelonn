@@ -38,7 +38,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 
-public class LoginView extends AbstractView {
+public class LoginView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 4812377913694429252L;
     ObjectProperty<String> username = new ObjectProperty<>("");
     ObjectProperty<String> password = new ObjectProperty<>("");
@@ -98,8 +98,7 @@ public class LoginView extends AbstractView {
 
     @Override
     public void enter(ViewChangeEvent event) {
-        // TODO Auto-generated method stub
-
+        // Method intentionally left open
     }
 
 }

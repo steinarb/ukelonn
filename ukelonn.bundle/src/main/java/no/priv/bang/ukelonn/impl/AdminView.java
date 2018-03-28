@@ -46,13 +46,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class AdminView extends AbstractView {
+public class AdminView extends AbstractView { // NOSONAR
     private static final String TRANSACTION_AMOUNT = "transactionAmount";
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
     private UkelonnServletProvider provider;
-    static final int idOfPayToBank = 4;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
@@ -336,7 +335,7 @@ public class AdminView extends AbstractView {
         VerticalComponentGroup useradmin = createVerticalComponentGroupWithCssLayoutAndNavigationView(useradminTab, new NavigationView(), "Administrere brukere");
 
         String newUserLabel = "Legg til ny bruker";
-        String changePasswordForUserLabel = "Bytt passord på bruker";
+        String changePasswordForUserLabel = "Bytt passord på bruker"; // NOSONAR
         String modifyUsersLabel = "Endre brukere";
 
         NavigationView newUserTab = new NavigationView();

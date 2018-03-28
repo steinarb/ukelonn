@@ -43,7 +43,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 
-public abstract class AbstractView extends VerticalLayout implements View {
+public abstract class AbstractView extends VerticalLayout implements View { // NOSONAR
     private static final String PAID_OUT = "paidOut";
     private static final String TRANSACTION_TIME = "transactionTime";
     private static final long serialVersionUID = 267153275586375959L;

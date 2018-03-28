@@ -31,7 +31,7 @@ public class KarafReleaseLiquibaseLockCommand implements Action {
     @Override
     public Object execute() throws Exception {
         database.forceReleaseLocks();
-        System.out.println("Forcibly unlocked the Liquibase changelog lock");
+        System.out.println("Forcibly unlocked the Liquibase changelog lock"); // NOSONAR
         return null;
     }
 }
