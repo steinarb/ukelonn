@@ -98,8 +98,7 @@ public class LoginView extends AbstractView { // NOSONAR
 
     @Override
     public void enter(ViewChangeEvent event) {
-        // TODO Auto-generated method stub
-
+        // Method intentionally left open
     }
 
 }
