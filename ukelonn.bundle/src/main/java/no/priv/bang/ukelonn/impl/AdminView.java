@@ -336,7 +336,7 @@ public class AdminView extends AbstractView {
         VerticalComponentGroup useradmin = createVerticalComponentGroupWithCssLayoutAndNavigationView(useradminTab, new NavigationView(), "Administrere brukere");
 
         String newUserLabel = "Legg til ny bruker";
-        String changePasswordForUserLabel = "Bytt passord på bruker";
+        String changePasswordForUserLabel = "Bytt passord på bruker"; // NOSONAR
         String modifyUsersLabel = "Endre brukere";
 
         NavigationView newUserTab = new NavigationView();
