@@ -41,7 +41,8 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
  */
 @Component(
     property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/ukelonn/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
         "servletNames=ukelonn"},
     service=Filter.class,
     immediate=true
