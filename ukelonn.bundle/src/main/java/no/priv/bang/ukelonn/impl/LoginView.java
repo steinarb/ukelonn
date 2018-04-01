@@ -27,7 +27,6 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
@@ -43,7 +42,7 @@ public class LoginView extends AbstractView { // NOSONAR
     ObjectProperty<String> username = new ObjectProperty<>("");
     ObjectProperty<String> password = new ObjectProperty<>("");
 
-    public LoginView(UkelonnUIProvider provider, VaadinRequest request, Navigator navigator) {
+    public LoginView(UkelonnUIProvider provider, Navigator navigator) {
         FormLayout content = new FormLayout();
         TextField usernameField = new TextField("Username", username);
         content.addComponent(usernameField);

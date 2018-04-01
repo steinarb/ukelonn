@@ -60,7 +60,7 @@ public class UkelonnUI extends UI { // NOSONAR
             getNavigator().addView(ADMIN, new AdminFallbackView(provider, request));
         }
 
-        getNavigator().addView("login", new LoginView(provider, request, getNavigator()));
+        getNavigator().addView("login", new LoginView(provider, getNavigator()));
         if (!isLoggedIn()) {
             getNavigator().navigateTo("login");
         } else if (isAdministrator()) {
