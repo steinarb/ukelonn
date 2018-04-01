@@ -102,14 +102,17 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        UkelonnUIProvider ukelonnService = (UkelonnUIProvider) UkelonnUIProvider.getInstance();
-        if (ukelonnService != null) {
+        if (getUkelonnServlet() != null) {
+            UkelonnUIProvider ukelonnService = getUkelonnServlet().getUkelonnUIProvider();
             ukelonnService.setUkelonnDatabase(null); // Release the database
 
-            // Release the UkelonnService
-            Field ukelonnServiceInstanceField = UkelonnUIProvider.class.getDeclaredField("instance");
-            ukelonnServiceInstanceField.setAccessible(true);
-            ukelonnServiceInstanceField.set(null, null);
+            // Release the UkelonnUIProvider
+            Field ukelonnUIProviderField = UkelonnServlet.class.getDeclaredField("ukelonnUIProvider");
+            ukelonnUIProviderField.setAccessible(true);
+            ukelonnUIProviderField.set(ukelonnServlet, null);
+
+            // Release the UkelonnServlet
+            ukelonnServlet = null;
         }
 
         UkelonnShiroFilter shiroFilterProvider = new UkelonnShiroFilter();
@@ -127,7 +130,7 @@ public class TestUtils {
 
     public static void restoreTestDatabase() {
         dropTestDatabase();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnUIProvider.getInstance().getDatabase();
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) getUkelonnServlet().getUkelonnUIProvider().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
     }

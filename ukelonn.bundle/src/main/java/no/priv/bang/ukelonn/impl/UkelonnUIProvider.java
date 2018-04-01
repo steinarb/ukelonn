@@ -27,14 +27,8 @@ import no.priv.bang.ukelonn.UkelonnService;
 
 public class UkelonnUIProvider extends UIProvider implements UkelonnService {
     private static final long serialVersionUID = -275959896126008712L;
-    private static UkelonnUIProvider instance;
     private UkelonnDatabase database; // NOSONAR
     private LogService logservice; // NOSONAR
-
-    public UkelonnUIProvider() {
-        super();
-        instance = this;
-    }
 
     public void setUkelonnDatabase(UkelonnDatabase database) {
         this.database = database;
@@ -60,10 +54,6 @@ public class UkelonnUIProvider extends UIProvider implements UkelonnService {
     @Override
     public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
         return UkelonnUI.class;
-    }
-
-    public static UkelonnUIProvider getInstance() {
-        return instance;
     }
 
 }
