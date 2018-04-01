@@ -41,6 +41,13 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 
 public class UkelonnRealm extends AuthorizingRealm {
 
+    private UkelonnShiroFilter shiroFilter;
+
+    public UkelonnRealm(UkelonnShiroFilter shiroFilter) {
+        super();
+        this.shiroFilter = shiroFilter;
+    }
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         Set<String> roles = new HashSet<>();
@@ -102,12 +109,11 @@ public class UkelonnRealm extends AuthorizingRealm {
     }
 
     private UkelonnDatabase connectionCheck() {
-        UkelonnShiroFilter shiroFilterProvider = UkelonnShiroFilter.getInstance();
-        if (shiroFilterProvider == null) {
+        if (shiroFilter == null) {
             throw new AuthenticationException("UkelonnRealm shiro realm unable to find the ShiroFilterProvider, giving up");
         }
 
-        UkelonnDatabase database = shiroFilterProvider.getDatabase();
+        UkelonnDatabase database = shiroFilter.getDatabase();
         if (database == null) {
             throw new AuthenticationException("UkelonnRealm shiro realm unable to find OSGi service UkelonnDatabase, giving up");
         }

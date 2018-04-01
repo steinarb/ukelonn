@@ -54,12 +54,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
         // Can't use the Ini.fromResourcePath(String) method because it can't find "shiro.ini" on the classpath in an OSGi context
         INI_FILE.load(UkelonnShiroFilter.class.getClassLoader().getResourceAsStream("shiro.ini"));
     }
-    private static UkelonnShiroFilter instance;
     private UkelonnDatabase database;
-
-    public UkelonnShiroFilter() {
-        instance = this;
-    }
 
     @Activate
     public void activate() {
@@ -84,10 +79,6 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
         return database;
     }
 
-    public static UkelonnShiroFilter getInstance() {
-        return instance;
-    }
-
     /**
      * Creating the {@link UkelonnRealm} was moved out of shiro.ini and into
      * code, because the code interpreting the shiro.ini was unable to
@@ -96,7 +87,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
      * @return The realm that is used to authenticate and authorize ukelonn users
      */
     private UkelonnRealm createRealmProgramaticallyBecauseOfShiroIniClassCastException() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnRealm realm = new UkelonnRealm(this);
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         credentialsMatcher.setHashAlgorithmName("SHA-256");
         credentialsMatcher.setStoredCredentialsHexEncoded(false); // base64 encoding, not hex

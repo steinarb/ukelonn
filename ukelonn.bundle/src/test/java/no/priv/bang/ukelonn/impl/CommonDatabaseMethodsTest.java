@@ -837,7 +837,9 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testChangePasswordForUser() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         String username = "jad";
         String originalPassword = "1ad";
