@@ -68,7 +68,7 @@ public class UkelonnRealmTestMissingServices {
      */
     @Test
     public void testNoUkelonnDatabaseService() {
-        UkelonnServletProvider ukelonnServiceSingleton = new UkelonnServletProvider();
+        UkelonnUIProvider ukelonnServiceSingleton = new UkelonnUIProvider();
         ukelonnServiceSingleton.setUkelonnDatabase(null);
         UkelonnRealm realm = new UkelonnRealm();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());

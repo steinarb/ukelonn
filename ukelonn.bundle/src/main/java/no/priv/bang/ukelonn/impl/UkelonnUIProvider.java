@@ -25,13 +25,13 @@ import com.vaadin.ui.UI;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 
-public class UkelonnServletProvider extends UIProvider implements UkelonnService {
+public class UkelonnUIProvider extends UIProvider implements UkelonnService {
     private static final long serialVersionUID = -275959896126008712L;
-    private static UkelonnServletProvider instance;
+    private static UkelonnUIProvider instance;
     private UkelonnDatabase database; // NOSONAR
     private LogService logservice; // NOSONAR
 
-    public UkelonnServletProvider() {
+    public UkelonnUIProvider() {
         super();
         instance = this;
     }
@@ -62,7 +62,7 @@ public class UkelonnServletProvider extends UIProvider implements UkelonnService
         return UkelonnUI.class;
     }
 
-    public static UkelonnServletProvider getInstance() {
+    public static UkelonnUIProvider getInstance() {
         return instance;
     }
 

@@ -47,10 +47,10 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 )
 public class UkelonnServlet extends TouchKitServlet {
     private static final long serialVersionUID = 2305317590355701822L;
-    private final UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
+    private final UkelonnUIProvider ukelonnUIProvider = new UkelonnUIProvider();
 
-    public UkelonnServletProvider getUkelonnServletProvider() {
-        return ukelonnServletProvider;
+    public UkelonnUIProvider getUkelonnUIProvider() {
+        return ukelonnUIProvider;
     }
 
     @Override
@@ -61,12 +61,12 @@ public class UkelonnServlet extends TouchKitServlet {
 
     @Reference
     public void setUkelonnDatabase(UkelonnDatabase database) {
-        ukelonnServletProvider.setUkelonnDatabase(database);
+        ukelonnUIProvider.setUkelonnDatabase(database);
     }
 
     @Reference
     public void setLogservice(LogService logservice) {
-        ukelonnServletProvider.setLogservice(logservice);
+        ukelonnUIProvider.setLogservice(logservice);
     }
 
     private void addSessionInitListenerThatWillSetUIProviderOnSession() {
@@ -78,7 +78,7 @@ public class UkelonnServlet extends TouchKitServlet {
                 public void sessionInit(SessionInitEvent sessionInitEvent) throws ServiceException {
                     VaadinSession session = sessionInitEvent.getSession();
                     removeDefaultUIProvider(session);
-                    session.addUIProvider(ukelonnServletProvider);
+                    session.addUIProvider(ukelonnUIProvider);
                 }
 
                 private void removeDefaultUIProvider(VaadinSession session) {

@@ -33,7 +33,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 
 /**
  * This is an OSGi DS component that provides a {@link Filter} service.  This filter service will
- * be put in front of the servlet provided by the {@link UkelonnServletProvider}, and
+ * be put in front of the servlet provided by the {@link UkelonnUIProvider}, and
  * will handle authentication and authorization from the servlet.
  *
  * @author Steinar Bang

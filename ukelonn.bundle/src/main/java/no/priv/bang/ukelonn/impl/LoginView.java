@@ -43,7 +43,7 @@ public class LoginView extends AbstractView { // NOSONAR
     ObjectProperty<String> username = new ObjectProperty<>("");
     ObjectProperty<String> password = new ObjectProperty<>("");
 
-    public LoginView(UkelonnServletProvider provider, VaadinRequest request, Navigator navigator) {
+    public LoginView(UkelonnUIProvider provider, VaadinRequest request, Navigator navigator) {
         FormLayout content = new FormLayout();
         TextField usernameField = new TextField("Username", username);
         content.addComponent(usernameField);

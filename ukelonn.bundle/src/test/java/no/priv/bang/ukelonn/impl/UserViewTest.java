@@ -42,7 +42,7 @@ public class UserViewTest {
 
     @Test
     public void testChangeJobAmountWhenJobTypeIsChanged() throws ServiceException, ServletException {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         UserView view = new UserView(provider, request);
@@ -73,7 +73,7 @@ public class UserViewTest {
 
     @Test
     public void testRegisterJobInDatabase() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         UserView view = new UserView(provider, request);

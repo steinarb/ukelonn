@@ -42,7 +42,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 1388525490129647161L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
     // Updatable containers
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");
     ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
@@ -51,7 +51,7 @@ public class UserView extends AbstractView { // NOSONAR
     private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
     Account account; // NOSONAR
 
-    public UserView(UkelonnServletProvider provider, VaadinRequest request) {
+    public UserView(UkelonnUIProvider provider, VaadinRequest request) {
         this.provider = provider;
         setSizeFull();
 

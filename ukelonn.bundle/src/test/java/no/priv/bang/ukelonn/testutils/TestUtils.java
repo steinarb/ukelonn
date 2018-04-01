@@ -46,7 +46,7 @@ import com.vaadin.server.WrappedSession;
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.UkelonnShiroFilter;
 import no.priv.bang.ukelonn.impl.UkelonnServlet;
-import no.priv.bang.ukelonn.impl.UkelonnServletProvider;
+import no.priv.bang.ukelonn.impl.UkelonnUIProvider;
 import no.priv.bang.ukelonn.impl.UkelonnUI;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
@@ -102,12 +102,12 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        UkelonnServletProvider ukelonnService = (UkelonnServletProvider) UkelonnServletProvider.getInstance();
+        UkelonnUIProvider ukelonnService = (UkelonnUIProvider) UkelonnUIProvider.getInstance();
         if (ukelonnService != null) {
             ukelonnService.setUkelonnDatabase(null); // Release the database
 
             // Release the UkelonnService
-            Field ukelonnServiceInstanceField = UkelonnServletProvider.class.getDeclaredField("instance");
+            Field ukelonnServiceInstanceField = UkelonnUIProvider.class.getDeclaredField("instance");
             ukelonnServiceInstanceField.setAccessible(true);
             ukelonnServiceInstanceField.set(null, null);
         }
@@ -127,7 +127,7 @@ public class TestUtils {
 
     public static void restoreTestDatabase() {
         dropTestDatabase();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServletProvider.getInstance().getDatabase();
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnUIProvider.getInstance().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
     }

@@ -51,7 +51,7 @@ public class AdminView extends AbstractView { // NOSONAR
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
 
     // Data model for handling payments to users
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
@@ -88,7 +88,7 @@ public class AdminView extends AbstractView { // NOSONAR
     ObjectProperty<String> editUserFirstname = new ObjectProperty<>("");
     ObjectProperty<String> editUserLastname = new ObjectProperty<>("");
 
-    public AdminView(UkelonnServletProvider provider, VaadinRequest request) {
+    public AdminView(UkelonnUIProvider provider, VaadinRequest request) {
         this.provider = provider;
         accountsContainer = new BeanItemContainer<>(Account.class, getAccounts(provider, getClass()));
         transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());

@@ -34,9 +34,9 @@ public class UkelonnUI extends UI { // NOSONAR
     private static final String UI_STYLE = "ui-style";
     private static final String ADMIN = "admin";
     private static final long serialVersionUID = 1388525490129647161L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
 
-    public UkelonnUI(UkelonnServletProvider ukelonnServletProvider) {
+    public UkelonnUI(UkelonnUIProvider ukelonnServletProvider) {
         this.provider = ukelonnServletProvider;
     }
 

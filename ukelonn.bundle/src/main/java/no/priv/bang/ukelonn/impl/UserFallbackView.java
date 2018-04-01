@@ -43,7 +43,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserFallbackView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 1388525490129647161L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
     Account account; // NOSONAR
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
@@ -54,7 +54,7 @@ public class UserFallbackView extends AbstractView { // NOSONAR
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
 
-    public UserFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
+    public UserFallbackView(UkelonnUIProvider provider, VaadinRequest request) {
         this.provider = provider;
         // Display the greeting
         VerticalLayout content = new VerticalLayout();
