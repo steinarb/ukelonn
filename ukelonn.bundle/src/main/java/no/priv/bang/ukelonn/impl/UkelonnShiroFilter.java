@@ -66,10 +66,11 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
         WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(INI_FILE);
         DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) securityManagerFactory.createInstance();
         setSecurityManager(securityManager);
+
         UkelonnRealm realm = createRealmProgramaticallyBecauseOfShiroIniClassCastException();
         securityManager.setRealm(realm);
 
-        IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE);
+        IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE, securityManagerFactory.getBeans());
         FilterChainResolver resolver = filterChainResolverFactory.createInstance();
         setFilterChainResolver(resolver);
     }
