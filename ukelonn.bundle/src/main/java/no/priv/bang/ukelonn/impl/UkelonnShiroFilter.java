@@ -71,9 +71,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
 
         IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE);
         FilterChainResolver resolver = filterChainResolverFactory.createInstance();
-        if (resolver != null) {
-            setFilterChainResolver(resolver);
-        }
+        setFilterChainResolver(resolver);
     }
 
     @Reference
