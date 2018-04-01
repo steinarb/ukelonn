@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,10 @@ import com.vaadin.ui.UI;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 
-public class UkelonnServletProvider extends UIProvider implements UkelonnService {
+public class UkelonnUIProvider extends UIProvider implements UkelonnService {
     private static final long serialVersionUID = -275959896126008712L;
-    private static UkelonnServletProvider instance;
     private UkelonnDatabase database; // NOSONAR
     private LogService logservice; // NOSONAR
-
-    public UkelonnServletProvider() {
-        super();
-        instance = this;
-    }
 
     public void setUkelonnDatabase(UkelonnDatabase database) {
         this.database = database;
@@ -60,10 +54,6 @@ public class UkelonnServletProvider extends UIProvider implements UkelonnService
     @Override
     public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
         return UkelonnUI.class;
-    }
-
-    public static UkelonnServletProvider getInstance() {
-        return instance;
     }
 
 }

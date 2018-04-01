@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,18 +39,18 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @Component(
     property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/ukelonn/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/VAADIN/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
         HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonn"},
     service=Servlet.class,
     immediate=true
 )
 public class UkelonnServlet extends TouchKitServlet {
     private static final long serialVersionUID = 2305317590355701822L;
-    private final UkelonnServletProvider ukelonnServletProvider = new UkelonnServletProvider();
+    private final UkelonnUIProvider ukelonnUIProvider = new UkelonnUIProvider();
 
-    public UkelonnServletProvider getUkelonnServletProvider() {
-        return ukelonnServletProvider;
+    public UkelonnUIProvider getUkelonnUIProvider() {
+        return ukelonnUIProvider;
     }
 
     @Override
@@ -61,12 +61,12 @@ public class UkelonnServlet extends TouchKitServlet {
 
     @Reference
     public void setUkelonnDatabase(UkelonnDatabase database) {
-        ukelonnServletProvider.setUkelonnDatabase(database);
+        ukelonnUIProvider.setUkelonnDatabase(database);
     }
 
     @Reference
     public void setLogservice(LogService logservice) {
-        ukelonnServletProvider.setLogservice(logservice);
+        ukelonnUIProvider.setLogservice(logservice);
     }
 
     private void addSessionInitListenerThatWillSetUIProviderOnSession() {
@@ -78,7 +78,7 @@ public class UkelonnServlet extends TouchKitServlet {
                 public void sessionInit(SessionInitEvent sessionInitEvent) throws ServiceException {
                     VaadinSession session = sessionInitEvent.getSession();
                     removeDefaultUIProvider(session);
-                    session.addUIProvider(ukelonnServletProvider);
+                    session.addUIProvider(ukelonnUIProvider);
                 }
 
                 private void removeDefaultUIProvider(VaadinSession session) {

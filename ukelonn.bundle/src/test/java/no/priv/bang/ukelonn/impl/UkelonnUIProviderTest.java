@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,27 @@ import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnService;
 
 /**
- * Unit test for the {@link UkelonnServletProvider} class.
+ * Unit test for the {@link UkelonnUIProvider} class.
  *
  * @author Steinar Bang
  *
  */
-public class UkelonnServletProviderTest {
+public class UkelonnUIProviderTest {
 
     /**
      * Test fetching a {@link UkelonnService}.
      */
     @Test
     public void testCreateAndAssignToInterface() {
-        UkelonnService ukelonnService = new UkelonnServletProvider();
+        UkelonnService ukelonnService = new UkelonnUIProvider();
         assertNull(ukelonnService.getDatabase());
         assertNull(ukelonnService.getLogservice());
+    }
+
+    @Test
+    public void testGetUIClass() {
+        UkelonnUIProvider ukelonnProvider = new UkelonnUIProvider();
+        assertEquals(UkelonnUI.class, ukelonnProvider.getUIClass(null));
     }
 
 }

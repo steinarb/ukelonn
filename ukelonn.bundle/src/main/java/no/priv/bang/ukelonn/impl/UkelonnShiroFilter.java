@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 
 /**
  * This is an OSGi DS component that provides a {@link Filter} service.  This filter service will
- * be put in front of the servlet provided by the {@link UkelonnServletProvider}, and
+ * be put in front of the servlet provided by the {@link UkelonnUIProvider}, and
  * will handle authentication and authorization from the servlet.
  *
  * @author Steinar Bang
@@ -41,7 +41,8 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
  */
 @Component(
     property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/ukelonn/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
         "servletNames=ukelonn"},
     service=Filter.class,
     immediate=true
@@ -53,26 +54,20 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
         // Can't use the Ini.fromResourcePath(String) method because it can't find "shiro.ini" on the classpath in an OSGi context
         INI_FILE.load(UkelonnShiroFilter.class.getClassLoader().getResourceAsStream("shiro.ini"));
     }
-    private static UkelonnShiroFilter instance;
     private UkelonnDatabase database;
-
-    public UkelonnShiroFilter() {
-        instance = this;
-    }
 
     @Activate
     public void activate() {
         WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(INI_FILE);
         DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) securityManagerFactory.createInstance();
         setSecurityManager(securityManager);
+
         UkelonnRealm realm = createRealmProgramaticallyBecauseOfShiroIniClassCastException();
         securityManager.setRealm(realm);
 
-        IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE);
+        IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE, securityManagerFactory.getBeans());
         FilterChainResolver resolver = filterChainResolverFactory.createInstance();
-        if (resolver != null) {
-            setFilterChainResolver(resolver);
-        }
+        setFilterChainResolver(resolver);
     }
 
     @Reference
@@ -84,10 +79,6 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
         return database;
     }
 
-    public static UkelonnShiroFilter getInstance() {
-        return instance;
-    }
-
     /**
      * Creating the {@link UkelonnRealm} was moved out of shiro.ini and into
      * code, because the code interpreting the shiro.ini was unable to
@@ -96,7 +87,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
      * @return The realm that is used to authenticate and authorize ukelonn users
      */
     private UkelonnRealm createRealmProgramaticallyBecauseOfShiroIniClassCastException() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnRealm realm = new UkelonnRealm(this);
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         credentialsMatcher.setHashAlgorithmName("SHA-256");
         credentialsMatcher.setStoredCredentialsHexEncoded(false); // base64 encoding, not hex

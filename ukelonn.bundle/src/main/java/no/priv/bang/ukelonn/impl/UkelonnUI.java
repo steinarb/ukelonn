@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ public class UkelonnUI extends UI { // NOSONAR
     private static final String UI_STYLE = "ui-style";
     private static final String ADMIN = "admin";
     private static final long serialVersionUID = 1388525490129647161L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
 
-    public UkelonnUI(UkelonnServletProvider ukelonnServletProvider) {
+    public UkelonnUI(UkelonnUIProvider ukelonnServletProvider) {
         this.provider = ukelonnServletProvider;
     }
 
@@ -60,7 +60,7 @@ public class UkelonnUI extends UI { // NOSONAR
             getNavigator().addView(ADMIN, new AdminFallbackView(provider, request));
         }
 
-        getNavigator().addView("login", new LoginView(provider, request, getNavigator()));
+        getNavigator().addView("login", new LoginView(provider, getNavigator()));
         if (!isLoggedIn()) {
             getNavigator().navigateTo("login");
         } else if (isAdministrator()) {

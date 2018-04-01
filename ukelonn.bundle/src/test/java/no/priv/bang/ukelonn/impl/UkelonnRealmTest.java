@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import static no.priv.bang.ukelonn.testutils.TestUtils.setupFakeOsgiServices;
+import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -56,7 +56,9 @@ public class UkelonnRealmTest {
      */
     @Test
     public void testGetAuthenticationInfo() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo authInfo = realm.getAuthenticationInfo(token);
@@ -68,7 +70,9 @@ public class UkelonnRealmTest {
      */
     @Test
     public void testGetAuthenticationInfoWrongPassword() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1add".toCharArray());
 
@@ -83,7 +87,9 @@ public class UkelonnRealmTest {
      */
     @Test
     public void testGetAuthenticationInfoWrongUsername() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jadd", "1ad".toCharArray());
 
@@ -97,7 +103,9 @@ public class UkelonnRealmTest {
      */
     @Test
     public void testGetAuthenticationInfoWrongTokenType() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = mock(AuthenticationToken.class);
         String username = "jad";
@@ -115,7 +123,9 @@ public class UkelonnRealmTest {
      */
     @Test
     public void testGetRolesForUsers() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);
@@ -132,7 +142,9 @@ public class UkelonnRealmTest {
      */
     @Test
     public void testGetRolesForAdministrators() {
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("on", "ola12".toCharArray());
         AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);

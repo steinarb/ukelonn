@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(false);
         when(user.isAuthenticated()).thenReturn(false);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -103,7 +103,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(false);
         when(user.isAuthenticated()).thenReturn(true);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -117,7 +117,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(false);
         when(user.isAuthenticated()).thenReturn(true);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UI ui = getUkelonnServlet().getUkelonnServletProvider().createInstance(null);
+        UI ui = getUkelonnServlet().getUkelonnUIProvider().createInstance(null);
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         Cookie[] cookies = { new Cookie("cookie", "crumb"), new Cookie("ui-style", "browser")};
@@ -133,7 +133,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(false);
         when(user.isAuthenticated()).thenReturn(true);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         when(request.getParameter(eq("ui-style"))).thenReturn("browser");
@@ -149,7 +149,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(false);
         when(user.isAuthenticated()).thenReturn(true);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         when(request.getParameter(eq("ui-style"))).thenReturn("mobile");
@@ -165,7 +165,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(true);
         when(user.isAuthenticated()).thenReturn(false);
         when(user.hasRole(eq("administrator"))).thenReturn(false);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -179,7 +179,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(true);
         when(user.isAuthenticated()).thenReturn(false);
         when(user.hasRole(eq("administrator"))).thenReturn(true);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         ui.doInit(request, -1, location);
@@ -193,7 +193,7 @@ public class UkelonnUITest {
         when(user.isRemembered()).thenReturn(true);
         when(user.isAuthenticated()).thenReturn(false);
         when(user.hasRole(eq("administrator"))).thenReturn(true);
-        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnServletProvider());
+        UkelonnUI ui = new UkelonnUI(getUkelonnServlet().getUkelonnUIProvider());
         String location = "http://localhost:8181/ukelonn/";
         VaadinRequest request = createMockVaadinRequest(location);
         Cookie[] cookies = { new Cookie("ui-style", "browser")};

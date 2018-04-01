@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import com.vaadin.server.WrappedSession;
 import no.priv.bang.ukelonn.bundle.db.test.UkelonnDatabaseProvider;
 import no.priv.bang.ukelonn.impl.UkelonnShiroFilter;
 import no.priv.bang.ukelonn.impl.UkelonnServlet;
-import no.priv.bang.ukelonn.impl.UkelonnServletProvider;
+import no.priv.bang.ukelonn.impl.UkelonnUIProvider;
 import no.priv.bang.ukelonn.impl.UkelonnUI;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
@@ -102,14 +102,17 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        UkelonnServletProvider ukelonnService = (UkelonnServletProvider) UkelonnServletProvider.getInstance();
-        if (ukelonnService != null) {
+        if (getUkelonnServlet() != null) {
+            UkelonnUIProvider ukelonnService = getUkelonnServlet().getUkelonnUIProvider();
             ukelonnService.setUkelonnDatabase(null); // Release the database
 
-            // Release the UkelonnService
-            Field ukelonnServiceInstanceField = UkelonnServletProvider.class.getDeclaredField("instance");
-            ukelonnServiceInstanceField.setAccessible(true);
-            ukelonnServiceInstanceField.set(null, null);
+            // Release the UkelonnUIProvider
+            Field ukelonnUIProviderField = UkelonnServlet.class.getDeclaredField("ukelonnUIProvider");
+            ukelonnUIProviderField.setAccessible(true);
+            ukelonnUIProviderField.set(ukelonnServlet, null);
+
+            // Release the UkelonnServlet
+            ukelonnServlet = null;
         }
 
         UkelonnShiroFilter shiroFilterProvider = new UkelonnShiroFilter();
@@ -127,7 +130,7 @@ public class TestUtils {
 
     public static void restoreTestDatabase() {
         dropTestDatabase();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServletProvider.getInstance().getDatabase();
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) getUkelonnServlet().getUkelonnUIProvider().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
     }

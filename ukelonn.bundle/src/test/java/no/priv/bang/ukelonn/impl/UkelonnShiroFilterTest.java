@@ -26,7 +26,7 @@ public class UkelonnShiroFilterTest {
     @Test
     public void testAuthenticate() {
         UkelonnShiroFilter shirofilter = new UkelonnShiroFilter();
-        shirofilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnServletProvider().getDatabase());
+        shirofilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
         shirofilter.activate();
         WebSecurityManager securitymanager = shirofilter.getSecurityManager();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());

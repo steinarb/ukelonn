@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,28 +49,14 @@ public class UkelonnRealmTestMissingServices {
     }
 
     /***
-     * Test the case where there is no {@link UkelonnService} OSGi service present.
-     */
-    @Test
-    public void testNoUkelonnService() {
-        UkelonnRealm realm = new UkelonnRealm();
-        AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
-
-        exception.expect(AuthenticationException.class);
-        AuthenticationInfo authInfo = realm.getAuthenticationInfo(token);
-        assertEquals(1, authInfo.getPrincipals().asList().size());
-    }
-
-
-    /***
      * Test the case where there is an {@link UkelonnService} OSGi service present,
      * but no {@link UkelonnDatabase} OSGi service.
      */
     @Test
     public void testNoUkelonnDatabaseService() {
-        UkelonnServletProvider ukelonnServiceSingleton = new UkelonnServletProvider();
-        ukelonnServiceSingleton.setUkelonnDatabase(null);
-        UkelonnRealm realm = new UkelonnRealm();
+        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
+        shiroFilter.setUkelonnDatabase(null);
+        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
 
         exception.expect(AuthenticationException.class);

@@ -44,7 +44,7 @@ public class AdminViewTest {
 
     @Test
     public void testUpdateFormsAfterAccountIsSelected() throws ServiceException, ServletException {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -71,7 +71,7 @@ public class AdminViewTest {
 
     @Test
     public void testUpdateVisiblePaymentPropertiesWhenPaymentTypeIsSelected() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -118,7 +118,7 @@ public class AdminViewTest {
 
     @Test
     public void testRegisterPaymentInDatabase() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -156,7 +156,7 @@ public class AdminViewTest {
 
     @Test
     public void testMakeNewJobType() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -195,7 +195,7 @@ public class AdminViewTest {
 
     @Test
     public void testSaveChangesToJobType() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -237,7 +237,7 @@ public class AdminViewTest {
 
     @Test
     public void testCreatePaymentType() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -263,7 +263,7 @@ public class AdminViewTest {
 
     @Test
     public void testUpdatePaymentForEditWhenPaymentTypeIsSelected() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);
@@ -298,7 +298,7 @@ public class AdminViewTest {
 
     @Test
     public void testSaveChangesToPaymentTypes() {
-        UkelonnServletProvider provider = getUkelonnServlet().getUkelonnServletProvider();
+        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
         AdminView view = new AdminView(provider, request);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class UserFallbackView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 1388525490129647161L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
     Account account; // NOSONAR
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
@@ -54,7 +54,7 @@ public class UserFallbackView extends AbstractView { // NOSONAR
     BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
     BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
 
-    public UserFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
+    public UserFallbackView(UkelonnUIProvider provider, VaadinRequest request) {
         this.provider = provider;
         // Display the greeting
         VerticalLayout content = new VerticalLayout();

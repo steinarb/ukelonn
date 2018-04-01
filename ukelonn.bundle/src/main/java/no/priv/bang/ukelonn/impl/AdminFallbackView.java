@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
     private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
-    private UkelonnServletProvider provider;
+    private UkelonnUIProvider provider;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
     private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
@@ -83,7 +83,7 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
     ObjectProperty<String> editUserFirstname = new ObjectProperty<>("");
     ObjectProperty<String> editUserLastname = new ObjectProperty<>("");
 
-    public AdminFallbackView(UkelonnServletProvider provider, VaadinRequest request) {
+    public AdminFallbackView(UkelonnUIProvider provider, VaadinRequest request) {
         this.provider = provider;
         VerticalLayout content = new VerticalLayout();
         content.addStyleName("ukelonn-responsive-layout");
