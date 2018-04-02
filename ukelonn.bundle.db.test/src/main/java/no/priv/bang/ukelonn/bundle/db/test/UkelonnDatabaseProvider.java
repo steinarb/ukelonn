@@ -114,6 +114,20 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
+    public boolean rollbackMockData() {
+        try {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+            Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
+            // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
+            return true;
+        } catch (Exception e) {
+            logError("Failed to roll back mock data from derby test database.", e);
+            return false;
+        }
+    }
+
     @Override
     public String getName() {
         return "Ukelonn Derby test database";

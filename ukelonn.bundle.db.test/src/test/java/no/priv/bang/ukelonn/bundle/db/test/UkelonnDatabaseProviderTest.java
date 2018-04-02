@@ -15,6 +15,7 @@
  */
 package no.priv.bang.ukelonn.bundle.db.test;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
@@ -39,6 +40,7 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
@@ -230,6 +232,65 @@ public class UkelonnDatabaseProviderTest {
         assertFalse(result);
     }
 
+    @Test
+    public void testRollbackMockData() throws Exception {
+        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        provider.setLogService(new MockLogService());
+        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+
+        // Check that database has the mock data in place
+        SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
+        int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(provider, "transaction_types");
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isGreaterThan(0);
+        int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(provider, "users");
+        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isGreaterThan(0);
+        int numberOfAdministratorsBeforeRollback = findTheNumberOfRowsInTable(provider, "administrators");
+        expectedStatusBeforeRollback.assertThat(numberOfAdministratorsBeforeRollback).isGreaterThan(0);
+        int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(provider, "accounts");
+        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isGreaterThan(0);
+        int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(provider, "transactions");
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertAll();
+
+        int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(provider, "databasechangelog");
+
+        // Do the rollback
+        boolean rollbackSuccessful = provider.rollbackMockData();
+        assertTrue(rollbackSuccessful);
+
+        int sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(provider, "databasechangelog");
+        assertThat(sizeOfDbchangelogAfterRollback).isLessThan(sizeOfDbchangelogBeforeRollback);
+
+        // Verify that the database tables are empty
+        SoftAssertions expectedStatusAfterRollback = new SoftAssertions();
+        int numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(provider, "transaction_types");
+        expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).isEqualTo(0);
+        int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(provider, "users");
+        expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).isEqualTo(0);
+        int numberOfAdministratorsAfterRollback = findTheNumberOfRowsInTable(provider, "administrators");
+        expectedStatusAfterRollback.assertThat(numberOfAdministratorsAfterRollback).isEqualTo(0);
+        int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(provider, "accounts");
+        expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
+        int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(provider, "transactions");
+        expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).isEqualTo(0);
+        expectedStatusAfterRollback.assertAll();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testFailToRollbackMockData() throws Exception {
+        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        provider.setLogService(new MockLogService());
+        DataSourceFactory dataSourceFactory = mock(DataSourceFactory.class);
+        PooledConnection pooledconnection = mock(PooledConnection.class);
+        when(pooledconnection.getConnection()).thenThrow(SQLException.class);
+        when(dataSourceFactory.createConnectionPoolDataSource(any(Properties.class))).thenThrow(SQLException.class);
+
+        boolean rollbackSuccessful = provider.rollbackMockData();
+        assertFalse(rollbackSuccessful);
+    }
+
     /**
      * Not a real unit test, just a way to hash cleartext passwords for
      * the test database and generate salt.
@@ -311,6 +372,23 @@ public class UkelonnDatabaseProviderTest {
         ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
         return authenticationInfo;
+    }
+
+    private int findTheNumberOfRowsInTable(UkelonnDatabaseProvider provider, String tableName) throws Exception {
+        String selectAllRowsStatement = String.format("select * from %s", tableName);
+        PreparedStatement selectAllRowsInTable = provider.prepareStatement(selectAllRowsStatement);
+        ResultSet userResults = provider.query(selectAllRowsInTable);
+        int numberOfUsers = countResults(userResults);
+        return numberOfUsers;
+    }
+
+    private int countResults(ResultSet results) throws Exception {
+        int numberOfResultsInResultSet = 0;
+        while(results.next()) {
+            ++numberOfResultsInResultSet;
+        }
+
+        return numberOfResultsInResultSet;
     }
 
 }
