@@ -15,8 +15,8 @@
  */
 package no.priv.bang.ukelonn.bundle.db.postgresql;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -105,14 +105,14 @@ public class PGUkelonnDatabaseProviderTest {
         assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
-        assertThat(allUserCount, greaterThan(0));
+        assertThat(allUserCount).isGreaterThan(0);
 
         // Test that the database administrators table has rows
         PreparedStatement statement2 = database.prepareStatement("select * from administrators");
         ResultSet allAdministrators = database.query(statement2);
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
-        assertThat(allAdminstratorsCount, greaterThan(0));
+        assertThat(allAdminstratorsCount).isGreaterThan(0);
 
         // Test that the administrators_view is present
         PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
