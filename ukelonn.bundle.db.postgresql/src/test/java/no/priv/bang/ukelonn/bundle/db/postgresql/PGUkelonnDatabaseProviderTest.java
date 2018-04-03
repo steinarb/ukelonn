@@ -361,27 +361,6 @@ public class PGUkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testUpdateFailOnClose() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-        doThrow(SQLException.class).when(statement).closeOnCompletion();
-
-        // Run the code under test
-        int result = provider.update(statement);
-        assertEquals(0, result);
-
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
-    }
-
-    @Test
     public void testUpdateOnNullStatement() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -394,8 +373,8 @@ public class PGUkelonnDatabaseProviderTest {
         int result = provider.update(null);
         assertEquals(0, result);
 
-        // Verify that no error has been logged
-        assertEquals(0, logservice.getLogmessagecount());
+        // Verify that an error has been logged
+        assertEquals(1, logservice.getLogmessagecount());
     }
 
     @Test

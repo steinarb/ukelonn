@@ -152,18 +152,10 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
 
     @Override
     public int update(PreparedStatement statement) {
-        if (statement != null) {
-            try {
-                return statement.executeUpdate();
-            } catch (SQLException e) {
-                logError("PostgreSQL database update failed", e);
-            } finally {
-                try {
-                    statement.closeOnCompletion();
-                } catch (SQLException e) {
-                    logError("PostgreSQL database prepared statement close failed", e);
-                }
-            }
+        try(PreparedStatement closableStatement = statement) {
+            return closableStatement.executeUpdate();
+        } catch (Exception e) {
+            logError("PostgreSQL database update failed", e);
         }
 
         return 0;
