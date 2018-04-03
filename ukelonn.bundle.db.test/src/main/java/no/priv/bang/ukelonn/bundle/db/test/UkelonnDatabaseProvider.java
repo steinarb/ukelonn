@@ -144,19 +144,9 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     @Override
-    public ResultSet query(PreparedStatement statement) {
+    public ResultSet query(PreparedStatement statement) throws SQLException {
         if (statement != null) {
-            try {
-                return statement.executeQuery();
-            } catch (SQLException e) {
-                logError("Derby mock database query failed", e);
-            } finally {
-                try {
-                    statement.closeOnCompletion();
-                } catch (SQLException e) {
-                    logError("Derby mock database prepared statement closeOnCompletion failed", e);
-                }
-            }
+            return statement.executeQuery();
         }
 
         return null;

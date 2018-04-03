@@ -239,7 +239,7 @@ public class PGUkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testQuery() {
+    public void testQuery() throws Exception {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
 
@@ -259,7 +259,7 @@ public class PGUkelonnDatabaseProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test
+    @Test(expected=SQLException.class)
     public void testQueryFailOnQuery() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -275,9 +275,6 @@ public class PGUkelonnDatabaseProviderTest {
         // Run the code under test
         ResultSet resultset = provider.query(statement);
         assertNull(resultset);
-
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
     }
 
     @Test
@@ -297,8 +294,8 @@ public class PGUkelonnDatabaseProviderTest {
         ResultSet resultset = provider.query(statement);
         assertNull(resultset);
 
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
+        // Verify that no error has been logged
+        assertEquals(0, logservice.getLogmessagecount());
     }
 
     @Test

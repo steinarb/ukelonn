@@ -165,7 +165,7 @@ public class UkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testBadSql() {
+    public void testBadSql() throws Exception {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
@@ -188,7 +188,7 @@ public class UkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testNullDataSourceFactory() {
+    public void testNullDataSourceFactory() throws Exception {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         provider.setDataSourceFactory(null); // Test what happens with a null datasource injection
