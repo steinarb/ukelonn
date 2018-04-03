@@ -22,8 +22,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
@@ -112,19 +110,26 @@ public class TestUtils {
             ukelonnServiceInstanceField.set(null, null);
         }
 
-        dropTestDatabase();
+        rollbackMockDataInTestDatabase();
     }
 
-    public static void dropTestDatabase() {
+    public static void rollbackMockDataInTestDatabase() {
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = null;
         try {
-            DriverManager.getConnection("jdbc:derby:memory:ukelonn;drop=true");
-        } catch (SQLException e) {
-            // Just eat any exceptions quietly. The database will be cleaned up
+            ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
+        } catch (Exception e) {
+            // Swallow exception and continue
         }
+
+        if (ukelonnDatabaseProvider == null) {
+            ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
+        }
+
+        ukelonnDatabaseProvider.rollbackMockData();
     }
 
     public static void restoreTestDatabase() {
-        dropTestDatabase();
+        rollbackMockDataInTestDatabase();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
