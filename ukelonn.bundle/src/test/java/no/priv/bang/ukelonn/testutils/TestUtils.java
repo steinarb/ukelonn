@@ -22,8 +22,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
@@ -102,6 +100,7 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        rollbackMockDataInTestDatabase();
         if (getUkelonnServlet() != null) {
             UkelonnUIProvider ukelonnService = getUkelonnServlet().getUkelonnUIProvider();
             ukelonnService.setUkelonnDatabase(null); // Release the database
@@ -117,19 +116,25 @@ public class TestUtils {
 
         UkelonnShiroFilter shiroFilterProvider = new UkelonnShiroFilter();
         shiroFilterProvider.setUkelonnDatabase(null);
-        dropTestDatabase();
     }
 
-    public static void dropTestDatabase() {
+    public static void rollbackMockDataInTestDatabase() {
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = null;
         try {
-            DriverManager.getConnection("jdbc:derby:memory:ukelonn;drop=true");
-        } catch (SQLException e) {
-            // Just eat any exceptions quietly. The database will be cleaned up
+            ukelonnDatabaseProvider = (UkelonnDatabaseProvider) getUkelonnServlet().getUkelonnUIProvider().getDatabase();
+        } catch (Exception e) {
+            // Swallow exception and continue
         }
+
+        if (ukelonnDatabaseProvider == null) {
+            ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
+        }
+
+        ukelonnDatabaseProvider.rollbackMockData();
     }
 
     public static void restoreTestDatabase() {
-        dropTestDatabase();
+        rollbackMockDataInTestDatabase();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) getUkelonnServlet().getUkelonnUIProvider().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);

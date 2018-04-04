@@ -132,19 +132,9 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     @Override
-    public ResultSet query(PreparedStatement statement) {
+    public ResultSet query(PreparedStatement statement) throws SQLException {
         if (statement != null) {
-            try {
-                return statement.executeQuery();
-            } catch (SQLException e) {
-                logError("PostgreSQL database query failed", e);
-            } finally {
-                try {
-                    statement.closeOnCompletion();
-                } catch (SQLException e) {
-                    logError("PostgreSQL database prepared statement closeOnCompletion failed", e);
-                }
-            }
+            return statement.executeQuery();
         }
 
         return null;
@@ -152,18 +142,10 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
 
     @Override
     public int update(PreparedStatement statement) {
-        if (statement != null) {
-            try {
-                return statement.executeUpdate();
-            } catch (SQLException e) {
-                logError("PostgreSQL database update failed", e);
-            } finally {
-                try {
-                    statement.closeOnCompletion();
-                } catch (SQLException e) {
-                    logError("PostgreSQL database prepared statement close failed", e);
-                }
-            }
+        try(PreparedStatement closableStatement = statement) {
+            return closableStatement.executeUpdate();
+        } catch (Exception e) {
+            logError("PostgreSQL database update failed", e);
         }
 
         return 0;

@@ -47,3 +47,4 @@ insert into transactions (account_id,transaction_type_id,transaction_amount) val
 insert into transactions (account_id,transaction_type_id,transaction_amount) values (4,4,-125);
 insert into transactions (account_id,transaction_type_id,transaction_amount) values (5,1,45);
 insert into transactions (account_id,transaction_type_id,transaction_amount) values (5,4,-80);
+--rollback truncate table transactions; alter table transactions alter transaction_id restart with 1;
