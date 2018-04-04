@@ -100,6 +100,7 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        rollbackMockDataInTestDatabase();
         UkelonnServiceProvider ukelonnService = (UkelonnServiceProvider) UkelonnServiceProvider.getInstance();
         if (ukelonnService != null) {
             ukelonnService.setUkelonnDatabase(null); // Release the database
@@ -109,8 +110,6 @@ public class TestUtils {
             ukelonnServiceInstanceField.setAccessible(true);
             ukelonnServiceInstanceField.set(null, null);
         }
-
-        rollbackMockDataInTestDatabase();
     }
 
     public static void rollbackMockDataInTestDatabase() {
