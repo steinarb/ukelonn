@@ -114,6 +114,20 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
+    public boolean rollbackMockData() {
+        try {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+            Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
+            // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
+            return true;
+        } catch (Exception e) {
+            logError("Failed to roll back mock data from derby test database.", e);
+            return false;
+        }
+    }
+
     @Override
     public String getName() {
         return "Ukelonn Derby test database";
@@ -130,19 +144,9 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     @Override
-    public ResultSet query(PreparedStatement statement) {
+    public ResultSet query(PreparedStatement statement) throws SQLException {
         if (statement != null) {
-            try {
-                return statement.executeQuery();
-            } catch (SQLException e) {
-                logError("Derby mock database query failed", e);
-            } finally {
-                try {
-                    statement.closeOnCompletion();
-                } catch (SQLException e) {
-                    logError("Derby mock database prepared statement closeOnCompletion failed", e);
-                }
-            }
+            return statement.executeQuery();
         }
 
         return null;
@@ -150,18 +154,10 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     @Override
     public int update(PreparedStatement statement) {
-        if (statement != null) {
-            try {
-                return statement.executeUpdate();
-            } catch (SQLException e) {
-                logError("Derby mock database update failed", e);
-            } finally {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    logError("Derby mock database prepared statement close failed", e);
-                }
-            }
+        try(PreparedStatement closableStatement = statement) {
+            return closableStatement.executeUpdate();
+        } catch (Exception e) {
+            logError("Derby mock database update failed", e);
         }
 
         return 0;

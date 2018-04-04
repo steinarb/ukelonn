@@ -17,6 +17,7 @@ package no.priv.bang.ukelonn;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public interface UkelonnDatabase {
 
@@ -24,7 +25,7 @@ public interface UkelonnDatabase {
 
     PreparedStatement prepareStatement(String sql);
 
-    ResultSet query(PreparedStatement statement);
+    ResultSet query(PreparedStatement statement) throws SQLException;
 
     int update(PreparedStatement statement);
 
