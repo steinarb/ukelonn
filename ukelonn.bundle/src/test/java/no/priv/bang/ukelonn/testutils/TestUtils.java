@@ -20,8 +20,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.ops4j.pax.web.service.WebContainer;
@@ -83,6 +81,7 @@ public class TestUtils {
      * @throws IllegalAccessException
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        rollbackMockDataInTestDatabase();
         UkelonnServiceProvider ukelonnService = (UkelonnServiceProvider) UkelonnServiceProvider.getInstance();
         if (ukelonnService != null) {
             ukelonnService.setUkelonnDatabase(null); // Release the database
@@ -92,20 +91,25 @@ public class TestUtils {
             ukelonnServiceInstanceField.setAccessible(true);
             ukelonnServiceInstanceField.set(null, null);
         }
-
-        dropTestDatabase();
     }
 
-    public static void dropTestDatabase() {
+    public static void rollbackMockDataInTestDatabase() {
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = null;
         try {
-            DriverManager.getConnection("jdbc:derby:memory:ukelonn;drop=true");
-        } catch (SQLException e) {
-            // Just eat any exceptions quietly. The database will be cleaned up
+            ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
+        } catch (Exception e) {
+            // Swallow exception and continue
         }
+
+        if (ukelonnDatabaseProvider == null) {
+            ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
+        }
+
+        ukelonnDatabaseProvider.rollbackMockData();
     }
 
     public static void restoreTestDatabase() {
-        dropTestDatabase();
+        rollbackMockDataInTestDatabase();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);

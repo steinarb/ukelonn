@@ -15,8 +15,8 @@
  */
 package no.priv.bang.ukelonn.bundle.db.postgresql;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -105,14 +105,14 @@ public class PGUkelonnDatabaseProviderTest {
         assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
-        assertThat(allUserCount, greaterThan(0));
+        assertThat(allUserCount).isGreaterThan(0);
 
         // Test that the database administrators table has rows
         PreparedStatement statement2 = database.prepareStatement("select * from administrators");
         ResultSet allAdministrators = database.query(statement2);
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
-        assertThat(allAdminstratorsCount, greaterThan(0));
+        assertThat(allAdminstratorsCount).isGreaterThan(0);
 
         // Test that the administrators_view is present
         PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
@@ -239,7 +239,7 @@ public class PGUkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testQuery() {
+    public void testQuery() throws Exception {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
 
@@ -259,7 +259,7 @@ public class PGUkelonnDatabaseProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test
+    @Test(expected=SQLException.class)
     public void testQueryFailOnQuery() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -275,9 +275,6 @@ public class PGUkelonnDatabaseProviderTest {
         // Run the code under test
         ResultSet resultset = provider.query(statement);
         assertNull(resultset);
-
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
     }
 
     @Test
@@ -297,8 +294,8 @@ public class PGUkelonnDatabaseProviderTest {
         ResultSet resultset = provider.query(statement);
         assertNull(resultset);
 
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
+        // Verify that no error has been logged
+        assertEquals(0, logservice.getLogmessagecount());
     }
 
     @Test
@@ -361,27 +358,6 @@ public class PGUkelonnDatabaseProviderTest {
     }
 
     @Test
-    public void testUpdateFailOnClose() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-        doThrow(SQLException.class).when(statement).closeOnCompletion();
-
-        // Run the code under test
-        int result = provider.update(statement);
-        assertEquals(0, result);
-
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
-    }
-
-    @Test
     public void testUpdateOnNullStatement() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -394,8 +370,8 @@ public class PGUkelonnDatabaseProviderTest {
         int result = provider.update(null);
         assertEquals(0, result);
 
-        // Verify that no error has been logged
-        assertEquals(0, logservice.getLogmessagecount());
+        // Verify that an error has been logged
+        assertEquals(1, logservice.getLogmessagecount());
     }
 
     @Test
