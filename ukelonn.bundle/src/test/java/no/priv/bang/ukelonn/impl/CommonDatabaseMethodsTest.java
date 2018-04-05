@@ -104,6 +104,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetTransactionTypesFromUkelonnDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -157,6 +158,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testUpdateBalanseFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -188,6 +190,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testAddNewPaymentToAccountWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -244,6 +247,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -297,6 +301,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAdminUserFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -350,6 +355,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -404,6 +410,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetPaymentsFromAccountWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -459,6 +466,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testGetJobsFromAccountWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -489,6 +497,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -517,6 +526,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testAddJobTypeToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -544,6 +554,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testUpdateTransactionTypeInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -572,6 +583,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testAddPaymentTypeToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -599,6 +611,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
     public void testAddUserToDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -625,6 +638,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
     public void testGetUsersWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -654,6 +668,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testChangePasswordForUserWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -681,6 +696,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testUupdateUserInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -921,6 +937,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test()
     public void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -944,6 +961,7 @@ public class CommonDatabaseMethodsTest {
      *
      * @throws SQLException
      */
+    @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
     public void testMapUserWhenSQLExceptionIsThrown() throws SQLException {
         ResultSet resultset = mock(ResultSet.class);

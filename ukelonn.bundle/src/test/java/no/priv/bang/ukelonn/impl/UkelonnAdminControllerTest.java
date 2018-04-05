@@ -16,8 +16,8 @@
 package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
@@ -671,7 +671,7 @@ public class UkelonnAdminControllerTest {
             assertNotEquals(balanseBeforeDelete, balanseAfterDelete);
             assertEquals(jadJobs.size(), jadJobsAfterDelete.size());
             // Expected the deleted jobs not to be present in the current jobs list
-            assertThat(jadJobsAfterDelete, not(hasItems(jobsWithCheckboxChecked.get(0), jobsWithCheckboxChecked.get(1))));
+            assertThat(jadJobsAfterDelete).doesNotContain(jobsWithCheckboxChecked.get(0), jobsWithCheckboxChecked.get(1));
 
             // Verify that the delete selection list has been emptied
             assertEquals(0, ukelonnAdmin.getJobsSelectedForDelete().size());
@@ -717,7 +717,7 @@ public class UkelonnAdminControllerTest {
 
             // Expected the deleted job to be gone from the job list
             jadJobsAfterDelete = ukelonnAdmin.getJobs();
-            assertThat(jadJobsAfterDelete, not(hasItem(existingJob)));
+            assertThat(jadJobsAfterDelete).doesNotContain(existingJob);
         } finally {
             restoreTestDatabase();
         }

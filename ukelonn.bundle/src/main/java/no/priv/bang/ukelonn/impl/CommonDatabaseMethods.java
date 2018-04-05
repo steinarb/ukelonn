@@ -67,17 +67,17 @@ public class CommonDatabaseMethods {
     public static Map<Integer, TransactionType> getTransactionTypesFromUkelonnDatabase(Class<?> clazz) {
         Map<Integer, TransactionType> transactiontypes = new HashMap<>();
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("select * from transaction_types");
-        ResultSet resultSet = database.query(statement);
-        if (resultSet != null) {
-            try {
-                while (resultSet.next()) {
-                    TransactionType transactiontype = mapTransactionType(resultSet);
-                    transactiontypes.put(transactiontype.getId(), transactiontype);
+        try(PreparedStatement statement = database.prepareStatement("select * from transaction_types")) {
+            try(ResultSet resultSet = database.query(statement)) {
+                if (resultSet != null) {
+                    while (resultSet.next()) {
+                        TransactionType transactiontype = mapTransactionType(resultSet);
+                        transactiontypes.put(transactiontype.getId(), transactiontype);
+                    }
                 }
-            } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, "Error getting transaction types from the database", e);
             }
+        } catch (SQLException e) {
+            logError(CommonDatabaseMethods.class, "Error getting transaction types from the database", e);
         }
 
         return transactiontypes;
@@ -116,15 +116,15 @@ public class CommonDatabaseMethods {
     }
 
     public static void updateBalanseFromDatabase(Class<?> clazz, Account account) {
-        try {
-            UkelonnDatabase connection = connectionCheck(clazz);
-            PreparedStatement statement = connection.prepareStatement("select * from accounts_view where account_id=?");
+        UkelonnDatabase connection = connectionCheck(clazz);
+        try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view where account_id=?")) {
             statement.setInt(1, account.getAccountId());
-            ResultSet results = connection.query(statement);
-            if (results != null) {
-                while (results.next()) {
-                    double balance = results.getDouble("balance");
-                    account.setBalance(balance);
+            try(ResultSet results = connection.query(statement)) {
+                if (results != null) {
+                    while (results.next()) {
+                        double balance = results.getDouble("balance");
+                        account.setBalance(balance);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -138,8 +138,7 @@ public class CommonDatabaseMethods {
         int transactionTypeId = paymentType.getId();
         double amount = 0 - payment;
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)");
-        try {
+        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)")) {
             statement.setInt(1, accountId);
             statement.setInt(2, transactionTypeId);
             statement.setDouble(3, amount);
@@ -157,15 +156,14 @@ public class CommonDatabaseMethods {
     }
 
     public static Account getAccountInfoFromDatabase(Class<?> clazz, String username) {
-        try {
-            UkelonnDatabase database = connectionCheck(clazz);
-            PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        UkelonnDatabase database = connectionCheck(clazz);
+        try(PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?")) {
             statement.setString(1, username);
-            ResultSet resultset = database.query(statement);
-            if (resultset != null &&
-                resultset.next())
-            {
-                return mapAccount(resultset);
+            try(ResultSet resultset = database.query(statement)) {
+                if (resultset != null && resultset.next())
+                {
+                    return mapAccount(resultset);
+                }
             }
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, "Error getting a single account from the database", e);
@@ -175,15 +173,14 @@ public class CommonDatabaseMethods {
     }
 
     public static AdminUser getAdminUserFromDatabase(Class<?> clazz, String username) {
-        try {
-            UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz);
-            PreparedStatement statement = database.prepareStatement("select * from administrators_view where username=?");
+        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz);
+        try(PreparedStatement statement = database.prepareStatement("select * from administrators_view where username=?")) {
             statement.setString(1, username);
-            ResultSet resultset = database.query(statement);
-            if (resultset != null &&
-                resultset.next())
-            {
-                return mapAdminUser(resultset);
+            try(ResultSet resultset = database.query(statement)) {
+                if (resultset != null && resultset.next())
+                {
+                    return mapAdminUser(resultset);
+                }
             }
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, "Error getting administrator user info from the database", e);
@@ -194,14 +191,14 @@ public class CommonDatabaseMethods {
 
     public static List<Account> getAccounts(Class<?> clazz) {
         ArrayList<Account> accounts = new ArrayList<>();
-        try {
-            UkelonnDatabase connection = connectionCheck(clazz);
-            PreparedStatement statement = connection.prepareStatement("select * from accounts_view");
-            ResultSet results = connection.query(statement);
-            if (results != null) {
-                while(results.next()) {
-                    Account newaccount = mapAccount(results);
-                    accounts.add(newaccount);
+        UkelonnDatabase connection = connectionCheck(clazz);
+        try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view")) {
+            try(ResultSet results = connection.query(statement)) {
+                if (results != null) {
+                    while(results.next()) {
+                        Account newaccount = mapAccount(results);
+                        accounts.add(newaccount);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -237,15 +234,15 @@ public class CommonDatabaseMethods {
         List<Transaction> transactions = new ArrayList<>();
         if (null != account) {
             UkelonnDatabase database = connectionCheck(clazz);
-            try {
-                String sql = String.format(getResourceAsString(sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
-                PreparedStatement statement = database.prepareStatement(sql);
+            String sql = String.format(getResourceAsString(sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
+            try(PreparedStatement statement = database.prepareStatement(sql)) {
                 statement.setInt(1, account.getAccountId());
                 trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, account.getAccountId());
-                ResultSet resultSet = database.query(statement);
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        transactions.add(mapTransaction(resultSet));
+                try(ResultSet resultSet = database.query(statement)) {
+                    if (resultSet != null) {
+                        while (resultSet.next()) {
+                            transactions.add(mapTransaction(resultSet));
+                        }
                     }
                 }
             } catch (SQLException e) {
@@ -304,8 +301,7 @@ public class CommonDatabaseMethods {
 
     public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, Account account, int newJobTypeId, double newJobWages) {
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)");
-        try {
+        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)")) {
             statement.setInt(1, account.getAccountId());
             statement.setInt(2, newJobTypeId);
             statement.setDouble(3, newJobWages);
@@ -322,8 +318,7 @@ public class CommonDatabaseMethods {
 
     public static int addJobTypeToDatabase(Class<?> clazz, String newPaymentTypeName, double newPaymentTypeAmount) {
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)");
-        try {
+        try(PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)")) {
             statement.setString(1, newPaymentTypeName);
             statement.setDouble(2, newPaymentTypeAmount);
             return database.update(statement);
@@ -336,8 +331,7 @@ public class CommonDatabaseMethods {
 
     public static int updateTransactionTypeInDatabase(Class<?> clazz, TransactionType modifiedJobType) {
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=?, transaction_is_wage_payment=? where transaction_type_id=?");
-        try {
+        try(PreparedStatement statement = database.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=?, transaction_is_wage_payment=? where transaction_type_id=?")) {
             statement.setString(1, modifiedJobType.getTransactionTypeName());
             statement.setDouble(2, modifiedJobType.getTransactionAmount());
             statement.setBoolean(3, modifiedJobType.isTransactionIsWork());
@@ -353,8 +347,7 @@ public class CommonDatabaseMethods {
 
     public static int addPaymentTypeToDatabase(Class<?> clazz, String newPaymentTypeName, Double newPaymentTypeAmount) {
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)");
-        try {
+        try(PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)")) {
             statement.setString(1, newPaymentTypeName);
             statement.setObject(2, newPaymentTypeAmount);
             return database.update(statement);
@@ -378,23 +371,27 @@ public class CommonDatabaseMethods {
 
         UkelonnDatabase database = connectionCheck(clazz);
         try {
-            PreparedStatement insertUserSql = database.prepareStatement("insert into users (username, password, salt, email, first_name, last_name) values (?, ?, ?, ?, ?, ?)");
-            insertUserSql.setString(1, newUserUsername);
-            insertUserSql.setString(2, hashedPassword);
-            insertUserSql.setString(3, salt);
-            insertUserSql.setString(4, newUserEmail);
-            insertUserSql.setString(5, newUserFirstname);
-            insertUserSql.setString(6, newUserLastname);
-            database.update(insertUserSql);
-            PreparedStatement findUserIdFromUsernameSql = database.prepareStatement("select user_id from users where username=?");
-            findUserIdFromUsernameSql.setString(1, newUserUsername);
-            ResultSet userIdResultSet = database.query(findUserIdFromUsernameSql);
-            if (userIdResultSet.next()) {
-                int userId = userIdResultSet.getInt(USER_ID);
-                PreparedStatement insertAccountSql = database.prepareStatement("insert into accounts (user_id) values (?)");
-                insertAccountSql.setInt(1, userId);
-                database.update(insertAccountSql);
-                addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, userId);
+            try(PreparedStatement insertUserSql = database.prepareStatement("insert into users (username, password, salt, email, first_name, last_name) values (?, ?, ?, ?, ?, ?)")) {
+                insertUserSql.setString(1, newUserUsername);
+                insertUserSql.setString(2, hashedPassword);
+                insertUserSql.setString(3, salt);
+                insertUserSql.setString(4, newUserEmail);
+                insertUserSql.setString(5, newUserFirstname);
+                insertUserSql.setString(6, newUserLastname);
+                database.update(insertUserSql);
+            }
+
+            try(PreparedStatement findUserIdFromUsernameSql = database.prepareStatement("select user_id from users where username=?")) {
+                findUserIdFromUsernameSql.setString(1, newUserUsername);
+                try(ResultSet userIdResultSet = database.query(findUserIdFromUsernameSql)) {
+                    if (userIdResultSet.next()) {
+                        int userId = userIdResultSet.getInt(USER_ID);
+                        PreparedStatement insertAccountSql = database.prepareStatement("insert into accounts (user_id) values (?)");
+                        insertAccountSql.setInt(1, userId);
+                        database.update(insertAccountSql);
+                        addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, userId);
+                    }
+                }
             }
         } catch (SQLException e) {
             throw new UkelonnException(e);
@@ -404,12 +401,12 @@ public class CommonDatabaseMethods {
     public static List<User> getUsers(Class<?> clazz) {
         ArrayList<User> users = new ArrayList<>();
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("select * from users order by user_id");
-        ResultSet resultSet = database.query(statement);
-        try {
-            while (resultSet.next()) {
-                User user = mapUser(resultSet);
-                users.add(user);
+        try(PreparedStatement statement = database.prepareStatement("select * from users order by user_id")) {
+            try(ResultSet resultSet = database.query(statement)) {
+                while (resultSet.next()) {
+                    User user = mapUser(resultSet);
+                    users.add(user);
+                }
             }
         } catch (SQLException e) {
             throw new UkelonnException(e);
@@ -422,8 +419,7 @@ public class CommonDatabaseMethods {
         String salt = getNewSalt();
         String hashedPassword = hashPassword(password, salt);
         UkelonnDatabase database = connectionCheck(clazz);
-        PreparedStatement statement = database.prepareStatement("update users set password=?, salt=? where username=?");
-        try {
+        try(PreparedStatement statement = database.prepareStatement("update users set password=?, salt=? where username=?")) {
             statement.setString(1, hashedPassword);
             statement.setString(2, salt);
             statement.setString(3, username);
@@ -437,8 +433,7 @@ public class CommonDatabaseMethods {
 
     public static int updateUserInDatabase(Class<?> classForLogging, User userToUpdate) {
         UkelonnDatabase database = connectionCheck(classForLogging);
-        PreparedStatement updateUserSql = database.prepareStatement("update users set username=?, email=?, first_name=?, last_name=? where user_id=?");
-        try {
+        try(PreparedStatement updateUserSql = database.prepareStatement("update users set username=?, email=?, first_name=?, last_name=? where user_id=?")) {
             updateUserSql.setString(1, userToUpdate.getUsername());
             updateUserSql.setString(2, userToUpdate.getEmail());
             updateUserSql.setString(3, userToUpdate.getFirstname());
@@ -498,8 +493,7 @@ public class CommonDatabaseMethods {
      * @return the update status
      */
     static int addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase database, int userId) {
-        PreparedStatement statement = database.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"));
-        try {
+        try(PreparedStatement statement = database.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"))) {
             statement.setInt(1, userId);
             return database.update(statement);
         } catch (SQLException e) {
@@ -543,8 +537,7 @@ public class CommonDatabaseMethods {
         ByteArrayOutputStream resource = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;
-        InputStream resourceStream = CommonDatabaseMethods.class.getResourceAsStream(resourceName);
-        try {
+        try(InputStream resourceStream = CommonDatabaseMethods.class.getResourceAsStream(resourceName)) {
             while ((length = resourceStream.read(buffer)) != -1) {
                 resource.write(buffer, 0, length);
             }

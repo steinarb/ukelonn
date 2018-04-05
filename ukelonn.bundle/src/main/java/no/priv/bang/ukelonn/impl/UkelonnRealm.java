@@ -50,9 +50,10 @@ public class UkelonnRealm extends AuthorizingRealm {
         try {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
             PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view");
-            ResultSet administratorsResults = ukelonnDatabase.query(statement);
-            while (administratorsResults.next()) {
-                administrators.add(administratorsResults.getString("username"));
+            try(ResultSet administratorsResults = ukelonnDatabase.query(statement)) {
+                while (administratorsResults.next()) {
+                    administrators.add(administratorsResults.getString("username"));
+                }
             }
         } catch (Exception e) {
             throw new AuthorizationException(e);
@@ -84,18 +85,19 @@ public class UkelonnRealm extends AuthorizingRealm {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
             PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?");
             statement.setString(1, username);
-            ResultSet passwordResultSet = ukelonnDatabase.query(statement);
-            if (passwordResultSet == null) {
-                throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
-            }
+            try(ResultSet passwordResultSet = ukelonnDatabase.query(statement)) {
+                if (passwordResultSet == null) {
+                    throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
+                }
 
-            if (passwordResultSet.next()) {
-                String password = passwordResultSet.getString("password");
-                String salt = passwordResultSet.getString("salt");
-                ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
-                return new SimpleAuthenticationInfo(principal, password, decodedSalt, getName());
-            } else {
-                throw new IncorrectCredentialsException("Username \"" + username + "\" not found");
+                if (passwordResultSet.next()) {
+                    String password = passwordResultSet.getString("password");
+                    String salt = passwordResultSet.getString("salt");
+                    ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
+                    return new SimpleAuthenticationInfo(principal, password, decodedSalt, getName());
+                } else {
+                    throw new IncorrectCredentialsException("Username \"" + username + "\" not found");
+                }
             }
         } catch (SQLException e) {
             throw new AuthenticationException("UkelonnRealm shiro realm got SQL error exploring the password results", e);

@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.impl;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class UkelonnControllerTest {
             assertNull(ukelonn.getNewJobType());
             assertEquals(0.0, ukelonn.getNewJobWages(), 0.1);
         } finally {
-            dropTestDatabase();
+            rollbackMockDataInTestDatabase();
         }
     }
 
@@ -143,7 +143,7 @@ public class UkelonnControllerTest {
             assertNotEquals(balanseBeforeDelete, balanseAfterDelete);
             assertEquals(jadJobs.size(), jadJobsAfterDelete.size());
             // Expected the deleted jobs not to be present in the current jobs list
-            assertThat(jadJobsAfterDelete, not(hasItems(jobsWithCheckboxChecked.get(0), jobsWithCheckboxChecked.get(1))));
+            assertThat(jadJobsAfterDelete).doesNotContain(jobsWithCheckboxChecked.get(0), jobsWithCheckboxChecked.get(1));
 
             // Verify that the delete selection list has been emptied
             assertEquals(0, ukelonn.getJobsSelectedForDelete().size());
@@ -189,7 +189,7 @@ public class UkelonnControllerTest {
 
             // Expected the deleted job to be gone from the job list
             jadJobsAfterDelete = ukelonn.getJobs();
-            assertThat(jadJobsAfterDelete, not(hasItem(existingJob)));
+            assertThat(jadJobsAfterDelete).doesNotContain(existingJob);
         } finally {
             restoreTestDatabase();
         }
