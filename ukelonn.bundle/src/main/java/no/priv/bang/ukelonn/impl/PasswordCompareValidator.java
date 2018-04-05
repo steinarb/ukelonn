@@ -15,8 +15,8 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import com.vaadin.data.Validator;
-import com.vaadin.ui.PasswordField;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.ui.PasswordField;
 
 public class PasswordCompareValidator implements Validator {
     private static final long serialVersionUID = 2610490969282733208L;

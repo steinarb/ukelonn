@@ -125,12 +125,58 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.commons-beanutils</artifactId>
+            <version>1.8.3_2</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-osgi-integration</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin.external</groupId>
+            <artifactId>gentyref</artifactId>
+            <version>1.2.0.vaadin1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-compatibility-server</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-compatibility-shared</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-push</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiled</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-shared</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -140,17 +186,17 @@
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-client-compiled</artifactId>
-            <scope>compile</scope>
+            <artifactId>vaadin-compatibility-themes</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-server</artifactId>
-            <scope>compile</scope>
+            <groupId>org.vaadin.touchkit</groupId>
+            <artifactId>touchkit</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.vaadin.addon</groupId>
-            <artifactId>vaadin-touchkit-agpl</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
     </dependencies>
 
@@ -175,36 +221,10 @@
                         <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Karaf-Commands>*</Karaf-Commands>
-                        <Import-Package>
-                            no.priv.bang.ukelonn,
-                            javax.servlet.http;version="[2.6.0,4.0.0)",
-                            com.vaadin.shared,
-                            com.vaadin.server,
-                            com.vaadin.addon.touchkit.server,
-                            com.vaadin.addon.touchkit.settings,
-                            com.vaadin.addon.touchkit.annotations,
-                            VAADIN.widgetsets.com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet,
-                            VAADIN.widgetsets.com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet.deferredjs.0A32B241463C3CF770B8CD52599C1C21,
-                            com.vaadin.addon.touchkit.extensions,
-                            com.vaadin.addon.touchkit.gwt,
-                            com.vaadin.addon.touchkit.gwt.client,
-                            com.vaadin.addon.touchkit.gwt.client.communication,
-                            com.vaadin.addon.touchkit.gwt.client.offlinemode,
-                            com.vaadin.addon.touchkit.gwt.client.theme,
-                            com.vaadin.addon.touchkit.gwt.client.theme.fonts,
-                            com.vaadin.addon.touchkit.gwt.client.theme.img,
-                            com.vaadin.addon.touchkit.gwt.client.ui,
-                            com.vaadin.addon.touchkit.gwt.client.vcom,
-                            com.vaadin.addon.touchkit.gwt.client.vcom.navigation,
-                            com.vaadin.addon.touchkit.gwt.client.vcom.popover,
-                            com.vaadin.addon.touchkit.service,
-                            com.vaadin.addon.touchkit.ui,
-                            assets,
-                            VAADIN.themes,
-                            VAADIN.widgetsets,
-                            *
-                        </Import-Package>
+                        <Import-Package>*</Import-Package>
                         <Export-Package>!*</Export-Package>
+                        <Embed-Dependency>vaadin-compatibility-themes;inline=true</Embed-Dependency>
+                        <Include-Resource>target/classes</Include-Resource>
                         <_removeheaders>
                             Include-Resource,
                             Private-Package,
@@ -220,6 +240,32 @@
                 <configuration>
                     <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.vaadin.touchkit</groupId>
+                                    <artifactId>touchkit</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <includes>VAADIN/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.github.cjnygard</groupId>

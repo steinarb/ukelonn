@@ -23,11 +23,11 @@ import static org.mockito.Mockito.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.NativeSelect;
+import com.vaadin.v7.data.util.ObjectProperty;
+import com.vaadin.v7.ui.NativeSelect;
 
 
 public class UserViewTest {

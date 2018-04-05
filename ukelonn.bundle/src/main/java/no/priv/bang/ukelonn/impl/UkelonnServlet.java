@@ -25,8 +25,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
+import org.vaadin.touchkit.server.TouchKitServlet;
 
-import com.vaadin.addon.touchkit.server.TouchKitServlet;
 import com.vaadin.server.DefaultUIProvider;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;

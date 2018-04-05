@@ -364,8 +364,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getServletPath() {
-        // TODO Auto-generated method stub
-        return null;
+        return "";
     }
 
     @Override
