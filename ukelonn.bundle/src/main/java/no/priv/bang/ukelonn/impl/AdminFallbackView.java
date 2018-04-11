@@ -17,89 +17,104 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 
+import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationException;
+import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.data.validator.EmailValidator;
-import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.PasswordField;
-import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.TextField;
+import no.priv.bang.ukelonn.UkelonnException;
+import no.priv.bang.ukelonn.impl.data.AmountAndBalance;
+import no.priv.bang.ukelonn.impl.data.Passwords;
+
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.ComboBox;
 
 public class AdminFallbackView extends AbstractView { // NOSONAR
-    private static final String TRANSACTION_AMOUNT = "transactionAmount";
-    private static final String TRANSACTION_TYPE_NAME = "transactionTypeName";
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
     private UkelonnUIProvider provider;
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn admin UI, bruker: ????");
-    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
-    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
-    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
-    BeanItemContainer<TransactionType> paymentTypes = new BeanItemContainer<>(TransactionType.class);
-    BeanItemContainer<TransactionType> jobTypes = new BeanItemContainer<>(TransactionType.class);
-    ObjectProperty<Double> amount = new ObjectProperty<>(0.0);
-    BeanItemContainer<Account> accountsContainer = new BeanItemContainer<>(Account.class);
-    ObjectProperty<String> newJobTypeName = new ObjectProperty<>("");
-    ObjectProperty<Double> newJobTypeAmount = new ObjectProperty<>(0.0);
-    ObjectProperty<String> editedJobTypeName = new ObjectProperty<>("");
-    ObjectProperty<Double> editedJobTypeAmount = new ObjectProperty<>(0.0);
-    ObjectProperty<String> newPaymentTypeName = new ObjectProperty<>("");
-    ObjectProperty<Double> newPaymentTypeAmount = new ObjectProperty<>(0.0);
-    ObjectProperty<String> editedPaymentTypeName = new ObjectProperty<>("");
-    ObjectProperty<Double> editedPaymentTypeAmount = new ObjectProperty<>(0.0);
-    ObjectProperty<String> newUserUsername = new ObjectProperty<>("");
-    ObjectProperty<String> newUserPassword1 = new ObjectProperty<>("");
-    ObjectProperty<String> newUserPassword2 = new ObjectProperty<>("");
-    ObjectProperty<String> newUserEmail = new ObjectProperty<>("");
-    ObjectProperty<String> newUserFirstname = new ObjectProperty<>("");
-    ObjectProperty<String> newUserLastname = new ObjectProperty<>("");
-    BeanItemContainer<User> editUserPasswordUsers = new BeanItemContainer<>(User.class);
-    ObjectProperty<String> editUserPassword1 = new ObjectProperty<>("");
-    ObjectProperty<String> editUserPassword2 = new ObjectProperty<>("");
-    BeanItemContainer<User> editUserUsers = new BeanItemContainer<>(User.class);
-    ObjectProperty<String> editUserUsername = new ObjectProperty<>("");
-    ObjectProperty<String> editUserEmail = new ObjectProperty<>("");
-    ObjectProperty<String> editUserFirstname = new ObjectProperty<>("");
-    ObjectProperty<String> editUserLastname = new ObjectProperty<>("");
+    private Label greeting;
+    private AmountAndBalance amountAndBalance = new AmountAndBalance(); // NOSONAR
+    Binder<AmountAndBalance> amountAndBalanceBinder = new Binder<>(AmountAndBalance.class);
+    ListDataProvider<Transaction> recentJobs = new ListDataProvider<>(new ArrayList<>(10));
+    ListDataProvider<Transaction> recentPayments = new ListDataProvider<>(new ArrayList<>(10));
+    ListDataProvider<TransactionType> paymentTypes = new ListDataProvider<>(new ArrayList<>(10));
+    ListDataProvider<TransactionType> jobTypes = new ListDataProvider<>(new ArrayList<>(10));
+    ListDataProvider<Account> accountsContainer = new ListDataProvider<>(new ArrayList<>(10));
+    private TransactionType newJobType = new TransactionType(0, "", 0.0, true, false); // NOSONAR
+    Binder<TransactionType> newJobTypeBinder = new Binder<>(TransactionType.class);
+    private TransactionType editedJobType = new TransactionType(0, "", 0.0, true, false); // NOSONAR
+    Binder<TransactionType> editedJobTypeBinder = new Binder<>(TransactionType.class);
+    private TransactionType newPaymentType = new TransactionType(0, "", 0.0, false, true); // NOSONAR
+    Binder<TransactionType> newPaymentTypeBinder = new Binder<>(TransactionType.class);
+    private TransactionType editedPaymentType = new TransactionType(0, "", 0.0, false, true); // NOSONAR
+    Binder<TransactionType> editedPaymentTypeBinder = new Binder<>(TransactionType.class);
+    private User newUser = new User(0, "", "", "", ""); // NOSONAR
+    Binder<User> newUserBinder = new Binder<>(User.class);
+    private Passwords newUserPasswords = new Passwords("", ""); // NOSONAR
+    Binder<Passwords> newUserPasswordsBinder = new Binder<>(Passwords.class);
+    private User editedUser = new User(0, "", "", "", ""); // NOSONAR
+    Binder<User> editedUserBinder = new Binder<>(User.class);
+    private Passwords editedUserPasswords = new Passwords("", ""); // NOSONAR
+    Binder<Passwords> editedUserPasswordsBinder = new Binder<>(Passwords.class);
+    ListDataProvider<User> editUserPasswordUsers = new ListDataProvider<>(new ArrayList<>());
+    ListDataProvider<User> editUserUsers = new ListDataProvider<>(new ArrayList<>());
 
     public AdminFallbackView(UkelonnUIProvider provider, VaadinRequest request) {
+        amountAndBalanceBinder.setBean(amountAndBalance);
+        newJobTypeBinder.setBean(newJobType);
+        editedJobTypeBinder.setBean(editedJobType);
+        newPaymentTypeBinder.setBean(newPaymentType);
+        editedPaymentTypeBinder.setBean(editedPaymentType);
+        newUserBinder.setBean(newUser);
+        newUserPasswordsBinder.setBean(newUserPasswords);
+        editedUserBinder.setBean(editedUser);
+        editedUserPasswordsBinder.setBean(editedUserPasswords);
         this.provider = provider;
         VerticalLayout content = new VerticalLayout();
         content.addStyleName("ukelonn-responsive-layout");
         Responsive.makeResponsive(content);
         // Display the greeting
-        Component greeting = new Label(greetingProperty);
+        greeting = new Label("Ukelønn admin UI, bruker: ????");
         greeting.setStyleName("h1");
         content.addComponent(greeting);
 
         // Updatable containers
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-        editUserPasswordUsers.addAll(getUsers(provider, getClass()));
-        editUserUsers.addAll(getUsers(provider, getClass()));
-        ComboBox paymenttype = new ComboBox("Registrer utbetaling", paymentTypes);
+        paymentTypes.getItems().clear();
+        paymentTypes.getItems().addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.getItems().clear();
+        jobTypes.getItems().addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        editUserPasswordUsers.getItems().clear();
+        editUserPasswordUsers.getItems().addAll(getUsers(provider, getClass()));
+        editUserUsers.getItems().clear();
+        editUserUsers.getItems().addAll(getUsers(provider, getClass()));
+        ComboBox<TransactionType> paymenttype = new ComboBox<>("Registrer utbetaling");
+        paymenttype.setDataProvider(paymentTypes);
 
         Accordion accordion = new Accordion();
         createPaymentRegistrationTab(paymenttype, accordion);
@@ -119,46 +134,37 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
     public void enter(ViewChangeEvent event) {
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
         AdminUser admin = getAdminUserFromDatabase(provider, getClass(), currentUser);
-        greetingProperty.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
+        greeting.setValue("Ukelønn admin UI, bruker: " + admin.getFirstname());
     }
 
-    private void createPaymentRegistrationTab(ComboBox paymenttype, Accordion accordion) {
+    private void createPaymentRegistrationTab(ComboBox<TransactionType> paymenttype, Accordion accordion) {
         Accordion registerPaymentTab = new Accordion();
         VerticalLayout userinfo = new VerticalLayout();
         List<Account> accounts = getAccounts(provider, getClass());
-        accountsContainer.addAll(accounts);
-        ComboBox accountSelector = new ComboBox("Velg hvem det skal betales til", accountsContainer);
-        accountSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        accountSelector.setItemCaptionPropertyId("fullName");
-        accountSelector.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -781514357123503476L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    updateFormsAfterAccountIsSelected(paymenttype, accountSelector);
-                }
-            });
+        accountsContainer.getItems().clear();
+        accountsContainer.getItems().addAll(accounts);
+        ComboBox<Account> accountSelector = new ComboBox<>("Velg hvem det skal betales til");
+        accountSelector.setDataProvider(accountsContainer);
+        accountSelector.setItemCaptionGenerator(Account::getFullName);
+        accountSelector.addSelectionListener(account->updateFormsAfterAccountIsSelected(paymenttype, accountSelector));
         userinfo.addComponent(accountSelector);
 
         FormLayout paymentLayout = new FormLayout();
         TextField balanceDisplay = new TextField("Til gode:");
-        balanceDisplay.setPropertyDataSource(balance);
+        amountAndBalanceBinder.forField(balanceDisplay)
+            .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
+            .bind("balance");
         balanceDisplay.addStyleName("inline-label");
         paymentLayout.addComponent(balanceDisplay);
 
-        paymenttype.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        paymenttype.setItemCaptionPropertyId(TRANSACTION_TYPE_NAME);
-        paymenttype.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -8306551057458139402L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    updateVisiblePaymentPropertiesWhenPaymentTypeIsSelected(paymenttype);
-                }
-            });
+        paymenttype.setItemCaptionGenerator(TransactionType::getTransactionTypeName);
+        paymenttype.addSelectionListener(pt->updateVisiblePaymentPropertiesWhenPaymentTypeIsSelected(paymenttype));
         paymentLayout.addComponent(paymenttype);
 
-        TextField amountField = new TextField("Beløp:", amount);
+        TextField amountField = new TextField("Beløp:");
+        amountAndBalanceBinder.forField(amountField)
+            .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
+            .bind("amount");
         paymentLayout.addComponent(amountField);
 
         paymentLayout.addComponent(
@@ -175,23 +181,28 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
 
         registerPaymentTab.addTab(userinfo, "Brukerinfo");
         VerticalLayout jobsTab = new VerticalLayout();
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
+        Grid<Transaction> lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
         jobsTab.addComponent(lastJobsTable);
         registerPaymentTab.addTab(jobsTab, "Siste jobber");
         VerticalLayout paymentsTab = new VerticalLayout();
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
+        Grid<Transaction> lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
         paymentsTab.addComponent(lastPaymentsTable);
         registerPaymentTab.addTab(paymentsTab, "Siste utbetalinger");
         accordion.addTab(wrapInPanel(registerPaymentTab), "Registrere utbetaling");
     }
 
+    @SuppressWarnings("unchecked")
     private void createJobtypeAdminTab(Accordion accordion) {
         VerticalLayout jobtypeAdminTab = new VerticalLayout();
         Accordion jobtypes = new Accordion();
         FormLayout newJobTypeTab = new FormLayout();
-        TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:", newJobTypeName);
+        TextField newJobTypeNameField = new TextField("Navn på ny jobbtype:");
+        newJobTypeBinder.forField(newJobTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
         newJobTypeTab.addComponent(newJobTypeNameField);
-        TextField newJobTypeAmountField = new TextField("Beløp for ny jobbtype:", newJobTypeAmount);
+        TextField newJobTypeAmountField = new TextField("Beløp for ny jobbtype:");
+        newJobTypeBinder.forField(newJobTypeAmountField)
+            .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
+            .bind(TRANSACTION_AMOUNT_PROPERTY);
         newJobTypeTab.addComponent(newJobTypeAmountField);
         newJobTypeTab.addComponent(new Button("Lag jobbtype", new Button.ClickListener() {
                 private static final long serialVersionUID = 1338062460936195627L;
@@ -203,61 +214,71 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
             }));
         jobtypes.addTab(newJobTypeTab, "Lag ny jobbtype");
         VerticalLayout jobtypesform = new VerticalLayout();
-        Table jobtypesTable = new Table();
-        jobtypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
-        jobtypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
-        jobtypesTable.setContainerDataSource(jobTypes);
-        jobtypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
-        jobtypesTable.setSelectable(true);
-        jobtypesTable.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -8324617275480799162L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
-                    if (transactionType != null) {
-                        editedJobTypeName.setValue(transactionType.getTransactionTypeName());
-                        editedJobTypeAmount.setValue(transactionType.getTransactionAmount());
-                    }
-                }
-            });
+        Grid<TransactionType> jobtypesTable = new Grid<>(TransactionType.class);
+        jobtypesTable.setDataProvider(jobTypes);
+        jobtypesTable.setDataProvider(jobTypes);
+        jobtypesTable.setSelectionMode(SelectionMode.SINGLE);
+        jobtypesTable.removeColumn("id");
+        jobtypesTable.removeColumn("transactionIsWork");
+        jobtypesTable.removeColumn("transactionIsWagePayment");
+        Column<TransactionType, ?> nameColumn = jobtypesTable.getColumn(TRANSACTION_TYPE_NAME_PROPERTY).setCaption("Navn");
+        Column<TransactionType, ?> amountColumn = jobtypesTable.getColumn(TRANSACTION_AMOUNT_PROPERTY).setCaption("Beløp");
+        jobtypesTable.setColumnOrder(nameColumn, amountColumn);
+        jobtypesTable.addSelectionListener(jt->updateEditJobTypeFormsWhenJobTypeIsSelected(jobtypesTable));
         jobtypesform.addComponent(jobtypesTable);
         FormLayout editJobLayout = new FormLayout();
-        TextField editJobTypeNameField = new TextField("Endre Navn på jobbtype:", editedJobTypeName);
+        TextField editJobTypeNameField = new TextField("Endre Navn på jobbtype:");
+        editedJobTypeBinder.forField(editJobTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
         editJobLayout.addComponent(editJobTypeNameField);
-        TextField editJobTypeAmountField = new TextField("Endre beløp for jobbtype:", editedJobTypeAmount);
+        TextField editJobTypeAmountField = new TextField("Endre beløp for jobbtype:");
+        editedJobTypeBinder.forField(editJobTypeAmountField)
+            .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
+            .bind(TRANSACTION_AMOUNT_PROPERTY);
         editJobLayout.addComponent(editJobTypeAmountField);
-        editJobLayout.addComponent(new Button("Lagre endringer i jobbtype", new Button.ClickListener() {
-                private static final long serialVersionUID = 347708021528799659L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    saveChangesToJobType(jobtypesTable, editJobTypeNameField);
-                }
-            }));
+        Button saveChanges = new Button("Lagre endringer i jobbtype");
+        saveChanges.addClickListener(event->saveChangesToJobType(jobtypesTable, editJobTypeNameField));
+        editJobLayout.addComponent(saveChanges);
         jobtypesform.addComponent(editJobLayout);
         jobtypes.addTab(jobtypesform, "Endre jobbtyper");
         jobtypeAdminTab.addComponent(jobtypes);
         accordion.addTab(wrapInPanel(jobtypeAdminTab), "Administrere jobbtyper");
     }
 
-    private boolean identicalToExistingValues(TransactionType transactionType, ObjectProperty<String> transactionTypeName, ObjectProperty<Double> transactionTypeAmount) {
+    void updateEditJobTypeFormsWhenJobTypeIsSelected(Grid<TransactionType> jobtypesTable) {
+        Set<TransactionType> selection = jobtypesTable.getSelectedItems();
+        TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
+        if (transactionType != null) {
+            editedJobTypeBinder.readBean(transactionType);
+            try {
+                editedJobTypeBinder.writeBean(editedJobTypeBinder.getBean());
+            } catch (ValidationException e) {
+                throw new UkelonnException("Failed to select job type for change", e);
+            }
+        }
+    }
+
+    private boolean identicalToExistingValues(TransactionType transactionType, TransactionType otherTransactionType) {
         if (transactionType == null || transactionType.getTransactionTypeName() == null || transactionType.getTransactionAmount() == null) {
             return false; // Nothing to compare against, always false
         }
 
         return
-            transactionType.getTransactionTypeName().equals(transactionTypeName.getValue()) &&
-            transactionType.getTransactionAmount().equals(transactionTypeAmount.getValue());
+            transactionType.getTransactionTypeName().equals(otherTransactionType.getTransactionTypeName()) &&
+            transactionType.getTransactionAmount().equals(otherTransactionType.getTransactionAmount());
     }
 
+    @SuppressWarnings("unchecked")
     private void createPaymenttypesAdminTab(Accordion accordion) {
         VerticalLayout paymentstypeadminTab = new VerticalLayout();
         Accordion paymentstypeadmin = new Accordion();
         FormLayout newpaymenttypeTab = new FormLayout();
-        TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:", newPaymentTypeName);
+        TextField newPaymentTypeNameField = new TextField("Navn på ny betalingstype:");
+        newPaymentTypeBinder.forField(newPaymentTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
         newpaymenttypeTab.addComponent(newPaymentTypeNameField);
-        TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:", newPaymentTypeAmount);
+        TextField newPaymentTypeAmountField = new TextField("Beløp for ny betalingstype:");
+        newPaymentTypeBinder.forField(newPaymentTypeAmountField)
+            .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
+            .bind(TRANSACTION_AMOUNT_PROPERTY);
         newpaymenttypeTab.addComponent(newPaymentTypeAmountField);
         newpaymenttypeTab.addComponent(new Button("Lag betalingstype", new Button.ClickListener() {
                 private static final long serialVersionUID = -2160144195348196823L;
@@ -269,25 +290,25 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
             }));
         paymentstypeadmin.addTab(newpaymenttypeTab, "Lag ny utbetalingstype");
         VerticalLayout paymenttypesform = new VerticalLayout();
-        Table paymentTypesTable = new Table();
-        paymentTypesTable.addContainerProperty(TRANSACTION_TYPE_NAME, String.class, null, "Navn", null, null);
-        paymentTypesTable.addContainerProperty(TRANSACTION_AMOUNT, Double.class, null, "Beløp", null, null);
-        paymentTypesTable.setContainerDataSource(paymentTypes);
-        paymentTypesTable.setVisibleColumns(TRANSACTION_TYPE_NAME, TRANSACTION_AMOUNT);
-        paymentTypesTable.setSelectable(true);
-        paymentTypesTable.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -1432137451555587595L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypesTable);
-                }
-            });
+        Grid<TransactionType> paymentTypesTable = new Grid<>(TransactionType.class);
+        paymentTypesTable.setDataProvider(paymentTypes);
+        paymentTypesTable.setDataProvider(paymentTypes);
+        paymentTypesTable.removeColumn("id");
+        paymentTypesTable.removeColumn("transactionIsWork");
+        paymentTypesTable.removeColumn("transactionIsWagePayment");
+        Column<TransactionType, ?> nameColumn = paymentTypesTable.getColumn(TRANSACTION_TYPE_NAME_PROPERTY).setCaption("Navn");
+        Column<TransactionType, ?> amountColumn = paymentTypesTable.getColumn(TRANSACTION_AMOUNT_PROPERTY).setCaption("Beløp");
+        paymentTypesTable.setColumnOrder(nameColumn, amountColumn);
+        paymentTypesTable.addSelectionListener(pt->updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypesTable));
         paymenttypesform.addComponent(paymentTypesTable);
         FormLayout editPaymentsLayout = new FormLayout();
-        TextField editPaymentTypeNameField = new TextField("Endre Navn på betalingstype:", editedPaymentTypeName);
+        TextField editPaymentTypeNameField = new TextField("Endre Navn på betalingstype:");
+        editedPaymentTypeBinder.forField(editPaymentTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
         editPaymentsLayout.addComponent(editPaymentTypeNameField);
-        TextField editPaymentTypeAmountField = new TextField("Endre beløp for betalingstype:", editedPaymentTypeAmount);
+        TextField editPaymentTypeAmountField = new TextField("Endre beløp for betalingstype:");
+        editedPaymentTypeBinder.forField(editPaymentTypeAmountField)
+            .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
+            .bind(TRANSACTION_AMOUNT_PROPERTY);
         editPaymentsLayout.addComponent(editPaymentTypeAmountField);
         editPaymentsLayout.addComponent(new Button("Lagre endringer i betalingstype", new Button.ClickListener() {
                 private static final long serialVersionUID = -2168895121731055862L;
@@ -308,155 +329,110 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
         VerticalLayout useradminTab = new VerticalLayout();
         Accordion useradmin = new Accordion();
         FormLayout newUserTab = new FormLayout();
-        TextField newUserUsernameField = new TextField("Brukernavn:", newUserUsername);
+        TextField newUserUsernameField = new TextField("Brukernavn:");
+        newUserBinder.forField(newUserUsernameField).bind("username");
         newUserTab.addComponent(newUserUsernameField);
-        PasswordField newUserPassword1Field = new PasswordField("Passord:", newUserPassword1);
+        PasswordField newUserPassword1Field = new PasswordField("Passord:");
+        newUserPasswordsBinder.forField(newUserPassword1Field).bind("password1");
         newUserTab.addComponent(newUserPassword1Field);
-        PasswordField newUserPassword2Field = new PasswordField("Gjenta passord:", newUserPassword2);
-        newUserPassword2Field.addValidator(new PasswordCompareValidator(newUserPassword1Field));
+        PasswordField newUserPassword2Field = new PasswordField("Gjenta passord:");
+        newUserPasswordsBinder
+            .forField(newUserPassword2Field)
+            .withValidator(new PasswordCompareValidator("Passord ikke identisk", newUserPassword1Field))
+            .bind("password2");
         newUserTab.addComponent(newUserPassword2Field);
-        TextField newUserEmailField = new TextField("Epostadresse:", newUserEmail);
-        newUserEmailField.addValidator(new EmailValidator("Ikke en gyldig epostadresse"));
+        TextField newUserEmailField = new TextField("Epostadresse:");
+        newUserBinder.forField(newUserEmailField)
+            .withValidator(new EmailValidator("Ikke en gyldig epostadresse"))
+            .bind("email");
         newUserTab.addComponent(newUserEmailField);
-        TextField newUserFirstnameField = new TextField("Fornavn:", newUserFirstname);
+        TextField newUserFirstnameField = new TextField("Fornavn:");
+        newUserBinder.forField(newUserFirstnameField).bind("firstname");
         newUserTab.addComponent(newUserFirstnameField);
-        TextField newUserLastnameField = new TextField("Etternavn:", newUserLastname);
+        TextField newUserLastnameField = new TextField("Etternavn:");
+        newUserBinder.forField(newUserFirstnameField).bind("lastname");
         newUserTab.addComponent(newUserLastnameField);
-        newUserTab.addComponent(new Button("Lag bruker", new Button.ClickListener() {
-                private static final long serialVersionUID = 2493188115512727312L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    if (newUserIsAValidUser())
-                    {
-                        addUserToDatabase(
-                            provider,
-                            classForLogMessage,
-                            newUserUsername.getValue(),
-                            newUserPassword2.getValue(),
-                            newUserEmail.getValue(),
-                            newUserFirstname.getValue(),
-                            newUserLastname.getValue());
-
-                        clearAllNewUserFormElements();
-
-                        refreshListWidgetsAffectedByChangesToUsers();
-                    }
-                }
-
-                private void clearAllNewUserFormElements() {
-                    newUserUsername.setValue("");
-                    newUserPassword1.setValue("");
-                    newUserPassword2.setValue("");
-                    newUserEmail.setValue("");
-                    newUserFirstname.setValue("");
-                    newUserLastname.setValue("");
-                }
-
-                private boolean newUserIsAValidUser() {
-                    return
-                        !"".equals(newUserUsername.getValue()) &&
-                        !"".equals(newUserPassword1.getValue()) &&
-                        newUserPassword1.getValue().equals(newUserPassword2Field.getValue()) &&
-                        newUserPassword2Field.isValid() &&
-                        newUserEmailField.isValid() &&
-                        !"".equals(newUserFirstname.getValue()) &&
-                        !"".equals(newUserLastname.getValue());
-                }
-
-                private void refreshListWidgetsAffectedByChangesToUsers() {
-                    List<Account> accounts = getAccounts(provider, classForLogMessage);
-                    accountsContainer.removeAllItems();
-                    accountsContainer.addAll(accounts);
-                    List<User> users = getUsers(provider, classForLogMessage);
-                    editUserPasswordUsers.removeAllItems();
-                    editUserUsers.removeAllItems();
-                    editUserPasswordUsers.addAll(users);
-                    editUserUsers.addAll(users);
-                }
-            }));
+        Button createUser = new Button("Lag bruker");
+        createUser.addClickListener(event->createNewUser(getClass()));
+        newUserTab.addComponent(createUser);
         useradmin.addTab(newUserTab, "Legg til ny bruker");
         FormLayout changeuserpasswordTab = new FormLayout();
-        ComboBox editUserPasswordUsersField = new ComboBox("Velg bruker", editUserPasswordUsers);
-        editUserPasswordUsersField.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        editUserPasswordUsersField.setItemCaptionPropertyId("fullname");
-        editUserPasswordUsersField.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = -5949282377337763508L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    User user = (User) editUserPasswordUsersField.getValue();
-                    if (user != null) {
-                        editUserPassword1.setValue("");
-                        editUserPassword2.setValue("");
-                    }
+        ComboBox<User> editUserPasswordUsersField = new ComboBox<>("Velg bruker");
+        editUserPasswordUsersField.setDataProvider(editUserPasswordUsers);
+        editUserPasswordUsersField.setItemCaptionGenerator(User::getFullname);
+        editUserPasswordUsersField.addSelectionListener(u->updatePasswordFieldsWhenUserIsSelected(editUserPasswordUsersField));
+        changeuserpasswordTab.addComponent(editUserPasswordUsersField);
+        PasswordField editUserPassword1Field = new PasswordField("Passord:");
+        editedUserPasswordsBinder.forField(editUserPassword1Field).bind("password1");
+        changeuserpasswordTab.addComponent(editUserPassword1Field);
+        PasswordField editUserPassword2Field = new PasswordField("Gjenta passord:");
+        editedUserPasswordsBinder
+            .forField(editUserPassword2Field)
+            .withValidator(new PasswordCompareValidator("Passord ikke identisk", editUserPassword1Field))
+            .bind("password2");
+        changeuserpasswordTab.addComponent(editUserPassword2Field);
+        Button changePassword = new Button("Endre passord");
+        changePassword.addClickListener(event->{
+                User user = editUserPasswordUsersField.getValue();
+                if (user != null &&
+                    !"".equals(editUserPassword1Field.getValue())
+                    && editedUserPasswordsBinder.isValid())
+                {
+                    Passwords bean = editedUserPasswordsBinder.getBean();
+                    changePasswordForUser(provider, user.getUsername(), bean.getPassword2(), classForLogMessage);
+                    bean.setPassword1("");
+                    bean.setPassword2("");
+                    editedUserPasswordsBinder.readBean(bean);
                 }
             });
-        changeuserpasswordTab.addComponent(editUserPasswordUsersField);
-        PasswordField editUserPassword1Field = new PasswordField("Passord:", editUserPassword1);
-        changeuserpasswordTab.addComponent(editUserPassword1Field);
-        PasswordField editUserPassword2Field = new PasswordField("Gjenta passord:", editUserPassword2);
-        editUserPassword2Field.addValidator(new PasswordCompareValidator(editUserPassword1Field));
-        changeuserpasswordTab.addComponent(editUserPassword2Field);
-        changeuserpasswordTab.addComponent(new Button("Endre passord", new Button.ClickListener() {
-                private static final long serialVersionUID = 811470485549038444L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    User user = (User) editUserPasswordUsersField.getValue();
-                    if (user != null &&
-                        !"".equals(editUserPassword1Field.getValue()) &&
-                        editUserPassword2Field.isValid())
-                    {
-                        changePasswordForUser(provider, user.getUsername(), editUserPassword2.getValue(), classForLogMessage);
-                        editUserPassword1.setValue("");
-                        editUserPassword2.setValue("");
-                    }
-                }
-            }));
+        changeuserpasswordTab.addComponent(changePassword);
         useradmin.addTab(changeuserpasswordTab, "Bytt passord på bruker");
         FormLayout usersTab = new FormLayout();
-        ComboBox editUserUsersField = new ComboBox("Velg bruker", editUserUsers);
-        editUserUsersField.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        editUserUsersField.setItemCaptionPropertyId("fullname");
-        editUserUsersField.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = 7774428541884411808L;
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    User user = (User) editUserUsersField.getValue();
-                    if (user != null) {
-                        editUserUsername.setValue(user.getUsername());
-                        editUserEmail.setValue(user.getEmail());
-                        editUserFirstname.setValue(user.getFirstname());
-                        editUserLastname.setValue(user.getLastname());
-                    }
+        ComboBox<User> editUserUsersField = new ComboBox<>("Velg bruker");
+        editUserUsersField.setDataProvider(editUserUsers);
+        editUserUsersField.setItemCaptionGenerator(User::getFullname);
+        editUserUsersField.addSelectionListener(u->{
+                Optional<User> user = editUserUsersField.getSelectedItem();
+                if (user.isPresent()) {
+                    editedUserBinder.readBean(user.get());
                 }
             });
         usersTab.addComponent(editUserUsersField);
 
-        TextField editUserUsernameField = new TextField("Brukernavn:", editUserUsername);
+        TextField editUserUsernameField = new TextField("Brukernavn:");
+
         usersTab.addComponent(editUserUsernameField);
-        TextField editUserEmailField = new TextField("Epostadresse:", editUserEmail);
-        editUserEmailField.addValidator(new EmailValidator("Ikke en gyldig epostadresse"));
+        TextField editUserEmailField = new TextField("Epostadresse:");
+        editedUserBinder.forField(editUserEmailField)
+            .withValidator(new EmailValidator("Ikke en gyldig epostadresse"))
+            .bind("email");
         usersTab.addComponent(editUserEmailField);
-        TextField editUserFirstnameField = new TextField("Fornavn:", editUserFirstname);
+        TextField editUserFirstnameField = new TextField("Fornavn:");
+        editedUserBinder.forField(editUserFirstnameField).bind("firstname");
         usersTab.addComponent(editUserFirstnameField);
-        TextField editUserLastnameField = new TextField("Etternavn:", editUserLastname);
+        TextField editUserLastnameField = new TextField("Etternavn:");
+        editedUserBinder.forField(editUserFirstnameField).bind("lastname");
         usersTab.addComponent(editUserLastnameField);
         usersTab.addComponent(new Button("Lagre endringer av bruker", new Button.ClickListener() {
                 private static final long serialVersionUID = 1658760136279718499L;
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    User user = (User) editUserUsersField.getValue();
-                    if (user != null) {
-                        user.setUsername(editUserUsername.getValue());
-                        user.setEmail(editUserEmail.getValue());
-                        user.setFirstname(editUserFirstname.getValue());
-                        user.setLastname(editUserLastname.getValue());
+                    Optional<User> user = editUserUsersField.getSelectedItem();
+                    if (user.isPresent()) {
+                        User editeduser = editedUserBinder.getBean();
+                        try {
+                            editedUserBinder.writeBean(editeduser);
+                        } catch (ValidationException e) {
+                            throw new UkelonnException("Failed to set form fields for user to be edited", e);
+                        }
 
-                        updateUserInDatabase(provider, classForLogMessage, user);
+                        user.get().setUsername(editeduser.getUsername());
+                        user.get().setEmail(editeduser.getEmail());
+                        user.get().setFirstname(editeduser.getFirstname());
+                        user.get().setLastname(editeduser.getLastname());
+
+                        updateUserInDatabase(provider, classForLogMessage, user.get());
 
                         clearFormElements();
 
@@ -465,21 +441,22 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
                 }
 
                 private void clearFormElements() {
-                    editUserUsername.setValue("");
-                    editUserEmail.setValue("");
-                    editUserFirstname.setValue("");
-                    editUserLastname.setValue("");
+                    User empty = new User(0, "", "", "", "");
+                    editedUserBinder.readBean(empty);
                 }
 
                 private void refreshListWidgetsAffectedByChangesToUsers() {
                     List<Account> accounts = getAccounts(provider, classForLogMessage);
-                    accountsContainer.removeAllItems();
-                    accountsContainer.addAll(accounts);
+                    accountsContainer.getItems().clear();
+                    accountsContainer.getItems().addAll(accounts);
+                    accountsContainer.refreshAll();
                     List<User> users = getUsers(provider, classForLogMessage);
-                    editUserPasswordUsers.removeAllItems();
-                    editUserUsers.removeAllItems();
-                    editUserPasswordUsers.addAll(users);
-                    editUserUsers.addAll(users);
+                    editUserPasswordUsers.getItems().clear();
+                    editUserUsers.getItems().clear();
+                    editUserPasswordUsers.getItems().addAll(users);
+                    editUserUsers.getItems().addAll(users);
+                    editUserPasswordUsers.refreshAll();
+                    editUserUsers.refreshAll();
                 }
             }));
         useradmin.addTab(usersTab, "Endre brukere");
@@ -487,122 +464,214 @@ public class AdminFallbackView extends AbstractView { // NOSONAR
         accordion.addTab(wrapInPanel(useradminTab), "Administrere brukere");
     }
 
+    void updatePasswordFieldsWhenUserIsSelected(ComboBox<User> editUserPasswordUsersField) {
+        Optional<User> user = editUserPasswordUsersField.getSelectedItem();
+        if (user.isPresent()) {
+            Passwords bean = editedUserPasswordsBinder.getBean();
+            bean.setPassword1("");
+            bean.setPassword2("");
+            editedUserPasswordsBinder.readBean(bean);
+        }
+    }
+
+    void createNewUser(Class<?> classForLogMessage) {
+        if (newUserIsAValidUser())
+        {
+            addUserToDatabase(
+                provider,
+                classForLogMessage,
+                newUserBinder.getBean().getUsername(),
+                newUserPasswordsBinder.getBean().getPassword2(),
+                newUserBinder.getBean().getEmail(),
+                newUserBinder.getBean().getFirstname(),
+                newUserBinder.getBean().getLastname());
+
+            clearAllNewUserFormElements();
+
+            refreshListWidgetsAffectedByChangesToUsers();
+        }
+    }
+
+    private void clearAllNewUserFormElements() {
+        User emptyUser = new User(0, "", "", "", "");
+        Passwords blankPasswords = new Passwords("", "");
+        newUserBinder.readBean(emptyUser);
+        newUserPasswordsBinder.readBean(blankPasswords);
+        try {
+            newUserBinder.writeBean(newUserBinder.getBean());
+            newUserPasswordsBinder.writeBean(newUserPasswordsBinder.getBean());
+        } catch (ValidationException e) {
+            throw new UkelonnException("Failed to blank the \"new user\" form fields", e);
+        }
+    }
+
+    private boolean newUserIsAValidUser() {
+        return
+            !"".equals(newUserBinder.getBean().getUsername()) &&
+            !"".equals(newUserPasswordsBinder.getBean().getPassword1()) &&
+            newUserPasswordsBinder.getBean().getPassword1().equals(newUserPasswordsBinder.getBean().getPassword2()) &&
+            newUserPasswordsBinder.isValid() &&
+            newUserBinder.isValid() &&
+            !"".equals(newUserBinder.getBean().getFirstname()) &&
+            !"".equals(newUserBinder.getBean().getLastname());
+    }
+
+    private void refreshListWidgetsAffectedByChangesToUsers() {
+        List<Account> accounts = getAccounts(provider, getClass());
+        accountsContainer.getItems().clear();
+        accountsContainer.getItems().addAll(accounts);
+        List<User> users = getUsers(provider, getClass());
+        editUserPasswordUsers.getItems().clear();
+        editUserUsers.getItems().clear();
+        editUserPasswordUsers.getItems().addAll(users);
+        editUserUsers.getItems().addAll(users);
+        editUserPasswordUsers.refreshAll();
+        editUserUsers.refreshAll();
+    }
+
     private void refreshJobTypesFromDatabase() {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-        jobTypes.removeAllItems();
-        jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.getItems().clear();
+        jobTypes.getItems().addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+        jobTypes.refreshAll();
     }
 
     private void refreshPaymentTypesFromDatabase() {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-        paymentTypes.removeAllItems();
-        paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        paymentTypes.getItems().clear();
+        paymentTypes.getItems().addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+        paymentTypes.refreshAll();
     }
 
-    void updateFormsAfterAccountIsSelected(ComboBox paymenttype, ComboBox accountSelector) {
-        Account account = (Account) accountSelector.getValue();
-        jobTypes.removeAllItems();
-        paymentTypes.removeAllItems();
-        recentJobs.removeAllItems();
-        recentPayments.removeAllItems();
+    void updateFormsAfterAccountIsSelected(ComboBox<TransactionType> paymenttype, ComboBox<Account> accountSelector) {
+        Account account = accountSelector.getValue();
+        jobTypes.getItems().clear();
+        paymentTypes.getItems().clear();
+        recentJobs.getItems().clear();
+        recentPayments.getItems().clear();
         if (account != null) {
             refreshAccount(provider, getClass(), account);
-            balance.setValue(account.getBalance());
+            amountAndBalanceBinder.getBean().setBalance(account.getBalance());
+            amountAndBalanceBinder.readBean(amountAndBalanceBinder.getBean());
             Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
-            jobTypes.addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
-            paymentTypes.addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
-            paymenttype.select(transactionTypes.get(ID_OF_PAY_TO_BANK));
-            amount.setValue(balance.getValue());
-            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
-            recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+            jobTypes.getItems().addAll(getJobTypesFromTransactionTypes(transactionTypes.values()));
+            paymentTypes.getItems().addAll(getPaymentTypesFromTransactionTypes(transactionTypes.values()));
+            paymenttype.setSelectedItem(transactionTypes.get(ID_OF_PAY_TO_BANK));
+            amountAndBalanceBinder.getBean().setBalance(account.getBalance());
+            amountAndBalanceBinder.readBean(amountAndBalanceBinder.getBean());
+            recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+            recentPayments.getItems().addAll(getPaymentsFromAccount(provider, account, getClass()));
         }
+
+        jobTypes.refreshAll();
+        paymentTypes.refreshAll();
+        recentJobs.refreshAll();
+        recentPayments.refreshAll();
     }
 
-    void updateVisiblePaymentPropertiesWhenPaymentTypeIsSelected(ComboBox paymenttype) {
-        TransactionType payment = (TransactionType) paymenttype.getValue();
+    void updateVisiblePaymentPropertiesWhenPaymentTypeIsSelected(ComboBox<TransactionType> paymenttype) {
+        TransactionType payment = paymenttype.getValue();
         if (payment != null) {
             Double paymentAmount = payment.getTransactionAmount();
             if (payment.getId() == ID_OF_PAY_TO_BANK || paymentAmount == null) {
-                amount.setValue(balance.getValue());
+                AmountAndBalance bean = amountAndBalanceBinder.getBean();
+                bean.setAmount(bean.getBalance());
+                amountAndBalanceBinder.readBean(bean);
             } else {
-                amount.setValue(paymentAmount);
+                AmountAndBalance bean = amountAndBalanceBinder.getBean();
+                bean.setAmount(paymentAmount);
+                amountAndBalanceBinder.readBean(bean);
             }
         }
     }
 
-    void registerPaymentInDatabase(ComboBox paymenttype, ComboBox accountSelector) {
-        Account account = (Account) accountSelector.getValue();
-        TransactionType payment = (TransactionType) paymenttype.getValue();
+    void registerPaymentInDatabase(ComboBox<TransactionType> paymenttype, ComboBox<Account> accountSelector) {
+        Account account = accountSelector.getValue();
+        TransactionType payment = paymenttype.getValue();
         if (account != null && payment != null) {
-            addNewPaymentToAccount(provider, getClass(), account, payment, amount.getValue());
-            recentPayments.removeAllItems();
-            recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
-            recentJobs.removeAllItems();
-            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+            addNewPaymentToAccount(provider, getClass(), account, payment, amountAndBalanceBinder.getBean().getAmount());
+            recentPayments.getItems().clear();
+            recentPayments.getItems().addAll(getPaymentsFromAccount(provider, account, getClass()));
+            recentPayments.refreshAll();
+            recentJobs.getItems().clear();
+            recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+            recentJobs.refreshAll();
             refreshAccount(provider, getClass(), account);
-            balance.setValue(account.getBalance());
-            amount.setValue(0.0);
+            AmountAndBalance bean = amountAndBalanceBinder.getBean();
+            bean.setBalance(account.getBalance());
+            bean.setAmount(0.0);
+            amountAndBalanceBinder.readBean(bean);
         }
     }
 
     void makeNewJobType() {
-        String jobname = newJobTypeName.getValue();
-        Double jobamount = newJobTypeAmount.getValue();
-        if (!"".equals(jobname) && !Double.valueOf(0.0).equals(jobamount)) {
-            addJobTypeToDatabase(provider, getClass(), jobname, jobamount);
-            newJobTypeName.setValue("");
-            newJobTypeAmount.setValue(0.0);
+        TransactionType newJob = newJobTypeBinder.getBean();
+        if (!"".equals(newJob.getTransactionTypeName()) && !Double.valueOf(0.0).equals(newJob.getTransactionAmount())) {
+            addJobTypeToDatabase(provider, getClass(), newJob.getTransactionTypeName(), newJob.getTransactionAmount());
+            newJob.setTransactionTypeName("");
+            newJob.setTransactionAmount(0.0);
+            newJobTypeBinder.readBean(newJob);
             refreshJobTypesFromDatabase();
         }
     }
 
-    void saveChangesToJobType(Table jobtypesTable, TextField editJobTypeNameField) {
-        TransactionType transactionType = (TransactionType) jobtypesTable.getValue();
+    void saveChangesToJobType(Grid<TransactionType> jobtypesTable, TextField editJobTypeNameField) {
+        Set<TransactionType> selectedJobtypes = jobtypesTable.getSelectedItems();
+        TransactionType transactionType = selectedJobtypes.isEmpty() ? null : selectedJobtypes.iterator().next();
         if (transactionType != null &&
             !"".equals(editJobTypeNameField.getValue()) &&
-            !identicalToExistingValues(transactionType, editedJobTypeName, editedJobTypeAmount))
+            !identicalToExistingValues(transactionType, editedJobTypeBinder.getBean()))
         {
-            transactionType.setTransactionTypeName(editedJobTypeName.getValue());
-            transactionType.setTransactionAmount(editedJobTypeAmount.getValue());
+            TransactionType editedJobtype = editedJobTypeBinder.getBean();
+            transactionType.setTransactionTypeName(editedJobtype.getTransactionTypeName());
+            transactionType.setTransactionAmount(editedJobtype.getTransactionAmount());
             updateTransactionTypeInDatabase(provider, getClass(), transactionType);
-            jobtypesTable.setValue(null);
-            editedJobTypeName.setValue("");
-            editedJobTypeAmount.setValue(0.0);
+            jobtypesTable.deselectAll();
+            editedJobtype.setTransactionTypeName("");
+            editedJobtype.setTransactionAmount(0.0);
+            editedJobTypeBinder.readBean(editedJobtype);
             refreshJobTypesFromDatabase();
         }
     }
 
     void createPaymentType() {
-        String paymentName = newPaymentTypeName.getValue();
-        Double paymentAmount = newPaymentTypeAmount.getValue();
-        if (!"".equals(paymentName)) {
-            addPaymentTypeToDatabase(provider, getClass(), paymentName, paymentAmount);
-            newPaymentTypeName.setValue("");
-            newPaymentTypeAmount.setValue(0.0);
+        TransactionType newPaymenttype = newPaymentTypeBinder.getBean();
+        if (!"".equals(newPaymenttype.getTransactionTypeName())) {
+            addPaymentTypeToDatabase(provider, getClass(), newPaymenttype.getTransactionTypeName(), newPaymenttype.getTransactionAmount());
+            newPaymenttype.setTransactionTypeName("");
+            newPaymenttype.setTransactionAmount(0.0);
+            newPaymentTypeBinder.readBean(newPaymenttype);
             refreshPaymentTypesFromDatabase();
         }
     }
 
-    void updatePaymentForEditWhenPaymentTypeIsSelected(Table paymentTypesTable) {
-        TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
+    void updatePaymentForEditWhenPaymentTypeIsSelected(Grid<TransactionType> paymentTypesTable) {
+        Set<TransactionType> selectedPaymenttypes = paymentTypesTable.getSelectedItems();
+        TransactionType transactionType = selectedPaymenttypes.isEmpty() ? null : selectedPaymenttypes.iterator().next();
         if (transactionType != null) {
-            editedPaymentTypeName.setValue(transactionType.getTransactionTypeName());
-            editedPaymentTypeAmount.setValue(transactionType.getTransactionAmount());
+            editedPaymentTypeBinder.readBean(transactionType);
+            try {
+                editedPaymentTypeBinder.writeBean(editedPaymentTypeBinder.getBean());
+            } catch (ValidationException e) {
+                throw new UkelonnException("Failed to update payment type model bean", e);
+            }
         }
     }
 
-    void saveChangesToPaymentTypes(Table paymentTypesTable, TextField editPaymentTypeNameField) {
-        TransactionType transactionType = (TransactionType) paymentTypesTable.getValue();
+    void saveChangesToPaymentTypes(Grid<TransactionType> paymentTypesTable, TextField editPaymentTypeNameField) {
+        Set<TransactionType> selectedPaymenttypes = paymentTypesTable.getSelectedItems();
+        TransactionType transactionType = selectedPaymenttypes.isEmpty() ? null : selectedPaymenttypes.iterator().next();
         if (transactionType != null &&
             !"".equals(editPaymentTypeNameField.getValue()) &&
-            !identicalToExistingValues(transactionType, editedPaymentTypeName, editedPaymentTypeAmount))
+            !identicalToExistingValues(transactionType, editedPaymentTypeBinder.getBean()))
         {
-            transactionType.setTransactionTypeName(editedPaymentTypeName.getValue());
-            transactionType.setTransactionAmount(editedPaymentTypeAmount.getValue());
+            transactionType.setTransactionTypeName(editedPaymentTypeBinder.getBean().getTransactionTypeName());
+            transactionType.setTransactionAmount(editedPaymentTypeBinder.getBean().getTransactionAmount());
             updateTransactionTypeInDatabase(provider, getClass(), transactionType);
-            paymentTypesTable.setValue(null);
-            editedPaymentTypeName.setValue("");
-            editedPaymentTypeAmount.setValue(0.0);
+            paymentTypesTable.deselectAll();
+            editedPaymentTypeBinder.getBean().setTransactionTypeName("");
+            editedPaymentTypeBinder.getBean().setTransactionAmount(0.0);
+            editedPaymentTypeBinder.readBean(editedPaymentTypeBinder.getBean());
             refreshPaymentTypesFromDatabase();
         }
     }

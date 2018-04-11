@@ -15,24 +15,30 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import com.vaadin.v7.data.Validator;
-import com.vaadin.v7.ui.PasswordField;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.ValueContext;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.ui.PasswordField;
 
-public class PasswordCompareValidator implements Validator {
+public class PasswordCompareValidator extends AbstractValidator<String> {
     private static final long serialVersionUID = 2610490969282733208L;
     PasswordField otherPassword;
+    private String errorMessage;
 
-    public PasswordCompareValidator(PasswordField otherPassword) {
-        super();
+    public PasswordCompareValidator(String errorMessage, PasswordField otherPassword) {
+        super(errorMessage);
+        this.errorMessage = errorMessage;
         this.otherPassword = otherPassword;
     }
 
     @Override
-    public void validate(Object value) {
+    public ValidationResult apply(String value, ValueContext context) {
         String otherPasswordValue = otherPassword.getValue();
         if (!otherPasswordValue.equals(value)){
-            throw new InvalidValueException("Passwords aren't identical");
+            return ValidationResult.error(errorMessage);
         }
+
+        return ValidationResult.ok();
     }
 
 }

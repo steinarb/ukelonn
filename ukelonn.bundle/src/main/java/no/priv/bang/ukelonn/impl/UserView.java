@@ -17,38 +17,42 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.shiro.SecurityUtils;
 import org.vaadin.touchkit.ui.NavigationManager;
 import org.vaadin.touchkit.ui.NavigationView;
 import org.vaadin.touchkit.ui.VerticalComponentGroup;
 
+import com.vaadin.data.Binder;
+import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.NativeSelect;
-import com.vaadin.v7.ui.TextField;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.TextField;
+
+import no.priv.bang.ukelonn.impl.data.AmountAndBalance;
+
 import com.vaadin.ui.Button.ClickEvent;
 
 public class UserView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 1388525490129647161L;
     private UkelonnUIProvider provider;
     // Updatable containers
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");
-    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
-    private BeanItemContainer<TransactionType> jobTypesContainer; // NOSONAR
-    private BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
-    private BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
+    private Label greeting;
+    private AmountAndBalance amountAndBalance = new AmountAndBalance(); // NOSONAR
+    Binder<AmountAndBalance> amountAndBalanceBinder = new Binder<>(AmountAndBalance.class);
+    private ListDataProvider<TransactionType> jobTypesContainer = new ListDataProvider<>(new ArrayList<>(10));
+    private ListDataProvider<Transaction> recentJobs = new ListDataProvider<>(new ArrayList<Transaction>(10));
+    private ListDataProvider<Transaction> recentPayments = new ListDataProvider<>(new ArrayList<Transaction>(10));
     Account account; // NOSONAR
 
     public UserView(UkelonnUIProvider provider, VaadinRequest request) {
@@ -86,50 +90,52 @@ public class UserView extends AbstractView { // NOSONAR
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
         account = getAccountInfoFromDatabase(provider, getClass(), currentUser);
 
-        greetingProperty.setValue("Ukelønn for " + account.getFirstName());
-        balance.setValue(account.getBalance());
-        recentJobs.removeAllItems();
-        recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
-        recentPayments.removeAllItems();
-        recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+        greeting.setValue("Ukelønn for " + account.getFirstName());
+        recentJobs.getItems().clear();
+        recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+        recentJobs.refreshAll();
+        recentPayments.getItems().clear();
+        recentPayments.getItems().addAll(getPaymentsFromAccount(provider, account, getClass()));
+        recentPayments.refreshAll();
     }
 
     private VerticalComponentGroup createBalanceAndNewJobForm() {
+        amountAndBalanceBinder.setBean(amountAndBalance);
         CssLayout balanceAndNewJobForm = new CssLayout();
         VerticalComponentGroup balanceAndNewJobGroup = new VerticalComponentGroup();
         balanceAndNewJobGroup.setWidth("100%");
 
         // Display the greeting
-        Component greeting = new Label(greetingProperty);
+        greeting = new Label("Ukelønn for ????");
         greeting.setStyleName("h1");
         balanceAndNewJobGroup.addComponent(greeting);
 
         // Display the current balance
         TextField balanceDisplay = new TextField("Til gode:");
-        balanceDisplay.setPropertyDataSource(balance);
+        amountAndBalanceBinder.forField(balanceDisplay)
+            .withConverter(new StringToDoubleConverter("Ikke et tall"))
+            .bind("balance");
         balanceDisplay.addStyleName("inline-label");
         balanceAndNewJobGroup.addComponent(balanceDisplay);
 
         // Initialize the list of job types
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         List<TransactionType> jobTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
-        jobTypesContainer = new BeanItemContainer<>(TransactionType.class, jobTypes);
-        NativeSelect jobtypeSelector = new NativeSelect("Velg jobb", jobTypesContainer);
-        jobtypeSelector.setValue("Item " + 2);
-        jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
-        jobtypeSelector.setNullSelectionAllowed(true);
+        jobTypesContainer.getItems().clear();
+        jobTypesContainer.getItems().addAll(jobTypes);
+        jobTypesContainer.refreshAll();
+        NativeSelect<TransactionType> jobtypeSelector = new NativeSelect<>("Velg jobb", jobTypesContainer);
+        jobtypeSelector.setItemCaptionGenerator(TransactionType::getTransactionTypeName);
+        jobtypeSelector.setEmptySelectionAllowed(true);
+        jobtypeSelector.addSelectionListener(job->changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, amountAndBalanceBinder));
         balanceAndNewJobGroup.addComponent(jobtypeSelector);
-        ObjectProperty<Double> newJobAmount = new ObjectProperty<>(0.0);
-        TextField newAmountDisplay = new TextField(newJobAmount);
+
+        TextField newAmountDisplay = new TextField();
+        amountAndBalanceBinder.forField(newAmountDisplay)
+            .withConverter(new StringToDoubleConverter("Ikke et tall"))
+            .bind("amount");
         newAmountDisplay.setReadOnly(true);
         balanceAndNewJobGroup.addComponent(newAmountDisplay);
-        jobtypeSelector.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = 3145027593224884343L;
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, newJobAmount);
-                }
-            });
 
         // Have a clickable button
         balanceAndNewJobGroup.addComponent(new Button("Registrer jobb",
@@ -142,25 +148,41 @@ public class UserView extends AbstractView { // NOSONAR
                                                           }
                                                       }));
         balanceAndNewJobForm.addComponent(balanceAndNewJobGroup);
+        jobtypeSelector.setSelectedItem(jobTypes.get(0));
         return balanceAndNewJobGroup;
     }
 
-    void changeJobAmountWhenJobTypeIsChanged(NativeSelect jobtypeSelector, ObjectProperty<Double> newJobAmount) {
-        if (jobtypeSelector.getValue() == null) {
-            newJobAmount.setValue(0.0);
+    void changeJobAmountWhenJobTypeIsChanged(NativeSelect<TransactionType> jobtypeSelector, Binder<AmountAndBalance> binder) {
+        Optional<TransactionType> selectedJob = jobtypeSelector.getSelectedItem();
+        if (!selectedJob.isPresent()) {
+            updateAmount(binder, 0.0);
         } else {
-            newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
+            Double newAmount = selectedJob.get().getTransactionAmount();
+            updateAmount(binder, newAmount);
         }
     }
 
-    void registerJobInDatabase(NativeSelect jobtypeSelector) {
-        TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
+    void updateAmount(Binder<AmountAndBalance> binder, Double amount) {
+        AmountAndBalance bean = binder.getBean();
+        bean.setAmount(amount);
+        binder.readBean(bean);
+    }
+
+    void updateBalance(Binder<AmountAndBalance> binder, Double amount) {
+        AmountAndBalance bean = binder.getBean();
+        bean.setBalance(amount);
+        binder.readBean(bean);
+    }
+
+    void registerJobInDatabase(NativeSelect<TransactionType> jobtypeSelector) {
+        TransactionType jobType = jobtypeSelector.getValue();
         if (jobType != null) {
             registerNewJobInDatabase(provider, getClass(), account, jobType.getId(), jobType.getTransactionAmount());
             jobtypeSelector.setValue(null);
-            balance.setValue(account.getBalance());
-            recentJobs.removeAllItems();
-            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+            updateBalance(amountAndBalanceBinder, account.getBalance());
+            recentJobs.getItems().clear();
+            recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+            recentJobs.refreshAll();
         }
     }
 }

@@ -29,25 +29,22 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.ui.PasswordField;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
 
 
 public class LoginView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 4812377913694429252L;
-    ObjectProperty<String> username = new ObjectProperty<>("");
-    ObjectProperty<String> password = new ObjectProperty<>("");
 
     public LoginView(UkelonnUIProvider provider, Navigator navigator) {
         FormLayout content = new FormLayout();
-        TextField usernameField = new TextField("Username", username);
-        content.addComponent(usernameField);
-        PasswordField passwordfield = new PasswordField("Password", password);
-        content.addComponent(passwordfield);
+        TextField username = new TextField("Username", "");
+        content.addComponent(username);
+        PasswordField password = new PasswordField("Password", "");
+        content.addComponent(password);
         VerticalLayout notificationArea = new VerticalLayout();
         content.addComponent(notificationArea);
         Class<? extends LoginView> classForLogging = getClass();
@@ -56,7 +53,6 @@ public class LoginView extends AbstractView { // NOSONAR
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    passwordfield.commit();
                     Subject subject = SecurityUtils.getSubject();
 
                     UsernamePasswordToken token = new UsernamePasswordToken(username.getValue(), password.getValue().toCharArray(), true);

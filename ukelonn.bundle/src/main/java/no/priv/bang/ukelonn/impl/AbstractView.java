@@ -18,9 +18,6 @@ package no.priv.bang.ukelonn.impl;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.Locale;
 
 import org.vaadin.touchkit.ui.NavigationButton;
@@ -28,82 +25,60 @@ import org.vaadin.touchkit.ui.NavigationManager;
 import org.vaadin.touchkit.ui.NavigationView;
 import org.vaadin.touchkit.ui.VerticalComponentGroup;
 
+import com.vaadin.data.converter.StringToDateConverter;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.View;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.converter.StringToDateConverter;
-import com.vaadin.v7.ui.Table;
 
 public abstract class AbstractView extends VerticalLayout implements View { // NOSONAR
-    private static final String PAID_OUT = "paidOut";
-    private static final String TRANSACTION_TIME = "transactionTime";
+    protected static final String TRANSACTION_TYPE_NAME_PROPERTY = "transactionTypeName";
+    protected static final String TRANSACTION_AMOUNT_PROPERTY = "transactionAmount";
+    protected static final String IKKE_ET_TALL = "Ikke et tall";
     private static final long serialVersionUID = 267153275586375959L;
     public static URI addPathToURI(URI location, String path) {
         String combinedPath = location.getPath() + path;
         return location.resolve(combinedPath);
     }
 
-    protected Table createTransactionTable(String transactionTypeName, BeanItemContainer<Transaction> transactions, boolean addPaidOutColumn) {
-        Table transactionsTable = new Table();
-        transactionsTable.addContainerProperty(TRANSACTION_TIME, Date.class, null, "Dato", null, null);
-        transactionsTable.addContainerProperty("name", String.class, null, transactionTypeName, null, null);
-        transactionsTable.addContainerProperty("transactionAmount", Double.class, null, "Beløp", null, null);
-        ArrayList<String> visibleColumns = new ArrayList<>(Arrays.asList(TRANSACTION_TIME, "name", "transactionAmount"));
-        if (addPaidOutColumn) {
-            transactionsTable.addContainerProperty(PAID_OUT, CheckBox.class, null, "Utbetalt", null, null);
+    @SuppressWarnings("unchecked")
+    protected Grid<Transaction> createTransactionTable(String transactionTypeName, ListDataProvider<Transaction> transactions, boolean addPaidOutColumn) {
+        Grid<Transaction> transactionsTable = new Grid<>(Transaction.class);
+        transactionsTable.setDataProvider(transactions);
+        Column<Transaction, ?> transactionTime = transactionsTable.getColumn("transactionTime").setCaption("Dato");
+        Column<Transaction, ?> name = transactionsTable.getColumn("name").setCaption(transactionTypeName);
+        Column<Transaction, ?> transactionAmount = transactionsTable.getColumn(TRANSACTION_AMOUNT_PROPERTY).setCaption("Beløp");
+        transactionsTable.removeColumn("transactionType");
+        transactionsTable.removeColumn("id");
+        if (!addPaidOutColumn) {
+            transactionsTable.removeColumn("paidOut");
+            transactionsTable.setColumnOrder(transactionTime, name, transactionAmount);
+        } else {
+            Column<Transaction, ?> paidOut = transactionsTable.getColumn("paidOut").setCaption("Utbetalt");
+            transactionsTable.setColumnOrder(transactionTime, name, transactionAmount, paidOut);
         }
 
-        transactionsTable.setConverter(TRANSACTION_TIME, dateFormatter);
-        transactionsTable.setContainerDataSource(transactions);
-        transactionsTable.setVisibleColumns(visibleColumns.toArray(new Object[visibleColumns.size()]));
-        if (addPaidOutColumn) {
-            transactionsTable.addGeneratedColumn(PAID_OUT, new Table.ColumnGenerator() {
-                    private static final long serialVersionUID = -932068875568403416L;
-
-                    @Override
-                    public Object generateCell(Table source, Object itemId, Object columnId) {
-                        Boolean checked = (Boolean) source.getItem(itemId).getItemProperty(columnId).getValue();
-                        CheckBox checkBox = new CheckBox();
-                        checkBox.setValue(checked);
-                        checkBox.setHeight("25px");
-                        return checkBox;
-                    }
-                });
-        }
-
-        transactionsTable.setPageLength(CommonDatabaseMethods.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
         return transactionsTable;
     }
 
-    protected NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, BeanItemContainer<Transaction> transactions, String navigationViewCaption, boolean addPaidOutColumn) {
-        CssLayout transactionTableForm = new CssLayout();
+    protected NavigationView createNavigationViewWithTable(NavigationManager navigationManager, String tableTitle, ListDataProvider<Transaction> transactions, String navigationViewCaption, boolean addPaidOutColumn) {
         VerticalComponentGroup transactionTableGroup = new VerticalComponentGroup();
-        Table transactionTable = createTransactionTable(tableTitle, transactions, addPaidOutColumn);
-        if (addPaidOutColumn) {
-            reduceWidthOfNameColumn(transactionTable);
-        }
+        Grid<Transaction> transactionTable = createTransactionTable(tableTitle, transactions, addPaidOutColumn);
         transactionTableGroup.addComponent(transactionTable);
-        transactionTableForm.addComponent(transactionTableGroup);
-        NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableForm);
+        NavigationView transactionTableView = new NavigationView(navigationViewCaption, transactionTableGroup);
         navigationManager.addComponent(transactionTableView);
         navigationManager.navigateTo(transactionTableView);
         navigationManager.navigateBack();
         return transactionTableView;
-    }
-
-    private void reduceWidthOfNameColumn(Table transactionTable) {
-        transactionTable.setColumnExpandRatio("name", 80);
-        transactionTable.setColumnExpandRatio(PAID_OUT, 8);
     }
 
     protected NavigationButton createNavigationButton(String caption, NavigationView targetView) {

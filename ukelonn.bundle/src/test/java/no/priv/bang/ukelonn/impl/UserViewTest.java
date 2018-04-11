@@ -20,14 +20,18 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.vaadin.data.Binder;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.ui.NativeSelect;
+import com.vaadin.ui.NativeSelect;
+
+import no.priv.bang.ukelonn.impl.data.AmountAndBalance;
 
 
 public class UserViewTest {
@@ -40,6 +44,7 @@ public class UserViewTest {
         session = createSession();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testChangeJobAmountWhenJobTypeIsChanged() throws ServiceException, ServletException {
         UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
@@ -48,29 +53,34 @@ public class UserViewTest {
         UserView view = new UserView(provider, request);
 
         // Mock the vaadin component
-        NativeSelect jobtypeSelector = mock(NativeSelect.class);
-        TransactionType jobtype = mock(TransactionType.class);
-        double newAmountValue = 51;
-        when(jobtype.getTransactionAmount()).thenReturn(Double.valueOf(newAmountValue ));
-        when(jobtypeSelector.getValue()).thenReturn(null, jobtype);
+        NativeSelect<TransactionType> jobtypeSelector = mock(NativeSelect.class);
+        Double newAmountValue = 51.0;
+        TransactionType jobtype = new TransactionType(0, "", newAmountValue, true, false);
+        when(jobtypeSelector.getSelectedItem()).thenReturn(Optional.empty(), Optional.of(jobtype));
+
+        // Data storage and binder
+        Binder<AmountAndBalance> binder = new Binder<>(AmountAndBalance.class);
+        AmountAndBalance bean = new AmountAndBalance();
+        binder.setBean(bean);
 
         // Give the amount an inital value
         double initialJobAmount = 10.0;
-        ObjectProperty<Double> newJobAmount = new ObjectProperty<Double>(initialJobAmount);
+        view.updateAmount(binder, initialJobAmount);
 
         // Run the code under test
-        view.changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, newJobAmount);
+        view.changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, binder);
 
         // Verify value has changed
-        assertEquals(Double.valueOf(0.0), newJobAmount.getValue());
+        assertEquals(Double.valueOf(0.0), binder.getBean().getAmount(), 0);
 
         // Run the code under test
-        view.changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, newJobAmount);
+        view.changeJobAmountWhenJobTypeIsChanged(jobtypeSelector, binder);
 
         // Verify value has changed
-        assertEquals(Double.valueOf(newAmountValue), newJobAmount.getValue());
+        assertEquals(Double.valueOf(newAmountValue), binder.getBean().getAmount(), 0);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testRegisterJobInDatabase() {
         UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
@@ -79,7 +89,7 @@ public class UserViewTest {
         UserView view = new UserView(provider, request);
 
         // Mock setup
-        NativeSelect jobtypeSelector = mock(NativeSelect.class);
+        NativeSelect<TransactionType> jobtypeSelector = mock(NativeSelect.class);
         TransactionType jobType = mock(TransactionType.class);
         when(jobtypeSelector.getValue()).thenReturn(null, jobType);
         double accountBalance = 20;
@@ -88,19 +98,19 @@ public class UserViewTest {
         view.account = account;
 
         // Set initial balance
-        view.balance.setValue(10.0);
+        view.amountAndBalanceBinder.getBean().setBalance(10.0);
 
         // Call the method under test
         view.registerJobInDatabase(jobtypeSelector);
 
         // Verify balance hasn't been changed
-        assertEquals(Double.valueOf(10.0), view.balance.getValue());
+        assertEquals(Double.valueOf(10.0), view.amountAndBalanceBinder.getBean().getBalance(), 0);
 
         // Call the method under test
         view.registerJobInDatabase(jobtypeSelector);
 
         // Verify balance has been changed to the account balance
-        assertEquals(Double.valueOf(accountBalance), view.balance.getValue());
+        assertEquals(Double.valueOf(accountBalance), view.amountAndBalanceBinder.getBean().getBalance(), 0);
     }
 
 }

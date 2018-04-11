@@ -17,29 +17,30 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.shiro.SecurityUtils;
 
+import com.vaadin.data.Binder;
+import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.ObjectProperty;
-import com.vaadin.v7.ui.AbstractSelect.ItemCaptionMode;
-import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.TextField;
+import no.priv.bang.ukelonn.impl.data.AmountAndBalance;
+
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.ComboBox;
 
 public class UserFallbackView extends AbstractView { // NOSONAR
     private static final long serialVersionUID = 1388525490129647161L;
@@ -47,25 +48,28 @@ public class UserFallbackView extends AbstractView { // NOSONAR
     Account account; // NOSONAR
 
     // Datamodel for the UI (updates to these will be transferred to the GUI listeners).
-    private ObjectProperty<String> greetingProperty = new ObjectProperty<>("Ukelønn for ????");
-    ObjectProperty<Double> balance = new ObjectProperty<>(0.0);
-    BeanItemContainer<TransactionType> paymentTypesContainer = new BeanItemContainer<>(TransactionType.class);
-    ObjectProperty<Double> newJobAmount = new ObjectProperty<>(0.0);
-    BeanItemContainer<Transaction> recentJobs = new BeanItemContainer<>(Transaction.class);
-    BeanItemContainer<Transaction> recentPayments = new BeanItemContainer<>(Transaction.class);
+    private Label greeting;
+    private AmountAndBalance amountAndBalance = new AmountAndBalance(); // NOSONAR
+    Binder<AmountAndBalance> amountAndBalanceBinder = new Binder<>(AmountAndBalance.class);
+    ListDataProvider<TransactionType> paymentTypesContainer = new ListDataProvider<>(new ArrayList<>());
+    ListDataProvider<Transaction> recentJobs = new ListDataProvider<>(new ArrayList<>());
+    ListDataProvider<Transaction> recentPayments = new ListDataProvider<>(new ArrayList<>());
 
     public UserFallbackView(UkelonnUIProvider provider, VaadinRequest request) {
+        amountAndBalanceBinder.setBean(amountAndBalance);
         this.provider = provider;
         // Display the greeting
         VerticalLayout content = new VerticalLayout();
-        Component greeting = new Label(greetingProperty);
+        greeting = new Label("Ukelønn for ????");
         greeting.setStyleName("h1");
         content.addComponent(greeting);
 
         FormLayout balanceLayout = new FormLayout();
         // Display the current balance
         TextField balanceDisplay = new TextField("Til gode:");
-        balanceDisplay.setPropertyDataSource(balance);
+        amountAndBalanceBinder.forField(balanceDisplay)
+            .withConverter(new StringToDoubleConverter("Ikke et tall"))
+            .bind("balance");
         balanceDisplay.addStyleName("inline-label");
         balanceLayout.addComponent(balanceDisplay);
         content.addComponent(balanceLayout);
@@ -75,28 +79,29 @@ public class UserFallbackView extends AbstractView { // NOSONAR
         FormLayout balanceAndNewJobTab = new FormLayout();
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
         List<TransactionType> paymentTypes = getJobTypesFromTransactionTypes(transactionTypes.values());
-        paymentTypesContainer.addAll(paymentTypes);
-        ComboBox jobtypeSelector = new ComboBox("Velg jobb", paymentTypesContainer);
-        jobtypeSelector.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-        jobtypeSelector.setItemCaptionPropertyId("transactionTypeName");
-        jobtypeSelector.setNullSelectionAllowed(true);
+        paymentTypesContainer.getItems().clear();
+        paymentTypesContainer.getItems().addAll(paymentTypes);
+        ComboBox<TransactionType> jobtypeSelector = new ComboBox<>("Velg jobb");
+        jobtypeSelector.setDataProvider(paymentTypesContainer);
+        jobtypeSelector.setItemCaptionGenerator(TransactionType::getTransactionTypeName);
+        jobtypeSelector.setEmptySelectionAllowed(true);
+        jobtypeSelector.addSelectionListener(jt->changeJobAmountWhenJobTypeIsChanged(jobtypeSelector));
         balanceAndNewJobTab.addComponent(jobtypeSelector);
-        TextField newAmountDisplay = new TextField(newJobAmount);
+        TextField newAmountDisplay = new TextField();
+        amountAndBalanceBinder.forField(balanceDisplay)
+            .withConverter(new StringToDoubleConverter("Ikke et tall"))
+            .bind("balance");
         newAmountDisplay.setReadOnly(true);
         balanceAndNewJobTab.addComponent(newAmountDisplay);
-        jobtypeSelector.addValueChangeListener(new ValueChangeListener() {
-                private static final long serialVersionUID = 3145027593224884343L;
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    changeJobAmountWhenJobTypeIsChanged(jobtypeSelector);
-                }
-            });
 
         // Updatable containers
-        recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
-        Table lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
-        lastJobsTable.setImmediate(true);
-        recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+        recentJobs.getItems().clear();
+        recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+        recentJobs.refreshAll();
+        Grid<Transaction> lastJobsTable = createTransactionTable("Jobbtype", recentJobs, true);
+        recentPayments.getItems().clear();
+        recentPayments.getItems().addAll(getPaymentsFromAccount(provider, account, getClass()));
+        recentPayments.refreshAll();
 
         // Have a clickable button
         balanceAndNewJobTab.addComponent(new Button("Registrer jobb",
@@ -115,7 +120,7 @@ public class UserFallbackView extends AbstractView { // NOSONAR
         accordion.addTab(lastJobsTab, "Siste jobber");
 
         VerticalLayout lastPaymentsTab = new VerticalLayout();
-        Table lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
+        Grid<Transaction> lastPaymentsTable = createTransactionTable("Type utbetaling", recentPayments, false);
         lastPaymentsTab.addComponent(lastPaymentsTable);
         accordion.addTab(lastPaymentsTab, "Siste utbetalinger");
 
@@ -132,30 +137,40 @@ public class UserFallbackView extends AbstractView { // NOSONAR
         String currentUser = (String) SecurityUtils.getSubject().getPrincipal();
         account = getAccountInfoFromDatabase(provider, getClass(), currentUser);
 
-        greetingProperty.setValue("Ukelønn for " + account.getFirstName());
-        balance.setValue(account.getBalance());
-        recentJobs.removeAllItems();
-        recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
-        recentPayments.removeAllItems();
-        recentPayments.addAll(getPaymentsFromAccount(provider, account, getClass()));
+        greeting.setValue("Ukelønn for " + account.getFirstName());
+        AmountAndBalance bean = amountAndBalanceBinder.getBean();
+        bean.setBalance(account.getBalance());
+        amountAndBalanceBinder.readBean(bean);
+        recentJobs.getItems().clear();
+        recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+        recentJobs.refreshAll();
+        recentPayments.getItems().clear();
+        recentPayments.getItems().addAll(getPaymentsFromAccount(provider, account, getClass()));
+        recentPayments.refreshAll();
     }
 
-    void changeJobAmountWhenJobTypeIsChanged(ComboBox jobtypeSelector) {
-        if (jobtypeSelector.getValue() == null) {
-            newJobAmount.setValue(0.0);
+    void changeJobAmountWhenJobTypeIsChanged(ComboBox<TransactionType> jobtypeSelector) {
+        Optional<TransactionType> selectedJobtype = jobtypeSelector.getSelectedItem();
+        if (selectedJobtype.isPresent()) {
+            amountAndBalanceBinder.getBean().setAmount(selectedJobtype.get().getTransactionAmount());
+            amountAndBalanceBinder.readBean(amountAndBalanceBinder.getBean());
         } else {
-            newJobAmount.setValue(((TransactionType) jobtypeSelector.getValue()).getTransactionAmount());
+            amountAndBalanceBinder.getBean().setAmount(0.0);
+            amountAndBalanceBinder.readBean(amountAndBalanceBinder.getBean());
         }
     }
 
-    void registerJobInDatabase(ComboBox jobtypeSelector) {
-        TransactionType jobType = (TransactionType) jobtypeSelector.getValue();
-        if (jobType != null) {
-            registerNewJobInDatabase(provider, getClass(), account, jobType.getId(), jobType.getTransactionAmount());
-            balance.setValue(account.getBalance());
+    void registerJobInDatabase(ComboBox<TransactionType> jobtypeSelector) {
+        Optional<TransactionType> jobType = jobtypeSelector.getSelectedItem();
+        if (jobType.isPresent()) {
+            registerNewJobInDatabase(provider, getClass(), account, jobType.get().getId(), jobType.get().getTransactionAmount());
+            AmountAndBalance bean = amountAndBalanceBinder.getBean();
+            bean.setBalance(account.getBalance());
+            amountAndBalanceBinder.readBean(bean);
             jobtypeSelector.setValue(null);
-            recentJobs.removeAllItems();
-            recentJobs.addAll(getJobsFromAccount(provider, account, getClass()));
+            recentJobs.getItems().clear();
+            recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
+            recentJobs.refreshAll();
         }
     }
 }
