@@ -421,7 +421,7 @@ public class CommonDatabaseMethods {
         String salt = getNewSalt();
         String hashedPassword = hashPassword(password, salt);
         UkelonnDatabase database = connectionCheck(provider, clazz);
-        try(PreparedStatement statement = database.prepareStatement("update users set password=?, salt=? where username=?")) {
+        try(PreparedStatement statement = database.prepareStatement("update users set password=?, salt=? where username=?")) { // NOSONAR
             statement.setString(1, hashedPassword);
             statement.setString(2, salt);
             statement.setString(3, username);
