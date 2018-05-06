@@ -163,6 +163,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiled</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -173,11 +174,6 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-compatibility-themes</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.vaadin.touchkit</groupId>
@@ -213,7 +209,6 @@
                         <Karaf-Commands>*</Karaf-Commands>
                         <Import-Package>*</Import-Package>
                         <Export-Package>!*</Export-Package>
-                        <Embed-Dependency>vaadin-compatibility-themes;inline=true</Embed-Dependency>
                         <Include-Resource>target/classes</Include-Resource>
                         <_removeheaders>
                             Include-Resource,

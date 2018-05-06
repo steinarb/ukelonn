@@ -18,7 +18,6 @@ package no.priv.bang.ukelonn.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
 import org.osgi.service.component.annotations.Component;
@@ -32,6 +31,7 @@ import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.UIProvider;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 
@@ -42,7 +42,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
         HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/*",
         HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
         HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonn"},
-    service=Servlet.class,
+    service=VaadinServlet.class,
     immediate=true
 )
 public class UkelonnServlet extends TouchKitServlet {
