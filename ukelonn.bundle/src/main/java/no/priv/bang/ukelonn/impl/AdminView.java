@@ -135,7 +135,7 @@ public class AdminView extends AbstractView { // NOSONAR
         NativeSelect<TransactionType> paymenttype = new NativeSelect<>("Registrer utbetaling");
 
         accountSelector.setItems(getAccounts(provider, getClass()));
-        //accountSelector.setItemCaptionGenerator(Account::getFullName); // NOSONAR
+        accountSelector.setItemCaptionGenerator(Account::getFullName);
         registerPaymentTabGroup.addComponent(accountSelector);
         accountSelector.addSelectionListener(event -> updateFormsAfterAccountIsSelected(paymenttype, accountSelector));
 
