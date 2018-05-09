@@ -128,7 +128,6 @@ public class AdminView extends AbstractView { // NOSONAR
         VerticalComponentGroup registerPaymentTabGroup = new VerticalComponentGroup();
 
         // Display the greeting
-        greeting.setStyleName("h1");
         registerPaymentTabGroup.addComponent(greeting);
 
         NativeSelect<Account> accountSelector = new NativeSelect<>("Velg hvem det skal betales til");
