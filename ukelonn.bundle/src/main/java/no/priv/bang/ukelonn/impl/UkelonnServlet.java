@@ -24,8 +24,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
-import org.vaadin.touchkit.server.TouchKitServlet;
-
 import com.vaadin.server.DefaultUIProvider;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
@@ -45,7 +43,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=VaadinServlet.class,
     immediate=true
 )
-public class UkelonnServlet extends TouchKitServlet {
+public class UkelonnServlet extends VaadinServlet {
     private static final long serialVersionUID = 2305317590355701822L;
     private final UkelonnUIProvider ukelonnUIProvider = new UkelonnUIProvider();
 
