@@ -44,7 +44,7 @@
         <javax.validation>1.1.0.Final</javax.validation>
         <jsoup.version>1.8.3</jsoup.version>
         <vaadin.version>8.4.1</vaadin.version>
-        <vaadin.touchkit.version>5.0.0</vaadin.touchkit.version>
+        <vaadin.touchkit.version>5.0.1-SNAPSHOT</vaadin.touchkit.version>
         <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
         <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
         <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
