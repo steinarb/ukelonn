@@ -492,6 +492,10 @@
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
+        <repository>
+            <id>bang-maven</id>
+            <url>http://maven.bang.priv.no/repository</url>
+        </repository>
     </repositories>
 
     <distributionManagement>
