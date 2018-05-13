@@ -176,11 +176,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-compatibility-themes</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.vaadin.touchkit</groupId>
             <artifactId>touchkit</artifactId>
         </dependency>
