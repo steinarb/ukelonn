@@ -27,7 +27,6 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.UI;
 
-@Theme("touchkit")
 @Widgetset("org.vaadin.touchkit.gwt.TouchKitWidgetSet")
 public class UkelonnUI extends UI { // NOSONAR
     private static final String BROWSER = "browser";
