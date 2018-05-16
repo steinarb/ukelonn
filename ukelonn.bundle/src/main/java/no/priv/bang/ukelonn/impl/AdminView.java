@@ -372,6 +372,8 @@ public class AdminView extends AbstractView { // NOSONAR
         Binder<Passwords> changeUserPasswordBinder = new Binder<>(Passwords.class);
         changeUserPasswordBinder.setBean(changeUserPasswords);
         NativeSelect<User> editUserPasswordUsersField = new NativeSelect<>("Velg bruker");
+        editUserPasswordUsersField.setDataProvider(editUserPasswordUsers);
+        editUserPasswordUsersField.setItemCaptionGenerator(User::getFullname);
         changeuserpasswordForm.addComponent(editUserPasswordUsersField);
 
         PasswordField editUserPassword1Field = new PasswordField("Passord:");
@@ -411,10 +413,8 @@ public class AdminView extends AbstractView { // NOSONAR
         editUserBinder.setBean(editUser);
 
         NativeSelect<User> editUserUsersField = new NativeSelect<>("Velg bruker");
-        editUserUsersField.setItems(getUsers(provider, getClass()));
-        //editUserUsersField.setItemCaptionGenerator(p -> p.getFullname()); // NOSONAR
-        //editUserUsersField.setItemCaptionGenerator(User::getFullname); // NOSONAR
-        //editUserUsersField.setItemCaptionGenerator(User::getFirstname); // NOSONAR
+        editUserUsersField.setDataProvider(editUserUsers);
+        editUserUsersField.setItemCaptionGenerator(User::getFullname);
         editUserUsersField.addValueChangeListener(event->selectAUserToBeEdited(editUserBinder, editUserUsersField));
         usersform.addComponent(editUserUsersField);
 
