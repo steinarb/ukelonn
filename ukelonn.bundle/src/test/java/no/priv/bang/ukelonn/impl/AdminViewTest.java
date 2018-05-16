@@ -45,6 +45,7 @@ import com.vaadin.ui.TextField;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
+import no.priv.bang.ukelonn.impl.data.AmountAndBalance;
 import no.priv.bang.ukelonn.impl.data.Passwords;
 
 
@@ -72,7 +73,10 @@ public class AdminViewTest {
         // Try selecing a null account
         NativeSelect<TransactionType> paymenttype = mock(NativeSelect.class);
         NativeSelect<Account> accountSelector = mock(NativeSelect.class);
-        view.updateFormsAfterAccountIsSelected(paymenttype, accountSelector);
+        Binder<AmountAndBalance> binder = new Binder<>(AmountAndBalance.class);
+        AmountAndBalance bean = new AmountAndBalance();
+        binder.setBean(bean);
+        view.updateFormsAfterAccountIsSelected(binder, paymenttype, accountSelector);
 
         // Verify value hasn't been changed
         assertEquals("0", view.balance.getValue());
@@ -80,7 +84,7 @@ public class AdminViewTest {
         // Try selecting with a real account
         Account account = getAccountInfoFromDatabase(provider, getClass(), "jad");
         when(accountSelector.getValue()).thenReturn(account);
-        view.updateFormsAfterAccountIsSelected(paymenttype, accountSelector);
+        view.updateFormsAfterAccountIsSelected(binder, paymenttype, accountSelector);
 
         // Verify value has been changed
         assertNotEquals("0.0", view.balance.getValue());
@@ -151,26 +155,29 @@ public class AdminViewTest {
         when(accountSelector.getValue()).thenReturn(null, account, account);
 
         // Set initial condition
+        Binder<AmountAndBalance> binder = view.amountAndBalanceBinder;
         double initialAmount = 210;
-        view.amount.setValue(Double.toString(initialAmount));
+        binder.getBean().setAmount(initialAmount);
+        binder.readBean(binder.getBean());
+        String initialAmountFormFieldValue = view.amount.getValue(); // Value formatted as String
 
         // Test with null account and null paymenttype
-        view.registerPaymentInDatabase(paymenttype, accountSelector);
+        view.registerPaymentInDatabase(binder, paymenttype, accountSelector);
 
         // Verify amount is unchanged by the registerPaymentInDatabase() call
-        assertEquals(Double.toString(initialAmount), view.amount.getValue());
+        assertEquals(initialAmountFormFieldValue, view.amount.getValue());
 
         // Test with non-null account and null paymenttype
-        view.registerPaymentInDatabase(paymenttype, accountSelector);
+        view.registerPaymentInDatabase(binder, paymenttype, accountSelector);
 
         // Verify amount is still unchanged by the registerPaymentInDatabase() call
-        assertEquals(Double.toString(initialAmount), view.amount.getValue());
+        assertEquals(initialAmountFormFieldValue, view.amount.getValue());
 
         // Test with non-null account and non-null paymenttype
-        view.registerPaymentInDatabase(paymenttype, accountSelector);
+        view.registerPaymentInDatabase(binder, paymenttype, accountSelector);
 
         // Verify that amount has been changed by the registerPaymentInDatabase() call
-        assertEquals(Double.toString(0.0), view.amount.getValue());
+        assertEquals("0", view.amount.getValue());
     }
 
     @Test

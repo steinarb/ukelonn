@@ -59,6 +59,7 @@ public class AdminView extends AbstractView { // NOSONAR
 
     // Data model for handling payments to users
     private Label greeting = new Label("Ukelønn admin UI, bruker: ????");
+    Binder<AmountAndBalance> amountAndBalanceBinder = new Binder<>(AmountAndBalance.class);
     AccountHistory accountHistory = new AccountHistory(); // NOSONAR
     Binder<AccountHistory> accountHistoryBinder = new Binder<>(AccountHistory.class); // NOSONAR
     ListDataProvider<Account> accountsContainer;
@@ -122,8 +123,7 @@ public class AdminView extends AbstractView { // NOSONAR
 
     private VerticalComponentGroup createRegisterPaymentForm(NavigationManager registerPaymentTab) {
         AmountAndBalance payment = new AmountAndBalance();
-        Binder<AmountAndBalance> binder = new Binder<>(AmountAndBalance.class);
-        binder.setBean(payment);
+        amountAndBalanceBinder.setBean(payment);
         CssLayout registerPaymentTabForm = new CssLayout();
         VerticalComponentGroup registerPaymentTabGroup = new VerticalComponentGroup();
 
@@ -136,12 +136,12 @@ public class AdminView extends AbstractView { // NOSONAR
         accountSelector.setItems(getAccounts(provider, getClass()));
         accountSelector.setItemCaptionGenerator(Account::getFullName);
         registerPaymentTabGroup.addComponent(accountSelector);
-        accountSelector.addSelectionListener(event -> updateFormsAfterAccountIsSelected(paymenttype, accountSelector));
+        accountSelector.addSelectionListener(event -> updateFormsAfterAccountIsSelected(amountAndBalanceBinder, paymenttype, accountSelector));
 
         FormLayout paymentLayout = new FormLayout();
         balance.addStyleName("inline-label");
         paymentLayout.addComponent(balance);
-        binder.forField(balance)
+        amountAndBalanceBinder.forField(balance)
             .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
             .bind("balance");
 
@@ -152,12 +152,12 @@ public class AdminView extends AbstractView { // NOSONAR
         paymentLayout.addComponent(paymenttype);
 
         paymentLayout.addComponent(amount);
-        binder.forField(amount)
+        amountAndBalanceBinder.forField(amount)
             .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
             .bind(AmountAndBalance::getAmount, AmountAndBalance::setAmount);
 
         Button doRegisterPayment = new Button("Registrer betaling");
-        doRegisterPayment.addClickListener(event -> registerPaymentInDatabase(paymenttype, accountSelector));
+        doRegisterPayment.addClickListener(event -> registerPaymentInDatabase(amountAndBalanceBinder, paymenttype, accountSelector));
         paymentLayout.addComponent(doRegisterPayment);
         registerPaymentTabGroup.addComponent(paymentLayout);
         registerPaymentTabForm.addComponent(registerPaymentTabGroup);
@@ -549,15 +549,17 @@ public class AdminView extends AbstractView { // NOSONAR
         paymentTypes.refreshAll();
     }
 
-    void updateFormsAfterAccountIsSelected(NativeSelect<TransactionType> paymenttype, NativeSelect<Account> accountSelector) {
+    void updateFormsAfterAccountIsSelected(Binder<AmountAndBalance> binder, NativeSelect<TransactionType> paymenttype, NativeSelect<Account> accountSelector) {
         Account account = accountSelector.getValue();
 
         if (account != null) {
             refreshAccount(provider, getClass(), account);
-            balance.setValue(Double.toString(account.getBalance()));
+            binder.getBean().setBalance(account.getBalance());
             Map<Integer, TransactionType> transactiontypes = getTransactionTypesFromUkelonnDatabase(provider, getClass());
             paymenttype.setSelectedItem(transactiontypes.get(ID_OF_PAY_TO_BANK));
             amount.setValue(balance.getValue());
+            binder.getBean().setAmount(binder.getBean().getBalance());
+            binder.readBean(binder.getBean());
             AccountHistory history = new AccountHistory();
             recentJobs.getItems().clear();
             recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
@@ -581,7 +583,7 @@ public class AdminView extends AbstractView { // NOSONAR
         }
     }
 
-    void registerPaymentInDatabase(NativeSelect<TransactionType> paymenttype, NativeSelect<Account> accountSelector) {
+    void registerPaymentInDatabase(Binder<AmountAndBalance> binder, NativeSelect<TransactionType> paymenttype, NativeSelect<Account> accountSelector) {
         Account account = accountSelector.getValue();
         TransactionType payment = paymenttype.getValue();
         if (account != null && payment != null) {
@@ -593,8 +595,9 @@ public class AdminView extends AbstractView { // NOSONAR
             recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
             recentJobs.refreshAll();
             refreshAccount(provider, getClass(), account);
-            balance.setValue(Double.toString(account.getBalance()));
-            amount.setValue("0.0");
+            binder.getBean().setBalance(account.getBalance());
+            binder.getBean().setAmount(0.0);
+            binder.readBean(binder.getBean());
         }
     }
 
