@@ -18,6 +18,8 @@ package no.priv.bang.ukelonn.impl;
 import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
 
 public class User {
+    public static final User EMPTY_USER = new User(0, "", "", "", "");
+
     private int userId;
     private String username;
     private String email;

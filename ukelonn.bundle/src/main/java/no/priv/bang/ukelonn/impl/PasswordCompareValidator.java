@@ -33,6 +33,10 @@ public class PasswordCompareValidator extends AbstractValidator<String> {
 
     @Override
     public ValidationResult apply(String value, ValueContext context) {
+        if ("".equals(value)) {
+            return ValidationResult.error("Passord kan ikke være tomt");
+        }
+
         String otherPasswordValue = otherPassword.getValue();
         if (!otherPasswordValue.equals(value)){
             return ValidationResult.error(errorMessage);

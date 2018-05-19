@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.shiro.SecurityUtils;
 import org.vaadin.touchkit.ui.NavigationManager;
 import org.vaadin.touchkit.ui.NavigationView;
@@ -72,8 +73,14 @@ public class AdminView extends AbstractView { // NOSONAR
     Map<Integer, TransactionType> transactionTypes; // NOSONAR
     ListDataProvider<TransactionType> paymentTypes;
     ListDataProvider<TransactionType> jobTypes;
+    Binder<User> newUserBinder = new Binder<>(User.class);
+    Binder<Passwords> newUserPasswordBinder = new Binder<>(Passwords.class);
     ListDataProvider<User> editUserPasswordUsers;
     ListDataProvider<User> editUserUsers;
+    Binder<Passwords> changeUserPasswordBinder = new Binder<>(Passwords.class);
+    NativeSelect<User> editUserPasswordUsersField = new NativeSelect<>("Velg bruker");
+    Binder<User> editUserBinder = new Binder<>(User.class);
+    NativeSelect<User> editUserUsersField = new NativeSelect<>("Velg bruker");
 
     public AdminView(UkelonnUIProvider provider, VaadinRequest request) {
         this.provider = provider;
@@ -309,7 +316,6 @@ public class AdminView extends AbstractView { // NOSONAR
 
         NavigationView newUserTab = new NavigationView();
         VerticalComponentGroup newUserForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(useradminTab, newUserTab, newUserLabel);
-        Binder<User> newUserBinder = new Binder<>(User.class);
         User newUser = new User(0, "", "", "", "");
         newUserBinder.setBean(newUser);
 
@@ -318,7 +324,6 @@ public class AdminView extends AbstractView { // NOSONAR
         newUserForm.addComponent(newUserUsernameField);
 
         Passwords newUserPasswords = new Passwords("", "");
-        Binder<Passwords> newUserPasswordBinder = new Binder<>(Passwords.class);
         newUserPasswordBinder.setBean(newUserPasswords);
         PasswordField newUserPassword1Field = new PasswordField("Passord:");
         newUserPasswordBinder.forField(newUserPassword1Field).bind("password1");
@@ -347,31 +352,13 @@ public class AdminView extends AbstractView { // NOSONAR
 
         Class<? extends AdminView> classForLogMessage = getClass();
         Button createUser = new Button("Lag bruker");
-        createUser.addClickListener(event -> {
-                if (newUserIsAValidUser(newUserBinder, newUserPasswordBinder))
-                {
-                    addUserToDatabase(
-                        provider,
-                        classForLogMessage,
-                        newUserBinder.getBean().getUsername(),
-                        newUserPassword2Field.getValue(),
-                        newUserBinder.getBean().getEmail(),
-                        newUserBinder.getBean().getFirstname(),
-                        newUserBinder.getBean().getLastname());
-
-                    clearAllNewUserFormElements(newUserBinder);
-
-                    refreshListWidgetsAffectedByChangesToUsers(classForLogMessage);
-                }
-            });
+        createUser.addClickListener(event -> createUserInDatabase(newUserBinder, newUserPasswordBinder, classForLogMessage));
         newUserForm.addComponent(createUser);
 
         NavigationView changeuserpasswordTab = new NavigationView();
         VerticalComponentGroup changeuserpasswordForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(useradminTab, changeuserpasswordTab, changePasswordForUserLabel);
         Passwords changeUserPasswords = new Passwords("", "");
-        Binder<Passwords> changeUserPasswordBinder = new Binder<>(Passwords.class);
         changeUserPasswordBinder.setBean(changeUserPasswords);
-        NativeSelect<User> editUserPasswordUsersField = new NativeSelect<>("Velg bruker");
         editUserPasswordUsersField.setDataProvider(editUserPasswordUsers);
         editUserPasswordUsersField.setItemCaptionGenerator(User::getFullname);
         changeuserpasswordForm.addComponent(editUserPasswordUsersField);
@@ -388,31 +375,14 @@ public class AdminView extends AbstractView { // NOSONAR
         changeuserpasswordForm.addComponent(editUserPassword2Field);
 
         Button changePassword = new Button("Endre passord");
-        changePassword.addClickListener(event -> {
-                Optional<User> user = editUserPasswordUsersField.getSelectedItem();
-                if (user.isPresent() &&
-                    !"".equals(editUserPassword1Field.getValue()) &&
-                    changeUserPasswordBinder.isValid())
-                {
-                    changePasswordForUser(provider, user.get().getUsername(), changeUserPasswordBinder.getBean().getPassword2(), classForLogMessage);
-                    Passwords emptyPasswords = new Passwords("", "");
-                    changeUserPasswordBinder.readBean(emptyPasswords);
-                    try {
-                        changeUserPasswordBinder.writeBean(changeUserPasswordBinder.getBean());
-                    } catch (ValidationException e) {
-                        throw new UkelonnException("Failed to blank the password fields after updating a password", e);
-                    }
-                }
-            });
+        changePassword.addClickListener(event -> changeUserPasswordInDatabase(changeUserPasswordBinder, editUserPasswordUsersField, classForLogMessage));
         changeuserpasswordForm.addComponent(changePassword);
 
         NavigationView usersTab = new NavigationView();
         VerticalComponentGroup usersform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(useradminTab, usersTab, modifyUsersLabel);
         User editUser = new User(0, "", "", "", "");
-        Binder<User> editUserBinder = new Binder<>(User.class);
         editUserBinder.setBean(editUser);
 
-        NativeSelect<User> editUserUsersField = new NativeSelect<>("Velg bruker");
         editUserUsersField.setDataProvider(editUserUsers);
         editUserUsersField.setItemCaptionGenerator(User::getFullname);
         editUserUsersField.addValueChangeListener(event->selectAUserToBeEdited(editUserBinder, editUserUsersField));
@@ -438,7 +408,7 @@ public class AdminView extends AbstractView { // NOSONAR
         usersform.addComponent(editUserLastnameField);
 
         Button saveUserModifications = new Button("Lagre endringer av bruker");
-        saveUserModifications.addClickListener(event->saveUserModifications(editUserBinder));
+        saveUserModifications.addClickListener(event->saveUserModifications(editUserBinder, editUserUsersField));
         usersform.addComponent(saveUserModifications);
 
         useradmin.addComponent(createNavigationButton(newUserLabel, newUserTab));
@@ -447,9 +417,53 @@ public class AdminView extends AbstractView { // NOSONAR
         tabs.addTab(useradminTab, "Administrere brukere");
     }
 
+    void createUserInDatabase(Binder<User> newUserBinder, Binder<Passwords> newUserPasswordBinder, Class<?> classForLogMessage) {
+        if (newUserIsAValidUser(newUserBinder, newUserPasswordBinder))
+        {
+            addUserToDatabase(
+                provider,
+                classForLogMessage,
+                newUserBinder.getBean().getUsername(),
+                newUserPasswordBinder.getBean().getPassword2(),
+                newUserBinder.getBean().getEmail(),
+                newUserBinder.getBean().getFirstname(),
+                newUserBinder.getBean().getLastname());
+
+            clearAllNewUserFormElements(newUserBinder);
+            blankPasswordFields(newUserPasswordBinder);
+
+            refreshListWidgetsAffectedByChangesToUsers(classForLogMessage);
+        }
+    }
+
+    void changeUserPasswordInDatabase(Binder<Passwords> changeUserPasswordBinder, NativeSelect<User> editUserPasswordUsersField, Class<?> classForLogMessage) {
+        Optional<User> user = editUserPasswordUsersField.getSelectedItem();
+        if (user.isPresent() && changeUserPasswordBinder.isValid())
+        {
+            changePasswordForUser(provider, user.get().getUsername(), changeUserPasswordBinder.getBean().getPassword2(), classForLogMessage);
+            blankPasswordFields(changeUserPasswordBinder);
+        }
+    }
+
+    void blankPasswordFields(Binder<Passwords> changeUserPasswordBinder) {
+        try {
+            BeanUtils.copyProperties(changeUserPasswordBinder.getBean(), Passwords.EMPTY_PASSWORDS);
+        } catch (Exception e) {
+            throw new UkelonnException("Failed to blank the password fields after updating a password", e);
+        }
+
+        changeUserPasswordBinder.readBean(Passwords.EMPTY_PASSWORDS);
+    }
+
     void selectAUserToBeEdited(Binder<User> editUserBinder, NativeSelect<User> editUserUsersField) {
         Optional<User> selectedUser = editUserUsersField.getSelectedItem();
         if (selectedUser.isPresent()) {
+            try {
+                BeanUtils.copyProperties(editUserBinder.getBean(), selectedUser.get());
+            } catch (Exception e) {
+                throw new UkelonnException("Failed to set form when selecting a user for edit.", e);
+            }
+
             editUserBinder.readBean(selectedUser.get());
         }
     }
@@ -462,17 +476,40 @@ public class AdminView extends AbstractView { // NOSONAR
         }
     }
 
-    void saveUserModifications(Binder<User> editUserBinder) {
-        User user = editUserBinder.getBean();
-        if(user != null) {
-            updateUserInDatabase(provider, getClass(), user);
-            user.setUsername("");
-            user.setEmail("");
-            user.setFirstname("");
-            user.setLastname("");
-            editUserBinder.readBean(user);
-            refreshListWidgetsAffectedByChangesToUsers();
+    void saveUserModifications(Binder<User> editUserBinder, NativeSelect<User> editUserUsersField) {
+        try {
+            Optional<User> selectedUser = editUserUsersField.getSelectedItem();
+            if (selectedUser.isPresent()) {
+                User user = editUserBinder.getBean();
+                if (!editedUserDifferentFromSelectedUser(selectedUser.get(), user) &&
+                    editUserBinder.isValid())
+                {
+                    BeanUtils.copyProperties(selectedUser.get(), user);
+                    updateUserInDatabase(provider, getClass(), selectedUser.get());
+
+                    clearAllNewUserFormElements(editUserBinder);
+
+                    refreshListWidgetsAffectedByChangesToUsers();
+                }
+            }
+        } catch (Exception e) {
+            throw new UkelonnException("Failed to save user", e);
         }
+    }
+
+    /**
+     * Compare the values of two user beans except for the id property.
+     *
+     * @param selectedUser the bean to compare against
+     * @param user the bean that is compared
+     * @return true if all properties of the two {@link User} beans, except for id, are equal
+     */
+    static boolean editedUserDifferentFromSelectedUser(User selectedUser, User user) {
+        return
+            selectedUser.getUsername().equals(user.getUsername()) &&
+            selectedUser.getEmail().equals(user.getEmail()) &&
+            selectedUser.getFirstname().equals(user.getFirstname()) &&
+            selectedUser.getLastname().equals(user.getLastname());
     }
 
     private void refreshListWidgetsAffectedByChangesToUsers() {
@@ -487,20 +524,18 @@ public class AdminView extends AbstractView { // NOSONAR
     }
 
     void clearAllNewUserFormElements(Binder<User> binder) {
-        User emptyUser = new User(0, "", "", "", "");
-        binder.readBean(emptyUser);
         try {
-            binder.writeBean(binder.getBean());
-        } catch (ValidationException e) {
+            BeanUtils.copyProperties(binder.getBean(), User.EMPTY_USER);
+        } catch (Exception e) {
             throw new UkelonnException("Failed to blank the user fields", e);
         }
+
+        binder.readBean(User.EMPTY_USER);
     }
 
     boolean newUserIsAValidUser(Binder<User> binder, Binder<Passwords> passwordsBinder) {
         return
             !"".equals(binder.getBean().getUsername()) &&
-            !"".equals(passwordsBinder.getBean().getPassword1()) &&
-            passwordsBinder.getBean().getPassword1().equals(passwordsBinder.getBean().getPassword2()) &&
             binder.isValid() &&
             passwordsBinder.isValid() &&
             !"".equals(binder.getBean().getFirstname()) &&

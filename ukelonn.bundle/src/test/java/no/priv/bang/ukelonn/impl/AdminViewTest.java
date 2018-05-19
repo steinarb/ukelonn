@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
@@ -389,6 +390,126 @@ public class AdminViewTest {
         assertEquals(Double.valueOf(0.0), binder.getBean().getTransactionAmount());
     }
 
+    @Test
+    public void testCreateUserInDatabase() throws Exception {
+        // Set up the mocks (mainly needed to be able to create an AdminView)
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = mock(VaadinRequest.class);
+
+        // Create the object under test
+        AdminView view = new AdminView(provider, request);
+
+        // Extract form data bindings from the object under test
+        Binder<User> newUserBinder = view.newUserBinder;
+        Binder<Passwords> newUserPasswordBinder = view.newUserPasswordBinder;
+
+        // Test with empty form fields (no user should be attempted created, ie. database update never called)
+        view.createUserInDatabase(newUserBinder, newUserPasswordBinder, getClass());
+        ArgumentCaptor<PreparedStatement> neverCalledUpdateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(neverCalledUpdateCaptor.capture());
+
+        // Set the username but keep the email field empty
+        // so the database update still won't be called.
+        User user = newUserBinder.getBean();
+        user.setUsername("usr");
+        view.createUserInDatabase(newUserBinder, newUserPasswordBinder, getClass());
+        verify(database, times(0)).update(neverCalledUpdateCaptor.capture());
+
+        // Set the rest of the user fields, but since password fields
+        // still are blank, the update still won't be called
+        user.setEmail("usr@gmail.com");
+        user.setFirstname("User");
+        user.setLastname("Name");
+        newUserBinder.readBean(user);
+        view.createUserInDatabase(newUserBinder, newUserPasswordBinder, getClass());
+        verify(database, times(0)).update(neverCalledUpdateCaptor.capture());
+
+        // Set the password form field, and this time the database update
+        // is called exactly once.
+        Passwords passwords = newUserPasswordBinder.getBean();
+        passwords.setPassword1("secret");
+        passwords.setPassword2("secret"); // The two fields values must match to be valid
+        newUserPasswordBinder.readBean(passwords);
+        view.createUserInDatabase(newUserBinder, newUserPasswordBinder, getClass());
+        ArgumentCaptor<PreparedStatement> calledOnceUpdateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(1)).update(calledOnceUpdateCaptor.capture());
+    }
+
+    @Test
+    public void testChangeUserPasswordInDatabase() throws Exception {
+        // Set up the mocks (mainly needed to be able to create an AdminView)
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = mock(VaadinRequest.class);
+
+        // Create the object under test
+        AdminView view = new AdminView(provider, request);
+
+        // Insert some dummy data
+        User user = new User(123, "usr", "usr@gmail.com", "User", "Name");
+        view.editUserPasswordUsers.getItems().addAll(Arrays.asList(user));
+        view.editUserPasswordUsers.refreshAll();
+
+        Binder<Passwords> changeUserPasswordBinder = view.changeUserPasswordBinder;
+        NativeSelect<User> editUserPasswordUsersField = view.editUserPasswordUsersField;
+
+        // Test with empty form fields (no password update should be attempted, ie. database update never called)
+        view.changeUserPasswordInDatabase(changeUserPasswordBinder, editUserPasswordUsersField, getClass());
+        ArgumentCaptor<PreparedStatement> neverCalledUpdateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(neverCalledUpdateCaptor.capture());
+
+        // Test with a selected user and empty form fields
+        // (no password update should be attempted, ie. database update never called)
+        editUserPasswordUsersField.setSelectedItem(user);
+        view.changeUserPasswordInDatabase(changeUserPasswordBinder, editUserPasswordUsersField, getClass());
+        verify(database, times(0)).update(neverCalledUpdateCaptor.capture());
+
+        // Test with a selected user and empty form fields
+        // (no password update should be attempted, ie. database update never called)
+        editUserPasswordUsersField.setSelectedItem(user);
+        view.changeUserPasswordInDatabase(changeUserPasswordBinder, editUserPasswordUsersField, getClass());
+        verify(database, times(0)).update(neverCalledUpdateCaptor.capture());
+
+        // Test with a selected user and two identical password fields
+        // This time, database update should be called.
+        Passwords passwords = changeUserPasswordBinder.getBean();
+        passwords.setPassword1("secret");
+        passwords.setPassword2("secret");
+        changeUserPasswordBinder.readBean(passwords);
+        view.changeUserPasswordInDatabase(changeUserPasswordBinder, editUserPasswordUsersField, getClass());
+        ArgumentCaptor<PreparedStatement> updateCalledOnceCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(1)).update(updateCalledOnceCaptor.capture());
+    }
+
+    @Test(expected=UkelonnException.class)
+    public void testBlankPasswordFieldsWithException() throws Exception {
+        // Set up the mocks (mainly needed to be able to create an AdminView)
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = mock(VaadinRequest.class);
+
+        // Create the object under test
+        AdminView view = new AdminView(provider, request);
+
+        Binder<Passwords> changeUserPasswordBinder = view.changeUserPasswordBinder;
+        changeUserPasswordBinder.setBean(null);
+        view.blankPasswordFields(changeUserPasswordBinder);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void testSelectAUserToBeEdited() throws Exception {
@@ -431,35 +552,89 @@ public class AdminViewTest {
     public void testSaveUserModifications() throws Exception {
         UkelonnUIProvider provider = new UkelonnUIProvider();
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = mock(VaadinRequest.class);
+
+        // Create the object under test
+        AdminView view = new AdminView(provider, request);
+
+        // Insert some dummy data
+        User user = new User(123, "usr", "usr@gmail.com", "User", "Name");
+        view.editUserUsers.getItems().addAll(Arrays.asList(user));
+        view.editUserUsers.refreshAll();
+
+        // Run the code with no selection in the NativeSelect, update should
+        // not be called in the database
+        Binder<User> editUserBinder = view.editUserBinder;
+        NativeSelect<User> editUserUserField = view.editUserUsersField;
+        view.saveUserModifications(editUserBinder, editUserUserField );
+        ArgumentCaptor<PreparedStatement> updateArgumentCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(updateArgumentCaptor.capture());
+
+        // Select an element. Update should still not be called
+        // since the fields are identical to the current values
+        editUserUserField.setSelectedItem(user);
+        view.saveUserModifications(editUserBinder, editUserUserField );
+        verify(database, times(0)).update(updateArgumentCaptor.capture());
+
+        // Set the email field to something that does not validate
+        // update should still not be called
+        User userInForms = editUserBinder.getBean();
+        userInForms.setEmail("");
+        editUserBinder.readBean(userInForms);
+        view.saveUserModifications(editUserBinder, editUserUserField );
+        verify(database, times(0)).update(updateArgumentCaptor.capture());
+
+        // Set the email field to something that validates as an email address
+        // this time update should be called
+        userInForms.setEmail("notauser@gmail.com");
+        editUserBinder.readBean(userInForms);
+        view.saveUserModifications(editUserBinder, editUserUserField );
+        verify(database, times(1)).update(updateArgumentCaptor.capture());
+    }
+
+    @Test(expected=UkelonnException.class)
+    public void testSaveUserModificationsWithExceptionThrown() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
         ResultSet emptyResult = mock(ResultSet.class);
         when(database.query(any())).thenReturn(emptyResult);
         provider.setUkelonnDatabase(database);
         VaadinRequest request = mock(VaadinRequest.class);
+
+        // Create the object under test
         AdminView view = new AdminView(provider, request);
 
-        Binder<User> editUserBinder = new Binder<>(User.class);
-        User user = new User(0, "editedusername", "", "", "");
-        editUserBinder.setBean(user);
-        TextField username = new TextField(); // Need a single field to round-trip with binding
-        editUserBinder.forField(username).bind("username");
-        editUserBinder.readBean(user);
+        // Insert some dummy data
+        User user = new User(123, "usr", "usr@gmail.com", "User", "Name");
+        view.editUserUsers.getItems().addAll(Arrays.asList(user));
+        view.editUserUsers.refreshAll();
 
-        // Verify preconditions, ie. that the bound form field has a value
-        assertEquals("editedusername", username.getValue());
 
-        // Run the code with no selection in the NativeSelect
-        view.saveUserModifications(editUserBinder);
+        Binder<User> editUserBinder = null;
+        NativeSelect<User> editUserUserField = view.editUserUsersField;
 
-        // Verify the the bound form field has been cleared
-        assertEquals("", username.getValue());
+        editUserUserField.setSelectedItem(user);
+        view.saveUserModifications(editUserBinder, editUserUserField );
+    }
 
-        // Corner case test: verify that using a null for the bean doesn't break the method
-        editUserBinder.setBean(null);
-        username.setValue("notchanged");
-        view.saveUserModifications(editUserBinder);
-        assertEquals("notchanged", username.getValue());
+    @Test
+    public void testEditedUserDifferentFromSelectedUser() {
+        User selectedUser = new User(123, "usr", "usr@gmail.com", "User", "Name");
+        User user = new User(0, "", "", "", "");
+        assertFalse(AdminView.editedUserDifferentFromSelectedUser(selectedUser, user));
+        user.setUsername("usr");
+        assertFalse(AdminView.editedUserDifferentFromSelectedUser(selectedUser, user));
+        user.setEmail("usr@gmail.com");
+        assertFalse(AdminView.editedUserDifferentFromSelectedUser(selectedUser, user));
+        user.setFirstname("User");
+        assertFalse(AdminView.editedUserDifferentFromSelectedUser(selectedUser, user));
+        user.setLastname("Name");
+        assertTrue(AdminView.editedUserDifferentFromSelectedUser(selectedUser, user));
     }
 
     @Test(expected=UkelonnException.class)

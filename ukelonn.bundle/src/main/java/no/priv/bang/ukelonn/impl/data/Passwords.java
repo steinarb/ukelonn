@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn.impl.data;
 
 public class Passwords {
+    public static final Passwords EMPTY_PASSWORDS = new Passwords("", "");
 
     private String password1;
     private String password2;
