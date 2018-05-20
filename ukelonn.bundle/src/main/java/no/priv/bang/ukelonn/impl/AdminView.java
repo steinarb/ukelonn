@@ -56,6 +56,7 @@ import no.priv.bang.ukelonn.impl.data.AmountAndBalance;
 public class AdminView extends AbstractView { // NOSONAR
     static final int ID_OF_PAY_TO_BANK = 4;
     private static final long serialVersionUID = -1581589472749242129L;
+    private static final int MINIMUM_NUMBER_OF_ROWS_IN_TABLE = 1;
     private UkelonnUIProvider provider;
 
     // Data model for handling payments to users
@@ -71,8 +72,11 @@ public class AdminView extends AbstractView { // NOSONAR
 
     // Data model for the admin tasks
     Map<Integer, TransactionType> transactionTypes; // NOSONAR
-    ListDataProvider<TransactionType> paymentTypes;
     ListDataProvider<TransactionType> jobTypes;
+    ListDataProvider<TransactionType> paymentTypes;
+    Binder<TransactionType> newPaymentBinder = new Binder<>(TransactionType.class);
+    Binder<TransactionType> editPaymentBinder = new Binder<>(TransactionType.class);
+    Grid<TransactionType> paymentTypesTable = new Grid<>(TransactionType.class);
     Binder<User> newUserBinder = new Binder<>(User.class);
     Binder<Passwords> newUserPasswordBinder = new Binder<>(Passwords.class);
     ListDataProvider<User> editUserPasswordUsers;
@@ -251,7 +255,6 @@ public class AdminView extends AbstractView { // NOSONAR
 
         NavigationView newpaymenttypeTab = new NavigationView();
         TransactionType newpaymenttype = new TransactionType(0, "", 0.0, false, true);
-        Binder<TransactionType> newPaymentBinder = new Binder<>(TransactionType.class);
         newPaymentBinder.setBean(newpaymenttype);
         VerticalComponentGroup newpaymenttypeForm = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, newpaymenttypeTab, newPaymenttypeLabel);
 
@@ -271,11 +274,10 @@ public class AdminView extends AbstractView { // NOSONAR
 
         NavigationView paymentstypeTab = new NavigationView();
         TransactionType editedPaymentType = new TransactionType(0, "", 0.0, false, true);
-        Binder<TransactionType> editPaymentBinder = new Binder<>(TransactionType.class);
         editPaymentBinder.setBean(editedPaymentType);
         VerticalComponentGroup paymenttypesform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(paymentstypeadminTab, paymentstypeTab, modifyPayementtypesLabel);
-        Grid<TransactionType> paymentTypesTable = new Grid<>(TransactionType.class);
         paymentTypesTable.setDataProvider(paymentTypes);
+        paymentTypesTable.setHeightByRows(getTableHeightFromDataProvider(paymentTypes));
         paymentTypesTable.removeColumn("id");
         paymentTypesTable.removeColumn("transactionIsWork");
         paymentTypesTable.removeColumn("transactionIsWagePayment");
@@ -287,23 +289,28 @@ public class AdminView extends AbstractView { // NOSONAR
         FormLayout editPaymentsLayout = new FormLayout();
 
         TextField editPaymentTypeNameField = new TextField("Endre Navn på betalingstype:");
-        newPaymentBinder.forField(editPaymentTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
+        editPaymentBinder.forField(editPaymentTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
         editPaymentsLayout.addComponent(editPaymentTypeNameField);
 
         TextField editPaymentTypeAmountField = new TextField("Endre beløp for betalingstype:");
-        newPaymentBinder.forField(editPaymentTypeAmountField)
+        editPaymentBinder.forField(editPaymentTypeAmountField)
             .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
             .bind(TRANSACTION_AMOUNT_PROPERTY);
         editPaymentsLayout.addComponent(editPaymentTypeAmountField);
 
         Button saveEditedPaymentType = new Button("Lagre endringer i betalingstype");
-        saveEditedPaymentType.addClickListener(event->saveChangesToPaymentTypes(paymentTypesTable, editPaymentBinder));
+        saveEditedPaymentType.addClickListener(event->saveChangesToPaymentType(paymentTypesTable, editPaymentBinder));
         editPaymentsLayout.addComponent(saveEditedPaymentType);
         paymenttypesform.addComponent(editPaymentsLayout);
 
         paymentstypeadmin.addComponent(createNavigationButton(newPaymenttypeLabel, newpaymenttypeTab));
         paymentstypeadmin.addComponent(createNavigationButton(modifyPayementtypesLabel, paymentstypeTab));
         tabs.addTab(paymentstypeadminTab, "Administrere utbetalingstyper");
+    }
+
+    int getTableHeightFromDataProvider(ListDataProvider<?> provider) {
+        int numberOfItemsInProvider = provider.getItems().size();
+        return numberOfItemsInProvider == 0 ? MINIMUM_NUMBER_OF_ROWS_IN_TABLE : numberOfItemsInProvider;
     }
 
     private void createUserAdministrationTab(TabBarView tabs) {
@@ -582,6 +589,7 @@ public class AdminView extends AbstractView { // NOSONAR
         paymentTypes.getItems().clear();
         paymentTypes.getItems().addAll(getPaymentTypesFromTransactionTypes(transactiontypes.values()));
         paymentTypes.refreshAll();
+        paymentTypesTable.setHeightByRows(getTableHeightFromDataProvider(paymentTypes));
     }
 
     void updateFormsAfterAccountIsSelected(Binder<AmountAndBalance> binder, NativeSelect<TransactionType> paymenttype, NativeSelect<Account> accountSelector) {
@@ -654,7 +662,7 @@ public class AdminView extends AbstractView { // NOSONAR
         TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
         if (transactionType != null &&
             !"".equals(binder.getBean().getTransactionTypeName()) &&
-            !identicalToExistingValues(transactionType, binder.getBean().getTransactionTypeName(), binder.getBean().getTransactionAmount()))
+            !identicalToExistingValues(transactionType, binder.getBean()))
         {
             transactionType.setTransactionTypeName(binder.getBean().getTransactionTypeName());
             transactionType.setTransactionAmount(binder.getBean().getTransactionAmount());
@@ -671,8 +679,13 @@ public class AdminView extends AbstractView { // NOSONAR
         }
     }
 
-    private boolean identicalToExistingValues(TransactionType transactionType, String transactionTypeName, Double transactionAmount) {
-        return transactionType.getTransactionTypeName().equals(transactionTypeName) && transactionType.getTransactionAmount().equals(transactionAmount);
+    static boolean identicalToExistingValues(TransactionType selectedTransactionType, TransactionType transactionType) {
+        String transactionTypeName = transactionType.getTransactionTypeName();
+        Double transactionAmount = transactionType.getTransactionAmount();
+        String selectedTransactionTypeName = selectedTransactionType.getTransactionTypeName();
+        Double selectedTransactionTypeAmount = selectedTransactionType.getTransactionAmount();
+        selectedTransactionTypeAmount = selectedTransactionTypeAmount == null ? 0.0 : selectedTransactionTypeAmount;
+        return selectedTransactionTypeName.equals(transactionTypeName) && selectedTransactionTypeAmount.equals(transactionAmount);
     }
 
     void createPaymentType(Binder<TransactionType> binder) {
@@ -684,38 +697,42 @@ public class AdminView extends AbstractView { // NOSONAR
             addPaymentTypeToDatabase(provider, getClass(), paymentName, paymentAmount);
             newPaymentType.setTransactionTypeName("");
             newPaymentType.setTransactionAmount(0.0);
-            binder.setBean(newPaymentType);
+            binder.readBean(newPaymentType);
             refreshPaymentTypesFromDatabase();
         }
     }
 
     void updatePaymentForEditWhenPaymentTypeIsSelected(Grid<TransactionType> paymentTypesTable, Binder<TransactionType> binder) {
-        Set<TransactionType> selection = paymentTypesTable.getSelectedItems();
-        TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
-        if (transactionType != null) {
-            binder.readBean(transactionType);
-            try {
-                binder.writeBean(binder.getBean());
-            } catch (ValidationException e) {
-                throw new UkelonnException("Failed to update payment type model bean", e);
+        try {
+            Set<TransactionType> selection = paymentTypesTable.getSelectedItems();
+            TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
+            if (transactionType != null) {
+                BeanUtils.copyProperties(binder.getBean(), transactionType);
+                binder.readBean(binder.getBean());
             }
+        } catch(Exception e) {
+            throw new UkelonnException("Failed to set payment edit values when payment is selected", e);
         }
     }
 
-    void saveChangesToPaymentTypes(Grid<TransactionType> paymentTypesTable, Binder<TransactionType> binder) {
-        Set<TransactionType> selection = paymentTypesTable.getSelectedItems();
-        TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
-        TransactionType paymentType = binder.getBean();
-        if (transactionType != null &&
-            !"".equals(paymentType.getTransactionTypeName()) &&
-            !transactionType.equals(paymentType))
-        {
-            updateTransactionTypeInDatabase(provider, getClass(), paymentType);
-            paymentTypesTable.select(null);
-            paymentType.setTransactionTypeName("");
-            paymentType.setTransactionAmount(0.0);
-            binder.setBean(paymentType);
-            refreshPaymentTypesFromDatabase();
+    void saveChangesToPaymentType(Grid<TransactionType> paymentTypesTable, Binder<TransactionType> binder) {
+        try {
+            Set<TransactionType> selection = paymentTypesTable.getSelectedItems();
+            TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
+            if (transactionType != null &&
+                !"".equals(binder.getBean().getTransactionTypeName()) &&
+                !identicalToExistingValues(transactionType, binder.getBean()))
+            {
+                BeanUtils.copyProperties(transactionType, binder.getBean());
+                updateTransactionTypeInDatabase(provider, getClass(), transactionType);
+                paymentTypesTable.deselectAll();
+                TransactionType emptyPaymentType = new TransactionType(0, "", 0.0, false, true);
+                BeanUtils.copyProperties(binder.getBean(), emptyPaymentType);
+                binder.readBean(emptyPaymentType);
+                refreshPaymentTypesFromDatabase();
+            }
+        } catch(Exception e) {
+            throw new UkelonnException("Failed to save the edited payment type", e);
         }
     }
 

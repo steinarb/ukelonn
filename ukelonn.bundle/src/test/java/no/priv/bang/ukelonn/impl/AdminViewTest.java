@@ -37,6 +37,7 @@ import org.mockito.ArgumentCaptor;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
@@ -277,117 +278,162 @@ public class AdminViewTest {
     }
 
     @Test
-    public void testCreatePaymentType() {
-        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
-        VaadinSession.setCurrent(session);
+    public void testCreatePaymentType() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
+
+        // Create the object under test
         AdminView view = new AdminView(provider, request);
 
-        // Set the new payment value
-        TransactionType newPaymentType = new TransactionType(0, "", 10.0, false, true);
-        Binder<TransactionType> binder = new Binder<>(TransactionType.class);
-        binder.setBean(newPaymentType);
-
-        // Call the code that is to be tested
+        Binder<TransactionType> binder = view.newPaymentBinder;
+        // Test creating payment with empty forms, database update is not called
         view.createPaymentType(binder);
-
-        // Verify the payment value hasn't been nulled
-        assertEquals(newPaymentType, binder.getBean());
+        ArgumentCaptor<PreparedStatement> updateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(updateCaptor.capture());
 
         // Set the new payment name
+        TransactionType newPaymentType = binder.getBean();
         newPaymentType.setTransactionTypeName("Sjekk");
-        binder.setBean(newPaymentType);
+        binder.readBean(newPaymentType);
 
-        // Call the code that is to be tested
+        // Test creating payment, database update should be called
         view.createPaymentType(binder);
+        verify(database, times(1)).update(updateCaptor.capture());
 
-        // Verify the payment value has been nulled
-        assertEquals(Double.valueOf(0.0), binder.getBean().getTransactionAmount());
+        // Set a payment value
+        newPaymentType.setTransactionAmount(10.0);
+        binder.readBean(newPaymentType);
+
+        // Test creating payment, database update should not be called
+        // since payment name is empty (field blanked after database save).
+        // (oe. update still called just a single time)
+        view.createPaymentType(binder);
+        verify(database, times(1)).update(updateCaptor.capture());
+
+        // Give the payment type a name
+        newPaymentType.setTransactionTypeName("Sjekk");
+        binder.readBean(newPaymentType);
+
+        // Test creating payment, this time database update should be called
+        // since payment name is empty (field blanked after database save).
+        // (ie. update will be called 2 times in total)
+        view.createPaymentType(binder);
+        verify(database, times(2)).update(updateCaptor.capture());
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
+    @Test(expected=UkelonnException.class)
     public void testUpdatePaymentForEditWhenPaymentTypeIsSelected() {
         UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
         VaadinSession.setCurrent(session);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
+
+        // Create the object to be tested
         AdminView view = new AdminView(provider, request);
 
-        // Mock argument to the method
-        String expectedPaymentTypeName = "Postgiro";
-        Double expectedPaymentTypeAmount = Double.valueOf(50);
-        Grid<TransactionType> paymentTypeTable = mock(Grid.class);
-        TransactionType paymentType = new TransactionType(0, expectedPaymentTypeName, expectedPaymentTypeAmount, false, true);
-        Set<TransactionType> selectedPaymentType = new HashSet<>(Arrays.asList(paymentType));
-        when(paymentTypeTable.getSelectedItems()).thenReturn(Collections.emptySet(), selectedPaymentType);
+        // Verify that form values are unchanged when calling
+        // method with no selection
+        Binder<TransactionType> editPaymentBinder = view.editPaymentBinder;
+        Grid<TransactionType> paymentTypesTable = view.paymentTypesTable;
+        TransactionType editedPaymentType = editPaymentBinder.getBean();
+        assertEquals("", editedPaymentType.getTransactionTypeName());
+        assertEquals(0.0, editedPaymentType.getTransactionAmount(), 0);
+        view.updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypesTable, editPaymentBinder);
+        assertEquals("", editedPaymentType.getTransactionTypeName());
+        assertEquals(0.0, editedPaymentType.getTransactionAmount(), 0);
 
-        // Test settings before the test
-        TransactionType editedPaymentType = new TransactionType(0, "", 0.0, false, true);
-        Binder<TransactionType> binder = new Binder<>(TransactionType.class);
-        binder.setBean(editedPaymentType);
-        TextField nameField = new TextField();
-        binder.forField(nameField).bind("transactionTypeName");
-        TextField amountField = new TextField();
-        binder.forField(amountField).withConverter(new StringToDoubleConverter("Ikke et tall")).bind("transactionAmount");
-        assertEquals("", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(0.0), binder.getBean().getTransactionAmount());
+        // Select an item and verify that the contents are in the forms
+        ListDataProvider<TransactionType> paymentTypes = view.paymentTypes;
+        TransactionType paymentType = paymentTypes.getItems().iterator().next();
+        paymentTypesTable.select(paymentType);
+        view.updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypesTable, editPaymentBinder);
+        assertEquals("Inn på konto", editedPaymentType.getTransactionTypeName());
 
-        // Call the code that is to be tested
-        view.updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypeTable, binder);
-
-        // Verify that values are unchanged after the test
-        assertEquals("", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(0.0), binder.getBean().getTransactionAmount());
-
-        // Call the code that is to be tested
-        view.updatePaymentForEditWhenPaymentTypeIsSelected(paymentTypeTable, binder);
-
-        // Verify that values are set after the test
-        assertEquals(expectedPaymentTypeName, binder.getBean().getTransactionTypeName());
-        assertEquals(expectedPaymentTypeAmount, binder.getBean().getTransactionAmount());
+        // Provoke an UkelonnException to be thrown
+        view.updatePaymentForEditWhenPaymentTypeIsSelected(null, null);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void testSaveChangesToPaymentTypes() {
-        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
-        VaadinSession.setCurrent(session);
+    public void testSaveChangesToPaymentType() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
+
+        // Create object under test
         AdminView view = new AdminView(provider, request);
 
-        // Create mocks
-        Grid<TransactionType> jobtypesTable = mock(Grid.class);
-        TransactionType paymentType1 = new TransactionType(0, "Kontanter", 100.0, false, true);
-        TransactionType paymentType2 = new TransactionType(0, "", 50.0, false, true);
-        Set<TransactionType> selectedPaymentType1 = new HashSet<>(Arrays.asList(paymentType1));
-        Set<TransactionType> selectedPaymentType2 = new HashSet<>(Arrays.asList(paymentType2));
-        when(jobtypesTable.getSelectedItems()).thenReturn(Collections.emptySet(), selectedPaymentType1, selectedPaymentType2);
+        // Add a payment type to the table
+        TransactionType paymentType = new TransactionType(4, "Inn på konto", null, false, true);
+        view.paymentTypes.getItems().add(paymentType);
+        view.paymentTypes.refreshAll();
 
-        // Set current values for the payment type
-        Binder<TransactionType> binder = new Binder<>(TransactionType.class);
-        TransactionType bean = new TransactionType(0, "Kontanter", 100.0, false, true);
-        binder.setBean(bean);
+        // Call the method with no selection, no database update should be called
+        Grid<TransactionType> paymentTypesTable = view.paymentTypesTable;
+        Binder<TransactionType> editPaymentBinder = view.editPaymentBinder;
+        view.saveChangesToPaymentType(paymentTypesTable, editPaymentBinder);
+        ArgumentCaptor<PreparedStatement> updateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Call the code that is to be tested
-        view.saveChangesToPaymentTypes(jobtypesTable, binder);
+        // Select an item and try saving, no database update will be called
+        // because the values are identical to the original
+        paymentTypesTable.select(paymentType);
+        view.saveChangesToPaymentType(paymentTypesTable, editPaymentBinder);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify values are unchanged
-        assertEquals("Kontanter", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(100.0), binder.getBean().getTransactionAmount());
+        // Change the text to empty and try saving, no update will be called
+        // because the text is empty
+        editPaymentBinder.getBean().setTransactionTypeName("");
+        editPaymentBinder.readBean(editPaymentBinder.getBean());
+        view.saveChangesToPaymentType(paymentTypesTable, editPaymentBinder);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Call the code that is to be tested
-        view.saveChangesToPaymentTypes(jobtypesTable, binder);
+        // Change the text to something other than the original
+        // and try saving. This time database update will be called
+        editPaymentBinder.getBean().setTransactionTypeName("Kontanter");
+        editPaymentBinder.readBean(editPaymentBinder.getBean());
+        view.saveChangesToPaymentType(paymentTypesTable, editPaymentBinder);
+        verify(database, times(1)).update(updateCaptor.capture());
+    }
 
-        // Verify values are still unchanged
-        assertEquals("Kontanter", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(100.0), binder.getBean().getTransactionAmount());
+    @Test(expected=UkelonnException.class)
+    public void testSaveChangesToPaymentTypeWithException() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
 
-        // Call the code that is to be tested
-        view.saveChangesToPaymentTypes(jobtypesTable, binder);
+        // Create object under test
+        AdminView view = new AdminView(provider, request);
 
-        // Verify values are changed
-        assertEquals("", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(0.0), binder.getBean().getTransactionAmount());
+        // Force an exception to check the exception handling
+        view.saveChangesToPaymentType(null, null);
+    }
+
+    @Test
+    public void testIdenticalToExistingValues() {
+        TransactionType pay1 = new TransactionType(4, "Innbetalt på konto", null, false, true);
+        TransactionType pay2 = new TransactionType(0, "", 0.0, false, true);
+        assertFalse(AdminView.identicalToExistingValues(pay1, pay2));
+        pay2.setTransactionTypeName("Innbetalt på konto");
+        assertTrue(AdminView.identicalToExistingValues(pay1, pay2));
+        pay1.setTransactionAmount(0.0);
+        assertTrue(AdminView.identicalToExistingValues(pay1, pay2));
+        pay2.setTransactionAmount(10.0);
+        assertFalse(AdminView.identicalToExistingValues(pay1, pay2));
     }
 
     @Test
