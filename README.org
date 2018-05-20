@@ -4,6 +4,8 @@ Tanken er at ungene skal kunne registrere jobber de gjør i hjemmet og at foreld
 
 Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/developer/architecture/][OSGi]] runtime, og er ment å være responsive slik at den er lett å kjøre på mobiltelefoner og nettbrett.
 
+Dette er en Webapplikasjon istedenfor en app, fordi resten av familien kjører iDingser og det er ikke så lett å få egenskrevne app'er inn på iDingser.
+
 * Status
 [[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=alert_status#.svg]]
 
@@ -33,7 +35,7 @@ I øyeblikket er det fire hoved-brancher:
  4. using-rendersnake
     Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Når det blir jobb på denne så blir det nok ikke rendersnake.  Det blir nok antagelig et eller annet JS-rammeverk på frontend og REST-tjenster på backend
 
-Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
+Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
 * Utsjekk og kjapp test av programvaren
 
