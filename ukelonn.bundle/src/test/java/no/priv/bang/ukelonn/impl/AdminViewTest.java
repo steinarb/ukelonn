@@ -28,15 +28,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
-import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
@@ -183,98 +180,147 @@ public class AdminViewTest {
     }
 
     @Test
-    public void testMakeNewJobType() {
-        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
-        VaadinSession.setCurrent(session);
+    public void testMakeNewJobType() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
+
+        // Create the object under test
         AdminView view = new AdminView(provider, request);
 
-        // Setup
-        TransactionType newJobType = new TransactionType(0, "", 0.0, true, false);
-        Binder<TransactionType> binder = new Binder<>(TransactionType.class);
-        binder.setBean(newJobType);
-
-        // Call the code that is to be tested
+        // Try creating a job with the default form values,
+        // verify that database update is not called
+        Binder<TransactionType> binder = view.newJobBinder;
         view.makeNewJobType(binder);
+        ArgumentCaptor<PreparedStatement> updateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify that conditions are unchanged
-        newJobType.equals(binder.getBean());
-
-        // Set the new job type name
-        newJobType.setTransactionTypeName("Vaske gulv og tak");
-        binder.setBean(newJobType);
-
-        // Call the code that is to be tested
+        // Try creating a job with a name but an empty amount value
+        // verify that database update is not called
+        TransactionType jobType = binder.getBean();
+        jobType.setTransactionTypeName("Vaske golv");
+        binder.readBean(jobType);
         view.makeNewJobType(binder);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify that conditions are unchanged
-        newJobType.equals(binder.getBean());
-
-        // Set the new job type amount
-        newJobType.setTransactionAmount(Double.valueOf(100));
-        binder.setBean(newJobType);
-
-        // Call the code that is to be tested
+        // Try creating a job with an empty name but a non-empty amount value
+        // verify that database update is not called
+        jobType.setTransactionTypeName("");
+        jobType.setTransactionAmount(50.0);
+        binder.readBean(jobType);
         view.makeNewJobType(binder);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify that name and amount has been nulled out
-        TransactionType bean = binder.getBean();
-        assertEquals("", bean.getTransactionTypeName());
-        assertEquals(Double.valueOf(0.0), bean.getTransactionAmount());
+        // Try creating a job with a name but an non-empty name and amount values
+        // verify that database update is called to create the job
+        jobType.setTransactionTypeName("Vaske golv");
+        binder.readBean(jobType);
+        view.makeNewJobType(binder);
+        verify(database, times(1)).update(updateCaptor.capture());
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testSaveChangesToJobType() throws Exception {
-        UkelonnUIProvider provider = getUkelonnServlet().getUkelonnUIProvider();
-        VaadinSession.setCurrent(session);
+    @Test(expected=UkelonnException.class)
+    public void testSetEditJobTypeFormsFromSelectedJobTypeInTableWithException() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
         VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
+
+        // Create the object under test
         AdminView view = new AdminView(provider, request);
 
-        // Create mocks
-        Grid<TransactionType> jobtypesTable = mock(Grid.class);
-        TransactionType jobType1 = new TransactionType(0, "Vaske golv", 100.0, true, false);
-        TransactionType jobType2 = new TransactionType(0, "", 0.0, true, false);
-        Set<TransactionType> jobType1Selected = new HashSet<>(Arrays.asList(jobType1));
-        Set<TransactionType> jobType2Selected = new HashSet<>(Arrays.asList(jobType2));
-        when(jobtypesTable.getSelectedItems()).thenReturn(Collections.emptySet(), jobType1Selected, jobType2Selected);
+        // Corner case test: provoke an exception in the setEditJobTypeFormsFromSelectedJobTypeInTable() method
+        view.setEditJobTypeFormsFromSelectedJobTypeInTable(null, null);
+    }
 
-        Binder<TransactionType> binder = new Binder<>(TransactionType.class);
-        TransactionType bean = new TransactionType(0, "", 0.0, true, false);
-        binder.setBean(bean);
-        TextField editJobTypeNameField = new TextField("Endre Navn på jobbtype:");
-        binder.forField(editJobTypeNameField).bind("transactionTypeName");
+    @Test
+    public void testSaveChangesToJobType() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
 
-        TextField editJobTypeAmountField = new TextField("Endre beløp for jobbtype:");
-        binder.forField(editJobTypeAmountField)
-            .withConverter(new StringToDoubleConverter("Ikke et tall"))
-            .bind("transactionAmount");
+        // Create the object under test
+        AdminView view = new AdminView(provider, request);
 
-        // Set current values for the job type
-        TransactionType unchangedJobtype = new TransactionType(0, "Vaske golv", 100.0, true, false);
-        binder.readBean(unchangedJobtype);
-        binder.writeBean(binder.getBean());
+        // Create a jobtype and put it in the table
+        TransactionType jobType = new TransactionType(0, "Vaske golv", 100.0, true, false);
+        view.jobTypes.getItems().add(jobType);
+        view.jobTypes.refreshAll();
 
-        // Call the code that is to be tested
+        // Try saving the job type, database update should not be called
+        // since no job type is selected in the table
+        Grid<TransactionType> jobtypesTable = view.jobtypesTable;
+        Binder<TransactionType> binder = view.editJobBinder;
         view.saveChangesToJobType(jobtypesTable, binder);
+        ArgumentCaptor<PreparedStatement> updateCaptor = ArgumentCaptor.forClass(PreparedStatement.class);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify values are unchanged
-        assertEquals("Vaske golv", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(100.0), binder.getBean().getTransactionAmount());
-
-        // Call the code that is to be tested
+        // Select a job and try saving the job type, database update should not
+        // be called, since the field values are identical to the selected job
+        jobtypesTable.select(jobType);
         view.saveChangesToJobType(jobtypesTable, binder);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify values are still unchanged
-        assertEquals("Vaske golv", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(100.0), binder.getBean().getTransactionAmount());
-
-        // Call the code that is to be tested
+        // Set a non-numeric value in the form field, database update should
+        // not be called, since the databinding is not valid
+        view.editJobTypeAmountField.setValue("xyzzy");
         view.saveChangesToJobType(jobtypesTable, binder);
+        verify(database, times(0)).update(updateCaptor.capture());
 
-        // Verify values are changed
-        assertEquals("", binder.getBean().getTransactionTypeName());
-        assertEquals(Double.valueOf(0.0), binder.getBean().getTransactionAmount());
+        // Set the job name to the empty string and try saving the job,
+        // database update should not be called since the name is empty
+        TransactionType editedJobType = binder.getBean();
+        editedJobType.setTransactionTypeName("");
+        binder.readBean(editedJobType);
+        view.saveChangesToJobType(jobtypesTable, binder);
+        verify(database, times(0)).update(updateCaptor.capture());
+
+        // Give the job name a non-empty value, but set the amount to 0
+        // database update should not be called since the amount is 0
+        editedJobType.setTransactionTypeName("Vaske golv");
+        editedJobType.setTransactionAmount(0.0);
+        binder.readBean(editedJobType);
+        view.saveChangesToJobType(jobtypesTable, binder);
+        verify(database, times(0)).update(updateCaptor.capture());
+
+        // Change the amount and try saving the job, this time update
+        // should be called
+        editedJobType.setTransactionAmount(editedJobType.getTransactionAmount() + 1);
+        binder.readBean(editedJobType);
+        view.saveChangesToJobType(jobtypesTable, binder);
+        verify(database, times(1)).update(updateCaptor.capture());
+    }
+
+    @Test(expected=UkelonnException.class)
+    public void testSaveChangesToJobTypeWithExceptionThrown() throws Exception {
+        UkelonnUIProvider provider = new UkelonnUIProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        ResultSet emptyResult = mock(ResultSet.class);
+        when(database.query(any())).thenReturn(emptyResult);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        provider.setUkelonnDatabase(database);
+        VaadinRequest request = createMockVaadinRequest("http://localhost:8181/ukelonn/");
+
+        // Create the object under test
+        AdminView view = new AdminView(provider, request);
+
+        // Corner case test: check the exception handling when saving edited jobs
+        view.saveChangesToJobType(null, null);
     }
 
     @Test

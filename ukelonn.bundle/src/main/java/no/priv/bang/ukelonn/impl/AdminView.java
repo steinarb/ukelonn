@@ -30,7 +30,6 @@ import org.vaadin.touchkit.ui.TabBarView;
 import org.vaadin.touchkit.ui.VerticalComponentGroup;
 
 import com.vaadin.data.Binder;
-import com.vaadin.data.ValidationException;
 import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.EmailValidator;
@@ -74,6 +73,10 @@ public class AdminView extends AbstractView { // NOSONAR
     Map<Integer, TransactionType> transactionTypes; // NOSONAR
     ListDataProvider<TransactionType> jobTypes;
     ListDataProvider<TransactionType> paymentTypes;
+    Binder<TransactionType> newJobBinder = new Binder<>(TransactionType.class);
+    Binder<TransactionType> editJobBinder = new Binder<>(TransactionType.class);
+    Grid<TransactionType> jobtypesTable = new Grid<>(TransactionType.class);
+    TextField editJobTypeAmountField = new TextField("Endre beløp for jobbtype:");
     Binder<TransactionType> newPaymentBinder = new Binder<>(TransactionType.class);
     Binder<TransactionType> editPaymentBinder = new Binder<>(TransactionType.class);
     Grid<TransactionType> paymentTypesTable = new Grid<>(TransactionType.class);
@@ -181,7 +184,6 @@ public class AdminView extends AbstractView { // NOSONAR
     @SuppressWarnings("unchecked")
     private void createJobtypeAdminstrationTab(TabBarView tabs) {
         TransactionType newJobType = new TransactionType(0, "", 0.0, true, false);
-        Binder<TransactionType> newJobBinder = new Binder<>(TransactionType.class);
         newJobBinder.setBean(newJobType);
         NavigationManager jobtypeAdminTab = new NavigationManager();
         VerticalComponentGroup jobtypeAdminContent = createVerticalComponentGroupWithCssLayoutAndNavigationView(jobtypeAdminTab, new NavigationView(), "Administrere jobbtyper");
@@ -208,11 +210,10 @@ public class AdminView extends AbstractView { // NOSONAR
 
         NavigationView jobtypesTab = new NavigationView();
         TransactionType editedJobtype = new TransactionType(0, "", 0.0, true, false);
-        Binder<TransactionType> editJobBinder = new Binder<>(TransactionType.class);
         editJobBinder.setBean(editedJobtype);
         VerticalComponentGroup jobtypesform = createVerticalComponentGroupWithCssLayoutAndNavigationSubView(jobtypeAdminTab, jobtypesTab, modifyJobtypesLabel);
-        Grid<TransactionType> jobtypesTable = new Grid<>(TransactionType.class);
         jobtypesTable.setDataProvider(jobTypes);
+        jobtypesTable.setHeightByRows(getTableHeightFromDataProvider(jobTypes));
         jobtypesTable.setSelectionMode(SelectionMode.SINGLE);
         jobtypesTable.removeColumn("id");
         jobtypesTable.removeColumn("transactionIsWork");
@@ -228,7 +229,6 @@ public class AdminView extends AbstractView { // NOSONAR
         editJobBinder.forField(editJobTypeNameField).bind(TRANSACTION_TYPE_NAME_PROPERTY);
         editJobLayout.addComponent(editJobTypeNameField);
 
-        TextField editJobTypeAmountField = new TextField("Endre beløp for jobbtype:");
         editJobBinder.forField(editJobTypeAmountField)
             .withConverter(new StringToDoubleConverter(IKKE_ET_TALL))
             .bind(TRANSACTION_AMOUNT_PROPERTY);
@@ -476,10 +476,15 @@ public class AdminView extends AbstractView { // NOSONAR
     }
 
     void setEditJobTypeFormsFromSelectedJobTypeInTable(Grid<TransactionType> jobtypesTable, Binder<TransactionType> editJobBinder) {
-        Set<TransactionType> selectedJobs = jobtypesTable.getSelectedItems();
-        TransactionType selectedJob = selectedJobs.isEmpty() ? null : selectedJobs.iterator().next();
-        if (selectedJob != null) {
-            editJobBinder.readBean(selectedJob);
+        try {
+            Set<TransactionType> selectedJobs = jobtypesTable.getSelectedItems();
+            TransactionType selectedJob = selectedJobs.isEmpty() ? null : selectedJobs.iterator().next();
+            if (selectedJob != null) {
+                BeanUtils.copyProperties(editJobBinder.getBean(), selectedJob);
+                editJobBinder.readBean(editJobBinder.getBean());
+            }
+        } catch(Exception e) {
+            throw new UkelonnException("Failed to select a job for editing", e);
         }
     }
 
@@ -582,6 +587,7 @@ public class AdminView extends AbstractView { // NOSONAR
         jobTypes.getItems().clear();
         jobTypes.getItems().addAll(getJobTypesFromTransactionTypes(transactiontypes.values()));
         jobTypes.refreshAll();
+        jobtypesTable.setHeightByRows(getTableHeightFromDataProvider(jobTypes));
     }
 
     private void refreshPaymentTypesFromDatabase() {
@@ -652,30 +658,31 @@ public class AdminView extends AbstractView { // NOSONAR
             addJobTypeToDatabase(provider, getClass(), jobname, jobamount);
             newJobType.setTransactionTypeName("");
             newJobType.setTransactionAmount(0.0);
-            binder.setBean(newJobType);
+            binder.readBean(newJobType);
             refreshJobTypesFromDatabase();
         }
     }
 
     void saveChangesToJobType(Grid<TransactionType> jobtypesTable, Binder<TransactionType> binder) {
-        Set<TransactionType> selection = jobtypesTable.getSelectedItems();
-        TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
-        if (transactionType != null &&
-            !"".equals(binder.getBean().getTransactionTypeName()) &&
-            !identicalToExistingValues(transactionType, binder.getBean()))
-        {
-            transactionType.setTransactionTypeName(binder.getBean().getTransactionTypeName());
-            transactionType.setTransactionAmount(binder.getBean().getTransactionAmount());
-            updateTransactionTypeInDatabase(provider, getClass(), transactionType);
-            jobtypesTable.select(null);
-            TransactionType emptyJobType = new TransactionType(0, "", 0.0, true, false);
-            binder.readBean(emptyJobType);
-            try {
-                binder.writeBean(binder.getBean());
-            } catch (ValidationException e) {
-                throw new UkelonnException("Failed to blank the fields of the edited job type", e);
+        try {
+            Set<TransactionType> selection = jobtypesTable.getSelectedItems();
+            TransactionType transactionType = selection.isEmpty() ? null : selection.iterator().next();
+            if (transactionType != null &&
+                binder.isValid() &&
+                !"".equals(binder.getBean().getTransactionTypeName()) &&
+                binder.getBean().getTransactionAmount() > 0.0 &&
+                !identicalToExistingValues(transactionType, binder.getBean()))
+            {
+                BeanUtils.copyProperties(transactionType, binder.getBean());
+                updateTransactionTypeInDatabase(provider, getClass(), transactionType);
+                jobtypesTable.deselectAll();
+                TransactionType emptyJobType = new TransactionType(0, "", 0.0, true, false);
+                BeanUtils.copyProperties(binder.getBean(), emptyJobType);
+                binder.readBean(emptyJobType);
+                refreshJobTypesFromDatabase();
             }
-            refreshJobTypesFromDatabase();
+        } catch(Exception e) {
+            throw new UkelonnException("Failed to save the edited job type", e);
         }
     }
 
