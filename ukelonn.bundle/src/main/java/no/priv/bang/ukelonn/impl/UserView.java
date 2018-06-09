@@ -91,6 +91,9 @@ public class UserView extends AbstractView { // NOSONAR
         account = getAccountInfoFromDatabase(provider, getClass(), currentUser);
 
         greeting.setValue("Ukelønn for " + account.getFirstName());
+        AmountAndBalance bean = amountAndBalanceBinder.getBean();
+        bean.setBalance(account.getBalance());
+        amountAndBalanceBinder.readBean(bean);
         recentJobs.getItems().clear();
         recentJobs.getItems().addAll(getJobsFromAccount(provider, account, getClass()));
         recentJobs.refreshAll();
