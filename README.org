@@ -6,6 +6,25 @@ Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/develo
 
 Dette er en Webapplikasjon istedenfor en app, fordi resten av familien kjører iDingser og det er ikke så lett å få egenskrevne app'er inn på iDingser.
 
+** English summary
+
+This is a web application for keeping track of my kids' allowance.
+
+There is a "user" GUI where they can register the chores they do and check their balance and money owed.  Since my kids mostly interact through their iThings, the webapps GUI aims to be as "app-like" as possible, currently using [[https://vaadin.com/directory/component/vaadin-touchkit][vaadin TouchKit]] to accomplish this.
+
+There is also an admin GUI where we can register allowance payments, and add chores and adjust the payment for the chores.
+
+The webapplication is intended to run inside [[https://karaf.apache.org][apache karaf]] and is installed using karaf's maven magic, basically:
+ 1. Install apache karaf
+ 2. From the karaf console command line, do some configuration
+ 3. Also from the karaf console command line, run commands to install the application from maven repositories
+
+The application also uses [[https://www.liquibase.org][Liquibase]] to create and set up the database, all that is needed is a blank PostgreSQL database that can be reached by the karaf server with a JDBC URL.
+
+The code (classnames, variable names etc.) and comments and commit messages are all in English.
+
+The GUI texts and this README are in Norwegian.
+
 * Status
 [[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=alert_status#.svg]]
 
