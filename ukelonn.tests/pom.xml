@@ -30,6 +30,12 @@
 
     <dependencies>
         <dependency>
+            <artifactId>karaf</artifactId>
+            <groupId>no.priv.bang.ukelonn</groupId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-karaf</artifactId>
         </dependency>

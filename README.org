@@ -55,7 +55,7 @@ Dette trengs for å laste og teste ut denne programvaren
     #+BEGIN_EXAMPLE
       cd ~/git/ukelonn/
       mvn clean install
-      cd ukelonn.karaf
+      cd karaf
       mvn clean install karaf:run
     #+END_EXAMPLE
  4. Koble en nettleser mot http://localhost:8181/ukelonn/
@@ -89,7 +89,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Dette er en Pax Exam integrasjonstest som sjekker at OSGi-bundlene starter og at de tilbyr riktig service.
    - =ukelonn.gogoshell/pom.xml=
      Dette er en POM for å starte webappen kjørende i gogoshell.  Dvs. en fullt funksjonell OSGi-kontainer som blir startet på nytt hver gang maven starter den
-   - =ukelonn.karaf/pom.xml=
+   - =karaf/pom.xml=
      Dette er en POM som lager en "feature"-fil for [[http://karaf.apache.org/][Apache karaf]]
    - =ukelonn.rebundled/pom.xml=
      Hver gang man trenger en avhengighet som ikke er en OSGi-bundle kan man "rebundle" avhengigheten ved å lage et nytt underprosjekt av dette prosjektet.
@@ -122,7 +122,7 @@ Dette trengs for å bygge og kjøre programvaren
  4. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.2]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
  5. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
     #+END_EXAMPLE
  6. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
@@ -206,7 +206,7 @@ Framgangsmåte:
     #+END_EXAMPLE
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
     #+END_EXAMPLE
  4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
@@ -261,7 +261,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
     #+END_EXAMPLE
  7. I karaf kommando-skall, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.ukelonn/ukelonn.karaf/LATEST/xml/features
+      feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
       feature:install ukelonn-db-postgresql
       feature:install ukelonn
     #+END_EXAMPLE
