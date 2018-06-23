@@ -40,6 +40,7 @@
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle</artifactId>
             <version>${project.version}</version>
+            <type>war</type>
         </dependency>
     </dependencies>
 
