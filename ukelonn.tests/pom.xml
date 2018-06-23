@@ -30,12 +30,6 @@
 
     <dependencies>
         <dependency>
-            <artifactId>karaf</artifactId>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-karaf</artifactId>
         </dependency>
@@ -82,11 +76,10 @@
             <artifactId>org.osgi.core</artifactId>
         </dependency>
         <dependency>
+            <artifactId>karaf</artifactId>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.karaf</artifactId>
             <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
