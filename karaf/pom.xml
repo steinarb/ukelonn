@@ -19,74 +19,74 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ukelonn.karaf</artifactId>
+    <artifactId>karaf</artifactId>
     <packaging>pom</packaging>
 
     <name>Ukelonn webapp karaf feature repository</name>
 
+
     <dependencies>
-        <dependency>
-            <groupId>no.priv.bang.karaf</groupId>
-            <artifactId>liquibase-core-karaf</artifactId>
-            <version>LATEST</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.api</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.bundle.db.liquibase</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle.db.test</artifactId>
             <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle.db.postgresql</artifactId>
             <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle</artifactId>
             <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <type>war</type>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.karaf.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
-                <configuration>
-                    <featuresToInstall>ukelonn-db-derby-test,ukelonn</featuresToInstall>
-                </configuration>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>generate-features-file</id>
-                        <phase>package</phase>
+                        <id>filter-resources</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>features-generate-descriptor</goal>
+                            <goal>resources</goal>
                         </goals>
                         <configuration>
-                            <aggregateFeatures>true</aggregateFeatures>
-                            <includeProjectArtifact>false</includeProjectArtifact>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/filtered-resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>attach-karaf-feature</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>target/classes/feature.xml</file>
+                                    <type>xml</type>
+                                    <classifier>features</classifier>
+                                </artifact>
+                            </artifacts>
                         </configuration>
                     </execution>
                 </executions>
