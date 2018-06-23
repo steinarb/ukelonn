@@ -435,7 +435,7 @@
         <module>ukelonn.bundle.db.liquibase</module>
         <module>ukelonn.bundle.db.test</module>
         <module>ukelonn.bundle.db.postgresql</module>
-        <module>ukelonn.karaf</module>
+        <module>karaf</module>
     </modules>
 
 </project>

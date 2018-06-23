@@ -80,11 +80,10 @@
             <artifactId>org.osgi.core</artifactId>
         </dependency>
         <dependency>
+            <artifactId>karaf</artifactId>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.karaf</artifactId>
             <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
