@@ -29,17 +29,17 @@
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle.db.test</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle.db.postgresql</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.bundle</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
