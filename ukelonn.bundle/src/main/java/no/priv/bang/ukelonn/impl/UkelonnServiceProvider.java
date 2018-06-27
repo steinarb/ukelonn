@@ -48,7 +48,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             if (httpContext != null) {
                 final Dictionary<String, Object> initParams = new Hashtable<>(); // NOSONAR Can't switch to HashMap because the API wants Dictionary
                 initParams.put("from", "HttpService");
-                final String registrationPath = "/ukelonn";
+                final String registrationPath = "/ukelonn"; // NOSONAR I don't want to customize this URL
                 try {
                     UkelonnServlet servlet = new UkelonnServlet(registrationPath);
                     servlet.setLogService(logservice);
