@@ -49,7 +49,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         if (webContainer != null ) {
             final HttpContext httpContext = webContainer.createDefaultHttpContext();
             if (httpContext != null) {
-                final Dictionary<String, Object> initParams = new Hashtable<String, Object>();
+                final Dictionary<String, Object> initParams = new Hashtable<>(); // NOSONAR Can't switch to HashMap because the API wants Dictionary
                 initParams.put("from", "HttpService");
                 final String registrationPath = "/ukelonn";
                 try {
