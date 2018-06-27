@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import static no.priv.bang.ukelonn.testutils.TestUtils.setupFakeOsgiServices;
+import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -57,6 +57,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfo() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setProvider(getUkelonnServiceSingleton());
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo authInfo = realm.getAuthenticationInfo(token);
@@ -69,6 +70,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongPassword() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setProvider(getUkelonnServiceSingleton());
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1add".toCharArray());
 
@@ -84,6 +86,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongUsername() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setProvider(getUkelonnServiceSingleton());
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jadd", "1ad".toCharArray());
 
@@ -116,6 +119,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetRolesForUsers() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setProvider(getUkelonnServiceSingleton());
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);
@@ -133,6 +137,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetRolesForAdministrators() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setProvider(getUkelonnServiceSingleton());
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("on", "ola12".toCharArray());
         AuthenticationInfo authenticationInfoForUser = realm.getAuthenticationInfo(token);

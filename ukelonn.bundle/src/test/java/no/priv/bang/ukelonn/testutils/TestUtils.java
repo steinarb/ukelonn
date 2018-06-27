@@ -17,7 +17,6 @@ package no.priv.bang.ukelonn.testutils;
 
 import static org.mockito.Mockito.*;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
@@ -38,6 +37,12 @@ import no.priv.bang.ukelonn.mocks.MockLogService;
  */
 public class TestUtils {
 
+    private static UkelonnServiceProvider ukelonnServiceSingleton;
+
+    public static UkelonnServiceProvider getUkelonnServiceSingleton() {
+        return ukelonnServiceSingleton;
+    }
+
     /**
      * Get a {@link File} referencing a resource.
      *
@@ -54,7 +59,7 @@ public class TestUtils {
      * @return the serviceprovider implmenting the UkelonnService
      */
     public static UkelonnServiceProvider setupFakeOsgiServices() {
-        UkelonnServiceProvider ukelonnServiceSingleton = new UkelonnServiceProvider();
+        ukelonnServiceSingleton = new UkelonnServiceProvider();
         ukelonnServiceSingleton.activate();
         UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
@@ -82,21 +87,16 @@ public class TestUtils {
      */
     public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         rollbackMockDataInTestDatabase();
-        UkelonnServiceProvider ukelonnService = (UkelonnServiceProvider) UkelonnServiceProvider.getInstance();
+        UkelonnServiceProvider ukelonnService = new UkelonnServiceProvider();
         if (ukelonnService != null) {
             ukelonnService.setUkelonnDatabase(null); // Release the database
-
-            // Release the UkelonnService
-            Field ukelonnServiceInstanceField = UkelonnServiceProvider.class.getDeclaredField("instance");
-            ukelonnServiceInstanceField.setAccessible(true);
-            ukelonnServiceInstanceField.set(null, null);
         }
     }
 
     public static void rollbackMockDataInTestDatabase() {
         UkelonnDatabaseProvider ukelonnDatabaseProvider = null;
         try {
-            ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
+            ukelonnDatabaseProvider = (UkelonnDatabaseProvider) ukelonnServiceSingleton.getDatabase();
         } catch (Exception e) {
             // Swallow exception and continue
         }
@@ -110,7 +110,7 @@ public class TestUtils {
 
     public static void restoreTestDatabase() {
         rollbackMockDataInTestDatabase();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) UkelonnServiceProvider.getInstance().getDatabase();
+        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) ukelonnServiceSingleton.getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
     }

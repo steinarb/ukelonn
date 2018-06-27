@@ -37,14 +37,12 @@ import no.priv.bang.ukelonn.UkelonnService;
  */
 @Component(service=UkelonnService.class, immediate=true)
 public class UkelonnServiceProvider extends UkelonnServiceBase {
-    private static UkelonnServiceProvider instance;
     private WebContainer webContainer;
     private UkelonnDatabase database;
     private LogService logservice;
 
     @Activate
     public void activate() {
-        instance = this;
         if (webContainer != null ) {
             final HttpContext httpContext = webContainer.createDefaultHttpContext();
             if (httpContext != null) {
@@ -91,10 +89,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     public UkelonnService get() {
         return this;
-    }
-
-    public static UkelonnService getInstance() {
-        return instance;
     }
 
 }

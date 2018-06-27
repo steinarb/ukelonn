@@ -65,7 +65,7 @@ public class CommonDatabaseMethodsTest {
         UkelonnDatabase originalDatabase = provider.getDatabase();
         try {
             provider.setUkelonnDatabase(null);
-            UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getClass());
+            UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(getClass(), provider);
             assertNotNull(database); // Will never get here will throw exception on connectionCheck()
         } finally {
             // Restore the real derby database
@@ -87,7 +87,7 @@ public class CommonDatabaseMethodsTest {
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             provider.setUkelonnDatabase(database);
-            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getClass());
+            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getClass(), provider);
             assertEquals("Expected a non-null, empty map", 0, transactiontypes.size());
         } finally {
             // Restore the real derby database
@@ -115,7 +115,7 @@ public class CommonDatabaseMethodsTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
-            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getClass());
+            Map<Integer, TransactionType> transactiontypes = CommonDatabaseMethods.getTransactionTypesFromUkelonnDatabase(getClass(), provider);
             assertEquals("Expected a non-null, empty map", 0, transactiontypes.size());
         } finally {
             // Restore the real derby database
@@ -141,7 +141,7 @@ public class CommonDatabaseMethodsTest {
             provider.setUkelonnDatabase(database);
             double originalBalance = 42.5;
             Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
-            CommonDatabaseMethods.updateBalanseFromDatabase(getClass(), account);
+            CommonDatabaseMethods.updateBalanseFromDatabase(getClass(), provider, account);
             assertEquals("Expected balance to be unchanged", originalBalance, account.getBalance(), 0.0);
         } finally {
             // Restore the real derby database
@@ -173,7 +173,7 @@ public class CommonDatabaseMethodsTest {
             provider.setUkelonnDatabase(database);
             double originalBalance = 42.5;
             Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
-            CommonDatabaseMethods.updateBalanseFromDatabase(getClass(), account);
+            CommonDatabaseMethods.updateBalanseFromDatabase(getClass(), provider, account);
             assertEquals("Expected balance to be unchanged", originalBalance, account.getBalance(), 0.0);
         } finally {
             // Restore the real derby database
@@ -206,7 +206,7 @@ public class CommonDatabaseMethodsTest {
             double originalBalance = 42.5;
             Account account = new Account(1, 1, "jad", "Jane", "Doe", originalBalance);
             TransactionType jobType = new TransactionType(1, "Støvsuging 1. etasje", 45.0, true, false);
-            int updateStatus = CommonDatabaseMethods.addNewPaymentToAccount(getClass(), account, jobType, 45.0);
+            int updateStatus = CommonDatabaseMethods.addNewPaymentToAccount(getClass(), provider, account, jobType, 45.0);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -230,7 +230,7 @@ public class CommonDatabaseMethodsTest {
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
-            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), "jad");
+            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
             assertEquals("Ikke innlogget", account.getFirstName());
         } finally {
             // Restore the real derby database
@@ -260,7 +260,7 @@ public class CommonDatabaseMethodsTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
-            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), "jad");
+            Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
             assertEquals("Ikke innlogget", account.getFirstName());
         } finally {
             // Restore the real derby database
@@ -284,7 +284,7 @@ public class CommonDatabaseMethodsTest {
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
-            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), "on");
+            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), provider, "on");
             assertEquals("Ikke innlogget", user.getFirstname());
         } finally {
             // Restore the real derby database
@@ -314,7 +314,7 @@ public class CommonDatabaseMethodsTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
-            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), "on");
+            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), provider, "on");
             assertEquals("Ikke innlogget", user.getFirstname());
         } finally {
             // Restore the real derby database
@@ -338,7 +338,7 @@ public class CommonDatabaseMethodsTest {
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
-            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass());
+            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
         } finally {
             // Restore the real derby database
@@ -368,7 +368,7 @@ public class CommonDatabaseMethodsTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
-            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass());
+            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
         } finally {
             // Restore the real derby database
@@ -393,7 +393,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass());
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, payments.size());
         } finally {
             // Restore the real derby database
@@ -424,7 +424,7 @@ public class CommonDatabaseMethodsTest {
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass());
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, payments.size());
         } finally {
             // Restore the real derby database
@@ -449,7 +449,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass());
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, jobs.size());
         } finally {
             // Restore the real derby database
@@ -480,7 +480,7 @@ public class CommonDatabaseMethodsTest {
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass());
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, jobs.size());
         } finally {
             // Restore the real derby database
@@ -509,7 +509,7 @@ public class CommonDatabaseMethodsTest {
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getClass(), account, 1, 45.0);
+            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getClass(), provider, account, 1, 45.0);
             assertEquals("Expected a non-null, empty map", 0, transactionTypes.size());
         } finally {
             // Restore the real derby database
@@ -537,7 +537,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.addJobTypeToDatabase(getClass(), "Vaske vindu", 50.0);
+            int updateStatus = CommonDatabaseMethods.addJobTypeToDatabase(getClass(), provider, "Vaske vindu", 50.0);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -566,7 +566,7 @@ public class CommonDatabaseMethodsTest {
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
             TransactionType transactionType = new TransactionType(1, "Ny jobbtekst", 41.0, true, false);
-            int updateStatus = CommonDatabaseMethods.updateTransactionTypeInDatabase(getClass(), transactionType);
+            int updateStatus = CommonDatabaseMethods.updateTransactionTypeInDatabase(getClass(), provider, transactionType);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -594,7 +594,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.addPaymentTypeToDatabase(getClass(), "Vipps", null);
+            int updateStatus = CommonDatabaseMethods.addPaymentTypeToDatabase(getClass(), provider, "Vipps", null);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -622,7 +622,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
-            CommonDatabaseMethods.addUserToDatabase(getClass(), "jdeere", "bamb1", "deere@forest.com", "Julia", "Deere");
+            CommonDatabaseMethods.addUserToDatabase(getClass(), provider, "jdeere", "bamb1", "deere@forest.com", "Julia", "Deere");
         } finally {
             // Restore the real derby database
             provider.setUkelonnDatabase(originalDatabase);
@@ -651,7 +651,7 @@ public class CommonDatabaseMethodsTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
-            List<User> users = CommonDatabaseMethods.getUsers(getClass());
+            List<User> users = CommonDatabaseMethods.getUsers(getClass(), provider);
             assertEquals(0, users.size()); // Will never get here, using the return value so the IDE won't complain
         } finally {
             // Restore the real derby database
@@ -679,7 +679,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.changePasswordForUser("jad", "zecret0", getClass());
+            int updateStatus = CommonDatabaseMethods.changePasswordForUser("jad", "zecret0", getClass(), provider);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -708,7 +708,7 @@ public class CommonDatabaseMethodsTest {
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
             User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe");
-            int updateStatus = CommonDatabaseMethods.updateUserInDatabase(getClass(), user);
+            int updateStatus = CommonDatabaseMethods.updateUserInDatabase(getClass(), provider, user);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -718,20 +718,20 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetAdminUserFromDatabase() {
-        AdminUser admin = getAdminUserFromDatabase(getClass(), "on");
+        AdminUser admin = getAdminUserFromDatabase(getClass(), provider, "on");
         assertEquals("on", admin.getUserName());
         assertEquals(2, admin.getUserId());
         assertEquals(2, admin.getAdministratorId());
         assertEquals("Ola", admin.getFirstname());
         assertEquals("Nordmann", admin.getSurname());
 
-        AdminUser notAdmin = getAdminUserFromDatabase(getClass(), "jad");
+        AdminUser notAdmin = getAdminUserFromDatabase(getClass(), provider, "jad");
         assertEquals("jad", notAdmin.getUserName());
         assertEquals(0, notAdmin.getUserId());
         assertEquals("Ikke innlogget", notAdmin.getFirstname());
         assertNull(notAdmin.getSurname());
 
-        AdminUser notInDabase = getAdminUserFromDatabase(getClass(), "unknownuser");
+        AdminUser notInDabase = getAdminUserFromDatabase(getClass(), provider, "unknownuser");
         assertEquals("unknownuser", notInDabase.getUserName());
         assertEquals(0, notInDabase.getUserId());
         assertEquals("Ikke innlogget", notInDabase.getFirstname());
@@ -740,22 +740,22 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetAccountInfoFromDatabase() {
-        Account account = getAccountInfoFromDatabase(getClass(), "jad");
+        Account account = getAccountInfoFromDatabase(getClass(), provider, "jad");
         assertEquals("jad", account.getUsername());
         assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
-        List<Transaction> jobs = getJobsFromAccount(account, getClass());
+        List<Transaction> jobs = getJobsFromAccount(account, getClass(), provider);
         assertEquals(10, jobs.size());
-        List<Transaction> payments = getPaymentsFromAccount(account, getClass());
+        List<Transaction> payments = getPaymentsFromAccount(account, getClass(), provider);
         assertEquals(10, payments.size());
 
-        Account accountForAdmin = getAccountInfoFromDatabase(getClass(), "on");
+        Account accountForAdmin = getAccountInfoFromDatabase(getClass(), provider, "on");
         assertEquals("on", accountForAdmin.getUsername());
         assertEquals(0, accountForAdmin.getUserId());
         assertEquals("Ikke innlogget", accountForAdmin.getFirstName());
 
-        Account accountNotInDatabase = getAccountInfoFromDatabase(getClass(), "unknownuser");
+        Account accountNotInDatabase = getAccountInfoFromDatabase(getClass(), provider, "unknownuser");
         assertEquals("unknownuser", accountNotInDatabase.getUsername());
         assertEquals(0, accountNotInDatabase.getUserId());
         assertEquals("Ikke innlogget", accountNotInDatabase.getFirstName());
@@ -764,7 +764,7 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testUpdateUserInDatabase() {
         try {
-            List<User> users = getUsers(getClass());
+            List<User> users = getUsers(getClass(), provider);
             User jad = findUserInListByName(users, "jad");
             int jadUserid = jad.getUserId();
 
@@ -782,11 +782,11 @@ public class CommonDatabaseMethodsTest {
             // Create a brand new User bean to use for the update (password won't be used in the update)
             User jadToUpdate = new User(jadUserid, newUsername, newEmail, newFirstname, newLastname);
             int expectedNumberOfUpdatedRecords = 1;
-            int numberOfUpdatedRecords = updateUserInDatabase(getClass(), jadToUpdate);
+            int numberOfUpdatedRecords = updateUserInDatabase(getClass(), provider, jadToUpdate);
             assertEquals(expectedNumberOfUpdatedRecords, numberOfUpdatedRecords);
 
             // Read back an updated user and compare with the expected values
-            List<User> usersAfterUpdate = getUsers(getClass());
+            List<User> usersAfterUpdate = getUsers(getClass(), provider);
             assertEquals("Expected no new users added", users.size(), usersAfterUpdate.size());
             User jadAfterUpdate = findUserInListById(usersAfterUpdate, jadUserid);
             assertEquals(newUsername, jadAfterUpdate.getUsername());
@@ -801,45 +801,46 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testAddJobTypeToDatabase() {
         // Verify precondition
-        List<TransactionType> jobTypesBefore = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesBefore = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass(), provider).values());
         assertEquals(4, jobTypesBefore.size());
 
-        addJobTypeToDatabase(getClass(), "Klippe gress", 45);
+        addJobTypeToDatabase(getClass(), provider, "Klippe gress", 45);
 
         // Verify that a job has been added
-        List<TransactionType> jobTypesAfter = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesAfter = getJobTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass(), provider).values());
         assertEquals(5, jobTypesAfter.size());
     }
 
     @Test
     public void testAddPaymentTypeToDatabase() {
         // Verify precondition
-        List<TransactionType> jobTypesBefore = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesBefore = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass(), provider).values());
         assertEquals(2, jobTypesBefore.size());
 
-        addPaymentTypeToDatabase(getClass(), "Sjekk", null);
+        addPaymentTypeToDatabase(getClass(), provider, "Sjekk", null);
 
         // Verify that a job has been added
-        List<TransactionType> jobTypesAfter = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass()).values());
+        List<TransactionType> jobTypesAfter = getPaymentTypesFromTransactionTypes(getTransactionTypesFromUkelonnDatabase(getClass(), provider).values());
         assertEquals(3, jobTypesAfter.size());
     }
 
     @Test
     public void testAddUserToDatabase() {
         // Verify precondition
-        List<User> usersBefore = getUsers(getClass());
+        List<User> usersBefore = getUsers(getClass(), provider);
         assertEquals(5, usersBefore.size());
 
-        addUserToDatabase(getClass(), "un", "zecret", "un@gmail.com", "User", "Name");
+        addUserToDatabase(getClass(), provider, "un", "zecret", "un@gmail.com", "User", "Name");
 
         // Verify that a user has been added
-        List<User> usersAfter = getUsers(getClass());
+        List<User> usersAfter = getUsers(getClass(), provider);
         assertEquals(6, usersAfter.size());
     }
 
     @Test
     public void testChangePasswordForUser() {
         UkelonnRealm realm = new UkelonnRealm();
+        realm.setProvider(getUkelonnServiceSingleton());
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         String username = "jad";
         String originalPassword = "1ad";
@@ -849,7 +850,7 @@ public class CommonDatabaseMethodsTest {
 
         // Change the password
         String newPassword = "nupass";
-        changePasswordForUser(username, newPassword, getClass());
+        changePasswordForUser(username, newPassword, getClass(), provider);
 
         // Verify new password
         assertTrue(passwordMatcher(realm, username, newPassword));
@@ -858,7 +859,7 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testUpdateTransactionTypeInDatabase() {
         // Verify the initial state of the transaction type that is to be modified
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), provider);
         TransactionType transactionTypeBeforeModification = transactionTypes.get(3);
         assertEquals("Gå med resirk", transactionTypeBeforeModification.getTransactionTypeName());
         assertEquals(Double.valueOf(35), transactionTypeBeforeModification.getTransactionAmount());
@@ -868,10 +869,10 @@ public class CommonDatabaseMethodsTest {
         // Modify the transaction type
         transactionTypeBeforeModification.setTransactionTypeName("Vaske tøy");
         transactionTypeBeforeModification.setTransactionAmount(75.0);
-        updateTransactionTypeInDatabase(getClass(), transactionTypeBeforeModification);
+        updateTransactionTypeInDatabase(getClass(), provider, transactionTypeBeforeModification);
 
         // Verify the changed state of the transaction type in the database
-        transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
+        transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), provider);
         TransactionType transactionTypeAfterModification = transactionTypes.get(3);
         assertEquals("Vaske tøy", transactionTypeAfterModification.getTransactionTypeName());
         assertEquals(Double.valueOf(75), transactionTypeAfterModification.getTransactionAmount());
@@ -882,24 +883,24 @@ public class CommonDatabaseMethodsTest {
     @Test
     public void testDeleteTransactions() {
         // Verify initial job size for a user
-        Account account = getAccountInfoFromDatabase(getClass(), "jod");
-        List<Transaction> initialJobsForJod = getJobsFromAccount(account, getClass());
+        Account account = getAccountInfoFromDatabase(getClass(), provider, "jod");
+        List<Transaction> initialJobsForJod = getJobsFromAccount(account, getClass(), provider);
         assertEquals(2, initialJobsForJod.size());
 
         // Add two jobs that are to be deleted later
-        registerNewJobInDatabase(getClass(), account, 1, 45);
-        registerNewJobInDatabase(getClass(), account, 2, 45);
+        registerNewJobInDatabase(getClass(), provider, account, 1, 45);
+        registerNewJobInDatabase(getClass(), provider, account, 2, 45);
 
         // Verify the number of jobs for the user in the database before deleting any
-        List<Transaction> jobs = getJobsFromAccount(account, getClass());
+        List<Transaction> jobs = getJobsFromAccount(account, getClass(), provider);
         assertEquals(4, jobs.size());
 
         // Delete two jobs for the user
         List<Transaction> jobsToDelete = Arrays.asList(jobs.get(0), jobs.get(2));
-        deleteTransactions(getClass(), jobsToDelete);
+        deleteTransactions(getClass(), provider, jobsToDelete);
 
         // Verify that the jobs has been deleted
-        List<Transaction> jobsAfterDelete = getJobsFromAccount(account, getClass());
+        List<Transaction> jobsAfterDelete = getJobsFromAccount(account, getClass(), provider);
         assertEquals(2, jobsAfterDelete.size());
     }
 
@@ -907,24 +908,24 @@ public class CommonDatabaseMethodsTest {
     public void testJoinIds() {
         assertEquals("", CommonDatabaseMethods.joinIds(null).toString());
         assertEquals("", CommonDatabaseMethods.joinIds(Collections.emptyList()).toString());
-        Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), "jad");
-        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass());
+        Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
+        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass(), provider);
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", CommonDatabaseMethods.joinIds(jobs).toString());
     }
 
     @Test
     public void testAddNewPaymentToAccount() {
         // Verify initial number of payments for a user
-        Account account = getAccountInfoFromDatabase(getClass(), "jod");
-        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(account, getClass());
+        Account account = getAccountInfoFromDatabase(getClass(), provider, "jod");
+        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(account, getClass(), provider);
         assertEquals(1, initialPaymentsForJod.size());
 
         // Register a payment
-        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass());
-        addNewPaymentToAccount(getClass(), account, transactionTypes.get(4), account.getBalance());
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), provider);
+        addNewPaymentToAccount(getClass(), provider, account, transactionTypes.get(4), account.getBalance());
 
         // Verify that a payment have been added
-        List<Transaction> paymentsForJod = getPaymentsFromAccount(account, getClass());
+        List<Transaction> paymentsForJod = getPaymentsFromAccount(account, getClass(), provider);
         assertEquals(2, paymentsForJod.size());
     }
 
@@ -948,7 +949,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
-            int updateStatus = CommonDatabaseMethods.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(database, 1);
+            int updateStatus = CommonDatabaseMethods.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(provider, database, 1);
             assertEquals(CommonDatabaseMethods.UPDATE_FAILED, updateStatus);
         } finally {
             // Restore the real derby database
@@ -972,7 +973,7 @@ public class CommonDatabaseMethodsTest {
 
     @Test
     public void testGetResourceAsStringNoResource() {
-        String resource = CommonDatabaseMethods.getResourceAsString("finnesikke");
+        String resource = CommonDatabaseMethods.getResourceAsString(provider, "finnesikke");
         assertNull(resource);
     }
 

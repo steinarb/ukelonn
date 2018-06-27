@@ -24,9 +24,9 @@ public class CommonServiceMethods {
 
     private CommonServiceMethods() {}
 
-    public static UkelonnService connectionCheck(Class<?> clazz) {
+    public static UkelonnService connectionCheck(Class<?> clazz, UkelonnServiceProvider provider) {
         String className = clazz.getSimpleName();
-        UkelonnService ukelonnService = UkelonnServiceProvider.getInstance();
+        UkelonnService ukelonnService = provider;
         if (ukelonnService == null) {
             throw new UkelonnException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
         }
@@ -34,23 +34,23 @@ public class CommonServiceMethods {
         return ukelonnService;
     }
 
-    public static void logError(Class<?> clazz, String message) {
-        LogService logservice = logserviceConnectionCheck(clazz);
+    public static void logError(Class<?> clazz, UkelonnServiceProvider provider, String message) {
+        LogService logservice = logserviceConnectionCheck(clazz, provider);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message);
         }
     }
 
-    public static void logError(Class<?> clazz, String message, Throwable exception) {
-        LogService logservice = logserviceConnectionCheck(clazz);
+    public static void logError(Class<?> clazz, UkelonnServiceProvider provider, String message, Throwable exception) {
+        LogService logservice = logserviceConnectionCheck(clazz, provider);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message, exception);
         }
     }
 
-    private static LogService logserviceConnectionCheck(Class<?> clazz) {
+    private static LogService logserviceConnectionCheck(Class<?> clazz, UkelonnServiceProvider provider) {
         try {
-            UkelonnService ukelonnService = connectionCheck(clazz);
+            UkelonnService ukelonnService = connectionCheck(clazz, provider);
 
             return ukelonnService.getLogservice();
         } catch (RuntimeException e) {
