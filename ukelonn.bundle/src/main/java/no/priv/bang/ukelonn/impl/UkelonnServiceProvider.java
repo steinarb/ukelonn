@@ -18,8 +18,6 @@ package no.priv.bang.ukelonn.impl;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.servlet.ServletException;
-
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -83,12 +81,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                     webcontainer.registerServlet(registrationPath, new UkelonnServlet(registrationPath), initParams, httpContext);
                     // register images as resources
                     webcontainer.registerResources("/images", "/images", httpContext);
-                } catch (ServletException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (NamespaceException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    logservice.log(LogService.LOG_ERROR, "Failed to registee the Ukelonn servlet", e);
                 }
             }
         }
