@@ -23,7 +23,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpContext;
-import org.osgi.service.http.NamespaceException;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
@@ -86,7 +85,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Reference
-    public void setWebContainer(WebContainer webcontainer) throws NamespaceException {
+    public void setWebContainer(WebContainer webcontainer) {
         webContainer = webcontainer;
     }
 
