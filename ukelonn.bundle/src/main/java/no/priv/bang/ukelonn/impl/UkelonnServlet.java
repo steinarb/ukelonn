@@ -18,6 +18,7 @@ package no.priv.bang.ukelonn.impl;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,14 +26,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.rendersnake.HtmlAttributesFactory.*;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.rendersnake.ext.servlet.HtmlServletCanvas;
 
+@Component(service=Servlet.class, property={"alias=/ukelonn"}, immediate=true)
 public class UkelonnServlet extends HttpServlet {
     private static final long serialVersionUID = -3496606785818930881L;
-    private final String registrationPath;
     private LogService logservice; // NOSONAR This is not touched after DS component activate so effectively a constant
 
+    @Reference
     public void setLogService(LogService logservice) {
         this.logservice = logservice;
     }
@@ -51,7 +55,7 @@ public class UkelonnServlet extends HttpServlet {
                 .img(src("/images/logo.png").border("0"))
                 .h1().content(getServletConfig().getInitParameter("from"))
                 .p()
-                .write("Served by servlet registered at: " + registrationPath).br()
+                .write("Served by servlet registered at: /ukelonn").br()
                 .write("Servlet Path: " + request.getServletPath()).br()
                 .write("Path Info: " + request.getPathInfo())
                 ._p()
@@ -61,11 +65,6 @@ public class UkelonnServlet extends HttpServlet {
             logservice.log(LogService.LOG_ERROR, "Failed to write HTML to the response", e);
             response.setStatus(500);
         }
-    }
-
-    public UkelonnServlet(String registrationPath) {
-        super();
-        this.registrationPath = registrationPath;
     }
 
 }

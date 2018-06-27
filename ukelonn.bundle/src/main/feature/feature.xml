@@ -15,7 +15,8 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.api/${project.version}/xml/features</repository>
     <feature name="ukelonn">
         <feature prerequisite="true">wrap</feature>
-        <feature>pax-http</feature>
+        <feature>pax-http-whiteboard</feature>
         <feature>scr</feature>
+        <feature>ukelonn-api</feature>
     </feature>
 </features>

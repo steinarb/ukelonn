@@ -32,7 +32,7 @@ public class UkelonnServletTest {
 
     @Test
     public void testRender() throws IOException, ServletException {
-        UkelonnServlet servlet = new UkelonnServlet("/ukelonn");
+        UkelonnServlet servlet = new UkelonnServlet();
         ServletConfig servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);

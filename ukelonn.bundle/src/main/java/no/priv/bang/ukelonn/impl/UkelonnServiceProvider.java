@@ -15,14 +15,10 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.ops4j.pax.web.service.WebContainer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.HttpContext;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
@@ -37,29 +33,12 @@ import no.priv.bang.ukelonn.UkelonnService;
  */
 @Component(service=UkelonnService.class, immediate=true)
 public class UkelonnServiceProvider extends UkelonnServiceBase {
-    private WebContainer webContainer;
     private UkelonnDatabase database;
     private LogService logservice;
 
     @Activate
     public void activate() {
-        if (webContainer != null ) {
-            final HttpContext httpContext = webContainer.createDefaultHttpContext();
-            if (httpContext != null) {
-                final Dictionary<String, Object> initParams = new Hashtable<>(); // NOSONAR Can't switch to HashMap because the API wants Dictionary
-                initParams.put("from", "HttpService");
-                final String registrationPath = "/ukelonn"; // NOSONAR I don't want to customize this URL
-                try {
-                    UkelonnServlet servlet = new UkelonnServlet(registrationPath);
-                    servlet.setLogService(logservice);
-                    webContainer.registerServlet(registrationPath, servlet, initParams, httpContext);
-                    // register images as resources
-                    webContainer.registerResources("/images", "/images", httpContext);
-                } catch (Exception e) {
-                    logservice.log(LogService.LOG_ERROR, "Failed to registee the Ukelonn servlet", e);
-                }
-            }
-        }
+        // Nothing to do here
     }
 
     @Reference
@@ -80,11 +59,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public LogService getLogservice() {
         return logservice;
-    }
-
-    @Reference
-    public void setWebContainer(WebContainer webcontainer) {
-        webContainer = webcontainer;
     }
 
     public UkelonnService get() {
