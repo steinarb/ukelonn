@@ -46,6 +46,23 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Activate
     public void activate() {
         instance = this;
+        if (webContainer != null ) {
+            final HttpContext httpContext = webContainer.createDefaultHttpContext();
+            if (httpContext != null) {
+                final Dictionary<String, Object> initParams = new Hashtable<String, Object>();
+                initParams.put("from", "HttpService");
+                final String registrationPath = "/ukelonn";
+                try {
+                    UkelonnServlet servlet = new UkelonnServlet(registrationPath);
+                    servlet.setLogService(logservice);
+                    webContainer.registerServlet(registrationPath, servlet, initParams, httpContext);
+                    // register images as resources
+                    webContainer.registerResources("/images", "/images", httpContext);
+                } catch (Exception e) {
+                    logservice.log(LogService.LOG_ERROR, "Failed to registee the Ukelonn servlet", e);
+                }
+            }
+        }
     }
 
     @Reference
@@ -71,21 +88,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Reference
     public void setWebContainer(WebContainer webcontainer) throws NamespaceException {
         webContainer = webcontainer;
-        if (webcontainer != null ) {
-            final HttpContext httpContext = webContainer.createDefaultHttpContext();
-            if (httpContext != null) {
-                final Dictionary<String, Object> initParams = new Hashtable<String, Object>();
-                initParams.put("from", "HttpService");
-                final String registrationPath = "/ukelonn";
-                try {
-                    webcontainer.registerServlet(registrationPath, new UkelonnServlet(registrationPath), initParams, httpContext);
-                    // register images as resources
-                    webcontainer.registerResources("/images", "/images", httpContext);
-                } catch (Exception e) {
-                    logservice.log(LogService.LOG_ERROR, "Failed to registee the Ukelonn servlet", e);
-                }
-            }
-        }
     }
 
     public UkelonnService get() {
