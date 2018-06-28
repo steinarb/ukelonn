@@ -18,6 +18,8 @@ package no.priv.bang.ukelonn.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -28,12 +30,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
-@Component(service=Servlet.class, property={"alias=/ukelonn"}, immediate=true)
+@Component(
+    property= {
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonn"},
+    service=Servlet.class,
+    immediate=true
+)
 public class UkelonnServlet extends HttpServlet {
     private static final long serialVersionUID = -3496606785818930881L;
     private LogService logservice; // NOSONAR This is not touched after DS component activate so effectively a constant
+
+    // The paths used by the react router all needs to return the HTML wrapping the bundle.js
+    private final List<String> routes = Arrays.asList("/", "/login", "/user", "/admin");
 
     @Reference
     public void setLogService(LogService logservice) {
@@ -95,7 +108,7 @@ public class UkelonnServlet extends HttpServlet {
     }
 
     private String findResourceFromPathInfo(String pathInfo) {
-        if ("/".equals(pathInfo)) {
+        if (routes.contains(pathInfo)) {
             return "index.xhtml";
         }
 

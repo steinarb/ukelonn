@@ -92,9 +92,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.rendersnake</groupId>
-            <artifactId>rendersnake</artifactId>
-            <scope>compile</scope>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-extender-whiteboard</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
@@ -129,6 +132,28 @@
                     <artifactId>commons-beanutils</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.commons-beanutils</artifactId>
+            <version>1.8.3_2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
     </dependencies>
 
@@ -202,8 +227,6 @@
                             org.osgi.service.http;version="[1.0.0,2.0.0)",
                             org.osgi.util.tracker;version="[1.5,2)",
                             org.ops4j.pax.web.service,
-                            org.rendersnake,
-                            org.rendersnake.*,
                             *
                         </Import-Package>
                         <Export-Package>!*</Export-Package>

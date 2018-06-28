@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,15 @@ import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.UkelonnService;
 
 public class UkelonnRealm extends AuthorizingRealm {
 
-    private UkelonnService provider;
+    private UkelonnShiroFilter shiroFilter;
+
+    public UkelonnRealm(UkelonnShiroFilter shiroFilter) {
+        super();
+        this.shiroFilter = shiroFilter;
+    }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -50,7 +54,7 @@ public class UkelonnRealm extends AuthorizingRealm {
         roles.add("user");
         Set<String> administrators = new HashSet<>();
         try {
-            UkelonnDatabase ukelonnDatabase = connectionCheck(provider);
+            UkelonnDatabase ukelonnDatabase = connectionCheck();
             PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view");
             try(ResultSet administratorsResults = ukelonnDatabase.query(statement)) {
                 while (administratorsResults.next()) {
@@ -84,7 +88,7 @@ public class UkelonnRealm extends AuthorizingRealm {
         Object principal = usernamePasswordToken.getPrincipal();
         String username = usernamePasswordToken.getUsername();
         try {
-            UkelonnDatabase ukelonnDatabase = connectionCheck(provider);
+            UkelonnDatabase ukelonnDatabase = connectionCheck();
             PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?");
             statement.setString(1, username);
             try(ResultSet passwordResultSet = ukelonnDatabase.query(statement)) {
@@ -106,21 +110,17 @@ public class UkelonnRealm extends AuthorizingRealm {
         }
     }
 
-    private UkelonnDatabase connectionCheck(UkelonnService ukelonnService) {
-        if (ukelonnService == null) {
-            throw new AuthenticationException("UkelonnRealm shiro realm unable to find OSGi service Ukelonnservice, giving up");
+    private UkelonnDatabase connectionCheck() {
+        if (shiroFilter == null) {
+            throw new AuthenticationException("UkelonnRealm shiro realm unable to find the ShiroFilterProvider, giving up");
         }
 
-        UkelonnDatabase database = ukelonnService.getDatabase();
+        UkelonnDatabase database = shiroFilter.getDatabase();
         if (database == null) {
             throw new AuthenticationException("UkelonnRealm shiro realm unable to find OSGi service UkelonnDatabase, giving up");
         }
 
         return database;
-    }
-
-    public void setProvider(UkelonnServiceProvider provider) {
-        this.provider = provider;
     }
 
 }

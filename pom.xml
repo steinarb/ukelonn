@@ -39,6 +39,7 @@
         <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
         <dependency.pax.jdbc.version>1.0.1</dependency.pax.jdbc.version>
         <dependency.shiro.version>1.3.1</dependency.shiro.version>
+        <jackson.version>2.8.7</jackson.version>
         <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
         <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
         <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
@@ -99,6 +100,18 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.ops4j.pax.web</groupId>
+                <artifactId>pax-web-runtime</artifactId>
+                <version>${dependency.pax.web.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.web</groupId>
+                <artifactId>pax-web-extender-whiteboard</artifactId>
+                <version>${dependency.pax.web.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
@@ -155,12 +168,6 @@
                 <version>${dependency.pax.url.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.rendersnake</groupId>
-                <artifactId>rendersnake</artifactId>
-                <version>1.8</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc</artifactId>
                 <version>${dependency.pax.jdbc.version}</version>
@@ -183,6 +190,30 @@
                 <artifactId>shiro-core</artifactId>
                 <version>${dependency.shiro.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>${dependency.shiro.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.25</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.mattbertolini</groupId>
