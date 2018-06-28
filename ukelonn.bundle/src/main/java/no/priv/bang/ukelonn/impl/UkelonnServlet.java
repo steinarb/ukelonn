@@ -16,20 +16,19 @@
 package no.priv.bang.ukelonn.impl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.net.URLConnection;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.rendersnake.HtmlAttributesFactory.*;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
-import org.rendersnake.ext.servlet.HtmlServletCanvas;
 
 @Component(service=Servlet.class, property={"alias=/ukelonn"}, immediate=true)
 public class UkelonnServlet extends HttpServlet {
@@ -43,28 +42,76 @@ public class UkelonnServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
+        String pathInfo = request.getPathInfo();
+        try {
+            if (pathInfo == null) {
+                // Browsers won't redirect to bundle.js if the servlet path doesn't end with a "/"
+                addSlashToServletPath(request, response);
+                return;
+            }
 
-        try (PrintWriter responseWriter = response.getWriter()) {
-            HtmlServletCanvas html = new HtmlServletCanvas(request, response, responseWriter);
-            html
-                .html()
-                .head().title().content("Ukelønn")._head()
-                .body(align("center"))
-                .h1().content("Ukelønn")
-                .img(src("/images/logo.png").border("0"))
-                .h1().content(getServletConfig().getInitParameter("from"))
-                .p()
-                .write("Served by servlet registered at: /ukelonn").br()
-                .write("Servlet Path: " + request.getServletPath()).br()
-                .write("Path Info: " + request.getPathInfo())
-                ._p()
-                ._body()
-                ._html();
-        } catch(Exception e) {
-            logservice.log(LogService.LOG_ERROR, "Failed to write HTML to the response", e);
-            response.setStatus(500);
+            String resource = findResourceFromPathInfo(pathInfo);
+            String contentType = guessContentTypeFromResourceName(resource);
+            response.setContentType(contentType);
+            try(ServletOutputStream responseBody = response.getOutputStream()) {
+                try(InputStream resourceFromClasspath = getClass().getClassLoader().getResourceAsStream(resource)) {
+                    if (resourceFromClasspath != null) {
+                        copyStream(resourceFromClasspath, responseBody);
+                        response.setStatus(200);
+                        return;
+                    }
+
+                    String message = String.format("Resource \"%s\" not found on the classpath", resource);
+                    logservice.log(LogService.LOG_ERROR, message);
+                    response.sendError(404, message);
+                }
+            }
+        } catch (IOException e) {
+            logservice.log(LogService.LOG_ERROR, "Frontend servlet caught exception ", e);
+            response.setStatus(500); // Report internal server error
         }
     }
+
+    String guessContentTypeFromResourceName(String resource) {
+        String contentType = URLConnection.guessContentTypeFromName(resource);
+        if (contentType != null) {
+            return contentType;
+        }
+
+        String extension = resource.substring(resource.lastIndexOf('.') + 1);
+        if ("xhtml".equals(extension)) {
+            return "text/html";
+        }
+
+        if ("js".equals(extension)) {
+            return "application/javascript";
+        }
+
+        if ("css".equals(extension)) {
+            return "text/css";
+        }
+
+        return null;
+    }
+
+    private String findResourceFromPathInfo(String pathInfo) {
+        if ("/".equals(pathInfo)) {
+            return "index.xhtml";
+        }
+
+        return pathInfo;
+    }
+
+    private void addSlashToServletPath(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(String.format("%s/", request.getServletPath()));
+    }
+
+    private void copyStream(InputStream input, ServletOutputStream output) throws IOException {
+        int c;
+        while((c = input.read()) != -1) {
+            output.write(c);
+        }
+    }
+
 
 }

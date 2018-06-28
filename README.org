@@ -4,11 +4,32 @@ Tanken er at ungene skal kunne registrere jobber de gjør i hjemmet og at foreld
 
 Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/developer/architecture/][OSGi]] runtime, og er ment å være responsive slik at den er lett å kjøre på mobiltelefoner og nettbrett.
 
+Dette er en Webapplikasjon istedenfor en app, fordi resten av familien kjører iDingser og det er ikke så lett å få egenskrevne app'er inn på iDingser.
+
+** English summary
+
+This is a web application for keeping track of my kids' allowance.
+
+There is a "user" GUI where they can register the chores they do and check their balance and money owed.  Since my kids mostly interact through their iThings, the webapps GUI aims to be as "app-like" as possible, currently using [[https://vaadin.com/directory/component/vaadin-touchkit][vaadin TouchKit]] to accomplish this.
+
+There is also an admin GUI where we can register allowance payments, and add chores and adjust the payment for the chores.
+
+The webapplication is intended to run inside [[https://karaf.apache.org][apache karaf]] and is installed using karaf's maven magic, basically:
+ 1. Install apache karaf
+ 2. From the karaf console command line, do some configuration
+ 3. Also from the karaf console command line, run commands to install the application from maven repositories
+
+The application also uses [[https://www.liquibase.org][Liquibase]] to create and set up the database, all that is needed is a blank PostgreSQL database that can be reached by the karaf server with a JDBC URL.
+
+The code (classnames, variable names etc.) and comments and commit messages are all in English.
+
+The GUI texts and this README are in Norwegian.
+
 * Status
-[[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]
+[[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=alert_status#.svg]]
 
 ** SonarCloud
-[[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=lines#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=coverage#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/badges/measure?key=no.priv.bang.ukelonn%3Aparent&metric=new_coverage#.svg]]
+[[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aparent][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aparent&metric=coverage#.svg]]
 
 * Lisens
 
@@ -27,33 +48,45 @@ I øyeblikket er det fire hoved-brancher:
     Admin-grensesnittet er også blitt mer mobilt men vil trives bedre på en tablet enn på en mobil (det er mer som skal vises fram).
     Denne branchen er i skrivende stund "i produksjon" i heimen (i den litt eldre versjonen som ligger på master).
     Denne branchen bruker [[http://ops4j.github.io/pax/web/SNAPSHOT/User-Guide.html#whiteboard-extender][Pax web whiteboard extender]] der servlet'er og filtre blir publisert som OSGi-servicer som blir plukket opp av pax web.  For å lage servicene som plukkes opp av Pax Web, brukes OSGi Declarative Services (DS).
- 3. using-primefaces
+ 3. using-react
+    Denne branchen vil ha et GUI basert på [[https://reactjs.org][react.js]] med navigasjon mellom skjermbilder besørget av [[https://reactjs.org][react-router v4]], datamodell i [[https://reactjs.org][redux]], med REST-API-kommunikasjon gjort av [[https://reactjs.org][saga]] og [[https://reactjs.org][axios]].  Responsivt mobilvennlig GUI vil bli besørget av [[https://reactjs.org][bootstrap]] (eller kanskje av [[https://reactjs.org][Material Design Lite]]
+ 4. using-primefaces
     Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og var den første som var ferdig.
     Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet så litt rart ut). Branchen bygger fortsatt og har fått alle databasendringene men har mest historisk interesse idag
- 4. using-rendersnake
-    Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Når det blir jobb på denne så blir det nok ikke rendersnake.  Det blir nok antagelig et eller annet JS-rammeverk på frontend og REST-tjenster på backend
+ 5. using-rendersnake
+    Denne branchen var ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Denne branchen var utgangspunktet for using-react og er i øyeblikket i praksis død
 
-Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]] istedenfor primefaces, men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
+Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
 * Utsjekk og kjapp test av programvaren
 
 Dette trengs for å laste og teste ut denne programvaren
  1. Installer det som trengs:
+    - På debian/ubuntu/mint/etc., logg inn som root og gi følgende kommandoer for å installere alle avhengighetene:
+      #+BEGIN_EXAMPLE
+        apt-get update
+        apt-get install git maven openjdk-8-jdk
+      #+END_EXAMPLE
     - git: https://git-scm.com/download/win
-    - Java SDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    - Java SDK 1.8:
+      http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
     - Apache maven:
       - Download: https://maven.apache.org/download.cgi
       - Install: https://maven.apache.org/install.html
       - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-repositoriet
+ 2. Gjør en klon av git-arkivene som trengs for å bygge applikasjonen (kommandoer for bash (funker også i git bash på windows)):
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
+      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+ 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
     #+BEGIN_EXAMPLE
-      cd ~/git/ukelonn/
+      cd ~/git/jsr330activator
+      mvn clean install
+      cd ../ukelonn
+      git checkout using-vaadin
       mvn clean install
       cd karaf
       mvn clean install karaf:run
@@ -138,7 +171,7 @@ Dette trengs for å bygge og kjøre programvaren
 * Kjøring på apache karaf med PostgreSQL
 Derbydatabasen i [[Kjøring på apache karaf med derby]] gjør det mulig å kjøre alt i webappen.  Men ettersom den kun kjører i minnet så er den ikke noe særlig å lagre data i.
 
-For å faktisk bruke webappen så må man ha en database og databasen jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
+For å faktisk bruke webappen så må man ha en database og database-systemet jeg har valgt er [[https://www.postgresql.org][PostgreSQL]].
 
 PostgreSQL er gratis og fri software og er lett å installere
  1. På windows, [[https://www.postgresql.org/download/windows/][last ned installeren]] og kjør den
@@ -191,7 +224,10 @@ Framgangsmåte:
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
+      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
+      cd ~/git/jsr330activator
+      mvn clean install
       cd ~/git/ukelonn
       mvn clean install
     #+END_EXAMPLE

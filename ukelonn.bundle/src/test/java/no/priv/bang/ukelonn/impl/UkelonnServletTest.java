@@ -16,36 +16,121 @@
 package no.priv.bang.ukelonn.impl;
 
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
+
+import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
+import no.priv.bang.ukelonn.mocks.MockLogService;
+
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class UkelonnServletTest {
 
     @Test
-    public void testRender() throws IOException, ServletException {
+    public void testGet() throws Exception {
+        MockLogService logservice = new MockLogService();
         UkelonnServlet servlet = new UkelonnServlet();
         ServletConfig servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
+        servlet.setLogService(logservice);
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getServletPath()).thenReturn("/ukelonn");
-        StringWriter responseContent = new StringWriter();
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        when(response.getWriter()).thenReturn(new PrintWriter(responseContent));
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
+        when(request.getPathInfo()).thenReturn("/");
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
 
         servlet.doGet(request, response);
 
-        System.out.println("html: " + responseContent.toString());
-        assertNotEquals(0, responseContent.toString().length());
+        assertEquals("text/html", response.getContentType());
+        assertEquals(200, response.getStatus());
+        assertThat(response.getOutput().size()).isGreaterThan(0);
+    }
+
+
+    @Test
+    public void testDoGetAddTrailingSlash() throws Exception {
+        MockLogService logservice = new MockLogService();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn");
+        when(request.getServletPath()).thenReturn("/frontend-karaf-demo");
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        UkelonnServlet servlet = new UkelonnServlet();
+        servlet.setLogService(logservice);
+
+        servlet.doGet(request, response);
+
+        assertEquals(301, response.getStatus());
+    }
+
+    @Test
+    public void testDoGetResponseThrowsIOException() throws Exception {
+        MockLogService logservice = new MockLogService();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
+        when(request.getPathInfo()).thenReturn("/");
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        ServletOutputStream streamThrowingIOException = mock(ServletOutputStream.class);
+        doThrow(IOException.class).when(streamThrowingIOException).write(anyInt());
+        when(response.getOutputStream()).thenReturn(streamThrowingIOException);
+
+        UkelonnServlet servlet = new UkelonnServlet();
+        servlet.setLogService(logservice);
+
+        servlet.doGet(request, response);
+
+        assertEquals(500, response.getStatus());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
+        MockLogService logservice = new MockLogService();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
+        when(request.getPathInfo()).thenReturn("/");
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        when(response.getOutputStream()).thenThrow(IOException.class);
+
+        UkelonnServlet servlet = new UkelonnServlet();
+        servlet.setLogService(logservice);
+
+        servlet.doGet(request, response);
+
+        assertEquals(500, response.getStatus());
+    }
+
+    @Test
+    public void testDoGetResourceNotFound() throws Exception {
+        MockLogService logservice = new MockLogService();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/static/nosuchname.png");
+        when(request.getPathInfo()).thenReturn("/static/nosuchname.png");
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        UkelonnServlet servlet = new UkelonnServlet();
+        servlet.setLogService(logservice);
+
+        servlet.doGet(request, response);
+
+        assertEquals(404, response.getStatus());
+    }
+
+    @Test
+    public void testGuessContentTypeFromResourceName() {
+        UkelonnServlet servlet = new UkelonnServlet();
+        assertEquals("text/html", servlet.guessContentTypeFromResourceName("/index.html"));
+        assertEquals("text/html", servlet.guessContentTypeFromResourceName("/index.xhtml"));
+        assertEquals("application/javascript", servlet.guessContentTypeFromResourceName("/bundle.js"));
+        assertEquals("text/css", servlet.guessContentTypeFromResourceName("/bundle.css"));
+        assertNull(servlet.guessContentTypeFromResourceName("/bundle.nomatch"));
     }
 
 }
