@@ -48,11 +48,13 @@ I øyeblikket er det fire hoved-brancher:
     Admin-grensesnittet er også blitt mer mobilt men vil trives bedre på en tablet enn på en mobil (det er mer som skal vises fram).
     Denne branchen er i skrivende stund "i produksjon" i heimen (i den litt eldre versjonen som ligger på master).
     Denne branchen bruker [[http://ops4j.github.io/pax/web/SNAPSHOT/User-Guide.html#whiteboard-extender][Pax web whiteboard extender]] der servlet'er og filtre blir publisert som OSGi-servicer som blir plukket opp av pax web.  For å lage servicene som plukkes opp av Pax Web, brukes OSGi Declarative Services (DS).
- 3. using-primefaces
+ 3. using-react
+    Denne branchen vil ha et GUI basert på [[https://reactjs.org][react.js]] med navigasjon mellom skjermbilder besørget av [[https://reactjs.org][react-router v4]], datamodell i [[https://reactjs.org][redux]], med REST-API-kommunikasjon gjort av [[https://reactjs.org][saga]] og [[https://reactjs.org][axios]].  Responsivt mobilvennlig GUI vil bli besørget av [[https://reactjs.org][bootstrap]] (eller kanskje av [[https://reactjs.org][Material Design Lite]]
+ 4. using-primefaces
     Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og var den første som var ferdig.
     Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet så litt rart ut). Branchen bygger fortsatt og har fått alle databasendringene men har mest historisk interesse idag
- 4. using-rendersnake
-    Denne branchen er ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Når det blir jobb på denne så blir det nok ikke rendersnake.  Det blir nok antagelig et eller annet JS-rammeverk på frontend og REST-tjenster på backend
+ 5. using-rendersnake
+    Denne branchen var ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Denne branchen var utgangspunktet for using-react og er i øyeblikket i praksis død
 
 Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
