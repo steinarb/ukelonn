@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.beans;
 
 import static org.junit.Assert.*;
 

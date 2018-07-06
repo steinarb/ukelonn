@@ -40,6 +40,9 @@ import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
+import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.AdminUser;
+import no.priv.bang.ukelonn.beans.User;
 
 public class CommonDatabaseMethodsTest {
 

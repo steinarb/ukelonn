@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.beans;
 
-import static no.priv.bang.ukelonn.impl.CommonStringMethods.*;
+import static no.priv.bang.ukelonn.common.CommonStringMethods.*;
 
 public class User {
     private int userId;
