@@ -29,6 +29,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 
@@ -47,6 +48,12 @@ public class ServletTestBase {
         WebSubject subject = new WebSubject.Builder(getShirofilter().getSecurityManager(), request, response).buildWebSubject();
         ThreadContext.bind(subject);
         return subject;
+    }
+
+    protected void loginUser(HttpServletRequest request, MockHttpServletResponse response, String username, String password) {
+        WebSubject subject = createSubjectAndBindItToThread(request, response);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
     }
 
     protected HttpServletRequest buildLoginRequest(LoginCredentials credentials) throws JsonProcessingException, IOException {

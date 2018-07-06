@@ -271,6 +271,8 @@
                         <instructions>
                             <!-- Enable processing of OSGI DS component annotations -->
                             <_dsannotations>*</_dsannotations>
+                            <!-- Inherit service injections from base class -->
+                            <_dsannotations-options>inherit</_dsannotations-options>
                             <!-- Enable processing of OSGI metatype annotations -->
                             <_metatypeannotations>*</_metatypeannotations>
                         </instructions>

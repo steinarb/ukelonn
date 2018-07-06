@@ -24,8 +24,6 @@ import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.web.subject.WebSubject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,11 +63,9 @@ public class LogoutServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-        
+
         // Set up Shiro to be in a logged-in state
-        WebSubject subject = createSubjectAndBindItToThread(request, response);
-        UsernamePasswordToken token = new UsernamePasswordToken("jad", "1ad".toCharArray(), true);
-        subject.login(token);
+        loginUser(request, response, "jad", "1ad");
 
         // Create the servlet and do the logout
         LogoutServlet servlet = new LogoutServlet();
@@ -107,8 +103,8 @@ public class LogoutServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-        
-        // Set up shiro 
+
+        // Set up shiro
         createSubjectAndBindItToThread(request, response);
 
         // Create the servlet and do the logout

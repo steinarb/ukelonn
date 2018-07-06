@@ -25,6 +25,10 @@ public class Account {
     String lastName;
     double balance;
 
+    public Account() {
+        // No-arg constructor required by jackson
+    }
+
     public Account(int accountId, int userId, String username, String firstName, String lastName, double balance) {
         super();
         this.accountId = accountId;

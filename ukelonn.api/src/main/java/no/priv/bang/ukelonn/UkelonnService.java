@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package no.priv.bang.ukelonn;
 
 import org.osgi.service.log.LogService;
+
+import no.priv.bang.ukelonn.beans.Account;
 
 /**
  * This is the service exposed by the ukelonn.bundle
@@ -34,5 +36,7 @@ public interface UkelonnService {
     UkelonnDatabase getDatabase();
 
     LogService getLogservice();
+
+    Account getAccount(String username);
 
 }

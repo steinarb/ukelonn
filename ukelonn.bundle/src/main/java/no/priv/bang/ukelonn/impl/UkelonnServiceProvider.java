@@ -21,8 +21,10 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.beans.Account;
 
 /**
  * The OSGi component that listens for a {@link WebContainer} service
@@ -63,6 +65,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     public UkelonnService get() {
         return this;
+    }
+
+    @Override
+    public Account getAccount(String username) {
+        return getAccountInfoFromDatabase(getClass(), this, username);
     }
 
 }
