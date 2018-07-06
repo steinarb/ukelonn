@@ -61,7 +61,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
-                        <Export-Package>no.priv.bang.ukelonn</Export-Package>
+                        <Export-Package>
+                            no.priv.bang.ukelonn,
+                            no.priv.bang.ukelonn.beans,
+                            no.priv.bang.ukelonn.common
+                        </Export-Package>
                         <_removeheaders>
                             Private-Package,
                             Include-Resource,
