@@ -39,6 +39,8 @@ import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AdminUser;
+import no.priv.bang.ukelonn.beans.Transaction;
+import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
 
 import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
