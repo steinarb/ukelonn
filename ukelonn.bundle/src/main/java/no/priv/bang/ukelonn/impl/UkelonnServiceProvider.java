@@ -22,9 +22,15 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
+
+import java.util.List;
+import java.util.Map;
+
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.TransactionType;
 
 /**
  * The OSGi component that listens for a {@link WebContainer} service
@@ -70,6 +76,18 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public Account getAccount(String username) {
         return getAccountInfoFromDatabase(getClass(), this, username);
+    }
+
+    @Override
+    public Account registerPerformedJob(PerformedJob job) {
+        registerNewJobInDatabase(getClass(), this, job.getAccount(), job.getTransactionTypeId(), job.getTransactionAmount());
+        return getAccount(job.getAccount().getUsername());
+    }
+
+    @Override
+    public List<TransactionType> getJobTypes() {
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), this);
+        return getJobTypesFromTransactionTypes(transactionTypes.values());
     }
 
 }

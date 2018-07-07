@@ -22,6 +22,10 @@ public class TransactionType {
     private boolean transactionIsWork;
     private boolean transactionIsWagePayment;
 
+    public TransactionType() {
+        // Jackson requires no-argument constructor
+    }
+
     public TransactionType(int id, String transactionTypeName, Double transactionAmount, boolean transactionIsWork, boolean transactionIsWagePayment) {
         this.id = id;
         setTransactionTypeName(transactionTypeName);

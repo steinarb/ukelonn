@@ -15,9 +15,13 @@
  */
 package no.priv.bang.ukelonn;
 
+import java.util.List;
+
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.TransactionType;
 
 /**
  * This is the service exposed by the ukelonn.bundle
@@ -38,5 +42,9 @@ public interface UkelonnService {
     LogService getLogservice();
 
     Account getAccount(String username);
+
+    Account registerPerformedJob(PerformedJob job);
+
+    List<TransactionType> getJobTypes();
 
 }
