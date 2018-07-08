@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn.api.beans;
 
 public class LoginResult {
+    private String username = "";
     private String[] roles = {};
     private String errorMessage = "";
 
@@ -23,12 +24,17 @@ public class LoginResult {
         // No-arg constructor for Jackson
     }
 
-    public LoginResult(String[] roles) {
+    public LoginResult(String username, String[] roles) {
+        this.username = username;
         this.roles = roles;
     }
 
     public LoginResult(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String[] getRoles() {

@@ -1,4 +1,20 @@
-export const ukelonnReducer = (state = { username: null, password: null, loginResponse: { roles: [], error: '' } }, action) => {
+export const ukelonnReducer = (state =
+                               { username: null,
+                                 password: null,
+                                 account: { firstName: 'Ukjent' },
+                                 jobtypes: [],
+                                 loginResponse: {
+                                     username: '',
+                                     roles: [],
+                                     error: ''
+                                 },
+                                 performedjob: {
+                                     account: { id: -1 },
+                                     transactionTypeId: -1,
+                                     transactionAmount: 0.0
+                                 },
+                               },
+                               action) => {
     if (action.type == 'UPDATE') {
         return {
             ...state,
@@ -16,6 +32,20 @@ export const ukelonnReducer = (state = { username: null, password: null, loginRe
         return {
             ...state,
             loginResponse: action.loginResponse
+        };
+    }
+
+    if (action.type === 'ACCOUNT_RECEIVE' || action.type === 'REGISTERJOB_RECEIVE') {
+        return {
+            ...state,
+            account: action.account
+        };
+    }
+
+    if (action.type === 'JOBTYPELIST_RECEIVE') {
+        return {
+            ...state,
+            jobtypes: action.jobtypes
         };
     }
 

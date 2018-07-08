@@ -62,10 +62,76 @@ function* receiveLogoutSaga(action) {
 }
 
 
+// watcher saga
+export function* requestAccountSaga() {
+    yield takeLatest("ACCOUNT_REQUEST", receiveAccountSaga);
+}
+
+function doAccount(username) {
+    return axios.get('/ukelonn/api/account/' + username );
+}
+
+// worker saga
+function* receiveAccountSaga(action) {
+    try {
+        const response = yield call(doAccount, action.username);
+        const account = response.data;
+        yield put({ type: 'ACCOUNT_RECEIVE', account: account });
+    } catch (error) {
+        yield put({ type: 'ACCOUNT_FAILURE', error });
+    }
+}
+
+
+// watcher saga
+export function* requestJobtypeListSaga() {
+    yield takeLatest("JOBTYPELIST_REQUEST", receiveJobtypeListSaga);
+}
+
+function doJobtypeList() {
+    return axios.get('/ukelonn/api/jobtypes');
+}
+
+// worker saga
+function* receiveJobtypeListSaga(action) {
+    try {
+        const response = yield call(doJobtypeList);
+        const jobtypes = response.data;
+        yield put({ type: 'JOBTYPELIST_RECEIVE', jobtypes: jobtypes });
+    } catch (error) {
+        yield put({ type: 'JOBTYPELIST_FAILURE', error });
+    }
+}
+
+
+// watcher saga
+export function* requestRegisterJobSaga() {
+    yield takeLatest("REGISTERJOB_REQUEST", receiveRegisterJobSaga);
+}
+
+function doRegisterJob(performedJob) {
+    return axios.post('/ukelonn/api/registerjob', performedJob);
+}
+
+// worker saga
+function* receiveRegisterJobSaga(action) {
+    try {
+        const response = yield call(doRegisterJob, action.performedjob);
+        const account = response.data;
+        yield put({ type: 'REGISTERJOB_RECEIVE', account: account });
+    } catch (error) {
+        yield put({ type: 'REGISTERJOB_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
         fork(requestLoginSaga),
         fork(requestLogoutSaga),
+        fork(requestAccountSaga),
+        fork(requestJobtypeListSaga),
+        fork(requestRegisterJobSaga),
     ];
 };

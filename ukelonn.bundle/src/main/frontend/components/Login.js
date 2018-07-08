@@ -36,7 +36,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFieldChange: (changedField) => dispatch({ type: 'UPDATE', data: changedField }),
-        onLogin: (username, password) => dispatch({ type: 'LOGIN_REQUEST', username, password })
+        onLogin: (username, password) => dispatch({ type: 'LOGIN_REQUEST', username, password }),
     };
 };
 

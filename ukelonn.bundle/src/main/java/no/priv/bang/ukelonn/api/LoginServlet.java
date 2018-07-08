@@ -135,7 +135,8 @@ public class LoginServlet extends HttpServlet {
                 roles =  new String[]{ "administrator" };
             }
 
-            return new LoginResult(roles);
+            String username = (String) subject.getPrincipal();
+            return new LoginResult(username, roles);
         }
 
         return new LoginResult();
