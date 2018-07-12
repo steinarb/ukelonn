@@ -28,10 +28,10 @@ class User extends Component {
                 <h1>Ukelønn for {account.firstName}</h1>
                 <div>Til gode: { account.balance }</div><br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <select onChange={(event) => onJobtypeFieldChange(event.target.value, jobtypesMap, account, performedjob)}>
+                    <select onChange={(event) => onJobtypeFieldChange(event.target.value, jobtypesMap, account, performedjob)} value={performedjob.transactionName}>
                         {jobtypes.map((val) => <option key={val.id}>{val.transactionTypeName}</option>)}
                     </select>
-                    <input type="text" value={performedjob.transactionAmount} readOnly="true" />
+                    <input type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
                     <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
                 </form>
                 <br/>
@@ -42,7 +42,18 @@ class User extends Component {
     }
 };
 
+const emptyJob = {
+    account: { id: -1 },
+    id: -1,
+    transactionName: '',
+    transactionAmount: 0.0
+};
+
 const mapStateToProps = state => {
+    if (!state.jobtypes.includes(emptyJob)) {
+        state.jobtypes.unshift(emptyJob);
+    }
+
     return {
         loginResponse: state.loginResponse,
         account: state.account,
@@ -62,6 +73,7 @@ const mapDispatchToProps = dispatch => {
             let changedField = {
                 performedjob: {
                     transactionTypeId: jobtype.id,
+                    transactionName: jobtype.transactionName,
                     transactionAmount: jobtype.transactionAmount,
                     account: account
                 }

@@ -1,3 +1,10 @@
+const emptyPerformedJob = {
+    account: { id: -1 },
+    transactionTypeId: -1,
+    transactionTypeName: '',
+    transactionAmount: 0.0
+};
+
 export const ukelonnReducer = (state =
                                { username: null,
                                  password: null,
@@ -8,11 +15,7 @@ export const ukelonnReducer = (state =
                                      roles: [],
                                      error: ''
                                  },
-                                 performedjob: {
-                                     account: { id: -1 },
-                                     transactionTypeId: -1,
-                                     transactionAmount: 0.0
-                                 },
+                                 performedjob: {...emptyPerformedJob},
                                },
                                action) => {
     if (action.type == 'UPDATE') {
@@ -35,9 +38,17 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'ACCOUNT_RECEIVE' || action.type === 'REGISTERJOB_RECEIVE') {
+    if (action.type === 'ACCOUNT_RECEIVE') {
         return {
             ...state,
+            account: action.account
+        };
+    }
+
+    if (action.type === 'REGISTERJOB_RECEIVE') {
+        return {
+            ...state,
+            performedjob: {...emptyPerformedJob},
             account: action.account
         };
     }
