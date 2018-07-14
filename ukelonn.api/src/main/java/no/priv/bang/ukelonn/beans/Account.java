@@ -17,6 +17,9 @@ package no.priv.bang.ukelonn.beans;
 
 import static no.priv.bang.ukelonn.common.CommonStringMethods.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Account {
     int accountId;
     int userId;

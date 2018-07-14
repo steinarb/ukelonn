@@ -13,28 +13,33 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api;
+package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
+
+import org.apache.shiro.util.ThreadContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedJob;
 import no.priv.bang.ukelonn.beans.TransactionType;
-import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
-public class RegisterJobServletTest extends ServletTestBase {
+public class RegisterJobTest extends ServletTestBase {
 
     @BeforeClass
     public static void setupForAllTests() {
@@ -47,41 +52,36 @@ public class RegisterJobServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccount() throws Exception {
+    public void testRegisterJob() throws Exception {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
         PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
-        String jobAsJson = LoginServlet.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/registerjob");
-        when(request.getServletPath()).thenReturn("/api/registerjob");
 
-        // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        // Create the request and response for the Shiro login
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create the object to be tested
-        ApiServletBase servlet = new RegisterJobServlet();
+        RegisterJob resource = new RegisterJob();
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        resource.ukelonn = getUkelonnServiceSingleton();
 
         // Run the method under test
-        servlet.service(request, response);
+        Account result = resource.doRegisterJob(job);
 
         // Check the response
-        assertEquals(200, response.getStatus());
-        assertEquals("application/json", response.getContentType());
-
-        Account result = ApiServletBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
         assertEquals("jad", result.getUsername());
         assertThat(result.getBalance()).isGreaterThan(originalBalance);
     }
@@ -92,38 +92,34 @@ public class RegisterJobServletTest extends ServletTestBase {
      *
      * @throws Exception
      */
-    @Test
-    public void testGetAccountOtherUsername() throws Exception {
+    @Test(expected=ForbiddenException.class)
+    public void testRegisterJobOtherUsername() throws Exception {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jod");
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
         PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
-        String jobAsJson = LoginServlet.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/registerjob");
-        when(request.getServletPath()).thenReturn("/api/registerjob");
 
-        // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        // Create the request and response for the Shiro login
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
         // Create the object to be tested
-        ApiServletBase servlet = new RegisterJobServlet();
+        RegisterJob resource = new RegisterJob();
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        resource.ukelonn = getUkelonnServiceSingleton();
 
         // Run the method under test
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(403, response.getStatus());
+        resource.doRegisterJob(job);
     }
 
     /**
@@ -133,102 +129,67 @@ public class RegisterJobServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
+    public void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
         PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
-        String jobAsJson = LoginServlet.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/registerjob");
-        when(request.getServletPath()).thenReturn("/api/registerjob");
 
-        // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        // Create the request and response for the Shiro login
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
 
         // Create the object to be tested
-        ApiServletBase servlet = new RegisterJobServlet();
+        RegisterJob resource = new RegisterJob();
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        resource.ukelonn = getUkelonnServiceSingleton();
 
         // Run the method under test
-        servlet.service(request, response);
+        Account result = resource.doRegisterJob(job);
 
         // Check the response
-        assertEquals(200, response.getStatus());
-        assertEquals("application/json", response.getContentType());
-
-
-        Account result = ApiServletBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
         assertEquals("jad", result.getUsername());
         assertThat(result.getBalance()).isGreaterThan(originalBalance);
     }
 
-    @Test
-    public void testGetAccountNoUsername() throws Exception {
+    @Test(expected=ForbiddenException.class)
+    public void testRegisterJobNoUsername() throws Exception {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
         PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
-        String jobAsJson = LoginServlet.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/registerjob");
-        when(request.getServletPath()).thenReturn("/api/registerjob");
 
-        // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        // Create the request and response for the Shiro login
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
-        // Create the object to be tested
-        ApiServletBase servlet = new RegisterJobServlet();
+        // Log the user in to shiro
+        loginUser(request, response, "jad", "1ad");
 
-        // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
-
-        // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
-
-        // Run the method under test
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(403, response.getStatus());
-    }
-
-    @Test
-    public void testGetAccountUnparsablePostData() throws Exception {
-        // Create the request
-        HttpServletRequest request = buildRequestFromStringBody("this is not json");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/registerjob");
-        when(request.getServletPath()).thenReturn("/api/registerjob");
-
-        // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
-
-        // Create the object to be tested
-        ApiServletBase servlet = new RegisterJobServlet();
+        RegisterJob resource = new RegisterJob();
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        resource.ukelonn = getUkelonnServiceSingleton();
 
         // Run the method under test
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(400, response.getStatus());
+        resource.doRegisterJob(job);
     }
 
     /**
@@ -240,35 +201,29 @@ public class RegisterJobServletTest extends ServletTestBase {
      *
      * @throws Exception
      */
-    @Test
-    public void testGetAccountInternalServerError() throws Exception {
+    @Test(expected=InternalServerErrorException.class)
+    public void testRegisterJobInternalServerError() throws Exception {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
         PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
-        String jobAsJson = LoginServlet.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/registerjob");
-        when(request.getServletPath()).thenReturn("/api/registerjob");
-
-        // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
 
         // Create the object to be tested
-        ApiServletBase servlet = new RegisterJobServlet();
+        RegisterJob resource = new RegisterJob();
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        resource.ukelonn = getUkelonnServiceSingleton();
+
+        // Clear the Subject to ensure that Shiro will fail
+        // no matter what order test methods are run in
+        ThreadContext.remove();
 
         // Run the method under test
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(500, response.getStatus());
+        resource.doRegisterJob(job);
     }
 
 }

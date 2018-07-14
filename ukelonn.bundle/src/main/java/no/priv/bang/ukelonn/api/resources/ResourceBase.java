@@ -15,31 +15,28 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.ukelonn.api.beans.LoginResult;
+public class ResourceBase {
 
-@Path("/logout")
-@Produces(MediaType.APPLICATION_JSON)
-public class Logout {
+    public ResourceBase() {
+        super();
+    }
 
-    @Inject
-    LogService logservice;
-
-    @POST
-    public LoginResult doLogout() {
+    protected boolean isCurrentUserOrAdmin(String username, LogService logservice) {
         Subject subject = SecurityUtils.getSubject();
+        if (subject.getPrincipal() == null) {
+            logservice.log(LogService.LOG_ERROR, "No user available from Shiro");
+            throw new InternalServerErrorException();
+        }
 
-        subject.logout();
-        return new LoginResult("");
+        return
+            subject.getPrincipal().equals(username) ||
+            subject.hasRole("administrator");
     }
 
 }

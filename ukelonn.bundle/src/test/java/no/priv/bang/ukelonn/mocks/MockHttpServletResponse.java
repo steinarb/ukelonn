@@ -95,6 +95,13 @@ public abstract class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
+    public void addHeader(String headerName, String headerValue) {
+        if ("Content-Type".equals(headerName)) {
+            contenttype = headerValue;
+        }
+    }
+
+    @Override
     public void setContentType(String type) {
         contenttype = type;
     }

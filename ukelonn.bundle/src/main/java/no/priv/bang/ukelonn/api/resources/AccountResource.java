@@ -13,59 +13,47 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api;
+package no.priv.bang.ukelonn.api.resources;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 
-@Component(
-    property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/api/account/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=account"},
-    service=Servlet.class,
-    immediate=true
-)
-public class AccountServlet extends ApiServletBase {
-    private static final long serialVersionUID = 8695977326010320196L;
+@Path("/account")
+@Produces(MediaType.APPLICATION_JSON)
+public class AccountResource extends ResourceBase {
+    static final String USERNAME_MISSING_ERROR = "REST endpoint /ukelonn/api/account requires a username argument, and the request was missing a username argument";
 
-    @Activate
-    public void activate() {
-        // Nothing to do here yet
-    }
+    @Inject
+    LogService logservice;
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
-            String username = request.getPathInfo().startsWith("/") ? request.getPathInfo().substring(1) : request.getPathInfo();
-            if (!isCurrentUserOrAdmin(username)) {
-                logservice.log(LogService.LOG_WARNING, String.format("Servlet /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
-            }
+    @Inject
+    UkelonnService ukelonn;
 
-            Account account = ukelonn.getAccount(username);
-            try(PrintWriter responseBody = response.getWriter()) {
-                mapper.writeValue(responseBody, account);
-            }
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // NOSONAR Handling if the framework fails when sending an error seems out of scope
-            logservice.log(LogService.LOG_ERROR, "Servlet /ukelonn/api/account failed on GET with exception", e);
+    @GET
+    @Path("{username}")
+    public Account getAccount(@PathParam("username") String username) {
+        if (username == null) {
+            logservice.log(LogService.LOG_WARNING, USERNAME_MISSING_ERROR);
+            throw new BadRequestException(USERNAME_MISSING_ERROR);
         }
+
+        if (!isCurrentUserOrAdmin(username, logservice)) {
+            logservice.log(LogService.LOG_WARNING, String.format("REST endpoint /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
+            throw new ForbiddenException();
+        }
+
+        return ukelonn.getAccount(username);
     }
 
 }

@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api;
+package no.priv.bang.ukelonn.api.resources;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.nio.charset.StandardCharsets;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
-import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
-public class LogoutServletTest extends ServletTestBase {
+public class LogoutTest extends ServletTestBase {
 
     @BeforeClass
     public static void setupForAllTests() {
@@ -49,17 +47,10 @@ public class LogoutServletTest extends ServletTestBase {
     @Test
     public void testLogoutOk() throws Exception {
         // Set up the request
-        HttpSession session = mock(HttpSession.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/login");
-        when(request.getPathInfo()).thenReturn("/api/login");
-        when(request.getAttribute(anyString())).thenReturn("");
+        HttpSession session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-
-        // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -67,16 +58,12 @@ public class LogoutServletTest extends ServletTestBase {
         // Set up Shiro to be in a logged-in state
         loginUser(request, response, "jad", "1ad");
 
-        // Create the servlet and do the logout
-        LogoutServlet servlet = new LogoutServlet();
-        servlet.setLogservice(logservice);
-        servlet.service(request, response);
+        // Create the resource and do the logout
+        Logout resource = new Logout();
+        resource.logservice = logservice;
+        LoginResult result = resource.doLogout();
 
         // Check the response
-        assertEquals(200, response.getStatus());
-        assertEquals("application/json", response.getContentType());
-
-        LoginResult result = LoginServlet.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("", result.getErrorMessage());
     }
@@ -88,18 +75,9 @@ public class LogoutServletTest extends ServletTestBase {
      */
     @Test
     public void testLogoutNotLoggedIn() throws Exception {
-        // Set up the request
-        HttpSession session = mock(HttpSession.class);
+        // Set up the request and response used to do the login
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/login");
-        when(request.getPathInfo()).thenReturn("/api/login");
-        when(request.getAttribute(anyString())).thenReturn("");
-        when(request.getSession()).thenReturn(session);
-
-        // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -107,49 +85,13 @@ public class LogoutServletTest extends ServletTestBase {
         // Set up shiro
         createSubjectAndBindItToThread(request, response);
 
-        // Create the servlet and do the logout
-        LogoutServlet servlet = new LogoutServlet();
-        servlet.setLogservice(logservice);
-        servlet.service(request, response);
+        // Create the resource and do the logout
+        Logout resource = new Logout();
+        resource.logservice = logservice;
+        LoginResult result = resource.doLogout();
 
         // Check the response
-        assertEquals(200, response.getStatus());
-        assertEquals("application/json", response.getContentType());
-
-        LoginResult result = LoginServlet.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("", result.getErrorMessage());
-    }
-
-    /**
-     * Verify that all exceptions results in a 500 error return
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testLogoutGetException() throws Exception {
-        // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/login");
-        when(request.getPathInfo()).thenReturn("/api/login");
-        when(request.getAttribute(anyString())).thenReturn("");
-
-        // Create the response that will cause a NullPointerException
-        // when trying to print the body
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
-        when(response.getWriter()).thenReturn(null);
-
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
-
-        // Create the servlet and do the logout
-        LogoutServlet servlet = new LogoutServlet();
-        servlet.setLogservice(logservice);
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(500, response.getStatus());
     }
 }

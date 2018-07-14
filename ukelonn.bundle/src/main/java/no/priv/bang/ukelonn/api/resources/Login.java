@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api;
+package no.priv.bang.ukelonn.api.resources;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -32,78 +30,27 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 
-@Component(
-    property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/api/login",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=login"},
-    service=Servlet.class,
-    immediate=true
-)
-public class LoginServlet extends HttpServlet {
-    public static final ObjectMapper mapper = new ObjectMapper();
-    private static final long serialVersionUID = 5271925508152009445L;
-    LogService logservice = null; // NOSONAR Not touched after activate, in practice a constant
+@Path("/login")
+@Produces(MediaType.APPLICATION_JSON)
+public class Login {
 
-    @Reference
-    public void setLogservice(LogService logservice) {
-        this.logservice = logservice;
+    @Inject
+    LogService logservice;
+
+    @GET
+    public LoginResult loginStatus() {
+        Subject subject = SecurityUtils.getSubject();
+        return createLoginResultFromSubject(subject);
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            Subject subject = SecurityUtils.getSubject();
-            Object result = createLoginResultFromSubject(subject);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
-            try(PrintWriter responseBody = response.getWriter()) { // NOSONAR IOException caught by enclosing try/catch
-                mapper.writeValue(responseBody, result); // NOSONAR IOException caught by enclosing try/catch
-            }
-        } catch (Exception e) {
-            // Never throw exception, log underlying error and return error code
-            logservice.log(LogService.LOG_ERROR, "Login REST API call failed", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LoginCredentials credentials = null;
-        try {
-            try(ServletInputStream postBody = request.getInputStream()) { // NOSONAR Can't put this in a nested method because there will be no way to return a 400 response
-                credentials = mapper.readValue(postBody, LoginCredentials.class);
-            } catch (Exception e) {
-                // Log parse error and return a 400 response
-                logservice.log(LogService.LOG_WARNING, "Login REST API: Unable to parse the POSTed credentials", e);
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unable to parse the POSTed credentials");
-                return;
-            }
-
-            LoginResult result = doLogin(credentials);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
-            try(PrintWriter responseBody = response.getWriter()) { // NOSONAR IOException caught by enclosing try/catch
-                mapper.writeValue(responseBody, result); // NOSONAR IOException caught by enclosing try/catch
-            }
-        } catch (Exception e) {
-            // Never throw exception, log underlying error and return error code
-            logservice.log(LogService.LOG_ERROR, "Login REST API call failed", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    LoginResult doLogin(LoginCredentials credentials) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public LoginResult doLogin(LoginCredentials credentials) {
         Subject subject = SecurityUtils.getSubject();
 
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
@@ -121,8 +68,11 @@ public class LoginServlet extends HttpServlet {
             logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
             return new LoginResult("Locked account");
         } catch (AuthenticationException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: unknown error", e);
+            logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
             return new LoginResult("Unknown error");
+        } catch (Exception e) {
+            logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
+            throw new InternalServerErrorException();
         } finally {
             token.clear();
         }

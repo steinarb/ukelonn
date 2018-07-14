@@ -15,18 +15,19 @@
  */
 package no.priv.bang.ukelonn.api;
 
-import static no.priv.bang.ukelonn.testutils.TestUtils.getShirofilter;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static no.priv.bang.ukelonn.testutils.TestUtils.*;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -34,30 +35,33 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
-import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 
 public class ServletTestBase {
+    public static final ObjectMapper mapper = new ObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public ServletTestBase() {
         super();
     }
 
-    protected WebSubject createSubjectAndBindItToThread(HttpServletRequest request, MockHttpServletResponse response) {
+    protected WebSubject createSubjectAndBindItToThread(HttpServletRequest request, HttpServletResponse response) {
         WebSubject subject = new WebSubject.Builder(getShirofilter().getSecurityManager(), request, response).buildWebSubject();
         ThreadContext.bind(subject);
         return subject;
     }
 
-    protected void loginUser(HttpServletRequest request, MockHttpServletResponse response, String username, String password) {
+    protected void loginUser(HttpServletRequest request, HttpServletResponse response, String username, String password) {
         WebSubject subject = createSubjectAndBindItToThread(request, response);
         UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
     }
 
     protected HttpServletRequest buildLoginRequest(LoginCredentials credentials) throws JsonProcessingException, IOException {
-        String credentialsAsJson = LoginServlet.mapper.writeValueAsString(credentials);
+        String credentialsAsJson = ServletTestBase.mapper.writeValueAsString(credentials);
         return buildRequestFromStringBody(credentialsAsJson);
     }
 
@@ -67,9 +71,12 @@ public class ServletTestBase {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn("HTTP/1.1");
         when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/api/login");
-        when(request.getPathInfo()).thenReturn("/api/login");
-        when(request.getAttribute(anyString())).thenReturn("");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/login"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/login");
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Arrays.asList("Content-Type")));
+        when(request.getHeaders(eq("Content-Type"))).thenReturn(Collections.enumeration(Arrays.asList("application/json")));
         when(request.getInputStream()).thenReturn(postBody);
         when(request.getSession()).thenReturn(session);
         return request;
