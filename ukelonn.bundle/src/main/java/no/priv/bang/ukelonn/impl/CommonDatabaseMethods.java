@@ -228,6 +228,10 @@ public class CommonDatabaseMethods {
         }
     }
 
+    public static List<Transaction> getJobsFromAccount(int accountId, Class<?> clazz, UkelonnServiceProvider provider) {
+        return getTransactionsFromAccount(accountId, clazz, provider, "/sql/query/jobs_last_n.sql", "job");
+    }
+
     public static List<Transaction> getJobsFromAccount(Account account, Class<?> clazz, UkelonnServiceProvider provider) {
         return getTransactionsFromAccount(account, clazz, provider, "/sql/query/jobs_last_n.sql", "job");
     }
@@ -238,23 +242,34 @@ public class CommonDatabaseMethods {
                                                         String sqlTemplate,
                                                         String transactionType)
     {
-        List<Transaction> transactions = new ArrayList<>();
         if (null != account) {
-            UkelonnDatabase database = connectionCheck(clazz, provider);
-            String sql = String.format(getResourceAsString(provider, sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
-            try(PreparedStatement statement = database.prepareStatement(sql)) {
-                statement.setInt(1, account.getAccountId());
-                trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, account.getAccountId());
-                try(ResultSet resultSet = database.query(statement)) {
-                    if (resultSet != null) {
-                        while (resultSet.next()) {
-                            transactions.add(mapTransaction(resultSet));
-                        }
+            return getTransactionsFromAccount(account.getAccountId(), clazz, provider, sqlTemplate, transactionType);
+        }
+
+        return Collections.emptyList();
+    }
+
+    static List<Transaction> getTransactionsFromAccount(int accountId,
+                                                        Class<?> clazz,
+                                                        UkelonnServiceProvider provider,
+                                                        String sqlTemplate,
+                                                        String transactionType)
+    {
+        List<Transaction> transactions = new ArrayList<>();
+        UkelonnDatabase database = connectionCheck(clazz, provider);
+        String sql = String.format(getResourceAsString(provider, sqlTemplate), NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
+        try(PreparedStatement statement = database.prepareStatement(sql)) {
+            statement.setInt(1, accountId);
+            trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
+            try(ResultSet resultSet = database.query(statement)) {
+                if (resultSet != null) {
+                    while (resultSet.next()) {
+                        transactions.add(mapTransaction(resultSet));
                     }
                 }
-            } catch (SQLException e) {
-                logError(CommonDatabaseMethods.class, provider, "Error getting "+transactionType+"s from the database", e);
             }
+        } catch (SQLException e) {
+            logError(CommonDatabaseMethods.class, provider, "Error getting "+transactionType+"s from the database", e);
         }
 
         return transactions;

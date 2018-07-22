@@ -15,6 +15,7 @@
  */
 package no.priv.bang.ukelonn.api;
 
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -46,6 +47,7 @@ import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 import no.priv.bang.ukelonn.mocks.MockLogService;
@@ -993,6 +995,52 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Check the response
         assertEquals(500, response.getStatus());
+    }
+
+    @Test
+    public void testGetJobs() throws Exception {
+        // Set up the request
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn("HTTP/1.1");
+        when(request.getMethod()).thenReturn("GET");
+        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        String requestURL = String.format("http://localhost:8181/ukelonn/api/jobs/%d", account.getAccountId());
+        String requestURI = String.format("/ukelonn/api/jobs/%d", account.getAccountId());
+        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
+        when(request.getRequestURI()).thenReturn(requestURI);
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create the servlet that is to be tested
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        servlet.setLogservice(logservice);
+
+        // Inject fake OSGi service UkelonnService
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Call the method under test
+        servlet.service(request, response);
+
+        // Check the output
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        List<Transaction> jobs = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() {});
+        assertEquals(10, jobs.size());
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {

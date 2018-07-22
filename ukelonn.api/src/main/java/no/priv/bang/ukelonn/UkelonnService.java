@@ -21,6 +21,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
 /**
@@ -46,5 +47,7 @@ public interface UkelonnService {
     Account registerPerformedJob(PerformedJob job);
 
     List<TransactionType> getJobTypes();
+
+    List<Transaction> getJobs(int accountId);
 
 }

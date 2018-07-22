@@ -18,11 +18,16 @@ package no.priv.bang.ukelonn.beans;
 import java.util.Date;
 
 public class Transaction {
-    private int id;
-    private TransactionType transactionType;
-    private Date transactionTime;
-    private double transactionAmount;
-    private boolean paidOut;
+    private int id = -1;
+    private TransactionType transactionType = null;
+    private Date transactionTime = null;
+    private double transactionAmount = 0.0;
+    private boolean paidOut = false;
+
+    public Transaction() {
+        // No-argument constructor required by Jackson
+    }
+
 
     public Transaction(int id,TransactionType transactionType, Date transactionTime, double transactionAmount, boolean paidOut) {
         setId(id);

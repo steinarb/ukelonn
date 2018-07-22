@@ -30,6 +30,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
 /**
@@ -88,6 +89,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<TransactionType> getJobTypes() {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), this);
         return getJobTypesFromTransactionTypes(transactionTypes.values());
+    }
+
+    @Override
+    public List<Transaction> getJobs(int accountId) {
+        return getJobsFromAccount(accountId, getClass(), this);
     }
 
 }

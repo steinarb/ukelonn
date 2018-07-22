@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 
@@ -25,35 +25,28 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Transaction;
 
-public class UkelonnServiceProviderTest {
+public class JobsTest extends ServletTestBase {
 
     @BeforeClass
-    public static void setupForAllTests() {
+    public static void setUpBeforeClass() throws Exception {
         setupFakeOsgiServices();
     }
 
     @AfterClass
-    public static void teardownForAllTests() throws Exception {
+    public static void tearDownAfterClass() throws Exception {
         releaseFakeOsgiServices();
     }
 
     @Test
-    public void testGetAccount() {
-        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
-        Account account = provider.getAccount("jad");
-        assertEquals("jad", account.getUsername());
-    }
-
-    @Test
     public void testGetJobs() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-        String username = "jad";
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
-        List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        Jobs resource = new Jobs();
+        resource.ukelonn = getUkelonnServiceSingleton();
+        List<Transaction> jobs = resource.jobs(account.getAccountId());
         assertEquals(10, jobs.size());
     }
 
