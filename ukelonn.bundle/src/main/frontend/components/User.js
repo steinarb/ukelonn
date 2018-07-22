@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class User extends Component {
     constructor(props) {
@@ -30,11 +31,12 @@ class User extends Component {
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <select onChange={(event) => onJobtypeFieldChange(event.target.value, jobtypesMap, account, performedjob)} value={performedjob.transactionName}>
                         {jobtypes.map((val) => <option key={val.id}>{val.transactionTypeName}</option>)}
-                    </select>
+                    </select><br/>
                     <input type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
                     <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
                 </form>
                 <br/>
+                <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
             </div>

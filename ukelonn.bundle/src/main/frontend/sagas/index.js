@@ -125,6 +125,27 @@ function* receiveRegisterJobSaga(action) {
 }
 
 
+// watcher saga
+export function* requestRecentJobsSaga() {
+    yield takeLatest("RECENTJOBS_REQUEST", receiveRecentJobsSaga);
+}
+
+function doRecentJobs(account) {
+    return axios.get('/ukelonn/api/jobs/' + account.accountId);
+}
+
+// worker saga
+function* receiveRecentJobsSaga(action) {
+    try {
+        const response = yield call(doRecentJobs, action.account);
+        const jobs = response.data;
+        yield put({ type: 'RECENTJOBS_RECEIVE', jobs: jobs });
+    } catch (error) {
+        yield put({ type: 'RECENTJOBS_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -133,5 +154,6 @@ export function* rootSaga() {
         fork(requestAccountSaga),
         fork(requestJobtypeListSaga),
         fork(requestRegisterJobSaga),
+        fork(requestRecentJobsSaga),
     ];
 };

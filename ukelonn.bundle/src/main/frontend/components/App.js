@@ -4,6 +4,7 @@ import { Switch, Route, BrowserRouter as Router, NavLink } from 'react-router-do
 import Home from "./Home";
 import Login from "./Login";
 import User from "./User";
+import PerformedJobs from "./PerformedJobs";
 import Admin from "./Admin";
 import { createBrowserHistory } from 'history';
 import { applyMiddleware, createStore, compose } from 'redux';
@@ -31,6 +32,7 @@ class App extends Component {
                             <Route exact path="/ukelonn/" component={Home} />
                             <Route path="/ukelonn/login" component={Login} />
                             <Route path="/ukelonn/user" component={User} />
+                            <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
                             <Route path="/ukelonn/admin" component={Admin} />
                         </Switch>
                     </div>

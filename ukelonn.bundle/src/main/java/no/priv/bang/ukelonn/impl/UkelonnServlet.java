@@ -46,7 +46,12 @@ public class UkelonnServlet extends HttpServlet {
     private LogService logservice; // NOSONAR This is not touched after DS component activate so effectively a constant
 
     // The paths used by the react router all needs to return the HTML wrapping the bundle.js
-    private final List<String> routes = Arrays.asList("/", "/login", "/user", "/admin");
+    private final List<String> routes = Arrays.asList(
+        "/",
+        "/login",
+        "/user",
+        "/performedjobs",
+        "/admin");
 
     @Reference
     public void setLogService(LogService logservice) {

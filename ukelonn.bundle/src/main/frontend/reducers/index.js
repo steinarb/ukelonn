@@ -9,6 +9,7 @@ export const ukelonnReducer = (state =
                                { username: null,
                                  password: null,
                                  account: { firstName: 'Ukjent' },
+                                 jobs: [],
                                  jobtypes: [],
                                  loginResponse: {
                                      username: '',
@@ -50,6 +51,13 @@ export const ukelonnReducer = (state =
             ...state,
             performedjob: {...emptyPerformedJob},
             account: action.account
+        };
+    }
+
+    if (action.type === 'RECENTJOBS_RECEIVE') {
+        return {
+            ...state,
+            jobs: action.jobs
         };
     }
 
