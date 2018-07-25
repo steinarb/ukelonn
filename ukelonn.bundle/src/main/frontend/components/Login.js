@@ -9,7 +9,7 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
             return <Redirect to="/ukelonn/admin" />;
         }
 
-        return <Redirect to="/ukelonn/user" />;
+        return (<Redirect to="/ukelonn/user" />);
     }
 
     return (
@@ -18,7 +18,7 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
             <form  onSubmit={ e => { e.preventDefault(); }}>
                 <b>Brukernavn:</b><input type='text' name='username' onChange={(event) => onFieldChange({ username: event.target.value })}></input><br/>
                 <b>Passord:</b><input type='password' name='password' onChange={(event) => onFieldChange({ password: event.target.value })}/><br/>
-                    <button onClick={() => onLogin(username, password)}>Login</button>
+                <button onClick={() => onLogin(username, password)}>Login</button>
             </form>
             <LoginErrorMessage loginResponse={loginResponse} />
         </div>
