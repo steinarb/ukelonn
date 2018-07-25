@@ -96,4 +96,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getJobsFromAccount(accountId, getClass(), this);
     }
 
+    @Override
+    public List<Transaction> getPayments(int accountId) {
+        return getPaymentsFromAccount(accountId, getClass(), this);
+    }
+
 }

@@ -215,6 +215,12 @@ public class CommonDatabaseMethods {
         return accounts;
     }
 
+    public static List<Transaction> getPaymentsFromAccount(int accountId, Class<?> clazz, UkelonnServiceProvider provider) {
+        List<Transaction> payments = getTransactionsFromAccount(accountId, clazz, provider, "/sql/query/payments_last_n.sql", "payments");
+        makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
+        return payments;
+    }
+
     public static List<Transaction> getPaymentsFromAccount(Account account, Class<?> clazz, UkelonnServiceProvider provider) {
         List<Transaction> payments = getTransactionsFromAccount(account, clazz, provider, "/sql/query/payments_last_n.sql", "payments");
         makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI

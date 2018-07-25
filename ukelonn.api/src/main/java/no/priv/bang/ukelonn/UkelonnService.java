@@ -50,4 +50,6 @@ public interface UkelonnService {
 
     List<Transaction> getJobs(int accountId);
 
+    List<Transaction> getPayments(int accountId);
+
 }

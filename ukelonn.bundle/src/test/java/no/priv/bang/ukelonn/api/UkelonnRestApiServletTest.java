@@ -1043,6 +1043,52 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(10, jobs.size());
     }
 
+    @Test
+    public void testGetPayments() throws Exception {
+        // Set up the request
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn("HTTP/1.1");
+        when(request.getMethod()).thenReturn("GET");
+        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        String requestURL = String.format("http://localhost:8181/ukelonn/api/payments/%d", account.getAccountId());
+        String requestURI = String.format("/ukelonn/api/payments/%d", account.getAccountId());
+        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
+        when(request.getRequestURI()).thenReturn(requestURI);
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create the servlet that is to be tested
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        servlet.setLogservice(logservice);
+
+        // Inject fake OSGi service UkelonnService
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Call the method under test
+        servlet.service(request, response);
+
+        // Check the output
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        List<Transaction> payments = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() {});
+        assertEquals(10, payments.size());
+    }
+
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
         ServletConfig config = mock(ServletConfig.class);
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));

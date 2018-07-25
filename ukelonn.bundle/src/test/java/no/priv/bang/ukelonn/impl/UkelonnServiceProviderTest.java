@@ -57,4 +57,13 @@ public class UkelonnServiceProviderTest {
         assertEquals(10, jobs.size());
     }
 
+    @Test
+    public void testGetPayments() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        String username = "jad";
+        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+        List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
+        assertEquals(10, payments.size());
+    }
+
 }
