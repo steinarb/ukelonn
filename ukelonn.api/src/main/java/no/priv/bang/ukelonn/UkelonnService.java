@@ -54,4 +54,6 @@ public interface UkelonnService {
 
     List<Transaction> getPayments(int accountId);
 
+    List<TransactionType> getPaymenttypes();
+
 }

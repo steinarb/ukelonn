@@ -28,6 +28,7 @@ import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Transaction;
+import no.priv.bang.ukelonn.beans.TransactionType;
 
 public class UkelonnServiceProviderTest {
 
@@ -71,6 +72,13 @@ public class UkelonnServiceProviderTest {
         Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
         List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
         assertEquals(10, payments.size());
+    }
+
+    @Test
+    public void testGetPaymenttypes() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+        assertEquals(2, paymenttypes.size());
     }
 
 }

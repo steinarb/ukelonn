@@ -106,4 +106,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getPaymentsFromAccount(accountId, getClass(), this);
     }
 
+    @Override
+    public List<TransactionType> getPaymenttypes() {
+        Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), this);
+        return getPaymentTypesFromTransactionTypes(transactionTypes.values());
+    }
+
 }
