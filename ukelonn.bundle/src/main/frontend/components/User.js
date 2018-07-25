@@ -37,6 +37,7 @@ class User extends Component {
                 </form>
                 <br/>
                 <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
+                <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
             </div>

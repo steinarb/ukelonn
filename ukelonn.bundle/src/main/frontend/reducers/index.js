@@ -10,6 +10,7 @@ export const ukelonnReducer = (state =
                                  password: null,
                                  account: { firstName: 'Ukjent' },
                                  jobs: [],
+                                 payments: [],
                                  jobtypes: [],
                                  loginResponse: {
                                      username: '',
@@ -58,6 +59,13 @@ export const ukelonnReducer = (state =
         return {
             ...state,
             jobs: action.jobs
+        };
+    }
+
+    if (action.type === 'RECENTPAYMENTS_RECEIVE') {
+        return {
+            ...state,
+            payments: action.payments
         };
     }
 

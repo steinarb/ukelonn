@@ -51,6 +51,7 @@ public class UkelonnServlet extends HttpServlet {
         "/login",
         "/user",
         "/performedjobs",
+        "/performedpayments",
         "/admin");
 
     @Reference

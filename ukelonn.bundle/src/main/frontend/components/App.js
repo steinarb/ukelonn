@@ -5,6 +5,7 @@ import Home from "./Home";
 import Login from "./Login";
 import User from "./User";
 import PerformedJobs from "./PerformedJobs";
+import PerformedPayments from "./PerformedPayments";
 import Admin from "./Admin";
 import { createBrowserHistory } from 'history';
 import { applyMiddleware, createStore, compose } from 'redux';
@@ -33,6 +34,7 @@ class App extends Component {
                             <Route path="/ukelonn/login" component={Login} />
                             <Route path="/ukelonn/user" component={User} />
                             <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
+                            <Route path="/ukelonn/performedpayments" component={PerformedPayments} />
                             <Route path="/ukelonn/admin" component={Admin} />
                         </Switch>
                     </div>
