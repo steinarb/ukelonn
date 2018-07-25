@@ -20,7 +20,7 @@ import java.util.List;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
@@ -46,7 +46,7 @@ public interface UkelonnService {
 
     Account getAccount(String username);
 
-    Account registerPerformedJob(PerformedJob job);
+    Account registerPerformedJob(PerformedTransaction job);
 
     List<TransactionType> getJobTypes();
 
@@ -55,5 +55,7 @@ public interface UkelonnService {
     List<Transaction> getPayments(int accountId);
 
     List<TransactionType> getPaymenttypes();
+
+    Account registerPayment(PerformedTransaction payment);
 
 }

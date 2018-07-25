@@ -29,7 +29,7 @@ import java.util.Map;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
@@ -85,7 +85,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Override
-    public Account registerPerformedJob(PerformedJob job) {
+    public Account registerPerformedJob(PerformedTransaction job) {
         registerNewJobInDatabase(getClass(), this, job.getAccount(), job.getTransactionTypeId(), job.getTransactionAmount());
         return getAccount(job.getAccount().getUsername());
     }
@@ -110,6 +110,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<TransactionType> getPaymenttypes() {
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), this);
         return getPaymentTypesFromTransactionTypes(transactionTypes.values());
+    }
+
+    @Override
+    public Account registerPayment(PerformedTransaction payment) {
+        int result = addNewPaymentToAccountInDatabase(getClass(), this, payment.getAccount(), payment.getTransactionTypeId(), payment.getTransactionAmount());
+        if (result < 1) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to register payment of type %d, amount %d for user \"%s\"", payment.getTransactionTypeId(), payment.getTransactionAmount(), payment.getAccount().getUsername()));
+            return null;
+        }
+
+        return getAccount(payment.getAccount().getUsername());
     }
 
 }

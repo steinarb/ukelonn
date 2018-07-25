@@ -17,38 +17,28 @@ package no.priv.bang.ukelonn.api.resources;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.osgi.service.log.LogService;
-
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 
-@Path("/registerjob")
+@Path("/registerpayment")
 @Produces(MediaType.APPLICATION_JSON)
-public class RegisterJob extends ResourceBase {
-
-    @Inject
-    LogService logservice;
+public class RegisterPayment extends ResourceBase {
 
     @Inject
     UkelonnService ukelonn;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Account doRegisterJob(PerformedTransaction performedJob) {
-        String username = performedJob.getAccount().getUsername();
-        if (!isCurrentUserOrAdmin(username, logservice)) {
-            logservice.log(LogService.LOG_WARNING, String.format("REST Endpoint /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
-            throw new ForbiddenException();
-        }
-
-        return ukelonn.registerPerformedJob(performedJob);
+    public Account doRegisterPayment(PerformedTransaction payment) {
+        // No identity checks here since this REST endpoint is only
+        // open to logged in users with role administrator
+        return ukelonn.registerPayment(payment);
     }
 
 }

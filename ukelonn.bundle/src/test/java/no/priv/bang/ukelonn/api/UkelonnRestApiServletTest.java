@@ -46,7 +46,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.PerformedJob;
+import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
@@ -788,7 +788,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -838,7 +838,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jod");
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -884,7 +884,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -929,7 +929,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -1009,7 +1009,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedJob job = new PerformedJob(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -1177,6 +1177,48 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         List<TransactionType> paymenttypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
         assertEquals(2, paymenttypes.size());
+    }
+
+    @Test
+    public void testRegisterPayments() throws Exception {
+        // Create the request
+        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        double originalBalance = account.getBalance();
+        List<TransactionType> paymentTypes = getUkelonnServiceSingleton().getPaymenttypes();
+        PerformedTransaction payment = new PerformedTransaction(account, paymentTypes.get(0).getId(), account.getBalance());
+        String paymentAsJson = ServletTestBase.mapper.writeValueAsString(payment);
+        HttpServletRequest request = buildRequestFromStringBody(paymentAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerpayment"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/registerpayment");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        Account result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
+        assertEquals("jad", result.getUsername());
+        assertThat(result.getBalance()).isLessThan(originalBalance);
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {

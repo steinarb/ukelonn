@@ -17,6 +17,7 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
@@ -79,6 +81,24 @@ public class UkelonnServiceProviderTest {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
         List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
         assertEquals(2, paymenttypes.size());
+    }
+
+    @Test
+    public void testRegisterPayment() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Create the request
+        Account account = ukelonn.getAccount("jad");
+        double originalBalance = account.getBalance();
+        List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance());
+
+        // Run the method under test
+        Account result = ukelonn.registerPayment(payment);
+
+        // Check the response
+        assertEquals("jad", result.getUsername());
+        assertThat(result.getBalance()).isLessThan(originalBalance);
     }
 
 }

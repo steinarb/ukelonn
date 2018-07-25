@@ -139,9 +139,13 @@ public class CommonDatabaseMethods {
     }
 
     public static int addNewPaymentToAccount(Class<?> clazz, UkelonnServiceProvider provider, Account account, TransactionType paymentType, double payment) {
+        int transactionTypeId = paymentType.getId();
+        return addNewPaymentToAccountInDatabase(clazz, provider, account, transactionTypeId, payment);
+    }
+
+    static int addNewPaymentToAccountInDatabase(Class<?> clazz, UkelonnServiceProvider provider, Account account, int transactionTypeId, double payment) {
         int updateResult = UPDATE_FAILED;
         int accountId = account.getAccountId();
-        int transactionTypeId = paymentType.getId();
         double amount = 0 - payment;
         UkelonnDatabase database = connectionCheck(clazz, provider);
         try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)")) {

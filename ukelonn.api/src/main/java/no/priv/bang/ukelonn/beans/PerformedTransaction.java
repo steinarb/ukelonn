@@ -15,17 +15,17 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class PerformedJob {
+public class PerformedTransaction {
 
     private Account account = null;
     private int transactionTypeId = -1;
     private double transactionAmount = 0.0;
 
-    public PerformedJob() {
+    public PerformedTransaction() {
         // Jackson needs no-argument constructor
     }
 
-    public PerformedJob(Account account, int transactionTypeId, double transactionAmount) {
+    public PerformedTransaction(Account account, int transactionTypeId, double transactionAmount) {
         this.account = account;
         this.transactionTypeId = transactionTypeId;
         this.transactionAmount  = transactionAmount;

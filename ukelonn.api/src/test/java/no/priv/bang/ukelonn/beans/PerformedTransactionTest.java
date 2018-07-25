@@ -19,11 +19,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class PerformedJobTest {
+public class PerformedTransactionTest {
 
     @Test
     public void testNoArgsConstructor() {
-        PerformedJob bean = new PerformedJob();
+        PerformedTransaction bean = new PerformedTransaction();
         assertNull(bean.getAccount());
         assertEquals(-1, bean.getTransactionTypeId());
         assertEquals(0.0, bean.getTransactionAmount(), 0.0);
@@ -32,7 +32,7 @@ public class PerformedJobTest {
     @Test
     public void testConstructorWithArgs() {
         Account account = new Account();
-        PerformedJob bean = new PerformedJob(account, 1, 3.14);
+        PerformedTransaction bean = new PerformedTransaction(account, 1, 3.14);
         assertEquals(account, bean.getAccount());
         assertEquals(1, bean.getTransactionTypeId());
         assertEquals(3.14, bean.getTransactionAmount(), 0.0);
