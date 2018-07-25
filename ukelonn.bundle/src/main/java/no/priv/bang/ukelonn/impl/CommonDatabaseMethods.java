@@ -195,7 +195,7 @@ public class CommonDatabaseMethods {
         return new AdminUser(username, 0, 0, "Ikke innlogget", null);
     }
 
-    public static List<Account> getAccounts(Class<?> clazz, UkelonnServiceProvider provider) {
+    public static List<Account> getAccountsFromDatabase(Class<?> clazz, UkelonnServiceProvider provider) {
         ArrayList<Account> accounts = new ArrayList<>();
         UkelonnDatabase connection = connectionCheck(clazz, provider);
         try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view")) {

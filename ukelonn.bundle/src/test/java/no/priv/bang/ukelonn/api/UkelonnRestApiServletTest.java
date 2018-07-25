@@ -542,6 +542,52 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
+    public void testGetAccounts() throws Exception {
+        // Create the request
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn("HTTP/1.1");
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/accounts"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/accounts");
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Log the user in to shiro
+        loginUser(request, response, "jad", "1ad");
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        List<Account> accounts = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Account>>() {});
+        assertEquals(2, accounts.size());
+    }
+
+    @Test
     public void testGetAccount() throws Exception {
         // Create the request
         HttpServletRequest request = mock(HttpServletRequest.class);

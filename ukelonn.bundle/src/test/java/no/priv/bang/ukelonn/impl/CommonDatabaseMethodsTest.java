@@ -343,7 +343,7 @@ public class CommonDatabaseMethodsTest {
             PreparedStatement statement = mock(PreparedStatement.class);
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
-            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass(), provider);
+            List<Account> accounts = CommonDatabaseMethods.getAccountsFromDatabase(getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
         } finally {
             // Restore the real derby database
@@ -373,7 +373,7 @@ public class CommonDatabaseMethodsTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
-            List<Account> accounts = CommonDatabaseMethods.getAccounts(getClass(), provider);
+            List<Account> accounts = CommonDatabaseMethods.getAccountsFromDatabase(getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
         } finally {
             // Restore the real derby database

@@ -42,6 +42,13 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
+    public void testGetAccounts() {
+        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        List<Account> accounts = provider.getAccounts();
+        assertEquals(2, accounts.size());
+    }
+
+    @Test
     public void testGetAccount() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         Account account = provider.getAccount("jad");

@@ -42,6 +42,8 @@ public interface UkelonnService {
 
     LogService getLogservice();
 
+    List<Account> getAccounts();
+
     Account getAccount(String username);
 
     Account registerPerformedJob(PerformedJob job);

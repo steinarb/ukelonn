@@ -75,6 +75,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Override
+    public List<Account> getAccounts() {
+        return getAccountsFromDatabase(getClass(), this);
+    }
+
+    @Override
     public Account getAccount(String username) {
         return getAccountInfoFromDatabase(getClass(), this, username);
     }
