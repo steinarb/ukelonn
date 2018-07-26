@@ -6,7 +6,7 @@ import LoginErrorMessage from './LoginErrorMessage';
 let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'administrator') {
-            return <Redirect to="/ukelonn/admin" />;
+            return (<Redirect to="/ukelonn/admin" />);
         }
 
         return (<Redirect to="/ukelonn/user" />);

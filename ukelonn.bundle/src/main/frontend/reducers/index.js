@@ -1,14 +1,16 @@
-const emptyPerformedJob = {
+const emptyPerformedTransaction = {
     account: { id: -1 },
     transactionTypeId: -1,
-    transactionTypeName: '',
     transactionAmount: 0.0
 };
+
 
 export const ukelonnReducer = (state =
                                { username: null,
                                  password: null,
-                                 account: { firstName: 'Ukjent' },
+                                 account: { firstName: 'Ukjent', fullName: '', balance: 0.0 },
+                                 paymenttype: { id: -1, transactionTypeName: '', transactionAmount: 0.0, transactionIsWork: false, transactionIsWagePayment: true },
+                                 payment: {...emptyPerformedTransaction},
                                  jobs: [],
                                  payments: [],
                                  jobtypes: [],
@@ -17,7 +19,9 @@ export const ukelonnReducer = (state =
                                      roles: [],
                                      error: ''
                                  },
-                                 performedjob: {...emptyPerformedJob},
+                                 performedjob: {...emptyPerformedTransaction},
+                                 accounts: [],
+                                 paymenttypes: [],
                                },
                                action) => {
     if (action.type == 'UPDATE') {
@@ -50,7 +54,15 @@ export const ukelonnReducer = (state =
     if (action.type === 'REGISTERJOB_RECEIVE') {
         return {
             ...state,
-            performedjob: {...emptyPerformedJob},
+            performedjob: {...emptyPerformedTransaction},
+            account: action.account
+        };
+    }
+
+    if (action.type === 'REGISTERPAYMENT_RECEIVE') {
+        return {
+            ...state,
+            payment: {...emptyPerformedTransaction},
             account: action.account
         };
     }
@@ -73,6 +85,21 @@ export const ukelonnReducer = (state =
         return {
             ...state,
             jobtypes: action.jobtypes
+        };
+    }
+
+    if (action.type === 'ACCOUNTS_RECEIVE') {
+        return {
+            ...state,
+            accounts: action.accounts
+        };
+    }
+
+    if (action.type === 'PAYMENTTYPES_RECEIVE') {
+        return {
+            ...state,
+            paymenttype: action.paymenttype,
+            paymenttypes: action.paymenttypes,
         };
     }
 

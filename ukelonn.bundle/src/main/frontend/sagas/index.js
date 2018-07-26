@@ -167,6 +167,69 @@ function* receiveRecentPaymentsSaga(action) {
 }
 
 
+// watcher saga
+export function* requestAccountsSaga() {
+    yield takeLatest("ACCOUNTS_REQUEST", receiveAccountsSaga);
+}
+
+function doAccounts() {
+    return axios.get('/ukelonn/api/accounts');
+}
+
+// worker saga
+function* receiveAccountsSaga(action) {
+    try {
+        const response = yield call(doAccounts);
+        const accounts = response.data;
+        yield put({ type: 'ACCOUNTS_RECEIVE', accounts: accounts });
+    } catch (error) {
+        yield put({ type: 'ACCOUNTS_FAILURE', error });
+    }
+}
+
+
+// watcher saga
+export function* requestPaymenttypesSaga() {
+    yield takeLatest("PAYMENTTYPES_REQUEST", receivePaymenttypesSaga);
+}
+
+function doPaymenttypes() {
+    return axios.get('/ukelonn/api/paymenttypes');
+}
+
+// worker saga
+function* receivePaymenttypesSaga(action) {
+    try {
+        const response = yield call(doPaymenttypes);
+        const paymenttypes = response.data;
+        yield put({ type: 'PAYMENTTYPES_RECEIVE', paymenttype: paymenttypes[0], paymenttypes: paymenttypes });
+    } catch (error) {
+        yield put({ type: 'PAYMENTTYPES_FAILURE', error });
+    }
+}
+
+
+// watcher saga
+export function* requestRegisterPaymentSaga() {
+    yield takeLatest("REGISTERPAYMENT_REQUEST", receiveRegisterPaymentSaga);
+}
+
+function doRegisterPayment(payment) {
+    return axios.post('/ukelonn/api/registerpayment', payment);
+}
+
+// worker saga
+function* receiveRegisterPaymentSaga(action) {
+    try {
+        const response = yield call(doRegisterPayment, action.payment);
+        const account = response.data;
+        yield put({ type: 'REGISTERPAYMENT_RECEIVE', account: account });
+    } catch (error) {
+        yield put({ type: 'REGISTERPAYMENT_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -177,5 +240,8 @@ export function* rootSaga() {
         fork(requestRegisterJobSaga),
         fork(requestRecentJobsSaga),
         fork(requestRecentPaymentsSaga),
+        fork(requestAccountsSaga),
+        fork(requestPaymenttypesSaga),
+        fork(requestRegisterPaymentSaga),
     ];
 };
