@@ -46,7 +46,7 @@ class User extends Component {
 };
 
 const emptyJob = {
-    account: { id: -1 },
+    account: { accountId: -1 },
     id: -1,
     transactionName: '',
     transactionAmount: 0.0
