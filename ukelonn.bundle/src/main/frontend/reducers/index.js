@@ -8,6 +8,7 @@ const emptyPerformedTransaction = {
 export const ukelonnReducer = (state =
                                { username: null,
                                  password: null,
+                                 firstTimeAfterLogin: false,
                                  account: { firstName: 'Ukjent', fullName: '', balance: 0.0 },
                                  paymenttype: { id: -1, transactionTypeName: '', transactionAmount: 0.0, transactionIsWork: false, transactionIsWagePayment: true },
                                  payment: {...emptyPerformedTransaction},
@@ -40,6 +41,7 @@ export const ukelonnReducer = (state =
     if (action.type === 'LOGIN_RECEIVE' || action.type === 'LOGOUT_RECEIVE' || action.type === 'INITIAL_LOGIN_STATE_RECEIVE') {
         return {
             ...state,
+            firstTimeAfterLogin: true,
             loginResponse: action.loginResponse
         };
     }

@@ -10,7 +10,7 @@ class Admin extends Component {
     }
 
     componentDidMount() {
-        this.props.onDeselectAccountInDropdown();
+        this.props.onDeselectAccountInDropdown(this.state.firstTimeAfterLogin);
         this.props.onAccounts();
         this.props.onPaymenttypeList();
     }
@@ -84,6 +84,7 @@ const mapStateToProps = state => {
 
     return {
         loginResponse: state.loginResponse,
+        firstTimeAfterLogin: state.firstTimeAfterLogin,
         account: state.account,
         payment: state.payment,
         paymenttype: state.paymenttype,
@@ -97,7 +98,21 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onDeselectAccountInDropdown: () => dispatch({ type: 'UPDATE', data: { account: emptyAccount, payment: { account: emptyAccount, transactionAmount: 0.0, transactionTypeId: -1 } } }),
+        onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
+            if (firstTimeAfterLogin) {
+                dispatch({ type: 'UPDATE',
+                           data: {
+                               firstTimeAfterLogin: false,
+                               account: emptyAccount,
+                               payment: {
+                                   account: emptyAccount,
+                                   transactionAmount: 0.0,
+                                   transactionTypeId: -1
+                               }
+                           }
+                         });
+            }
+        },
         onAccounts: () => dispatch({ type: 'ACCOUNTS_REQUEST' }),
         onPaymenttypeList: () => dispatch({ type: 'PAYMENTTYPES_REQUEST' }),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
