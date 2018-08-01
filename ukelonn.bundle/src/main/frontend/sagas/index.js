@@ -1,6 +1,11 @@
 import { takeLatest, call, put, fork } from "redux-saga/effects";
 import axios from "axios";
 
+// Constants
+const emptyLoginResponse = { username: '', roles: [], error: '' };
+const emptyAccount = { firstName: 'Ukjent', fullName: '', balance: 0.0 };
+
+
 // watcher saga
 export function* requestInitialLoginStateSaga() {
     yield takeLatest("INITIAL_LOGIN_STATE_REQUEST", receiveInitialLoginStateSaga);
@@ -14,7 +19,7 @@ function doGetLogin() {
 export function* receiveInitialLoginStateSaga() {
     try {
         const response = yield call(doGetLogin);
-        const loginResponse = response.data;
+        const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
         yield put({ type: 'INITIAL_LOGIN_STATE_RECEIVE', loginResponse: loginResponse });
     } catch (error) {
         yield put({ type: 'INITIAL_LOGIN_STATE_FAILURE', error });
@@ -34,7 +39,7 @@ function doLogin(username, password) {
 function* receiveLoginSaga(action) {
     try {
         const response = yield call(doLogin, action.username, action.password);
-        const loginResponse = response.data;
+        const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
         yield put({ type: 'LOGIN_RECEIVE', loginResponse: loginResponse });
     } catch (error) {
         yield put({ type: 'LOGIN_FAILURE', error });
@@ -54,7 +59,7 @@ function doLogout() {
 function* receiveLogoutSaga(action) {
     try {
         const response = yield call(doLogout);
-        const loginResponse = response.data;
+        const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
         yield put({ type: 'LOGOUT_RECEIVE', loginResponse: loginResponse });
     } catch (error) {
         yield put({ type: 'LOGOUT_FAILURE', error });
@@ -75,7 +80,7 @@ function doAccount(username) {
 function* receiveAccountSaga(action) {
     try {
         const response = yield call(doAccount, action.username);
-        const account = response.data;
+        const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
         yield put({ type: 'ACCOUNT_RECEIVE', account: account });
     } catch (error) {
         yield put({ type: 'ACCOUNT_FAILURE', error });
@@ -96,7 +101,7 @@ function doJobtypeList() {
 function* receiveJobtypeListSaga(action) {
     try {
         const response = yield call(doJobtypeList);
-        const jobtypes = response.data;
+        const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'JOBTYPELIST_RECEIVE', jobtypes: jobtypes });
     } catch (error) {
         yield put({ type: 'JOBTYPELIST_FAILURE', error });
@@ -117,7 +122,7 @@ function doRegisterJob(performedJob) {
 function* receiveRegisterJobSaga(action) {
     try {
         const response = yield call(doRegisterJob, action.performedjob);
-        const account = response.data;
+        const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
         yield put({ type: 'REGISTERJOB_RECEIVE', account: account });
     } catch (error) {
         yield put({ type: 'REGISTERJOB_FAILURE', error });
@@ -180,7 +185,7 @@ function doAccounts() {
 function* receiveAccountsSaga(action) {
     try {
         const response = yield call(doAccounts);
-        const accounts = response.data;
+        const accounts = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'ACCOUNTS_RECEIVE', accounts: accounts });
     } catch (error) {
         yield put({ type: 'ACCOUNTS_FAILURE', error });
@@ -201,7 +206,7 @@ function doPaymenttypes() {
 function* receivePaymenttypesSaga(action) {
     try {
         const response = yield call(doPaymenttypes);
-        const paymenttypes = response.data;
+        const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'PAYMENTTYPES_RECEIVE', paymenttype: paymenttypes[0], paymenttypes: paymenttypes });
     } catch (error) {
         yield put({ type: 'PAYMENTTYPES_FAILURE', error });
@@ -222,7 +227,7 @@ function doRegisterPayment(payment) {
 function* receiveRegisterPaymentSaga(action) {
     try {
         const response = yield call(doRegisterPayment, action.payment);
-        const account = response.data;
+        const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
         yield put({ type: 'REGISTERPAYMENT_RECEIVE', account: account });
     } catch (error) {
         yield put({ type: 'REGISTERPAYMENT_FAILURE', error });
