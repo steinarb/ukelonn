@@ -138,7 +138,7 @@ function doRecentJobs(account) {
 function* receiveRecentJobsSaga(action) {
     try {
         const response = yield call(doRecentJobs, action.account);
-        const jobs = response.data;
+        const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'RECENTJOBS_RECEIVE', jobs: jobs });
     } catch (error) {
         yield put({ type: 'RECENTJOBS_FAILURE', error });
@@ -159,7 +159,7 @@ function doRecentPayments(account) {
 function* receiveRecentPaymentsSaga(action) {
     try {
         const response = yield call(doRecentPayments, action.account);
-        const payments = response.data;
+        const payments = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'RECENTPAYMENTS_RECEIVE', payments: payments });
     } catch (error) {
         yield put({ type: 'RECENTPAYMENTS_FAILURE', error });
