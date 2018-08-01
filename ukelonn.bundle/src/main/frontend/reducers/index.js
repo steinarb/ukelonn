@@ -56,7 +56,7 @@ export const ukelonnReducer = (state =
     if (action.type === 'REGISTERJOB_RECEIVE') {
         return {
             ...state,
-            performedjob: {...emptyPerformedTransaction},
+            performedjob: {...emptyPerformedTransaction, transactionName: '' },
             account: action.account
         };
     }
