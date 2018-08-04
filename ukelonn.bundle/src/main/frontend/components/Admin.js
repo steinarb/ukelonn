@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import Accounts from './Accounts';
+import Paymenttypes from './Paymenttypes';
 
 class Admin extends Component {
     constructor(props) {
@@ -50,9 +51,7 @@ class Admin extends Component {
                     <br/>
                     <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly="true" /><br/>
                     <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
-                    <select id="paymenttype-selector" onChange={(event) => onPaymenttypeFieldChange(event.target.value, paymenttypesMap, account)} value={paymenttype.transactionTypeName}>
-                        {paymenttypes.map((val) => <option key={val.id}>{val.transactionTypeName}</option>)}
-                    </select>
+                    <Paymenttypes id="paymenttype-selector" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp:</label>
                     <input id="amount" type="text" value={this.state.payment.transactionAmount} onChange={(event) => onAmountFieldChange(event.target.value, payment)} />
