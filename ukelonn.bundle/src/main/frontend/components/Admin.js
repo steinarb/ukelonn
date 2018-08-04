@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import Accounts from './Accounts';
 
 class Admin extends Component {
     constructor(props) {
@@ -45,9 +46,7 @@ class Admin extends Component {
                 <h1>Registrer betaling</h1>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
-                    <select id="account-selector" onChange={(event) => onAccountsFieldChange(event.target.value, accountsMap, paymenttype)} value={account.fullName}>
-                        {accounts.map((val) => <option key={val.accountId}>{val.fullName}</option>)}
-                    </select>
+                    <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
                     <br/>
                     <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly="true" /><br/>
                     <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
