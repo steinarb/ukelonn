@@ -30,9 +30,11 @@ class User extends Component {
                 <h1>Ukelønn for {account.firstName}</h1>
                 <div>Til gode: { account.balance }</div><br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <Jobtypes jobtypes={jobtypes} jobtypesMap={jobtypesMap} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                    <label htmlFor="jobtype">Velg jobb</label>
+                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
-                    <input type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
+                    <label htmlFor="amount">Beløp</label>
+                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
                     <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
                 </form>
                 <br/>
