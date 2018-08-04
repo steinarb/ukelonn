@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
+import Amount from './Amount';
 
 class Admin extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class Admin extends Component {
                     <Paymenttypes id="paymenttype-selector" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp:</label>
-                    <input id="amount" type="text" value={this.state.payment.transactionAmount} onChange={(event) => onAmountFieldChange(event.target.value, payment)} />
+                    <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
                     <br/>
                     <br/>
                     <button onClick={() => onRegisterPayment(payment)}>Registrer betaling</button>
