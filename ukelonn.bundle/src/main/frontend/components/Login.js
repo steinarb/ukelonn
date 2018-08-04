@@ -16,8 +16,10 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
         <div className="Login">
             <h1>Ukelønn login</h1>
             <form  onSubmit={ e => { e.preventDefault(); }}>
-                <b>Brukernavn:</b><input type='text' name='username' onChange={(event) => onFieldChange({ username: event.target.value })}></input><br/>
-                <b>Passord:</b><input type='password' name='password' onChange={(event) => onFieldChange({ password: event.target.value })}/><br/>
+                <label htmlFor="username">Brukernavn:</label>
+                <input id="username" type='text' name='username' onChange={(event) => onFieldChange({ username: event.target.value })}></input><br/>
+                <label htmlFor="password">Passord:</label>
+                <input id="password" type='password' name='password' onChange={(event) => onFieldChange({ password: event.target.value })}/><br/>
                 <button onClick={() => onLogin(username, password)}>Login</button>
             </form>
             <LoginErrorMessage loginResponse={loginResponse} />
