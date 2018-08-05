@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 
@@ -53,7 +55,12 @@ public class AccountResource extends ResourceBase {
             throw new ForbiddenException();
         }
 
-        return ukelonn.getAccount(username);
+        try {
+            return ukelonn.getAccount(username);
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Internal Server Error in REST endpoint /ukelonn/api/account: %s", e.getMessage()), e);
+            throw new InternalServerErrorException("Failed to get account from database. See log for details.");
+        }
     }
 
 }

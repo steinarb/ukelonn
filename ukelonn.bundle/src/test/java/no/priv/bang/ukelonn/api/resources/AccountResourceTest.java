@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -163,8 +164,38 @@ public class AccountResourceTest extends ServletTestBase {
         // Run the method under test
         resource.getAccount(null);
 
-        // Check the response
-        assertEquals(500, response.getStatus());
+        // Verify that the test never gets here
+        assertNull("Should never get here, exception should be thrown", response);
+        fail("Should never get here, exception should be thrown");
+    }
+
+    @Test(expected=InternalServerErrorException.class)
+    public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
+        // Create the request and response for the Shiro login
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        // Log the admin user in to shiro
+        loginUser(request, response, "admin", "admin");
+
+        // Create the object to be tested
+        AccountResource resource = new AccountResource();
+
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Inject fake OSGi service UkelonnService
+        resource.ukelonn = getUkelonnServiceSingleton();
+
+        // Run the method under test
+        resource.getAccount("on");
+
+        // Verify that the test never gets here
+        assertNull("Should never get here, exception should be thrown", response);
+        fail("Should never get here, exception should be thrown");
     }
 
 }

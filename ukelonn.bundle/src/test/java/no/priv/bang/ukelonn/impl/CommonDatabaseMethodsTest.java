@@ -226,7 +226,7 @@ public class CommonDatabaseMethodsTest {
      *
      * Expect no exception to be thrown, and a dummy {@link Account} object to be returned.
      */
-    @Test()
+    @Test(expected=UkelonnException.class)
     public void testGetAccountInfoFromDatabaseNullResultSet() {
         // Swap the real derby database with a mock
         UkelonnDatabase originalDatabase = provider.getDatabase();
@@ -236,7 +236,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
             Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
-            assertEquals("Ikke innlogget", account.getFirstName());
+            assertNull("Should never get here", account);
         } finally {
             // Restore the real derby database
             provider.setUkelonnDatabase(originalDatabase);
@@ -253,7 +253,7 @@ public class CommonDatabaseMethodsTest {
      * @throws SQLException
      */
     @SuppressWarnings("unchecked")
-    @Test()
+    @Test(expected=UkelonnException.class)
     public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnDatabase originalDatabase = provider.getDatabase();
@@ -266,7 +266,7 @@ public class CommonDatabaseMethodsTest {
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
             Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
-            assertEquals("Ikke innlogget", account.getFirstName());
+            assertNull("Should never get here", account);
         } finally {
             // Restore the real derby database
             provider.setUkelonnDatabase(originalDatabase);
@@ -754,16 +754,26 @@ public class CommonDatabaseMethodsTest {
         assertEquals(10, jobs.size());
         List<Transaction> payments = getPaymentsFromAccount(account, getClass(), provider);
         assertEquals(10, payments.size());
+    }
 
+    /**
+     * Corner case test: test what happens when an account has no transactions
+     * (the query result is empty)
+     */
+    @Test(expected=UkelonnException.class)
+    public void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
         Account accountForAdmin = getAccountInfoFromDatabase(getClass(), provider, "on");
-        assertEquals("on", accountForAdmin.getUsername());
-        assertEquals(0, accountForAdmin.getUserId());
-        assertEquals("Ikke innlogget", accountForAdmin.getFirstName());
+        assertNull("Should never get here", accountForAdmin);
+    }
 
+    /**
+     * Corner case test: test what happens when trying to get an
+     * account for a username that isn't present in the database
+     */
+    @Test(expected=UkelonnException.class)
+    public void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
         Account accountNotInDatabase = getAccountInfoFromDatabase(getClass(), provider, "unknownuser");
-        assertEquals("unknownuser", accountNotInDatabase.getUsername());
-        assertEquals(0, accountNotInDatabase.getUserId());
-        assertEquals("Ikke innlogget", accountNotInDatabase.getFirstName());
+        assertNull("Should never get here", accountNotInDatabase);
     }
 
     @Test

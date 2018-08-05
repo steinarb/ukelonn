@@ -170,15 +170,19 @@ public class CommonDatabaseMethods {
         try(PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?")) {
             statement.setString(1, username);
             ResultSet resultset = database.query(statement);
-            if (resultset != null && resultset.next())
+            if (resultset == null) {
+                throw new UkelonnException(String.format("Got a null ResultSet while fetching account from the database for user \\\"%s\\\"", username));
+            }
+
+            if (resultset.next())
             {
                 return mapAccount(resultset);
             }
-        } catch (SQLException e) {
-            logError(CommonDatabaseMethods.class, provider, "Error getting a single account from the database", e);
-        }
 
-        return new Account(0, 0, username, "Ikke innlogget", null, 0);
+            throw new UkelonnException(String.format("Got an empty ResultSet while fetching account from the database for user \\\"%s\\\"", username));
+        } catch (SQLException e) {
+            throw new UkelonnException(String.format("Caught SQLException while fetching account from the database for user \"%s\"", username), e);
+        }
     }
 
     public static AdminUser getAdminUserFromDatabase(Class<?> clazz, UkelonnServiceProvider provider, String username) {

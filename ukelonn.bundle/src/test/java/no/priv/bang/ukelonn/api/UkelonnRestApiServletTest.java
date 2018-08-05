@@ -783,6 +783,50 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
+    public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
+        // Create the request
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn("HTTP/1.1");
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/account/unknownuser"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/account/unknownuser");
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Log the admin user in to shiro
+        loginUser(request, response, "admin", "admin");
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        // (Looks like Jersey enforces the pathinfo element so the response is 404 "Not Found"
+        // rather than the expected 400 "Bad request" (that the resource would send if reached))
+        assertEquals(500, response.getStatus());
+    }
+
+    @Test
     public void testRegisterJob() throws Exception {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jad");
