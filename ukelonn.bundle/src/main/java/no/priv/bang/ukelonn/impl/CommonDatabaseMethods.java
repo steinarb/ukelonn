@@ -169,11 +169,10 @@ public class CommonDatabaseMethods {
         UkelonnDatabase database = connectionCheck(clazz, provider);
         try(PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?")) {
             statement.setString(1, username);
-            try(ResultSet resultset = database.query(statement)) {
-                if (resultset != null && resultset.next())
-                {
-                    return mapAccount(resultset);
-                }
+            ResultSet resultset = database.query(statement);
+            if (resultset != null && resultset.next())
+            {
+                return mapAccount(resultset);
             }
         } catch (SQLException e) {
             logError(CommonDatabaseMethods.class, provider, "Error getting a single account from the database", e);
