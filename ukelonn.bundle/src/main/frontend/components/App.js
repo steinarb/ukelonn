@@ -7,45 +7,39 @@ import User from "./User";
 import PerformedJobs from "./PerformedJobs";
 import PerformedPayments from "./PerformedPayments";
 import Admin from "./Admin";
-import { createBrowserHistory } from 'history';
-import { applyMiddleware, createStore, compose } from 'redux';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import createSagaMiddleware from 'redux-saga';
-import { ukelonnReducer } from '../reducers';
-import { rootSaga } from '../sagas';
 
-const sagaMiddleware = createSagaMiddleware();
-const history = createBrowserHistory();
-const store = createStore(ukelonnReducer, compose(applyMiddleware(sagaMiddleware, routerMiddleware(history)), window.devToolsExtension ? window.devToolsExtension() : f => f));
-sagaMiddleware.run(rootSaga);
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {...props};
+    }
+
     componentDidMount() {
         this.props.initialLoginStateRequest();
     }
 
     render() {
         return(
-            <Provider store={store}>
+            <Provider store={this.state.store}>
                 <Router>
-                    <div className="App">
-                        <Switch>
-                            <Route exact path="/ukelonn/" component={Home} />
-                            <Route path="/ukelonn/login" component={Login} />
-                            <Route path="/ukelonn/user" component={User} />
-                            <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
-                            <Route path="/ukelonn/performedpayments" component={PerformedPayments} />
-                            <Route path="/ukelonn/admin" component={Admin} />
-                        </Switch>
-                    </div>
+                    <Switch>
+                        <Route exact path="/ukelonn/" component={Home} />
+                        <Route path="/ukelonn/login" component={Login} />
+                        <Route path="/ukelonn/user" component={User} />
+                        <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
+                        <Route path="/ukelonn/performedpayments" component={PerformedPayments} />
+                        <Route path="/ukelonn/admin" component={Admin} />
+                    </Switch>
                 </Router>
             </Provider>
         );
     }
 }
 
-// Dummy mapStateToProps, we don't need to map any state to props here, but we need a mapToProps function as the first argument of connect()
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => {
+    return {...state};
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -53,13 +47,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-function connectWithStore(store, WrappedComponent, ...args) {
-    var ConnectedWrappedComponent = connect(...args)(WrappedComponent);
-    return function (props) {
-        return <ConnectedWrappedComponent {...props} store={store} />;
-    };
-}
-
-App = connectWithStore(store, App, mapStateToProps, mapDispatchToProps);
+App = connect(mapStateToProps, mapDispatchToProps)(App);
 
 export default App;
