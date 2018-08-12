@@ -15,6 +15,7 @@ export const ukelonnReducer = (state =
                                  jobs: [],
                                  payments: [],
                                  jobtypes: [],
+                                 haveReceivedResponseFromLogin: false,
                                  loginResponse: {
                                      username: '',
                                      roles: [],
@@ -42,6 +43,7 @@ export const ukelonnReducer = (state =
         return {
             ...state,
             firstTimeAfterLogin: true,
+            haveReceivedResponseFromLogin: true,
             loginResponse: action.loginResponse
         };
     }

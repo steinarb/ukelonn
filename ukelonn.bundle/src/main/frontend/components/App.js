@@ -7,6 +7,7 @@ import User from "./User";
 import PerformedJobs from "./PerformedJobs";
 import PerformedPayments from "./PerformedPayments";
 import Admin from "./Admin";
+import AdminJobtypes from "./AdminJobtypes";
 
 
 class App extends Component {
@@ -29,6 +30,7 @@ class App extends Component {
                         <Route path="/ukelonn/user" component={User} />
                         <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
                         <Route path="/ukelonn/performedpayments" component={PerformedPayments} />
+                        <Route path="/ukelonn/admin/jobtypes" component={AdminJobtypes} />
                         <Route path="/ukelonn/admin" component={Admin} />
                     </Switch>
                 </Router>
