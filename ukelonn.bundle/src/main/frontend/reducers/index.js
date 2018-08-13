@@ -4,6 +4,12 @@ const emptyPerformedTransaction = {
     transactionAmount: 0.0
 };
 
+const emptyTransactionType = {
+    id: -1,
+    transactionTypeName: '',
+    transactionAmount: 0.0
+};
+
 
 export const ukelonnReducer = (state =
                                { username: null,
@@ -24,6 +30,7 @@ export const ukelonnReducer = (state =
                                  performedjob: {...emptyPerformedTransaction},
                                  accounts: [],
                                  paymenttypes: [],
+                                 transactiontype: { ...emptyTransactionType },
                                },
                                action) => {
     if (action.type == 'UPDATE') {
@@ -104,6 +111,14 @@ export const ukelonnReducer = (state =
             ...state,
             paymenttype: action.paymenttype,
             paymenttypes: action.paymenttypes,
+        };
+    }
+
+    if (action.type === 'MODIFY_JOBTYPE_RECEIVE') {
+        return {
+            ...state,
+            jobtypes: action.jobtypes,
+            transactiontype: {...emptyTransactionType},
         };
     }
 

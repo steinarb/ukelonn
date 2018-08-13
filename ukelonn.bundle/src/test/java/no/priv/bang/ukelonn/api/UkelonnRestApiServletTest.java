@@ -1265,6 +1265,53 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertThat(result.getBalance()).isLessThan(originalBalance);
     }
 
+    @Test
+    public void testModifyJobtype() throws Exception {
+        // Find a jobtype to modify
+        List<TransactionType> jobtypes = getUkelonnServiceSingleton().getJobTypes();
+        TransactionType jobtype = jobtypes.get(0);
+        Double originalAmount = jobtype.getTransactionAmount();
+
+        // Modify the amount of the jobtype
+        jobtype.setTransactionAmount(originalAmount + 1);
+
+        // Create the request
+        String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(jobtype);
+        HttpServletRequest request = buildRequestFromStringBody(jobtypeAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/jobtype/modify"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/jobtype/modify");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        // Verify that the updated amount is larger than the original amount
+        List<TransactionType> updatedJobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        TransactionType updatedJobtype = updatedJobtypes.get(0);
+        assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
+    }
+
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
         ServletConfig config = mock(ServletConfig.class);
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));

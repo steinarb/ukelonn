@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -121,6 +122,16 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return getAccount(payment.getAccount().getUsername());
+    }
+
+    @Override
+    public List<TransactionType> modifyJobtype(TransactionType jobtype) {
+        int result = updateTransactionTypeInDatabase(getClass(), this, jobtype);
+        if (result == UPDATE_FAILED) {
+            throw new UkelonnException(String.format("Failed to update jobtype %d in the database", jobtype.getId()));
+        }
+
+        return getJobTypes();
     }
 
 }

@@ -58,4 +58,6 @@ public interface UkelonnService {
 
     Account registerPayment(PerformedTransaction payment);
 
+    List<TransactionType> modifyJobtype(TransactionType jobtype);
+
 }

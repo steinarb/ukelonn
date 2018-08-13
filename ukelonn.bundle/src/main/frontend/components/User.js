@@ -31,7 +31,7 @@ class User extends Component {
                 <div>Til gode: { account.balance }</div><br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobb</label>
-                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp</label>
                     <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>

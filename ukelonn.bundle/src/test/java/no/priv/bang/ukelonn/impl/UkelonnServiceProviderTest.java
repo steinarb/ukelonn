@@ -17,15 +17,19 @@ package no.priv.bang.ukelonn.impl;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -99,6 +103,46 @@ public class UkelonnServiceProviderTest {
         // Check the response
         assertEquals("jad", result.getUsername());
         assertThat(result.getBalance()).isLessThan(originalBalance);
+    }
+
+    @Test
+    public void testModifyJobtype() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Find a jobtyoe
+        List<TransactionType> jobtypes = ukelonn.getJobTypes();
+        TransactionType jobtype = jobtypes.get(0);
+        Double originalAmount = jobtype.getTransactionAmount();
+
+        // Modify the amount of the jobtype
+        jobtype.setTransactionAmount(originalAmount + 1);
+
+        // Update the job type in the database
+        List<TransactionType> updatedJobtypes = ukelonn.modifyJobtype(jobtype);
+
+        // Verify that the updated amount is larger than the original amount
+        TransactionType updatedJobtype = updatedJobtypes.get(0);
+        assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testModifyJobtypeFailure() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a non-existing jobtype
+        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+
+        // Try update the jobtype in the database, which should cause an exception
+        ukelonn.modifyJobtype(jobtype);
+        fail("Should never get here!");
     }
 
 }

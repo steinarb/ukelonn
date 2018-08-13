@@ -25,6 +25,7 @@ class AdminJobtypes extends Component {
                 <h1>Administrer jobbtyper</h1>
                 <br/>
                 <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
+                <Link to="/ukelonn/admin/jobtypes/modify">Endre jobbtyper</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
             </div>
