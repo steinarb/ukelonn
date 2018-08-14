@@ -114,7 +114,7 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'MODIFY_JOBTYPE_RECEIVE') {
+    if (action.type === 'MODIFY_JOBTYPE_RECEIVE' || action.type === 'CREATE_JOBTYPE_RECEIVE') {
         return {
             ...state,
             jobtypes: action.jobtypes,

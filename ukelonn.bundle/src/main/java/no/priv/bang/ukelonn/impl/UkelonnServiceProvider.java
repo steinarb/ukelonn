@@ -134,4 +134,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getJobTypes();
     }
 
+    @Override
+    public List<TransactionType> createJobtype(TransactionType jobtype) {
+        int result = addJobTypeToDatabase(getClass(), this, jobtype.getTransactionTypeName(), jobtype.getTransactionAmount());
+        if (result == UPDATE_FAILED) {
+            throw new UkelonnException(String.format("Failed to create jobtype \"%s\" in the database", jobtype.getTransactionTypeName()));
+        }
+
+        return getJobTypes();
+    }
+
 }

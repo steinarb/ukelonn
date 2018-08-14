@@ -145,4 +145,41 @@ public class UkelonnServiceProviderTest {
         fail("Should never get here!");
     }
 
+    @Test
+    public void testCreateJobtype() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Get the list of jobtypes before adding a new job type
+        List<TransactionType> originalJobtypes = ukelonn.getJobTypes();
+
+        // Create new jobtyoe
+        TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+
+        // Update the job type in the database
+        List<TransactionType> updatedJobtypes = ukelonn.createJobtype(jobtype);
+
+        // Verify that a new jobtype has been added
+        assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testCreateJobtypeFailure() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a new jobtype
+        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+
+        // Try update the jobtype in the database, which should cause an exception
+        ukelonn.createJobtype(jobtype);
+        fail("Should never get here!");
+    }
+
 }

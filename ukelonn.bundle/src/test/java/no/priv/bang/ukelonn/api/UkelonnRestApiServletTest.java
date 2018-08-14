@@ -539,7 +539,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         List<TransactionType> jobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
-        assertEquals(4, jobtypes.size());
+        assertThat(jobtypes.size()).isGreaterThan(0);
     }
 
     @Test
@@ -1310,6 +1310,51 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> updatedJobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
         TransactionType updatedJobtype = updatedJobtypes.get(0);
         assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
+    }
+
+    @Test
+    public void testCreateJobtype() throws Exception {
+        // Save the jobtypes before adding a new jobtype
+        List<TransactionType> originalJobtypes = getUkelonnServiceSingleton().getJobTypes();
+
+
+        // Create new jobtyoe
+        TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+
+        // Create the request
+        String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(jobtype);
+        HttpServletRequest request = buildRequestFromStringBody(jobtypeAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/jobtype/create"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/jobtype/create");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        // Verify that the updated have more items than the original jobtypes
+        List<TransactionType> updatedJobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {

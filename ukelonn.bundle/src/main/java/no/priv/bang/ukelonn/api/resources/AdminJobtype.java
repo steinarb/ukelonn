@@ -32,7 +32,7 @@ import no.priv.bang.ukelonn.beans.TransactionType;
 
 @Path("/admin/jobtype")
 @Produces("application/json")
-public class Jobtype {
+public class AdminJobtype {
 
     @Inject
     UkelonnService ukelonn;
@@ -48,6 +48,18 @@ public class Jobtype {
             return ukelonn.modifyJobtype(jobtype);
         } catch (UkelonnException e) {
             logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /api/jobtype/modify failed to modify jobtype %d in the database", jobtype.getId()), e);
+            throw new InternalServerErrorException("See log for the cause of the problem");
+        }
+    }
+
+    @Path("create")
+    @POST
+    @Consumes("application/json")
+    public List<TransactionType> create(TransactionType jobtype) {
+        try {
+            return ukelonn.createJobtype(jobtype);
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /api/jobtype/modify failed to create jobtype \"%s\" in the database", jobtype.getTransactionTypeName()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }

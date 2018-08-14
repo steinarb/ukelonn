@@ -40,7 +40,7 @@ import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
-public class JobtypeTest {
+public class AdminJobtypeTest {
 
     @BeforeClass
     public static void setupForAllTests() {
@@ -55,7 +55,7 @@ public class JobtypeTest {
     @Test
     public void testModifyJobtype() {
         // Create the resource that is to be tested
-        Jobtype resource = new Jobtype();
+        AdminJobtype resource = new AdminJobtype();
 
         // Inject fake OSGi service UkelonnService
         resource.ukelonn = getUkelonnServiceSingleton();
@@ -80,7 +80,7 @@ public class JobtypeTest {
     @Test(expected=InternalServerErrorException.class)
     public void testModifyJobtypeFailure() {
         // Create the resource that is to be tested
-        Jobtype resource = new Jobtype();
+        AdminJobtype resource = new AdminJobtype();
 
         // Inject fake OSGi service UkelonnService
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -103,6 +103,58 @@ public class JobtypeTest {
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception
         resource.modify(jobtype);
+        fail("Should never get here!");
+    }
+
+    @Test
+    public void testCreateJobtype() {
+        // Create the resource that is to be tested
+        AdminJobtype resource = new AdminJobtype();
+
+        // Inject fake OSGi service UkelonnService
+        resource.ukelonn = getUkelonnServiceSingleton();
+
+        // Get the list of jobtypes before adding a new job type
+        List<TransactionType> originalJobtypes = getUkelonnServiceSingleton().getJobTypes();
+
+        // Create new jobtyoe
+        TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+
+        // Update the job type in the database
+        List<TransactionType> updatedJobtypes = resource.create(jobtype);
+
+        // Verify that a new jobtype has been added
+        assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=InternalServerErrorException.class)
+    public void testCreateJobtypeFailure() {
+        // Create the resource that is to be tested
+        AdminJobtype resource = new AdminJobtype();
+
+
+        // Inject fake OSGi service UkelonnService
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        resource.ukelonn = ukelonn;
+
+        // Inject a fake OSGi log service
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a new jobtype
+        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+
+        // Try update the jobtype in the database, which should cause an
+        // "500 Internal Server Error" exception
+        resource.create(jobtype);
         fail("Should never get here!");
     }
 
