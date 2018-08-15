@@ -64,6 +64,7 @@ class Admin extends Component {
                 <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
                 <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
                 <Link to="/ukelonn/admin/jobtypes">Administrere jobbtyper</Link><br/>
+                <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
             </div>
