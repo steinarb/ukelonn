@@ -182,4 +182,44 @@ public class UkelonnServiceProviderTest {
         fail("Should never get here!");
     }
 
+    @Test
+    public void testModifyPaymenttype() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Find a payment type
+        List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+        TransactionType paymenttype = paymenttypes.get(0);
+        Double originalAmount = paymenttype.getTransactionAmount();
+
+        // Modify the amount of the payment type
+        paymenttype.setTransactionAmount(originalAmount + 1);
+
+        // Update the payment type in the database
+        List<TransactionType> updatedPaymenttypes = ukelonn.modifyPaymenttype(paymenttype);
+
+        // Verify that the updated amount is larger than the original amount
+        TransactionType updatedPaymenttype = updatedPaymenttypes.get(0);
+        assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testModifyPaymenttypeFailure() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a non-existing payment type
+        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+
+        // Try update the payment type in the database, which should cause an exception
+        ukelonn.modifyPaymenttype(paymenttype);
+        fail("Should never get here!");
+    }
+
 }

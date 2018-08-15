@@ -144,4 +144,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getJobTypes();
     }
 
+    @Override
+    public List<TransactionType> modifyPaymenttype(TransactionType paymenttype) {
+        int result = updateTransactionTypeInDatabase(getClass(), this, paymenttype);
+        if (result == UPDATE_FAILED) {
+            throw new UkelonnException(String.format("Failed to update payment type %d in the database", paymenttype.getId()));
+        }
+
+        return getPaymenttypes();
+    }
+
 }

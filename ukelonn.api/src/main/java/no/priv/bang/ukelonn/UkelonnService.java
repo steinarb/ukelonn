@@ -62,4 +62,6 @@ public interface UkelonnService {
 
     List<TransactionType> createJobtype(TransactionType jobtype);
 
+    List<TransactionType> modifyPaymenttype(TransactionType paymenttype);
+
 }

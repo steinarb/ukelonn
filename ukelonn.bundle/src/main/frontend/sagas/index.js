@@ -277,6 +277,27 @@ function* receiveCreateJobtypeSaga(action) {
 }
 
 
+// watcher saga
+export function* requestModifyPaymenttypeSaga() {
+    yield takeLatest("MODIFY_PAYMENTTYPE_REQUEST", receiveModifyPaymenttypeSaga);
+}
+
+function doModifyPaymenttype(paymenttype) {
+    return axios.post('/ukelonn/api/admin/paymenttype/modify', paymenttype);
+}
+
+// worker saga
+function* receiveModifyPaymenttypeSaga(action) {
+    try {
+        const response = yield call(doModifyPaymenttype, action.transactiontype);
+        const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'MODIFY_PAYMENTTYPE_RECEIVE', paymenttypes });
+    } catch (error) {
+        yield put({ type: 'MODIFY_PAYMENTTYPE_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -292,5 +313,6 @@ export function* rootSaga() {
         fork(requestRegisterPaymentSaga),
         fork(requestModifyJobtypeSaga),
         fork(requestCreateJobtypeSaga),
+        fork(requestModifyPaymenttypeSaga),
     ];
 };

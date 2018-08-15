@@ -52,7 +52,7 @@ class Admin extends Component {
                     <br/>
                     <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly="true" /><br/>
                     <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
-                    <Paymenttypes id="paymenttype-selector" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                    <Paymenttypes id="paymenttype-selector" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp:</label>
                     <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />

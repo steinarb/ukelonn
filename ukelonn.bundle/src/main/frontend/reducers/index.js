@@ -122,5 +122,13 @@ export const ukelonnReducer = (state =
         };
     }
 
+    if (action.type === 'MODIFY_PAYMENTTYPE_RECEIVE') {
+        return {
+            ...state,
+            paymenttypes: action.paymenttypes,
+            transactiontype: {...emptyTransactionType},
+        };
+    }
+
     return { ...state };
 };
