@@ -78,7 +78,7 @@ const emptyAccount = {
 };
 
 const mapStateToProps = state => {
-    if (!state.accounts.includes(emptyAccount)) {
+    if (!state.jobtypes.find((job) => job.id === -1)) {
         state.accounts.unshift(emptyAccount);
     }
 

@@ -59,7 +59,7 @@ const emptyJobtype = {
 
 
 const mapStateToProps = state => {
-    if (!state.jobtypes.includes(emptyJobtype)) {
+    if (!state.jobtypes.find((job) => job.id === -1)) {
         state.jobtypes.unshift(emptyJobtype);
     }
 
