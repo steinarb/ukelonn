@@ -99,6 +99,13 @@ export const ukelonnReducer = (state =
         };
     }
 
+    if (action.type === 'PAYMENTTYPELIST_RECEIVE') {
+        return {
+            ...state,
+            paymenttypes: action.paymenttypes
+        };
+    }
+
     if (action.type === 'ACCOUNTS_RECEIVE') {
         return {
             ...state,
@@ -122,7 +129,7 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'MODIFY_PAYMENTTYPE_RECEIVE') {
+    if (action.type === 'MODIFY_PAYMENTTYPE_RECEIVE' || action.type === 'CREATE_PAYMENTTYPE_RECEIVE') {
         return {
             ...state,
             paymenttypes: action.paymenttypes,

@@ -18,6 +18,8 @@ package no.priv.bang.ukelonn.api.resources;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
@@ -74,7 +76,7 @@ public class AdminPaymenttypeTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
-    public void testModifyJobtypeFailure() {
+    public void testModifyPaymenttypeFailure() {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -99,6 +101,58 @@ public class AdminPaymenttypeTest {
         // Try update the payment type in the database, which should cause an
         // "500 Internal Server Error" exception
         resource.modify(paymenttype);
+        fail("Should never get here!");
+    }
+
+    @Test
+    public void testCreatePaymenttype() {
+        // Create the resource that is to be tested
+        AdminPaymenttype resource = new AdminPaymenttype();
+
+        // Inject fake OSGi service UkelonnService
+        resource.ukelonn = getUkelonnServiceSingleton();
+
+        // Get the list of payment types before adding a new job type
+        List<TransactionType> originalPaymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
+
+        // Create new payment type
+        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+
+        // Add the payment type to the database
+        List<TransactionType> updatedPaymenttypes = resource.create(paymenttype);
+
+        // Verify that a new jobtype has been added
+        assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=InternalServerErrorException.class)
+    public void testCreatePaymenttypeFailure() {
+        // Create the resource that is to be tested
+        AdminPaymenttype resource = new AdminPaymenttype();
+
+
+        // Inject fake OSGi service UkelonnService
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        resource.ukelonn = ukelonn;
+
+        // Inject a fake OSGi log service
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create new payment type
+        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+
+        // Try update the jobtype in the database, which should cause an
+        // "500 Internal Server Error" exception
+        resource.create(paymenttype);
         fail("Should never get here!");
     }
 

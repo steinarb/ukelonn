@@ -19,6 +19,8 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFrom
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
@@ -219,6 +221,43 @@ public class UkelonnServiceProviderTest {
 
         // Try update the payment type in the database, which should cause an exception
         ukelonn.modifyPaymenttype(paymenttype);
+        fail("Should never get here!");
+    }
+
+    @Test
+    public void testCreatePaymenttype() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+    
+        // Get the list of payment types before adding a new job type
+        List<TransactionType> originalPaymenttypes = ukelonn.getPaymenttypes();
+    
+        // Create new payment type
+        TransactionType paymenttype = new TransactionType(-1, "Vipps", 0.0, false, true);
+    
+        // Update the payments type in the database
+        List<TransactionType> updatedPaymenttypes = ukelonn.createPaymenttype(paymenttype);
+    
+        // Verify that a new payment type has been added
+        assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testCreatePaymenttypeFailure() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+    
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+    
+        // Create a new payment type
+        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+    
+        // Try creating the payment type in the database, which should cause an exception
+        ukelonn.createPaymenttype(paymenttype);
         fail("Should never get here!");
     }
 

@@ -110,6 +110,27 @@ function* receiveJobtypeListSaga(action) {
 
 
 // watcher saga
+export function* requestPaymenttypeListSaga() {
+    yield takeLatest("PAYMENTTYPELIST_REQUEST", receivePaymenttypeListSaga);
+}
+
+function doPaymenttypeList() {
+    return axios.get('/ukelonn/api/paymenttypes');
+}
+
+// worker saga
+function* receivePaymenttypeListSaga(action) {
+    try {
+        const response = yield call(doPaymenttypeList);
+        const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'PAYMENTTYPELIST_RECEIVE', paymenttypes: paymenttypes });
+    } catch (error) {
+        yield put({ type: 'PAYMENTTYPELIST_FAILURE', error });
+    }
+}
+
+
+// watcher saga
 export function* requestRegisterJobSaga() {
     yield takeLatest("REGISTERJOB_REQUEST", receiveRegisterJobSaga);
 }
@@ -298,6 +319,27 @@ function* receiveModifyPaymenttypeSaga(action) {
 }
 
 
+// watcher saga
+export function* requestCreatePaymenttypeSaga() {
+    yield takeLatest("CREATE_PAYMENTTYPE_REQUEST", receiveCreatePaymenttypeSaga);
+}
+
+function doCreatePaymenttype(paymenttype) {
+    return axios.post('/ukelonn/api/admin/paymenttype/create', paymenttype);
+}
+
+// worker saga
+function* receiveCreatePaymenttypeSaga(action) {
+    try {
+        const response = yield call(doCreatePaymenttype, action.transactiontype);
+        const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'CREATE_PAYMENTTYPE_RECEIVE', paymenttypes });
+    } catch (error) {
+        yield put({ type: 'CREATE_PAYMENTTYPE_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -305,6 +347,7 @@ export function* rootSaga() {
         fork(requestLogoutSaga),
         fork(requestAccountSaga),
         fork(requestJobtypeListSaga),
+        fork(requestPaymenttypeListSaga),
         fork(requestRegisterJobSaga),
         fork(requestRecentJobsSaga),
         fork(requestRecentPaymentsSaga),
@@ -314,5 +357,6 @@ export function* rootSaga() {
         fork(requestModifyJobtypeSaga),
         fork(requestCreateJobtypeSaga),
         fork(requestModifyPaymenttypeSaga),
+        fork(requestCreatePaymenttypeSaga),
     ];
 };

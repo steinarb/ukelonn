@@ -52,4 +52,16 @@ public class AdminPaymenttype {
         }
     }
 
+    @Path("create")
+    @POST
+    @Consumes("application/json")
+    public List<TransactionType> create(TransactionType paymenttype) {
+        try {
+            return ukelonn.createPaymenttype(paymenttype);
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /api/jobtype/modify failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName()), e);
+            throw new InternalServerErrorException("See log for the cause of the problem");
+        }
+    }
+
 }

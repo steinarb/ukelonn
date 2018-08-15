@@ -64,4 +64,6 @@ public interface UkelonnService {
 
     List<TransactionType> modifyPaymenttype(TransactionType paymenttype);
 
+    List<TransactionType> createPaymenttype(TransactionType paymenttype);
+
 }

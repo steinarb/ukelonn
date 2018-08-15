@@ -1404,6 +1404,50 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
+    @Test
+    public void testCreatePaymenttype() throws Exception {
+        // Save the payment types before adding a new payment type
+        List<TransactionType> originalPaymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
+
+        // Create new payment type
+        TransactionType paymenttype = new TransactionType(-2, "Vipps", 0.0, false, true);
+
+        // Create the request
+        String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(paymenttype);
+        HttpServletRequest request = buildRequestFromStringBody(jobtypeAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/paymenttype/create"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/paymenttype/create");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        // Verify that the updated have more items than the original jobtypes
+        List<TransactionType> updatedPaymenttypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
+    }
+
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
         ServletConfig config = mock(ServletConfig.class);
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));

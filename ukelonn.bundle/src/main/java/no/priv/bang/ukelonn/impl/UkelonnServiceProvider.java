@@ -154,4 +154,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getPaymenttypes();
     }
 
+    @Override
+    public List<TransactionType> createPaymenttype(TransactionType paymenttype) {
+        int result = addPaymentTypeToDatabase(getClass(), this, paymenttype.getTransactionTypeName(), paymenttype.getTransactionAmount());
+        if (result == UPDATE_FAILED) {
+            throw new UkelonnException(String.format("Failed to create paymen type \"%s\" in the database", paymenttype.getTransactionTypeName()));
+        }
+
+        return getPaymenttypes();
+    }
+
 }
