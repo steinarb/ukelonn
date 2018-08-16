@@ -26,6 +26,8 @@ class AdminUsers extends Component {
                 <br/>
                 <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
                 <br/>
+                <Link to="/ukelonn/admin/users/modify">Endre brukere</Link>
+                <br/>
                 <button onClick={() => onLogout()}>Logout</button>
             </div>
         );

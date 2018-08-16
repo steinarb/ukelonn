@@ -340,6 +340,48 @@ function* receiveCreatePaymenttypeSaga(action) {
 }
 
 
+// watcher saga
+export function* requestUsersSaga() {
+    yield takeLatest("USERS_REQUEST", receiveUsersSaga);
+}
+
+function doUsers() {
+    return axios.get('/ukelonn/api/users');
+}
+
+// worker saga
+function* receiveUsersSaga(action) {
+    try {
+        const response = yield call(doUsers);
+        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'USERS_RECEIVE', users: users });
+    } catch (error) {
+        yield put({ type: 'USERS_FAILURE', error });
+    }
+}
+
+
+// watcher saga
+export function* requestModifyUserSaga() {
+    yield takeLatest("MODIFY_USER_REQUEST", receiveModifyUserSaga);
+}
+
+function doModifyUser(user) {
+    return axios.post('/ukelonn/api/admin/user/modify', user);
+}
+
+// worker saga
+function* receiveModifyUserSaga(action) {
+    try {
+        const response = yield call(doModifyUser, action.user);
+        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'MODIFY_USER_RECEIVE', users });
+    } catch (error) {
+        yield put({ type: 'MODIFY_USER_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -358,5 +400,7 @@ export function* rootSaga() {
         fork(requestCreateJobtypeSaga),
         fork(requestModifyPaymenttypeSaga),
         fork(requestCreatePaymenttypeSaga),
+        fork(requestUsersSaga),
+        fork(requestModifyUserSaga),
     ];
 };

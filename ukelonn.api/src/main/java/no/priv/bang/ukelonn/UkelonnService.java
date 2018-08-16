@@ -23,6 +23,7 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.User;
 
 /**
  * This is the service exposed by the ukelonn.bundle
@@ -65,5 +66,9 @@ public interface UkelonnService {
     List<TransactionType> modifyPaymenttype(TransactionType paymenttype);
 
     List<TransactionType> createPaymenttype(TransactionType paymenttype);
+
+    List<User> getUsers();
+
+    List<User> modifyUser(User user);
 
 }

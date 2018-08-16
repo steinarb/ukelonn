@@ -10,6 +10,15 @@ const emptyTransactionType = {
     transactionAmount: 0.0
 };
 
+const emptyUser = {
+    userId: -1,
+    fullName: '',
+    username: '',
+    email: '',
+    firstname: '',
+    lastname: '',
+};
+
 
 export const ukelonnReducer = (state =
                                { username: null,
@@ -31,6 +40,8 @@ export const ukelonnReducer = (state =
                                  accounts: [],
                                  paymenttypes: [],
                                  transactiontype: { ...emptyTransactionType },
+                                 users: [],
+                                 user: { ...emptyUser },
                                },
                                action) => {
     if (action.type == 'UPDATE') {
@@ -134,6 +145,33 @@ export const ukelonnReducer = (state =
             ...state,
             paymenttypes: action.paymenttypes,
             transactiontype: {...emptyTransactionType},
+        };
+    }
+
+    if (action.type === 'USERS_RECEIVE') {
+        const users = action.users;
+
+        if (!users.find((user) => user.userId === -1)) {
+            users.unshift(emptyUser);
+        }
+
+        return {
+            ...state,
+            users: users,
+        };
+    }
+
+    if (action.type === 'MODIFY_USER_RECEIVE') {
+        const users = action.users;
+
+        if (!users.find((user) => user.userId === -1)) {
+            users.unshift(emptyUser);
+        }
+
+        return {
+            ...state,
+            users: users,
+            user: {...emptyUser},
         };
     }
 

@@ -33,6 +33,7 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.User;
 
 /**
  * The OSGi component that listens for a {@link WebContainer} service
@@ -162,6 +163,21 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return getPaymenttypes();
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return CommonDatabaseMethods.getUsers(getClass(), this);
+    }
+
+    @Override
+    public List<User> modifyUser(User user) {
+        int status = updateUserInDatabase(getClass(), this, user);
+        if (status == UPDATE_FAILED) {
+            throw new UkelonnException(String.format("Failed to update user %d in the database", user.getUserId()));
+        }
+
+        return getUsers();
     }
 
 }

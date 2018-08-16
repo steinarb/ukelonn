@@ -49,9 +49,20 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.User;
 import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 import no.priv.bang.ukelonn.mocks.MockLogService;
 
+/**
+ * The tests in this test class mirrors the tests for the Jersey
+ * resources.  The purpose of the tests in this test class is
+ * to verify that the resources are found on the expected paths
+ * and gets the expected HK2 injections and accept the
+ * expected request data and returns the expected responses.
+ *
+ *  Sort of a lightweight integration test.
+ *
+ */
 public class UkelonnRestApiServletTest extends ServletTestBase {
 
     @BeforeClass
@@ -1446,6 +1457,104 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Verify that the updated have more items than the original jobtypes
         List<TransactionType> updatedPaymenttypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
         assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
+    }
+
+    @Test
+    public void testGetUsers() throws Exception {
+        // Set up the request
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn("HTTP/1.1");
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/users"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/users");
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create the servlet that is to be tested
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        servlet.setLogservice(logservice);
+
+        // Inject fake OSGi service UkelonnService
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Call the method under test
+        servlet.service(request, response);
+
+        // Check the output
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        List<User> users = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+        assertThat(users.size()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testModifyUser() throws Exception {
+        // Get a user and modify all properties except id
+        int userToModify = 1;
+        List<User> users = getUkelonnServiceSingleton().getUsers();
+        User user = users.get(userToModify);
+        String modifiedUsername = "gandalf";
+        String modifiedEmailaddress = "wizard@hotmail.com";
+        String modifiedFirstname = "Gandalf";
+        String modifiedLastname = "Grey";
+        user.setUsername(modifiedUsername);
+        user.setEmail(modifiedEmailaddress);
+        user.setFirstname(modifiedFirstname);
+        user.setLastname(modifiedLastname);
+
+        // Create the request
+        String userAsJson = ServletTestBase.mapper.writeValueAsString(user);
+        HttpServletRequest request = buildRequestFromStringBody(userAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/user/modify"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/modify");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        // Verify that the first user has the modified values
+        List<User> updatedUsers = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+        User firstUser = updatedUsers.get(userToModify);
+        assertEquals(modifiedUsername, firstUser.getUsername());
+        assertEquals(modifiedEmailaddress, firstUser.getEmail());
+        assertEquals(modifiedFirstname, firstUser.getFirstname());
+        assertEquals(modifiedLastname, firstUser.getLastname());
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {

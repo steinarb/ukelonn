@@ -37,6 +37,7 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.User;
 
 public class UkelonnServiceProviderTest {
 
@@ -227,16 +228,16 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testCreatePaymenttype() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
-    
+
         // Get the list of payment types before adding a new job type
         List<TransactionType> originalPaymenttypes = ukelonn.getPaymenttypes();
-    
+
         // Create new payment type
         TransactionType paymenttype = new TransactionType(-1, "Vipps", 0.0, false, true);
-    
+
         // Update the payments type in the database
         List<TransactionType> updatedPaymenttypes = ukelonn.createPaymenttype(paymenttype);
-    
+
         // Verify that a new payment type has been added
         assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
     }
@@ -245,19 +246,77 @@ public class UkelonnServiceProviderTest {
     @Test(expected=UkelonnException.class)
     public void testCreatePaymenttypeFailure() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-    
+
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(database.prepareStatement(anyString())).thenReturn(statement);
         when(database.update(any())).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
-    
+
         // Create a new payment type
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
-    
+
         // Try creating the payment type in the database, which should cause an exception
         ukelonn.createPaymenttype(paymenttype);
+        fail("Should never get here!");
+    }
+
+    @Test
+    public void testGetUsers() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        List<User> users = ukelonn.getUsers();
+
+        assertThat(users.size()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testModifyUser() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Get first user and modify all properties except id
+        List<User> users = ukelonn.getUsers();
+        User user = users.get(0);
+        String modifiedUsername = "gandalf";
+        String modifiedEmailaddress = "wizard@hotmail.com";
+        String modifiedFirstname = "Gandalf";
+        String modifiedLastname = "Grey";
+        user.setUsername(modifiedUsername);
+        user.setEmail(modifiedEmailaddress);
+        user.setFirstname(modifiedFirstname);
+        user.setLastname(modifiedLastname);
+
+        // Save the modification
+        List<User> updatedUsers = ukelonn.modifyUser(user);
+
+        // Verify that the first user has the modified values
+        User firstUser = updatedUsers.get(0);
+        assertEquals(modifiedUsername, firstUser.getUsername());
+        assertEquals(modifiedEmailaddress, firstUser.getEmail());
+        assertEquals(modifiedFirstname, firstUser.getFirstname());
+        assertEquals(modifiedLastname, firstUser.getLastname());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testModifyUserFailure() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a user bean
+        User user = new User();
+
+        // Save the modification
+        ukelonn.modifyUser(user);
+
+        // Verify that the update fails
         fail("Should never get here!");
     }
 

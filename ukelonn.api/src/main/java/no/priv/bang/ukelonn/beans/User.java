@@ -17,6 +17,9 @@ package no.priv.bang.ukelonn.beans;
 
 import static no.priv.bang.ukelonn.common.CommonStringMethods.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class User {
     private int userId;
     private String username;
@@ -31,6 +34,16 @@ public class User {
         this.email = email;
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    // No-arg consructor required by jackson
+    public User() {
+        super();
+        this.userId = -1;
+        this.username = "";
+        this.email = "";
+        this.firstname = "";
+        this.lastname = "";
     }
 
     public int getUserId() {
