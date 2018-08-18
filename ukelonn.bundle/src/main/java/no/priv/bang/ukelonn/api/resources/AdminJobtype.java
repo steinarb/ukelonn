@@ -23,6 +23,7 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
 
@@ -31,7 +32,7 @@ import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
 @Path("/admin/jobtype")
-@Produces("application/json")
+@Produces(MediaType.APPLICATION_JSON)
 public class AdminJobtype {
 
     @Inject
@@ -42,7 +43,7 @@ public class AdminJobtype {
 
     @Path("modify")
     @POST
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public List<TransactionType> modify(TransactionType jobtype) {
         try {
             return ukelonn.modifyJobtype(jobtype);
@@ -54,7 +55,7 @@ public class AdminJobtype {
 
     @Path("create")
     @POST
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public List<TransactionType> create(TransactionType jobtype) {
         try {
             return ukelonn.createJobtype(jobtype);
