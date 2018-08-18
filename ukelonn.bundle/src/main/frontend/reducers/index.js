@@ -19,6 +19,12 @@ const emptyUser = {
     lastname: '',
 };
 
+const emptyPasswords = {
+    user: {...emptyUser},
+    password: '',
+    password2: '',
+};
+
 
 export const ukelonnReducer = (state =
                                { username: null,
@@ -42,6 +48,7 @@ export const ukelonnReducer = (state =
                                  transactiontype: { ...emptyTransactionType },
                                  users: [],
                                  user: { ...emptyUser },
+                                 passwords: {...emptyPasswords },
                                },
                                action) => {
     if (action.type == 'UPDATE') {
@@ -161,7 +168,7 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'MODIFY_USER_RECEIVE') {
+    if (action.type === 'MODIFY_USER_RECEIVE' || action.type === 'CREATE_USER_RECEIVE') {
         const users = action.users;
 
         if (!users.find((user) => user.userId === -1)) {
@@ -172,6 +179,15 @@ export const ukelonnReducer = (state =
             ...state,
             users: users,
             user: {...emptyUser},
+            passwords: {...emptyPasswords},
+        };
+    }
+
+    if (action.type === 'CLEAR_USER_AND_PASSWORD') {
+        return {
+            ...state,
+            user: {...emptyUser},
+            passwords: {...emptyPasswords},
         };
     }
 

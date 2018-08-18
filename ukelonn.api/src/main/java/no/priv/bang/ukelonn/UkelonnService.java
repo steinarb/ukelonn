@@ -20,6 +20,7 @@ import java.util.List;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
@@ -70,5 +71,7 @@ public interface UkelonnService {
     List<User> getUsers();
 
     List<User> modifyUser(User user);
+
+    List<User> createUser(PasswordsWithUser passwords);
 
 }

@@ -30,14 +30,18 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
+import no.priv.bang.ukelonn.mocks.MockLogService;
 
 public class UkelonnServiceProviderTest {
 
@@ -55,7 +59,7 @@ public class UkelonnServiceProviderTest {
     public void testGetAccounts() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         List<Account> accounts = provider.getAccounts();
-        assertEquals(2, accounts.size());
+        assertThat(accounts.size()).isGreaterThan(1);
     }
 
     @Test
@@ -318,6 +322,107 @@ public class UkelonnServiceProviderTest {
 
         // Verify that the update fails
         fail("Should never get here!");
+    }
+
+    @Test
+    public void testCreateUser() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Save the number of users before adding a user
+        int originalUserCount = ukelonn.getUsers().size();
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Create a user
+        List<User> updatedUsers = ukelonn.createUser(passwords);
+
+        // Verify that the first user has the modified values
+        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        User lastUser = updatedUsers.get(updatedUsers.size() - 1);
+        assertEquals(newUsername, lastUser.getUsername());
+        assertEquals(newEmailaddress, lastUser.getEmail());
+        assertEquals(newFirstname, lastUser.getFirstname());
+        assertEquals(newLastname, lastUser.getLastname());
+    }
+
+    @Test(expected=UkelonnBadRequestException.class)
+    public void testCreateUserPasswordsNotIdentical() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "secret");
+
+        // Creating user should fail
+        ukelonn.createUser(passwords);
+
+        fail("Should never get here");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testCreateUserDatabaseException() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a logservice and inject it
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Creating user should fail
+        ukelonn.createUser(passwords);
+
+        fail("Should never get here");
+    }
+
+    @Test
+    public void testPasswordsEqualAndNotEmpty() {
+        PasswordsWithUser equalPasswords = new PasswordsWithUser(null, "zekret", "zekret");
+        assertTrue(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(equalPasswords));
+        PasswordsWithUser differentPasswords = new PasswordsWithUser(null, "zekret", "secret");
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(differentPasswords));
+        PasswordsWithUser firstPasswordNull = new PasswordsWithUser(null, null, "secret");
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(firstPasswordNull));
+        PasswordsWithUser secondPasswordNull = new PasswordsWithUser(null, "secret", null);
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordNull));
+        PasswordsWithUser bothPasswordsNull = new PasswordsWithUser(null, null, null);
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsNull));
+        PasswordsWithUser firstPasswordEmpty = new PasswordsWithUser(null, "", "secret");
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(firstPasswordEmpty));
+        PasswordsWithUser secondPasswordEmpty = new PasswordsWithUser(null, "secret", "");
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordEmpty));
+        PasswordsWithUser bothPasswordsEmpty = new PasswordsWithUser(null, "", "");
+        assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsEmpty));
     }
 
 }

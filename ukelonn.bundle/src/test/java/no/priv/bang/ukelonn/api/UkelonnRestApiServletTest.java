@@ -46,6 +46,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
@@ -1555,6 +1556,64 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(modifiedEmailaddress, firstUser.getEmail());
         assertEquals(modifiedFirstname, firstUser.getFirstname());
         assertEquals(modifiedLastname, firstUser.getLastname());
+    }
+
+    @Test
+    public void testCreateUser() throws Exception {
+        // Save the number of users before adding a user
+        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Create the request
+        String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
+        HttpServletRequest request = buildRequestFromStringBody(passwordsAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/user/create"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/create");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        // Verify that the first user has the modified values
+        List<User> updatedUsers = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+
+        // Verify that the last user has the expected values
+        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        User lastUser = updatedUsers.get(updatedUsers.size() - 1);
+        assertEquals(newUsername, lastUser.getUsername());
+        assertEquals(newEmailaddress, lastUser.getEmail());
+        assertEquals(newFirstname, lastUser.getFirstname());
+        assertEquals(newLastname, lastUser.getLastname());
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {

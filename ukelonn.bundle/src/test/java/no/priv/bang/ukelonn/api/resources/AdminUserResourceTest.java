@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -26,12 +27,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.User;
 import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.mocks.MockLogService;
@@ -106,6 +109,112 @@ public class AdminUserResourceTest {
 
         // Verify that the update fails
         fail("Should never get here!");
+    }
+
+    @Test
+    public void testCreate() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        resource.ukelonn = getUkelonnServiceSingleton();
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Save the number of users before adding a user
+        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Create a user
+        List<User> updatedUsers = resource.create(passwords);
+
+        // Verify that the modified user has the modified values
+        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        User lastUser = updatedUsers.get(updatedUsers.size() - 1);
+        assertEquals(newUsername, lastUser.getUsername());
+        assertEquals(newEmailaddress, lastUser.getEmail());
+        assertEquals(newFirstname, lastUser.getFirstname());
+        assertEquals(newLastname, lastUser.getLastname());
+    }
+
+    @Test(expected=BadRequestException.class)
+    public void testCreatePasswordsNotIdentical() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        resource.ukelonn = getUkelonnServiceSingleton();
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Save the number of users before adding a user
+        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "secret");
+
+        // Create a user
+        List<User> updatedUsers = resource.create(passwords);
+
+        // Verify that the first user has the modified values
+        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        User lastUser = updatedUsers.get(updatedUsers.size() - 1);
+        assertEquals(newUsername, lastUser.getUsername());
+        assertEquals(newEmailaddress, lastUser.getEmail());
+        assertEquals(newFirstname, lastUser.getFirstname());
+        assertEquals(newLastname, lastUser.getLastname());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=InternalServerErrorException.class)
+    public void testCreateDatabaseException() {
+        AdminUserResource resource = new AdminUserResource();
+
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a logservice and inject it
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Inject OSGi services into the resource
+        resource.ukelonn = ukelonn;
+        resource.logservice = logservice;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Creating user should fail
+        resource.create(passwords);
+
+        fail("Should never get here");
     }
 
 }

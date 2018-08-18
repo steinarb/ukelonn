@@ -382,6 +382,28 @@ function* receiveModifyUserSaga(action) {
 }
 
 
+// watcher saga
+export function* requestCreateUserSaga() {
+    yield takeLatest("CREATE_USER_REQUEST", receiveCreateUserSaga);
+}
+
+function doCreateUser(passwords) {
+    return axios.post('/ukelonn/api/admin/user/create', passwords);
+}
+
+// worker saga
+function* receiveCreateUserSaga(action) {
+    try {
+        const passwords = {...action.passwords, user: {...action.user}};
+        const response = yield call(doCreateUser, passwords);
+        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'CREATE_USER_RECEIVE', users });
+    } catch (error) {
+        yield put({ type: 'CREATE_USER_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -402,5 +424,6 @@ export function* rootSaga() {
         fork(requestCreatePaymenttypeSaga),
         fork(requestUsersSaga),
         fork(requestModifyUserSaga),
+        fork(requestCreateUserSaga),
     ];
 };

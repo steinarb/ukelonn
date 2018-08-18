@@ -13,21 +13,35 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn;
+package no.priv.bang.ukelonn.beans;
 
-public class UkelonnException extends RuntimeException {
-    private static final long serialVersionUID = 5175018860496844806L;
+public class PasswordsWithUser {
 
-    public UkelonnException(String message) {
-        super(message);
+    private User user;
+    private String password;
+    private String password2;
+
+    public PasswordsWithUser(User user, String password, String password2) {
+        this.user = user;
+        this.password = password;
+        this.password2 = password2;
     }
 
-    public UkelonnException(String message, Throwable cause) {
-        super(message, cause);
+    // Argument-less constructor required by jackson
+    public PasswordsWithUser() {
+        this(null, "", "");
     }
 
-    public UkelonnException(Throwable cause) {
-        super(cause);
+    public User getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPassword2() {
+        return password2;
     }
 
 }

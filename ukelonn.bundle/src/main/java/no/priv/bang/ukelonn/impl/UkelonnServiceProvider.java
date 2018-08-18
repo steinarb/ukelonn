@@ -26,10 +26,12 @@ import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import java.util.List;
 import java.util.Map;
 
+import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
@@ -178,6 +180,37 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return getUsers();
+    }
+
+    @Override
+    public List<User> createUser(PasswordsWithUser passwords) {
+        if (!passwordsEqualsAndNotEmpty(passwords)) {
+            throw new UkelonnBadRequestException("Passwords are not identical and/or empty");
+        }
+
+        try {
+            addUserToDatabase(
+                getClass(),
+                this,
+                passwords.getUser().getUsername(),
+                passwords.getPassword(),
+                passwords.getUser().getEmail(),
+                passwords.getUser().getFirstname(),
+                passwords.getUser().getLastname());
+
+            return getUsers();
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, "Database exception when creating user", e);
+            throw e;
+        }
+    }
+
+    static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {
+        if (passwords.getPassword() == null || passwords.getPassword().isEmpty()) {
+            return false;
+        }
+
+        return passwords.getPassword().equals(passwords.getPassword2());
     }
 
 }

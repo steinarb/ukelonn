@@ -18,6 +18,7 @@ package no.priv.bang.ukelonn.api.resources;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
@@ -27,8 +28,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.User;
 
 @Path("/admin/user")
@@ -50,6 +53,21 @@ public class AdminUserResource {
         } catch (UkelonnException e) {
             logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.getUserId()));
             throw new InternalServerErrorException("See log for details");
+        }
+    }
+
+    @Path("create")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<User> create(PasswordsWithUser passwords) {
+        try {
+            return ukelonn.createUser(passwords);
+        } catch (UkelonnBadRequestException e) {
+            logservice.log(LogService.LOG_WARNING, String.format("REST endpoint /ukelonn/api/admin/user/create got bad request: %s", e.getMessage()));
+            throw new BadRequestException(e.getMessage());
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/create got error from the database", e));
+            throw new InternalServerErrorException("See log for error cause");
         }
     }
 

@@ -15,18 +15,18 @@
  */
 package no.priv.bang.ukelonn;
 
-public class UkelonnException extends RuntimeException {
-    private static final long serialVersionUID = 5175018860496844806L;
+public class UkelonnBadRequestException extends UkelonnException {
+    private static final long serialVersionUID = -8851177193407034344L;
 
-    public UkelonnException(String message) {
+    public UkelonnBadRequestException(String message) {
         super(message);
     }
 
-    public UkelonnException(String message, Throwable cause) {
+    public UkelonnBadRequestException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public UkelonnException(Throwable cause) {
+    public UkelonnBadRequestException(Throwable cause) {
         super(cause);
     }
 

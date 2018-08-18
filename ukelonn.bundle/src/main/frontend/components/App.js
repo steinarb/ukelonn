@@ -15,6 +15,7 @@ import AdminPaymenttypesModify from "./AdminPaymenttypesModify";
 import AdminPaymenttypesCreate from "./AdminPaymenttypesCreate";
 import AdminUsers from "./AdminUsers";
 import AdminUsersModify from "./AdminUsersModify";
+import AdminUsersCreate from "./AdminUsersCreate";
 
 
 class App extends Component {
@@ -44,6 +45,7 @@ class App extends Component {
                         <Route path="/ukelonn/admin/paymenttypes/create" component={AdminPaymenttypesCreate} />
                         <Route path="/ukelonn/admin/paymenttypes" component={AdminPaymenttypes} />
                         <Route path="/ukelonn/admin/users/modify" component={AdminUsersModify} />
+                        <Route path="/ukelonn/admin/users/create" component={AdminUsersCreate} />
                         <Route path="/ukelonn/admin/users" component={AdminUsers} />
                         <Route path="/ukelonn/admin" component={Admin} />
                     </Switch>
