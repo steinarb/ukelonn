@@ -404,6 +404,28 @@ function* receiveCreateUserSaga(action) {
 }
 
 
+// watcher saga
+export function* requestChangePasswordSaga() {
+    yield takeLatest("MODIFY_USER_PASSWORD_REQUEST", receiveChangePasswordSaga);
+}
+
+function doChangePassword(passwords) {
+    return axios.post('/ukelonn/api/admin/user/password', passwords);
+}
+
+// worker saga
+function* receiveChangePasswordSaga(action) {
+    try {
+        const passwords = {...action.passwords, user: {...action.user}};
+        const response = yield call(doChangePassword, passwords);
+        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'MODIFY_USER_PASSWORD_RECEIVE', users });
+    } catch (error) {
+        yield put({ type: 'MODIFY_USER_PASSWORD_FAILURE', error });
+    }
+}
+
+
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
@@ -425,5 +447,6 @@ export function* rootSaga() {
         fork(requestUsersSaga),
         fork(requestModifyUserSaga),
         fork(requestCreateUserSaga),
+        fork(requestChangePasswordSaga),
     ];
 };

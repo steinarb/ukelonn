@@ -205,12 +205,50 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
     }
 
+    @Override
+    public List<User> changePassword(PasswordsWithUser passwords) {
+        if (!hasUserWithNonEmptyUsername(passwords)) {
+            String message = "Empty username when changing password";
+            logservice.log(LogService.LOG_WARNING, String.format("Bad request: %s", message));
+            throw new UkelonnBadRequestException(message);
+        }
+
+        if (!passwordsEqualsAndNotEmpty(passwords)) {
+            String message = String.format("Passwords don't match and/or are empty when changing passwords for user \"%s\"", passwords.getUser().getUsername());
+            logservice.log(LogService.LOG_WARNING, String.format("Bad request: %s", message));
+            throw new UkelonnBadRequestException(message);
+        }
+
+        int status = changePasswordForUser(passwords.getUser().getUsername(), passwords.getPassword(),getClass(), this);
+        if (status == UPDATE_FAILED) {
+            String message = String.format("Database failure when changing password for user \"%s\"", passwords.getUser().getUsername());
+            logservice.log(LogService.LOG_ERROR, message);
+            throw new UkelonnException(message);
+        }
+
+        return getUsers();
+    }
+
     static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {
         if (passwords.getPassword() == null || passwords.getPassword().isEmpty()) {
             return false;
         }
 
         return passwords.getPassword().equals(passwords.getPassword2());
+    }
+
+    static boolean hasUserWithNonEmptyUsername(PasswordsWithUser passwords) {
+        User user = passwords.getUser();
+        if (user == null) {
+            return false;
+        }
+
+        String username = user.getUsername();
+        if (username == null) {
+            return false;
+        }
+
+        return !username.isEmpty();
     }
 
 }

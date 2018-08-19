@@ -28,6 +28,8 @@ class AdminUsers extends Component {
                 <br/>
                 <Link to="/ukelonn/admin/users/modify">Endre brukere</Link>
                 <br/>
+                <Link to="/ukelonn/admin/users/password">Bytt passord på bruker</Link>
+                <br/>
                 <Link to="/ukelonn/admin/users/create">Legg til ny bruker</Link>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>

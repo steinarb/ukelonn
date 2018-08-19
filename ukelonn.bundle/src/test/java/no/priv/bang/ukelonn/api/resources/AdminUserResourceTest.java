@@ -217,4 +217,108 @@ public class AdminUserResourceTest {
         fail("Should never get here");
     }
 
+    @Test
+    public void testPassword() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        resource.ukelonn = getUkelonnServiceSingleton();
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Get first user and modify all properties except id
+        List<User> users = getUkelonnServiceSingleton().getUsers();
+        User user = users.get(0);
+
+        // Create a passwords object containing the user and with
+        // valid and identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Change the password
+        List<User> updatedUsers = resource.password(passwords);
+
+        // Verify that the size of the users list hasn't changed
+        // (passwords can't be downloaded so we can't check the change)
+        assertEquals(users.size(), updatedUsers.size());
+    }
+
+    @Test(expected=BadRequestException.class)
+    public void testPasswordWithEmptyUsername() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        resource.ukelonn = getUkelonnServiceSingleton();
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Create a user with an empty username
+        User user = new User(0, "", null, null, null);
+
+        // Create a passwords object containing the user and with
+        // valid and identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Changing the password should fail
+        resource.password(passwords);
+
+        fail("Should never get here!");
+    }
+
+    @Test(expected=BadRequestException.class)
+    public void testPasswordWhenPasswordsDontMatch() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        resource.ukelonn = getUkelonnServiceSingleton();
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+
+        // Get first user to get a user with valid username
+        List<User> users = getUkelonnServiceSingleton().getUsers();
+        User user = users.get(0);
+
+        // Create a passwords object containing the user and with
+        // valid but non-identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "secret");
+
+        // Changing the password should fail
+        resource.password(passwords);
+
+        fail("Should never get here!");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=InternalServerErrorException.class)
+    public void testPasswordDatabaseException() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        resource.ukelonn = ukelonn;
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+        ukelonn.setLogservice(logservice);
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+
+        // Create a user object with a valid username
+        User user = new User(0, "validusername", null, null, null);
+
+        // Create a passwords object containing the user and with
+        // valid and identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Changing the password should fail
+        resource.password(passwords);
+
+        fail("Should never get here");
+    }
+
 }

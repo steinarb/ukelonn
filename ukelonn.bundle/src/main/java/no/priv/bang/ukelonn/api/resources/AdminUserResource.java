@@ -71,4 +71,19 @@ public class AdminUserResource {
         }
     }
 
+    @Path("password")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<User> password(PasswordsWithUser passwords) {
+        try {
+            return ukelonn.changePassword(passwords);
+        } catch (UkelonnBadRequestException e) {
+            logservice.log(LogService.LOG_WARNING, String.format("REST endpoint /ukelonn/api/admin/user/password got bad request: %s", e.getMessage()));
+            throw new BadRequestException(e.getMessage());
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/password got bad request: %s", e.getMessage()));
+            throw new InternalServerErrorException("See log for error details");
+        }
+    }
+
 }

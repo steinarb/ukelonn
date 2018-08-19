@@ -168,7 +168,7 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'MODIFY_USER_RECEIVE' || action.type === 'CREATE_USER_RECEIVE') {
+    if (action.type === 'MODIFY_USER_RECEIVE' || action.type === 'CREATE_USER_RECEIVE' || action.type === 'MODIFY_USER_PASSWORD_RECEIVE') {
         const users = action.users;
 
         if (!users.find((user) => user.userId === -1)) {

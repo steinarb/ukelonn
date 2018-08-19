@@ -15,12 +15,11 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
+import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
@@ -423,6 +422,105 @@ public class UkelonnServiceProviderTest {
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordEmpty));
         PasswordsWithUser bothPasswordsEmpty = new PasswordsWithUser(null, "", "");
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsEmpty));
+    }
+
+    @Test
+    public void testChangePassword() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Get first user and modify all properties except id
+        List<User> users = ukelonn.getUsers();
+        User user = users.get(0);
+
+        // Create a passwords object containing the user and with
+        // valid and identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Save the modification
+        List<User> updatedUsers = ukelonn.changePassword(passwords);
+
+        // Verify that the size of the users list hasn't changed
+        // (passwords can't be downloaded so we can't check the change)
+        assertEquals(users.size(), updatedUsers.size());
+    }
+
+    @Test(expected = UkelonnBadRequestException.class)
+    public void testChangePasswordWithEmptyUsername() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Create a user with an empty username
+        User user = new User(0, "", null, null, null);
+
+        // Create a passwords object containing the user and with
+        // valid and identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Save the modification and cause an exception
+        ukelonn.changePassword(passwords);
+
+        fail("Should never get here");
+    }
+
+    @Test(expected=UkelonnBadRequestException.class)
+    public void testChangePasswordWhenPasswordsDontMatch() {
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+
+        // Get first user to get a user with valid username
+        List<User> users = ukelonn.getUsers();
+        User user = users.get(0);
+
+        // Create a passwords object containing the user and with
+        // valid but non-identical passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "secret");
+
+        // Change the passwords and cause the exception
+        ukelonn.changePassword(passwords);
+
+        fail("Should never get here");
+    }
+
+    @Test
+    public void testHasUserWithNonEmptyUsername() {
+        PasswordsWithUser passwords = new PasswordsWithUser();
+        User userWithUsername = new User(1, "foo", null, null, null);
+        passwords.setUser(userWithUsername);
+        assertTrue(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
+        User userWithEmptyUsername = new User(1, "", null, null, null);
+        passwords.setUser(userWithEmptyUsername);
+        assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
+        User userWithNullUsername = new User(1, null, null, null, null);
+        passwords.setUser(userWithNullUsername);
+        assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
+        passwords.setUser(null);
+        assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testChangePasswordDatabaseException() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a logservice and inject it
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Create a user object with a valid username
+        User user = new User(0, "validusername", null, null, null);
+
+        // Create a passwords object containing the user
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Changing the password should fail
+        ukelonn.changePassword(passwords);
+
+        fail("Should never get here");
     }
 
 }

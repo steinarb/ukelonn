@@ -1616,6 +1616,56 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(newLastname, lastUser.getLastname());
     }
 
+    @Test
+    public void testChangePassword() throws Exception {
+        // Save the number of users before adding a user
+        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+
+        // Get a user with a valid username
+        List<User> users = getUkelonnServiceSingleton().getUsers();
+        User user = users.get(2);
+
+        // Create a passwords object containing the user and with valid passwords
+        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+
+        // Create the request
+        String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
+        HttpServletRequest request = buildRequestFromStringBody(passwordsAsJson);
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/user/password"));
+        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/password");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+
+        // Create the servlet
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+        // Activate the servlet DS component
+        servlet.activate();
+
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        // Verify that the first user has the modified values
+        List<User> updatedUsers = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+
+        // Verify that the number of users hasn't changed
+        assertEquals(originalUserCount, updatedUsers.size());
+    }
+
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
         ServletConfig config = mock(ServletConfig.class);
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));

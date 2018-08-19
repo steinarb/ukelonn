@@ -74,4 +74,6 @@ public interface UkelonnService {
 
     List<User> createUser(PasswordsWithUser passwords);
 
+    List<User> changePassword(PasswordsWithUser passwords);
+
 }
