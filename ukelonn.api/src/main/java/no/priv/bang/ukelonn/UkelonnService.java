@@ -15,7 +15,16 @@
  */
 package no.priv.bang.ukelonn;
 
+import java.util.List;
+
 import org.osgi.service.log.LogService;
+
+import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.PasswordsWithUser;
+import no.priv.bang.ukelonn.beans.PerformedTransaction;
+import no.priv.bang.ukelonn.beans.Transaction;
+import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.User;
 
 /**
  * This is the service exposed by the ukelonn.bundle
@@ -29,8 +38,42 @@ import org.osgi.service.log.LogService;
  */
 public interface UkelonnService {
 
+    String getMessage();
+
     UkelonnDatabase getDatabase();
 
     LogService getLogservice();
+
+    List<Account> getAccounts();
+
+    Account getAccount(String username);
+
+    Account registerPerformedJob(PerformedTransaction job);
+
+    List<TransactionType> getJobTypes();
+
+    List<Transaction> getJobs(int accountId);
+
+    List<Transaction> getPayments(int accountId);
+
+    List<TransactionType> getPaymenttypes();
+
+    Account registerPayment(PerformedTransaction payment);
+
+    List<TransactionType> modifyJobtype(TransactionType jobtype);
+
+    List<TransactionType> createJobtype(TransactionType jobtype);
+
+    List<TransactionType> modifyPaymenttype(TransactionType paymenttype);
+
+    List<TransactionType> createPaymenttype(TransactionType paymenttype);
+
+    List<User> getUsers();
+
+    List<User> modifyUser(User user);
+
+    List<User> createUser(PasswordsWithUser passwords);
+
+    List<User> changePassword(PasswordsWithUser passwords);
 
 }

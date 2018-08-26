@@ -57,7 +57,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfo() {
         UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
         UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
@@ -71,7 +71,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongPassword() {
         UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
         UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1add".toCharArray());
@@ -88,7 +88,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongUsername() {
         UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
         UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jadd", "1ad".toCharArray());
@@ -104,7 +104,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetAuthenticationInfoWrongTokenType() {
         UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
         UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = mock(AuthenticationToken.class);
@@ -124,7 +124,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetRolesForUsers() {
         UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
         UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
@@ -143,7 +143,7 @@ public class UkelonnRealmTest {
     @Test
     public void testGetRolesForAdministrators() {
         UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServlet().getUkelonnUIProvider().getDatabase());
+        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
         UkelonnRealm realm = new UkelonnRealm(shiroFilter);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
         AuthenticationToken token = new UsernamePasswordToken("on", "ola12".toCharArray());

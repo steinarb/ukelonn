@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2017 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import no.priv.bang.ukelonn.mocks.MockLogService;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 public class CommonServiceMethodsTest {
-
     @Before
     public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         releaseFakeOsgiServices();
@@ -40,14 +39,15 @@ public class CommonServiceMethodsTest {
 
     @Test(expected=RuntimeException.class)
     public void testConnectionCheckNoConnection() {
-        UkelonnService service = CommonServiceMethods.connectionCheck(null, getClass());
+        UkelonnService service = CommonServiceMethods.connectionCheck(getClass(), null);
         assertNull(service);
     }
 
     @Test
     public void testConnectionCheck() {
         setupFakeOsgiServices();
-        UkelonnService service = CommonServiceMethods.connectionCheck(getUkelonnServlet().getUkelonnUIProvider(), getClass());
+        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        UkelonnService service = CommonServiceMethods.connectionCheck(getClass(), provider);
         assertNotNull(service);
     }
 
@@ -55,18 +55,19 @@ public class CommonServiceMethodsTest {
     public void testLogError() {
         // First log when there are no services available
         MockLogService logservice = new MockLogService();
-        CommonServiceMethods.logError(new UkelonnUIProvider(), getClass(), "This is an error");
+        CommonServiceMethods.logError(getClass(), null, "This is an error");
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService but is no logservice
         setupFakeOsgiServices();
-        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnUIProvider(), getClass(), "This is another error");
+        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        CommonServiceMethods.logError(getClass(), provider, "This is another error");
         assertEquals("Still expected nothing logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService with an injected logservice
-        UkelonnUIProvider ukelonnService = getUkelonnServlet().getUkelonnUIProvider();
+        UkelonnServiceProvider ukelonnService = new UkelonnServiceProvider();
         ukelonnService.setLogservice(logservice);
-        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnUIProvider(), getClass(), "This is yet another error");
+        CommonServiceMethods.logError(getClass(), ukelonnService, "This is yet another error");
         assertEquals("Expected a single message to have been logged", 1, logservice.getLogmessages().size());
     }
 
@@ -75,18 +76,19 @@ public class CommonServiceMethodsTest {
         // First log when there are no services available
         Exception exception = new Exception("This is a fake exception");
         MockLogService logservice = new MockLogService();
-        CommonServiceMethods.logError(new UkelonnUIProvider(), getClass(), "This is an error", exception);
+        CommonServiceMethods.logError(getClass(), null, "This is an error", exception);
         assertEquals("Expect nothing to be logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService but is no logservice
         setupFakeOsgiServices();
-        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnUIProvider(), getClass(), "This is another error", exception);
+        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        CommonServiceMethods.logError(getClass(), provider, "This is another error", exception);
         assertEquals("Still expected nothing logged", 0, logservice.getLogmessages().size());
 
         // Test the case where there is an UkelonnService with an injected logservice
-        UkelonnUIProvider ukelonnService = getUkelonnServlet().getUkelonnUIProvider();
+        UkelonnServiceProvider ukelonnService = new UkelonnServiceProvider();
         ukelonnService.setLogservice(logservice);
-        CommonServiceMethods.logError(getUkelonnServlet().getUkelonnUIProvider(), getClass(), "This is yet another error", exception);
+        CommonServiceMethods.logError(getClass(), ukelonnService, "This is yet another error", exception);
         assertEquals("Expected a single message to have been logged", 1, logservice.getLogmessages().size());
     }
 

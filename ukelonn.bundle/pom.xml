@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2016-2018 Steinar Bang                                                -->
+<!-- Copyright 2016-2017 Steinar Bang                                                -->
 <!--                                                                                 -->
 <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
 <!-- you may not use this file except in compliance with the License.                -->
@@ -20,7 +20,6 @@
     </parent>
 
     <artifactId>ukelonn.bundle</artifactId>
-    <packaging>bundle</packaging>
 
     <name>Ukelonn webapp OSGi bundle</name>
 
@@ -76,16 +75,21 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
@@ -118,6 +122,16 @@
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -125,42 +139,71 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.commons-beanutils</artifactId>
+            <version>1.8.3_2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-server</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-themes</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-client-compiled</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-server</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin.addon</groupId>
-            <artifactId>vaadin-touchkit-agpl</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>src/main/webapp/WEB-INF</directory>
-            </testResource>
-        </testResources>
         <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <nodeVersion>v10.4.0</nodeVersion>
+                    <workingDirectory>src/main/frontend</workingDirectory>
+                    <installDirectory>target</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>webpack build</id>
+                        <goals>
+                            <goal>webpack</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -177,34 +220,17 @@
                         <Karaf-Commands>*</Karaf-Commands>
                         <Import-Package>
                             no.priv.bang.ukelonn,
-                            javax.servlet.http;version="[2.6.0,4.0.0)",
-                            com.vaadin.shared,
-                            com.vaadin.server,
-                            com.vaadin.addon.touchkit.server,
-                            com.vaadin.addon.touchkit.settings,
-                            com.vaadin.addon.touchkit.annotations,
-                            VAADIN.widgetsets.com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet,
-                            VAADIN.widgetsets.com.vaadin.addon.touchkit.gwt.TouchKitWidgetSet.deferredjs.0A32B241463C3CF770B8CD52599C1C21,
-                            com.vaadin.addon.touchkit.extensions,
-                            com.vaadin.addon.touchkit.gwt,
-                            com.vaadin.addon.touchkit.gwt.client,
-                            com.vaadin.addon.touchkit.gwt.client.communication,
-                            com.vaadin.addon.touchkit.gwt.client.offlinemode,
-                            com.vaadin.addon.touchkit.gwt.client.theme,
-                            com.vaadin.addon.touchkit.gwt.client.theme.fonts,
-                            com.vaadin.addon.touchkit.gwt.client.theme.img,
-                            com.vaadin.addon.touchkit.gwt.client.ui,
-                            com.vaadin.addon.touchkit.gwt.client.vcom,
-                            com.vaadin.addon.touchkit.gwt.client.vcom.navigation,
-                            com.vaadin.addon.touchkit.gwt.client.vcom.popover,
-                            com.vaadin.addon.touchkit.service,
-                            com.vaadin.addon.touchkit.ui,
-                            assets,
-                            VAADIN.themes,
-                            VAADIN.widgetsets,
+                            javax.servlet;version="[2.5,4)",
+                            javax.servlet.http;version="[2.5,4)",
+                            org.osgi.framework;version="[1.0.0,2.0.0)",
+                            org.osgi.framework.wiring,
+                            org.osgi.service.http;version="[1.0.0,2.0.0)",
+                            org.osgi.util.tracker;version="[1.5,2)",
+                            org.ops4j.pax.web.service,
                             *
                         </Import-Package>
                         <Export-Package>!*</Export-Package>
+                        <Include-Resource>/=target/classes/</Include-Resource>
                         <_removeheaders>
                             Include-Resource,
                             Private-Package,
@@ -213,13 +239,45 @@
                         </_removeheaders>
                     </instructions>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle</id>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
                     <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
+                    <includeTransitiveDependency>true</includeTransitiveDependency>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.cjnygard</groupId>
+                <artifactId>rest-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>update-bundle</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>rest-request</goal>
+                        </goals>
+                        <configuration>
+                            <resource>system/console/bundles/${Bundle-SymbolicName}</resource>
+                            <method>POST</method>
+                            <fileset>
+                                <directory>${project.build.directory}</directory>
+                                <includes>
+                                    <include>karaf-console-rest-post-update-arguments</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

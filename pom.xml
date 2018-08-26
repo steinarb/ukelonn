@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2016-2018 Steinar Bang                                                -->
+<!-- Copyright 2016-2017 Steinar Bang                                                -->
 <!--                                                                                 -->
 <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
 <!-- you may not use this file except in compliance with the License.                -->
@@ -24,8 +24,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.bundle.plugin.version>2.5.3</maven.bundle.plugin.version>
-        <karaf.version>4.1.2</karaf.version>
+        <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
+        <karaf.version>4.1.5</karaf.version>
         <liquibase.version>3.5.3</liquibase.version>
         <liquibase-slf4j.version>2.0.0</liquibase-slf4j.version>
         <snakeyaml.version>1.17</snakeyaml.version>
@@ -39,24 +39,12 @@
         <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
         <dependency.pax.jdbc.version>1.0.1</dependency.pax.jdbc.version>
         <dependency.shiro.version>1.3.1</dependency.shiro.version>
-        <commons.beanutils.version>1.8.3</commons.beanutils.version>
-        <commons.collections.version>3.2.2</commons.collections.version>
-        <javax.validation>1.1.0.Final</javax.validation>
-        <jsoup.version>1.8.3</jsoup.version>
-        <vaadin.version>7.6.1</vaadin.version>
-        <vaadin.flute.version>1.3.0.gg2</vaadin.flute.version>
-        <vaadin.streamhtmlparser.version>0.0.10.vaadin1</vaadin.streamhtmlparser.version>
-        <vaadin.guava.version>16.0.1.vaadin1</vaadin.guava.version>
-        <vaadin.gwt-user.version>2.7.0.vaadin4</vaadin.gwt-user.version>
-        <vaadin.touchkit.version>4.1.0</vaadin.touchkit.version>
+        <jackson.version>2.8.7</jackson.version>
+        <jersey.version>2.27</jersey.version>
         <rest-maven-plugin-version>0.1.4</rest-maven-plugin-version>
         <ukelonn-server-url>http://localhost:8181</ukelonn-server-url>
         <ukelonn-server-basic-auth-token>a2FyYWY6a2FyYWY=</ukelonn-server-basic-auth-token>
         <sonar.cpd.exclusions>
-            **/AdminFallbackView.java,
-            **/AdminView.java,
-            **/UserFallbackView.java,
-            **/UserView.java,
             **/PGUkelonnDatabaseProvider.java,
             **/UkelonnDatabaseProvider.java
         </sonar.cpd.exclusions>
@@ -107,12 +95,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.ops4j.pax.web</groupId>
                 <artifactId>pax-web-api</artifactId>
                 <version>${dependency.pax.web.version}</version>
@@ -128,6 +110,12 @@
                 <groupId>org.ops4j.pax.web</groupId>
                 <artifactId>pax-web-extender-whiteboard</artifactId>
                 <version>${dependency.pax.web.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -176,38 +164,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.25</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.ops4j.pax.url</groupId>
                 <artifactId>pax-url-reference</artifactId>
                 <version>${dependency.pax.url.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-server</artifactId>
-                <version>${vaadin.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-themes</artifactId>
-                <version>${vaadin.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-client-compiled</artifactId>
-                <version>${vaadin.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin.addon</groupId>
-                <artifactId>vaadin-touchkit-agpl</artifactId>
-                <version>${vaadin.touchkit.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
@@ -237,6 +196,46 @@
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-web</artifactId>
                 <version>${dependency.shiro.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-servlet</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.25</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.mattbertolini</groupId>
@@ -294,6 +293,8 @@
                         <instructions>
                             <!-- Enable processing of OSGI DS component annotations -->
                             <_dsannotations>*</_dsannotations>
+                            <!-- Inherit service injections from base class -->
+                            <_dsannotations-options>inherit</_dsannotations-options>
                             <!-- Enable processing of OSGI metatype annotations -->
                             <_metatypeannotations>*</_metatypeannotations>
                         </instructions>
@@ -302,7 +303,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                     <configuration>
                         <filesets>
                             <fileset>
@@ -345,6 +346,28 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.cjnygard</groupId>
+                    <artifactId>rest-maven-plugin</artifactId>
+                    <version>${rest-maven-plugin-version}</version>
+                    <configuration>
+                        <endpoint>${ukelonn-server-url}</endpoint>
+                        <requestType>
+                            <type>application</type>
+                            <subtype>x-www-form-urlencoded</subtype>
+                        </requestType>
+                        <headers>
+                            <Authorization>Basic ${ukelonn-server-basic-auth-token}</Authorization>
+                        </headers>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.cjnygard</groupId>
+                            <artifactId>rest-maven-plugin</artifactId>
+                            <version>${rest-maven-plugin-version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
@@ -437,14 +460,31 @@
                     </coberturaReports>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>ru.yaal.maven</groupId>
+                <artifactId>write-text-files-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-rest-post-arguments</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>write-text-files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <files>
+                        <file>
+                            <path>target/karaf-console-rest-post-update-arguments</path>
+                            <lines>
+                                <line>action=update&amp;dummy=dummy</line>
+                            </lines>
+                        </file>
+                    </files>
+                </configuration>
+            </plugin>
         </plugins>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>1.0-beta-6</version>
-            </extension>
-        </extensions>
     </build>
 
     <modules>
@@ -456,23 +496,5 @@
         <module>ukelonn.bundle.db.postgresql</module>
         <module>karaf</module>
     </modules>
-
-    <repositories>
-        <repository>
-            <id>vaadin-addons</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>ftp-maven-travis</id>
-            <url>ftp://maven.bang.priv.no/repository</url>
-        </repository>
-        <snapshotRepository>
-            <id>ftp-maven-travis</id>
-            <url>ftp://maven.bang.priv.no/repository</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>

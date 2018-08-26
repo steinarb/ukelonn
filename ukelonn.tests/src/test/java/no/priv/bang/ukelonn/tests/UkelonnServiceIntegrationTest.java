@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2017 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,9 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.inject.Inject;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import javax.inject.Inject;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,10 +38,9 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.web.itest.base.client.HttpTestClient;
 import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
+
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.tests.UkelonnServiceIntegrationTestBase;
-import no.priv.bang.ukelonn.tests.mocks.MockHttpServletRequest;
-import no.priv.bang.ukelonn.tests.mocks.MockHttpServletResponse;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -58,13 +49,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
     public static final String RMI_REG_PORT = "1100";
 
     @Inject
+    private UkelonnService ukelonnService;
+
+    @Inject
     private UkelonnDatabase database;
-
-    @Inject
-    Filter filter;
-
-    @Inject
-    Servlet servlet;
 
     @Configuration
     public Option[] config() {
@@ -88,25 +76,16 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             systemProperty("org.ops4j.pax.logging.DefaultSer‌​viceLog.level").value("DEBUG"),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
+            mavenBundle("org.apache.shiro", "shiro-core").versionAsInProject(),
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
     }
 
     @Test
-    public void shiroFilterIntegrationTest() {
-        AbstractShiroFilter shirofilter = (AbstractShiroFilter) filter;
-        WebSecurityManager securitymanager = shirofilter.getSecurityManager();
-        AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
-        AuthenticationInfo info = securitymanager.authenticate(token);
-        assertEquals(1, info.getPrincipals().asList().size());
-    }
-
-    @Test
-    public void ukelonnServletIntegrationTest() throws Exception {
-        HttpServletRequest request = new MockHttpServletRequest("http://localhost:8181/ukelonn/");
-        HttpServletResponse response = new MockHttpServletResponse();
-        servlet.service(request, response);
-        assertEquals(410, response.getStatus());
+    public void ukelonnServiceIntegrationTest() {
+        // Verify that the service could be injected
+        assertNotNull(ukelonnService);
+        assertEquals("Hello world!", ukelonnService.getMessage());
     }
 
     @Test

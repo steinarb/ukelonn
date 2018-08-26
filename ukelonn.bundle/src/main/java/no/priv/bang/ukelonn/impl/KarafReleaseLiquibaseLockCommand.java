@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2017 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class KarafReleaseLiquibaseLockCommand implements Action {
     @Override
     public Object execute() throws Exception {
         database.forceReleaseLocks();
-        System.out.println("Forcibly unlocked the Liquibase changelog lock"); // NOSONAR
+        System.out.println("Forcibly unlocked the Liquibase changelog lock"); // NOSONAR This is command output and should not go to a logger
         return null;
     }
 }

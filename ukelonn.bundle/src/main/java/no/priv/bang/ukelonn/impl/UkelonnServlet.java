@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2017 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,23 @@
  */
 package no.priv.bang.ukelonn.impl;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
-
-import com.vaadin.addon.touchkit.server.TouchKitServlet;
-import com.vaadin.server.DefaultUIProvider;
-import com.vaadin.server.ServiceException;
-import com.vaadin.server.SessionInitEvent;
-import com.vaadin.server.SessionInitListener;
-import com.vaadin.server.UIProvider;
-import com.vaadin.server.VaadinServletService;
-import com.vaadin.server.VaadinSession;
-
-import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @Component(
     property= {
@@ -45,51 +41,106 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
     service=Servlet.class,
     immediate=true
 )
-public class UkelonnServlet extends TouchKitServlet {
-    private static final long serialVersionUID = 2305317590355701822L;
-    private final UkelonnUIProvider ukelonnUIProvider = new UkelonnUIProvider();
+public class UkelonnServlet extends HttpServlet {
+    private static final long serialVersionUID = -3496606785818930881L;
+    private LogService logservice; // NOSONAR This is not touched after DS component activate so effectively a constant
 
-    public UkelonnUIProvider getUkelonnUIProvider() {
-        return ukelonnUIProvider;
+    // The paths used by the react router all needs to return the HTML wrapping the bundle.js
+    private final List<String> routes = Arrays.asList(
+        "/",
+        "/login",
+        "/user",
+        "/performedjobs",
+        "/performedpayments",
+        "/admin/jobtypes/create",
+        "/admin/jobtypes/modify",
+        "/admin/jobtypes",
+        "/admin/paymenttypes/create",
+        "/admin/paymenttypes/modify",
+        "/admin/paymenttypes",
+        "/admin/users/create",
+        "/admin/users/modify",
+        "/admin/users/password",
+        "/admin/users",
+        "/admin");
+
+    @Reference
+    public void setLogService(LogService logservice) {
+        this.logservice = logservice;
     }
 
     @Override
-    protected void servletInitialized() throws ServletException {
-        super.servletInitialized();
-        addSessionInitListenerThatWillSetUIProviderOnSession();
-    }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        try {
+            if (pathInfo == null) {
+                // Browsers won't redirect to bundle.js if the servlet path doesn't end with a "/"
+                addSlashToServletPath(request, response);
+                return;
+            }
 
-    @Reference
-    public void setUkelonnDatabase(UkelonnDatabase database) {
-        ukelonnUIProvider.setUkelonnDatabase(database);
-    }
-
-    @Reference
-    public void setLogservice(LogService logservice) {
-        ukelonnUIProvider.setLogservice(logservice);
-    }
-
-    private void addSessionInitListenerThatWillSetUIProviderOnSession() {
-        VaadinServletService service = getService();
-        service.addSessionInitListener(new SessionInitListener() {
-                private static final long serialVersionUID = -5085594781477821868L;
-
-                @Override
-                public void sessionInit(SessionInitEvent sessionInitEvent) throws ServiceException {
-                    VaadinSession session = sessionInitEvent.getSession();
-                    removeDefaultUIProvider(session);
-                    session.addUIProvider(ukelonnUIProvider);
-                }
-
-                private void removeDefaultUIProvider(VaadinSession session) {
-                    List<UIProvider> uiProviders = new ArrayList<>(session.getUIProviders());
-                    for (UIProvider uiProvider : uiProviders) {
-                        if (DefaultUIProvider.class.getCanonicalName().equals(uiProvider.getClass().getCanonicalName())) {
-                            session.removeUIProvider(uiProvider);
-                        }
+            String resource = findResourceFromPathInfo(pathInfo);
+            String contentType = guessContentTypeFromResourceName(resource);
+            response.setContentType(contentType);
+            try(ServletOutputStream responseBody = response.getOutputStream()) {
+                try(InputStream resourceFromClasspath = getClass().getClassLoader().getResourceAsStream(resource)) {
+                    if (resourceFromClasspath != null) {
+                        copyStream(resourceFromClasspath, responseBody);
+                        response.setStatus(200);
+                        return;
                     }
+
+                    String message = String.format("Resource \"%s\" not found on the classpath", resource);
+                    logservice.log(LogService.LOG_ERROR, message);
+                    response.sendError(404, message);
                 }
-            });
+            }
+        } catch (IOException e) {
+            logservice.log(LogService.LOG_ERROR, "Frontend servlet caught exception ", e);
+            response.setStatus(500); // Report internal server error
+        }
     }
+
+    String guessContentTypeFromResourceName(String resource) {
+        String contentType = URLConnection.guessContentTypeFromName(resource);
+        if (contentType != null) {
+            return contentType;
+        }
+
+        String extension = resource.substring(resource.lastIndexOf('.') + 1);
+        if ("xhtml".equals(extension)) {
+            return "text/html";
+        }
+
+        if ("js".equals(extension)) {
+            return "application/javascript";
+        }
+
+        if ("css".equals(extension)) {
+            return "text/css";
+        }
+
+        return null;
+    }
+
+    private String findResourceFromPathInfo(String pathInfo) {
+        if (routes.contains(pathInfo)) {
+            return "index.xhtml";
+        }
+
+        return pathInfo;
+    }
+
+    private void addSlashToServletPath(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(String.format("%s/", request.getServletPath()));
+    }
+
+    private void copyStream(InputStream input, ServletOutputStream output) throws IOException {
+        int c;
+        while((c = input.read()) != -1) {
+            output.write(c);
+        }
+    }
+
 
 }

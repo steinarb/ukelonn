@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2017 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,32 +24,33 @@ public class CommonServiceMethods {
 
     private CommonServiceMethods() {}
 
-    public static UkelonnService connectionCheck(UkelonnService provider, Class<?> clazz) {
+    public static UkelonnService connectionCheck(Class<?> clazz, UkelonnServiceProvider provider) {
         String className = clazz.getSimpleName();
-        if (provider == null) {
+        UkelonnService ukelonnService = provider;
+        if (ukelonnService == null) {
             throw new UkelonnException(className + " bean unable to find OSGi service Ukelonnservice, giving up");
         }
 
-        return provider;
+        return ukelonnService;
     }
 
-    public static void logError(UkelonnService provider, Class<?> clazz, String message) {
-        LogService logservice = logserviceConnectionCheck(provider, clazz);
+    public static void logError(Class<?> clazz, UkelonnServiceProvider provider, String message) {
+        LogService logservice = logserviceConnectionCheck(clazz, provider);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message);
         }
     }
 
-    public static void logError(UkelonnService provider, Class<?> clazz, String message, Throwable exception) {
-        LogService logservice = logserviceConnectionCheck(provider, clazz);
+    public static void logError(Class<?> clazz, UkelonnServiceProvider provider, String message, Throwable exception) {
+        LogService logservice = logserviceConnectionCheck(clazz, provider);
         if (logservice != null) {
             logservice.log(LogService.LOG_ERROR, message, exception);
         }
     }
 
-    private static LogService logserviceConnectionCheck(UkelonnService provider, Class<?> clazz) {
+    private static LogService logserviceConnectionCheck(Class<?> clazz, UkelonnServiceProvider provider) {
         try {
-            UkelonnService ukelonnService = connectionCheck(provider, clazz);
+            UkelonnService ukelonnService = connectionCheck(clazz, provider);
 
             return ukelonnService.getLogservice();
         } catch (RuntimeException e) {
