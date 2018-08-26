@@ -66,7 +66,7 @@ public class AdminUserResource {
             logservice.log(LogService.LOG_WARNING, String.format("REST endpoint /ukelonn/api/admin/user/create got bad request: %s", e.getMessage()));
             throw new BadRequestException(e.getMessage());
         } catch (UkelonnException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/create got error from the database", e));
+            logservice.log(LogService.LOG_ERROR, "REST endpoint /ukelonn/api/admin/user/create got error from the database", e);
             throw new InternalServerErrorException("See log for error cause");
         }
     }
