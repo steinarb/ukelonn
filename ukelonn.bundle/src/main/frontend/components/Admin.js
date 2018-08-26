@@ -45,29 +45,74 @@ class Admin extends Component {
 
         return (
             <div>
-                <h1>Registrer betaling</h1>
+                <header>
+                    <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
+                        <h1>Registrer betaling</h1>
+                    </div>
+                </header>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
-                    <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
-                    <br/>
-                    <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly="true" /><br/>
-                    <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
-                    <Paymenttypes id="paymenttype-selector" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Beløp:</label>
-                    <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <br/>
-                    <button onClick={() => onRegisterPayment(payment)}>Registrer betaling</button>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="account-selector" className="col-form-label col-5">Velg hvem det skal betales til:</label>
+                            <div className="col-7">
+                                <Accounts id="account-selector" className="form-control" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="account-balance" className="col-form-label col-5">Til gode:</label>
+                            <div className="col-7">
+                                <input id="account-balance" className="form-control" type="text" value={account.balance} readOnly="true" />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="paymenttype-selector" className="col-form-label col-5">Type av utbetaling:</label>
+                            <div className="col-7">
+                                <Paymenttypes id="paymenttype-selector" className="form-control" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Beløp:</label>
+                            <div className="col-7">
+                                <Amount id="amount" className="form-control" payment={payment} onAmountFieldChange={onAmountFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <div className="col-5" />
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onRegisterPayment(payment)}>Registrer betaling</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
+                <div className="container">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/performedjobs">
+                        Utforte jobber
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/performedpayments">
+                        Siste utbetalinger til bruker
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes">
+                        Administrere jobbtyper
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes">
+                        Administrere utbetalingstyper
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users">
+                        Administrere brukere
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                </div>
                 <br/>
-                <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
-                <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
-                <Link to="/ukelonn/admin/jobtypes">Administrere jobbtyper</Link><br/>
-                <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
-                <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

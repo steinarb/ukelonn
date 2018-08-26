@@ -22,17 +22,35 @@ class AdminUsers extends Component {
 
         return (
             <div>
-                <h1>Administrere brukere</h1>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Register betaling
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Administrere brukere</h1>
+                    </div>
+                </header>
+                <div className="container">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/modify">
+                        Endre brukere
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/password">
+                        Bytt passord på bruker
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/create">
+                        Legg til ny bruker
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                </div>
                 <br/>
-                <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
-                <br/>
-                <Link to="/ukelonn/admin/users/modify">Endre brukere</Link>
-                <br/>
-                <Link to="/ukelonn/admin/users/password">Bytt passord på bruker</Link>
-                <br/>
-                <Link to="/ukelonn/admin/users/create">Legg til ny bruker</Link>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

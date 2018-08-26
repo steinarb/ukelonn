@@ -28,21 +28,40 @@ class AdminJobtypesCreate extends Component {
 
         return (
             <div>
-                <h1>Lag ny jobbtype</h1>
-                <br/>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobbtyper</Link>
-                <br/>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer jobbtyper
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Lag ny jobbtype</h1>
+                    </div>
+                </header>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="amount">Navn på jobbtype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                    <br/>
-                    <label htmlFor="amount">Beløp for jobbtype</label>
-                    <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedJobType(transactiontype)}>Lag ny jobbtype</button>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Navn på jobbtype</label>
+                            <div className="col-7">
+                                <input id="name" className="form-control" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Beløp for jobbtype</label>
+                            <div className="col-7">
+                                <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>Lag ny jobbtype</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

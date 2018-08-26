@@ -38,30 +38,59 @@ class AdminUsersModify extends Component {
 
         return (
             <div>
-                <h1>Endre brukere</h1>
-                <br/>
-                <Link to="/ukelonn/admin/users">Administer brukere</Link>
-                <br/>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer brukere
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Endre brukere</h1>
+                    </div>
+                </header>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="users" className="col-form-label col-5">Velg bruker</label>
+                            <div className="col-7">
+                                <Users id="users" className="form-control" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
+                            <div className="col-7">
+                                <input id="username" className="form-control" type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
+                            <div className="col-7">
+                                <input id="email" className="form-control" type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
+                            <div className="col-7">
+                                <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
+                            <div className="col-7">
+                                <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
+                            </div>
+                        </div>
+                    </div>
                     <br/>
-                    <label htmlFor="username">Brukernavn</label>
-                    <input id="username" type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
-                    <br/>
-                    <label htmlFor="email">Epostadresse</label>
-                    <input id="email" type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
-                    <br/>
-                    <label htmlFor="firstname">Fornavn</label>
-                    <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
-                    <br/>
-                    <label htmlFor="lastname">Etternavn</label>
-                    <input id="lastname" type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
                 </form>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

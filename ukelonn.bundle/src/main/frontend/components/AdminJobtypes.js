@@ -22,13 +22,31 @@ class AdminJobtypes extends Component {
 
         return (
             <div>
-                <h1>Administrer jobbtyper</h1>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Register betaling
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Administrer jobbtyper</h1>
+                    </div>
+                </header>
+                <div className="container">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/modify">
+                        Endre jobbtyper
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/create">
+                        Lag ny jobbtype
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                </div>
                 <br/>
-                <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
-                <Link to="/ukelonn/admin/jobtypes/modify">Endre jobbtyper</Link><br/>
-                <Link to="/ukelonn/admin/jobtypes/create">Lag ny jobbtype</Link><br/>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

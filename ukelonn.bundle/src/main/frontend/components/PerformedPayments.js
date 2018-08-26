@@ -25,30 +25,37 @@ class PerformedPayments extends Component {
 
         return (
             <div>
-                <Link to="/ukelonn/">Register betaling</Link>
-                <br/>
-                <h1>Utførte jobber for {account.firstName}</h1>
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>Dato</td>
-                            <td>Utbetalinger</td>
-                            <td>Beløp</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {payments.map((payment) =>
-                            <tr key={payment.id}>
-                                <td>{payment.transactionTime}</td>
-                                <td>{payment.name}</td>
-                                <td>{payment.transactionAmount}</td>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Register betaling
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Utbetalinger til {account.firstName}</h1>
+                    </div>
+                </header>
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th className="transaction-table-col transaction-table-col1">Dato</th>
+                                <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Utbetalinger</th>
+                                <th className="transaction-table-col transaction-table-col3b">Beløp</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-                <br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                        </thead>
+                        <tbody>
+                            {payments.map((payment) =>
+                                 <tr key={payment.id}>
+                                     <td className="transaction-table-col">{payment.transactionTime}</td>
+                                     <td className="transaction-table-col">{payment.name}</td>
+                                     <td className="transaction-table-col">{payment.transactionAmount}</td>
+                                 </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     }

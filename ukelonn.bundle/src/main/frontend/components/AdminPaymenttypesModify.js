@@ -28,24 +28,49 @@ class AdminPaymenttypesModify extends Component {
 
         return (
             <div>
-                <h1>Endre betalingstyper</h1>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/paymenttypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer betalingstyper
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Endre betalingstyper</h1>
+                    </div>
+                </header>
                 <br/>
-                <Link to="/ukelonn/admin/paymenttypes">Administer betalingstyper</Link>
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="paymenttype">Velg betalingstype</label>
-                    <Paymenttypes id="paymenttype" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="paymenttype" className="col-form-label col-5">Velg betalingstype</label>
+                            <div className="col-7">
+                                <Paymenttypes id="paymenttype" className="form-control" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Endre navn på betalingstype</label>
+                            <div className="col-7">
+                                <input id="name" className="form-control" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Endre beløp for betalingstype</label>
+                            <div className="col-7">
+                                <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lagre endringer i betalingstype</button>
+                            </div>
+                        </div>
+                    </div>
                     <br/>
-                    <label htmlFor="amount">Endre navn på betalingstype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                    <br/>
-                    <label htmlFor="amount">Endre beløp for betalingstype</label>
-                    <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lagre endringer i betalingstype</button>
                 </form>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

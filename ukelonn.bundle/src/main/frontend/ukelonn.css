@@ -1,0 +1,31 @@
+.left-align-cell {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.right-align-cell {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.table-fixed { table-layout: fixed }
+
+.transaction-table-col {
+    max-width: 0;
+}
+.transaction-table-col-hide-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.transaction-table-col1 { width: 6em }
+.transaction-table-col2 {  }
+.transaction-table-col3 { width: 2em }
+.transaction-table-col3b { width: 4em }
+.transaction-table-col4 { width: 2em }
+
+.hide-overflow { overflow-x: hidden; }
+
+.table-condensed {
+    font-size: 11px;
+}

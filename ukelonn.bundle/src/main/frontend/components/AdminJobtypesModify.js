@@ -28,24 +28,46 @@ class AdminJobtypesModify extends Component {
 
         return (
             <div>
-                <h1>Endre jobbtyper</h1>
-                <br/>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobbtyper</Link>
-                <br/>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer jobbtyper
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Endre jobbtyper</h1>
+                    </div>
+                </header>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="jobtype">Velg jobbtype</label>
-                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Endre navn på jobbtype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                    <br/>
-                    <label htmlFor="amount">Endre beløp for jobbtype</label>
-                    <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="jobtype" className="col-form-label col-5">Velg jobbtype</label>
+                            <div className="col-7">
+                                <Jobtypes id="jobtype" className="form-control" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Endre navn på jobbtype</label>
+                            <div className="col-7">
+                                <input id="name" type="text" className="form-control" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Endre beløp for jobbtype</label>
+                            <div className="col-7">
+                                <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

@@ -39,24 +39,46 @@ class AdminUsersChangePassword extends Component {
 
         return (
             <div>
-                <h1>Bytt passord på bruker</h1>
-                <br/>
-                <Link to="/ukelonn/admin/users">Administer brukere</Link>
-                <br/>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer brukere
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Bytt passord på bruker</h1>
+                    </div>
+                </header>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
-                    <br/>
-                    <label htmlFor="password">Passord:</label>
-                    <input id="password" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
-                    <br/>
-                    <label htmlFor="password2">Gjenta passord:</label>
-                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="users" className="col-form-label col-5">Velg bruker</label>
+                            <div className="col-7">
+                                <Users id="users" className="form-control" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="password" className="col-form-label col-5">Passord:</label>
+                            <div className="col-7">
+                                <input id="password" className="form-control" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
+                            <div className="col-7">
+                                <input id="password2" className="form-control" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

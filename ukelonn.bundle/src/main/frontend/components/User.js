@@ -27,21 +27,60 @@ class User extends Component {
 
         return (
             <div>
-                <h1>Ukelønn for {account.firstName}</h1>
-                <div>Til gode: { account.balance }</div><br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="jobtype">Velg jobb</label>
-                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                <header>
+                    <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
+                        <h1 id="logo">Ukelønn for {account.firstName}</h1>
+                    </div>
+                </header>
+                <div className="container-fluid">
+                    <div className="container">
+                        <div className="row border rounded mb-3">
+                            <div className="col">
+                                <label>Til gode:</label>
+                            </div>
+                            <div className="col">
+                                { account.balance }
+                            </div>
+                        </div>
+                    </div>
+                    <form onSubmit={ e => { e.preventDefault(); }}>
+                        <div className="container">
+                            <div className="form-group row">
+                                <label htmlFor="jobtype" className="col-form-label col-5">Velg jobb</label>
+                                <div className="col-7">
+                                    <Jobtypes id="jobtype" className="form-control" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label htmlFor="amount" className="col-form-label col-5">Beløp</label>
+                                <div className="col-7">
+                                    <input id="amount" className="form-control" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <div className="col-5"/>
+                                <div className="col-7">
+                                    <button className="btn btn-primary" onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div className="container">
+                        <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/performedjobs">
+                            Utforte jobber
+                            &nbsp;
+                            <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                        </Link>
+                        <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/performedpayments">
+                            Siste utbetalinger til bruker
+                            &nbsp;
+                            <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                        </Link>
+                    </div>
                     <br/>
-                    <label htmlFor="amount">Beløp</label>
-                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
-                    <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
-                </form>
-                <br/>
-                <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
-                <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                    <br/>
+                    <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+                </div>
             </div>
         );
     }
