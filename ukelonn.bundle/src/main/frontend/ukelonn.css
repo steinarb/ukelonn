@@ -1,0 +1,52 @@
+.graybox {
+    background-color:#ddd;
+}
+
+.hline-bottom {
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd; /* whichever color you prefer */
+}
+
+.right-align {
+    float: right;
+}
+
+.right-align-cell {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.material-icons {
+    margin-right: -105px;
+}
+
+.mdl-data-table tbody tr, .mdl-data-table tbody td {
+    height: auto;
+}
+
+.mdl-data-table tbody td {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.transaction-table {
+    width: 100%;
+}
+
+.transaction-table-col {
+    max-width: 0;
+}
+.transaction-table-col-hide-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.transaction-table-col1 { width: 6em }
+.transaction-table-col2 {  }
+.transaction-table-col3 { width: 2em }
+.transaction-table-col3b { width: 4em }
+.transaction-table-col4 { width: 2em }
+
+.stretch-to-fill {
+    width: 100%;
+}

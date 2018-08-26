@@ -26,22 +26,65 @@ class User extends Component {
         }
 
         return (
-            <div>
-                <h1>Ukelønn for {account.firstName}</h1>
-                <div>Til gode: { account.balance }</div><br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="jobtype">Velg jobb</label>
-                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Beløp</label>
-                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
-                    <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
-                </form>
+            <div className="mdl-layout mdl-layout--fixed-header">
+                <header className="mdl-layout__header">
+                    <div className="mdl-layout__header-row">
+                        <span className="mdl-layout-title">Registrere jobb</span>
+                        <div className="mdl-layout-spacer"></div>
+                    </div>
+                </header>
+                <main className="mdl-layout__content">
+                    <div className="mdl-grid hline-bottom">
+                        <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--8-col-tablet mdl-cell--12-col-desktop">
+                            Ukelønn for {account.firstName}
+                        </div>
+                    </div>
+                    <div className="mdl-grid hline-bottom">
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                            <label htmlFor="jobtype">Til gode:</label>
+                        </div>
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                            { account.balance }
+                        </div>
+                    </div>
+                    <form onSubmit={ e => { e.preventDefault(); }}>
+                        <div className="mdl-grid hline-bottom">
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                                <label htmlFor="jobtype">Velg jobb</label>
+                            </div>
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                                <Jobtypes id="jobtype" className="stretch-to-fill" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            </div>
+                        </div>
+                        <div className="mdl-grid hline-bottom">
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                                <label htmlFor="amount">Beløp</label>
+                            </div>
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                                <input id="amount" className="stretch-to-fill" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
+                            </div>
+                        </div>
+                        <div className="mdl-grid mdl-grid--no-spacing hline-bottom">
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--6-col-tablet mdl-cell--10-col-desktop">
+                                &nbsp;
+                            </div>
+                            <div className="mdl-cell mdl-cell--2-col">
+                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
+                            </div>
+                        </div>
+                    </form>
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedjobs">
+                        Siste jobber
+                        <i className="material-icons">arrow_forward_ios</i>
+                    </Link>
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedpayments">
+                        Siste utbetalinger
+                        <i className="material-icons">arrow_forward_ios</i>
+                    </Link>
+                </main>
                 <br/>
-                <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
-                <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     }

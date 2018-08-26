@@ -20,15 +20,33 @@ class AdminPaymenttypes extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+        const reduceArrowIconSize = {marginLeft: '0px', marginRight: '-200px'}; // Compensating for Material Design Lite left arrow icon claiming more space than it requires
+
         return (
-            <div>
-                <h1>Administrer betalingstyper</h1>
+            <div className="mdl-layout mdl-layout--fixed-header">
+                <header className="mdl-layout__header">
+                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
+                        <Link to="/ukelonn/admin" className="mdl-navigation__link">
+                            <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            Registrer betaling
+                        </Link>
+                        <span className="mdl-layout-title">Administrere utbetalingstyper</span>
+                    </div>
+                </header>
+                <main className="mdl-layout__content">
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/paymenttypes/modify">
+                        Endre utbetalingstyper
+                        <i className="material-icons">arrow_forward_ios</i>
+                    </Link>
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/paymenttypes/create">
+                        Lag ny utbetalingstype
+                        <i className="material-icons">arrow_forward_ios</i>
+                    </Link>
+                </main>
                 <br/>
-                <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
-                <Link to="/ukelonn/admin/paymenttypes/modify">Endre utbetalingstyper</Link><br/>
-                <Link to="/ukelonn/admin/paymenttypes/create">Lag ny utbetalingstype</Link><br/>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };

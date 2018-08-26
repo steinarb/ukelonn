@@ -37,26 +37,57 @@ class AdminUsersChangePassword extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+        const reduceArrowIconSize = {marginLeft: '0px', marginRight: '-200px'}; // Compensating for Material Design Lite left arrow icon claiming more space than it requires
+
         return (
-            <div>
-                <h1>Bytt passord på bruker</h1>
-                <br/>
-                <Link to="/ukelonn/admin/users">Administer brukere</Link>
-                <br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
-                    <br/>
-                    <label htmlFor="password">Passord:</label>
-                    <input id="password" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
-                    <br/>
-                    <label htmlFor="password2">Gjenta passord:</label>
-                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
-                </form>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+            <div className="mdl-layout mdl-layout--fixed-header">
+                <header className="mdl-layout__header">
+                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
+                        <Link to="/ukelonn/admin/users" className="mdl-navigation__link">
+                            <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            Administer brukere
+                        </Link>
+                        <span className="mdl-layout-title">Bytt passord på bruker</span>
+                    </div>
+                </header>
+                <main className="mdl-layout__content">
+                    <form onSubmit={ e => { e.preventDefault(); }}>
+                        <div className="mdl-grid hline-bottom">
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                                <label htmlFor="users">Velg bruker</label>
+                            </div>
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                                <Users id="users" className="stretch-to-fill" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                            </div>
+                        </div>
+                        <div className="mdl-grid hline-bottom">
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                                <label htmlFor="password">Passord:</label>
+                            </div>
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                                <input id="password" className="stretch-to-fill" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                            </div>
+                        </div>
+                        <div className="mdl-grid hline-bottom">
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                                <label htmlFor="password2">Gjenta passord:</label>
+                            </div>
+                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                                <input id="password2" className="stretch-to-fill" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                            </div>
+                        </div>
+                        <div className="mdl-grid hline-bottom">
+                            <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
+                                &nbsp;
+                            </div>
+                            <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--4-col-tablet mdl-cell--4-col-desktop">
+                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
+                            </div>
+                        </div>
+                    </form>
+                </main>
+                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };
