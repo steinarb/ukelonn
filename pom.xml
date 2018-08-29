@@ -347,28 +347,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>com.github.cjnygard</groupId>
-                    <artifactId>rest-maven-plugin</artifactId>
-                    <version>${rest-maven-plugin-version}</version>
-                    <configuration>
-                        <endpoint>${ukelonn-server-url}</endpoint>
-                        <requestType>
-                            <type>application</type>
-                            <subtype>x-www-form-urlencoded</subtype>
-                        </requestType>
-                        <headers>
-                            <Authorization>Basic ${ukelonn-server-basic-auth-token}</Authorization>
-                        </headers>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.github.cjnygard</groupId>
-                            <artifactId>rest-maven-plugin</artifactId>
-                            <version>${rest-maven-plugin-version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
