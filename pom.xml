@@ -485,6 +485,13 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
     </build>
 
     <modules>
@@ -496,5 +503,17 @@
         <module>ukelonn.bundle.db.postgresql</module>
         <module>karaf</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>ftp-maven-travis</id>
+            <url>ftp://maven.bang.priv.no/repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>ftp-maven-travis</id>
+            <url>ftp://maven.bang.priv.no/repository</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 
 </project>
