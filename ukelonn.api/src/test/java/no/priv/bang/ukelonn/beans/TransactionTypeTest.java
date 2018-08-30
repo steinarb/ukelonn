@@ -16,6 +16,10 @@
 package no.priv.bang.ukelonn.beans;
 
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -39,6 +43,20 @@ public class TransactionTypeTest {
         assertEquals(Double.valueOf(45), bean.getTransactionAmount());
         assertTrue(bean.isTransactionIsWork());
         assertFalse(bean.isTransactionIsWagePayment());
+    }
+
+    @Test
+    public void testHash() {
+        TransactionType bean = new TransactionType(1, "Vaske", 45.0, true, false);
+        Set<TransactionType> set = new HashSet<>();
+        set.add(bean);
+        assertTrue(set.contains(bean));
+    }
+
+    @Test
+    public void testToString() {
+        TransactionType bean = new TransactionType(1, "Vaske", 45.0, true, false);
+        assertThat(bean.toString()).startsWith("TransactionType [");
     }
 
 }

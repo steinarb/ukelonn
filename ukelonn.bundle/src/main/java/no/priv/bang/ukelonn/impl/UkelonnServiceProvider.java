@@ -74,10 +74,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return logservice;
     }
 
-    public UkelonnService get() {
-        return this;
-    }
-
     @Override
     public List<Account> getAccounts() {
         return getAccountsFromDatabase(getClass(), this);
@@ -120,7 +116,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public Account registerPayment(PerformedTransaction payment) {
         int result = addNewPaymentToAccountInDatabase(getClass(), this, payment.getAccount(), payment.getTransactionTypeId(), payment.getTransactionAmount());
         if (result < 1) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to register payment of type %d, amount %d for user \"%s\"", payment.getTransactionTypeId(), payment.getTransactionAmount(), payment.getAccount().getUsername()));
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to register payment of type %d, amount %f for user \"%s\"", payment.getTransactionTypeId(), payment.getTransactionAmount(), payment.getAccount().getUsername()));
             return null;
         }
 

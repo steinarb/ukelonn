@@ -38,6 +38,9 @@ public class AccountTest {
         assertEquals(expectedLastname, account.getLastName());
         assertEquals(expectedBalance, account.getBalance(), 0.0);
         assertEquals("Jane Doe", account.getFullName());
+
+        account.setBalance(2);
+        assertEquals(2.0, account.getBalance(), 0.0);
     }
 
     @Test
