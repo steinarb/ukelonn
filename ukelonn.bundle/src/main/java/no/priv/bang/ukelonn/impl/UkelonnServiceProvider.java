@@ -74,10 +74,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return logservice;
     }
 
-    public UkelonnService get() {
-        return this;
-    }
-
     @Override
     public List<Account> getAccounts() {
         return getAccountsFromDatabase(getClass(), this);
