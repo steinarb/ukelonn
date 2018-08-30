@@ -22,6 +22,16 @@ import org.junit.Test;
 public class AdminUserTest {
 
     @Test
+    public void testConstructor() {
+        AdminUser bean = new AdminUser("jad", 1, 1, "Jane", "Doe");
+        assertEquals(1, bean.getUserId());
+        assertEquals(1, bean.getAdministratorId());
+        assertEquals("jad", bean.getUserName());
+        assertEquals("Jane", bean.getFirstname());
+        assertEquals("Doe", bean.getSurname());
+    }
+
+    @Test
     public void testEquals() {
         AdminUser user = new AdminUser("jad", 1, 1, "Jane", "Doe");
         AdminUser userDifferentAdministratorId = new AdminUser("jad", 1, 2, "Jane", "Doe");

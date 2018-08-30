@@ -35,6 +35,9 @@ public class PasswordsWithUserTest {
         assertEquals("jad", passwords.getUser().getUsername());
         assertEquals(password, passwords.getPassword());
         assertEquals(password2, passwords.getPassword2());
+        User user2 = new User();
+        passwords.setUser(user2);
+        assertEquals(user2, passwords.getUser());
     }
 
     @Test
