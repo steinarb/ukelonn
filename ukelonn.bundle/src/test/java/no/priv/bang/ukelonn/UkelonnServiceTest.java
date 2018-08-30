@@ -35,7 +35,7 @@ public class UkelonnServiceTest {
      */
     @Test
     public void testGetUkelonnServices() {
-        UkelonnService ukelonnService = new UkelonnServiceProvider().get();
+        UkelonnService ukelonnService = new UkelonnServiceProvider();
         assertNotNull(ukelonnService);
         assertEquals("Hello world!", ukelonnService.getMessage());
     }

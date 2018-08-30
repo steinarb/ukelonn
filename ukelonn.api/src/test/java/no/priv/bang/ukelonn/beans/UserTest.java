@@ -7,6 +7,17 @@ import org.junit.Test;
 public class UserTest {
 
     @Test
+    public void testNoArgConstructor() {
+        User bean = new User();
+        assertEquals(-1, bean.getUserId());
+        assertEquals("", bean.getUsername());
+        assertEquals("", bean.getEmail());
+        assertEquals("", bean.getFirstname());
+        assertEquals("", bean.getLastname());
+        assertEquals(" ", bean.getFullname());
+    }
+
+    @Test
     public void testProperties() {
         int expectedUserId = 1;
         String expectedUsername = "jad";
