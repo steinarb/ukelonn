@@ -111,6 +111,34 @@ public class UkelonnServiceProviderTest {
         assertThat(result.getBalance()).isLessThan(originalBalance);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testRegisterPaymentWithDatabaseFailure() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(database.update(any())).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+
+        // Create a mock log service
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Create the request
+        Account account = new Account(1, 1, "jad", "Jane", "Doe", 2.0);
+        PerformedTransaction payment = new PerformedTransaction(account, 1, 2.0);
+
+        // Run the method under test
+        Account result = ukelonn.registerPayment(payment);
+
+        // Check the response
+        assertNull(result);
+        assertEquals(2, logservice.getLogmessages().size());
+    }
+
     @Test
     public void testModifyJobtype() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
