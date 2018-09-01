@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +58,7 @@ public class RegisterJobTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -97,7 +98,7 @@ public class RegisterJobTest extends ServletTestBase {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jod");
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -134,7 +135,7 @@ public class RegisterJobTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -168,7 +169,7 @@ public class RegisterJobTest extends ServletTestBase {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -206,7 +207,7 @@ public class RegisterJobTest extends ServletTestBase {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the object to be tested
         RegisterJob resource = new RegisterJob();

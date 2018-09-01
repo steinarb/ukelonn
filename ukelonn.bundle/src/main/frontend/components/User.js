@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
 import Jobtypes from './Jobtypes';
 
 class User extends Component {
@@ -20,7 +23,7 @@ class User extends Component {
     }
 
     render() {
-        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, onJobtypeFieldChange, onRegisterJob, onLogout } = this.state;
+        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.state;
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
@@ -34,7 +37,12 @@ class User extends Component {
                     <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp</label>
-                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
+                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" />
+                    <br/>
+                    <label htmlFor="date">Dato</label>
+                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} />
+                    <br/>
+
                     <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
                 </form>
                 <br/>
@@ -77,10 +85,20 @@ const mapDispatchToProps = dispatch => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
                 performedjob: {
+                    ...performedjob,
                     transactionTypeId: jobtype.id,
                     transactionName: jobtype.transactionName,
                     transactionAmount: jobtype.transactionAmount,
                     account: account
+                }
+            };
+            dispatch({ type: 'UPDATE', data: changedField });
+        },
+        onDateFieldChange: (selectedValue, performedjob) => {
+            let changedField = {
+                performedjob: {
+                    ...performedjob,
+                    transactionDate: selectedValue,
                 }
             };
             dispatch({ type: 'UPDATE', data: changedField });

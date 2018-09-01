@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -514,7 +515,7 @@ public class CommonDatabaseMethodsTest {
             when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getClass(), provider, account, 1, 45.0);
+            Map<Integer, TransactionType> transactionTypes = CommonDatabaseMethods.registerNewJobInDatabase(getClass(), provider, account, 1, 45.0, new Date());
             assertEquals("Expected a non-null, empty map", 0, transactionTypes.size());
         } finally {
             // Restore the real derby database
@@ -904,8 +905,8 @@ public class CommonDatabaseMethodsTest {
         assertEquals(2, initialJobsForJod.size());
 
         // Add two jobs that are to be deleted later
-        registerNewJobInDatabase(getClass(), provider, account, 1, 45);
-        registerNewJobInDatabase(getClass(), provider, account, 2, 45);
+        registerNewJobInDatabase(getClass(), provider, account, 1, 45, new Date());
+        registerNewJobInDatabase(getClass(), provider, account, 2, 45, new Date());
 
         // Verify the number of jobs for the user in the database before deleting any
         List<Transaction> jobs = getJobsFromAccount(account, getClass(), provider);

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -101,7 +102,7 @@ public class UkelonnServiceProviderTest {
         Account account = ukelonn.getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
-        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance());
+        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance(), new Date());
 
         // Run the method under test
         Account result = ukelonn.registerPayment(payment);
@@ -129,7 +130,7 @@ public class UkelonnServiceProviderTest {
 
         // Create the request
         Account account = new Account(1, 1, "jad", "Jane", "Doe", 2.0);
-        PerformedTransaction payment = new PerformedTransaction(account, 1, 2.0);
+        PerformedTransaction payment = new PerformedTransaction(account, 1, 2.0, new Date());
 
         // Run the method under test
         Account result = ukelonn.registerPayment(payment);
