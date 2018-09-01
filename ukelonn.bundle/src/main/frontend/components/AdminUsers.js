@@ -29,6 +29,7 @@ class AdminUsers extends Component {
                     <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
                         <Link to="/ukelonn/admin" className="mdl-navigation__link">
                             <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            &nbsp;
                             Registrer betaling
                         </Link>
                         <span className="mdl-layout-title">Administrere brukere</span>

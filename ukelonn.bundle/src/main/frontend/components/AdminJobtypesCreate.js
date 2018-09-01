@@ -35,6 +35,7 @@ class AdminJobtypesCreate extends Component {
                     <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
                         <Link to="/ukelonn/admin/jobtypes" className="mdl-navigation__link">
                             <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            &nbsp;
                             Lag ny jobbtype
                         </Link>
                         <span className="mdl-layout-title">Endre jobbtyper</span>

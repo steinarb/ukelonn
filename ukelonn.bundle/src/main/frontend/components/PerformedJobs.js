@@ -32,6 +32,7 @@ class PerformedJobs extends Component {
                     <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
                         <Link to="/ukelonn/" className="mdl-navigation__link">
                             <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            &nbsp;
                             Register jobb</Link>
                         <span className="mdl-layout-title">Siste jobber</span>
                     </div>

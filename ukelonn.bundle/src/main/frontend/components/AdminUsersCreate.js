@@ -44,6 +44,7 @@ class AdminUsersCreate extends Component {
                     <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
                         <Link to="/ukelonn/admin/users" className="mdl-navigation__link">
                             <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            &nbsp;
                             Administer brukere
                         </Link>
                         <span className="mdl-layout-title">Legg til ny bruker</span>

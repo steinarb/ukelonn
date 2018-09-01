@@ -35,6 +35,7 @@ class AdminPaymenttypesCreate extends Component {
                     <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
                         <Link to="/ukelonn/admin/paymenttypes" className="mdl-navigation__link">
                             <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            &nbsp;
                             Administer utbetalingstyper
                         </Link>
                         <span className="mdl-layout-title">Lag ny utbetalingstype</span>
