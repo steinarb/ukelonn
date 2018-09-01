@@ -27,14 +27,14 @@ class AdminJobtypesModify extends Component {
         }
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-        const reduceArrowIconSize = {marginLeft: '0px', marginRight: '-200px'}; // Compensating for Material Design Lite left arrow icon claiming more space than it requires
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
                         <Link to="/ukelonn/admin/jobtypes" className="mdl-navigation__link">
-                            <i className="material-icons" style={reduceArrowIconSize} >arrow_backward_ios</i>
+                            <i className="material-icons" >chevron_left</i>
+                            &nbsp;
                             Administrer jobbtyper
                         </Link>
                         <span className="mdl-layout-title">Endre jobbtyper</span>
