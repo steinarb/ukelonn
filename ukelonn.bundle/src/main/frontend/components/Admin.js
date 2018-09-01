@@ -96,23 +96,23 @@ class Admin extends Component {
                     </form>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedjobs">
                         Siste jobber for bruker
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedpayments">
                         Siste utbetalinger til bruker
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/jobtypes">
                         Administrere jobbtyper
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/paymenttypes">
                         Administrere utbetalingstyper
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/users">
                         Administrere brukere
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                 </main>
                 <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>

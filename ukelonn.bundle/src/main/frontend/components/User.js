@@ -75,11 +75,11 @@ class User extends Component {
                     </form>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedjobs">
                         Siste jobber
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                     <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedpayments">
                         Siste utbetalinger
-                        <i className="material-icons">arrow_forward_ios</i>
+                        <i className="material-icons">chevron_right</i>
                     </Link>
                 </main>
                 <br/>
