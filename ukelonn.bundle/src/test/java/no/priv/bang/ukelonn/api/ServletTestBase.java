@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -66,7 +67,7 @@ public class ServletTestBase {
     }
 
     protected HttpServletRequest buildRequestFromStringBody(String textToSendAsBody) throws IOException {
-        ServletInputStream postBody = wrap(new ByteArrayInputStream(textToSendAsBody.getBytes()));
+        ServletInputStream postBody = wrap(new ByteArrayInputStream(textToSendAsBody.getBytes(StandardCharsets.UTF_8)));
         HttpSession session = mock(HttpSession.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn("HTTP/1.1");
