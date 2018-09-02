@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -140,18 +141,19 @@ public class CommonDatabaseMethods {
 
     public static int addNewPaymentToAccount(Class<?> clazz, UkelonnServiceProvider provider, Account account, TransactionType paymentType, double payment) {
         int transactionTypeId = paymentType.getId();
-        return addNewPaymentToAccountInDatabase(clazz, provider, account, transactionTypeId, payment);
+        return addNewPaymentToAccountInDatabase(clazz, provider, account, transactionTypeId, payment, new Date());
     }
 
-    static int addNewPaymentToAccountInDatabase(Class<?> clazz, UkelonnServiceProvider provider, Account account, int transactionTypeId, double payment) {
+    static int addNewPaymentToAccountInDatabase(Class<?> clazz, UkelonnServiceProvider provider, Account account, int transactionTypeId, double payment, Date transactionDate) {
         int updateResult = UPDATE_FAILED;
         int accountId = account.getAccountId();
         double amount = 0 - payment;
         UkelonnDatabase database = connectionCheck(clazz, provider);
-        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)")) {
+        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
             statement.setInt(1, accountId);
             statement.setInt(2, transactionTypeId);
             statement.setDouble(3, amount);
+            statement.setDate(4, new java.sql.Date(transactionDate.getTime()));
             updateResult = database.update(statement);
         } catch (SQLException e) {
             logError(clazz, provider, "Failed to set prepared statements value", e);
@@ -334,12 +336,13 @@ public class CommonDatabaseMethods {
             results.getDouble("balance"));
     }
 
-    public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, UkelonnServiceProvider provider, Account account, int newJobTypeId, double newJobWages) {
+    public static Map<Integer, TransactionType> registerNewJobInDatabase(Class<?> clazz, UkelonnServiceProvider provider, Account account, int newJobTypeId, double newJobWages, Date transactionDate) {
         UkelonnDatabase database = connectionCheck(clazz, provider);
-        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount) values (?, ?, ?)")) {
+        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
             statement.setInt(1, account.getAccountId());
             statement.setInt(2, newJobTypeId);
             statement.setDouble(3, newJobWages);
+            statement.setDate(4, new java.sql.Date(transactionDate.getTime()));
             database.update(statement);
 
             // Update the list of jobs and the updated balance from the DB
