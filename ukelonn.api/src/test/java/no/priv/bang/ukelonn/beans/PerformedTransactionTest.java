@@ -17,6 +17,8 @@ package no.priv.bang.ukelonn.beans;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 public class PerformedTransactionTest {
@@ -32,10 +34,12 @@ public class PerformedTransactionTest {
     @Test
     public void testConstructorWithArgs() {
         Account account = new Account();
-        PerformedTransaction bean = new PerformedTransaction(account, 1, 3.14);
+        Date now = new Date();
+        PerformedTransaction bean = new PerformedTransaction(account, 1, 3.14, now);
         assertEquals(account, bean.getAccount());
         assertEquals(1, bean.getTransactionTypeId());
         assertEquals(3.14, bean.getTransactionAmount(), 0.0);
+        assertEquals(now, bean.getTransactionDate());
     }
 
 }

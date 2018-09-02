@@ -25,6 +25,7 @@ import static org.mockito.Mockito.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -844,7 +845,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -894,7 +895,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = getUkelonnServiceSingleton().getAccount("jod");
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -940,7 +941,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -985,7 +986,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -1065,7 +1066,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = new Account();
         List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount());
+        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerjob"));
@@ -1241,7 +1242,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> paymentTypes = getUkelonnServiceSingleton().getPaymenttypes();
-        PerformedTransaction payment = new PerformedTransaction(account, paymentTypes.get(0).getId(), account.getBalance());
+        PerformedTransaction payment = new PerformedTransaction(account, paymentTypes.get(0).getId(), account.getBalance(), new Date());
         String paymentAsJson = ServletTestBase.mapper.writeValueAsString(payment);
         HttpServletRequest request = buildRequestFromStringBody(paymentAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerpayment"));

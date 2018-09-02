@@ -15,20 +15,24 @@
  */
 package no.priv.bang.ukelonn.beans;
 
+import java.util.Date;
+
 public class PerformedTransaction {
 
     private Account account = null;
     private int transactionTypeId = -1;
     private double transactionAmount = 0.0;
+    private Date transactionDate = new Date();
 
     public PerformedTransaction() {
         // Jackson needs no-argument constructor
     }
 
-    public PerformedTransaction(Account account, int transactionTypeId, double transactionAmount) {
+    public PerformedTransaction(Account account, int transactionTypeId, double transactionAmount, Date transactionDate) {
         this.account = account;
         this.transactionTypeId = transactionTypeId;
         this.transactionAmount  = transactionAmount;
+        this.transactionDate = transactionDate;
     }
 
     public Account getAccount() {
@@ -41,6 +45,10 @@ public class PerformedTransaction {
 
     public double getTransactionAmount() {
         return transactionAmount;
+    }
+
+    public Date getTransactionDate() {
+        return transactionDate;
     }
 
 }
