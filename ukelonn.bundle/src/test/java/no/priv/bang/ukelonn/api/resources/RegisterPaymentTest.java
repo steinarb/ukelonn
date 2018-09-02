@@ -18,6 +18,8 @@ package no.priv.bang.ukelonn.api.resources;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
+
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -47,7 +49,7 @@ public class RegisterPaymentTest extends ServletTestBase {
         Account account = getUkelonnServiceSingleton().getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> paymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
-        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance());
+        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance(), new Date());
 
         // Create the object to be tested
         RegisterPayment resource = new RegisterPayment();

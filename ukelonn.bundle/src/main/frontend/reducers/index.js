@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const emptyPerformedTransaction = {
     account: { id: -1 },
     transactionTypeId: -1,
@@ -42,7 +44,7 @@ export const ukelonnReducer = (state =
                                      roles: [],
                                      error: ''
                                  },
-                                 performedjob: {...emptyPerformedTransaction},
+                                 performedjob: {...emptyPerformedTransaction, transactionDate: moment()},
                                  accounts: [],
                                  paymenttypes: [],
                                  transactiontype: { ...emptyTransactionType },
@@ -83,7 +85,7 @@ export const ukelonnReducer = (state =
     if (action.type === 'REGISTERJOB_RECEIVE') {
         return {
             ...state,
-            performedjob: {...emptyPerformedTransaction, transactionName: '' },
+            performedjob: {...emptyPerformedTransaction, transactionName: '', transactionDate: moment() },
             account: action.account
         };
     }

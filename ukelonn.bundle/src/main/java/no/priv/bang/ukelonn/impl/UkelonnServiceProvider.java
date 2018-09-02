@@ -23,6 +23,7 @@ import org.osgi.service.log.LogService;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account registerPerformedJob(PerformedTransaction job) {
-        registerNewJobInDatabase(getClass(), this, job.getAccount(), job.getTransactionTypeId(), job.getTransactionAmount());
+        registerNewJobInDatabase(getClass(), this, job.getAccount(), job.getTransactionTypeId(), job.getTransactionAmount(), job.getTransactionDate());
         return getAccount(job.getAccount().getUsername());
     }
 
@@ -114,7 +115,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account registerPayment(PerformedTransaction payment) {
-        int result = addNewPaymentToAccountInDatabase(getClass(), this, payment.getAccount(), payment.getTransactionTypeId(), payment.getTransactionAmount());
+        int result = addNewPaymentToAccountInDatabase(getClass(), this, payment.getAccount(), payment.getTransactionTypeId(), payment.getTransactionAmount(), new Date());
         if (result < 1) {
             logservice.log(LogService.LOG_ERROR, String.format("Failed to register payment of type %d, amount %f for user \"%s\"", payment.getTransactionTypeId(), payment.getTransactionAmount(), payment.getAccount().getUsername()));
             return null;
