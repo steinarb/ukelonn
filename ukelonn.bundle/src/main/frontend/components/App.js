@@ -39,7 +39,7 @@ class App extends Component {
                 <Router>
                     <Switch>
                         <Route exact path="/ukelonn/" component={Home} />
-                        <Route path="/ukelonn/login" component={Login} />
+                        <Route path="/ukelonn/login*" component={Login} />
                         <Route path="/ukelonn/user" component={User} />
                         <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
                         <Route path="/ukelonn/performedpayments" component={PerformedPayments} />
