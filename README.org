@@ -80,13 +80,10 @@ Dette trengs for å laste og teste ut denne programvaren
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
-      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
  3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
     #+BEGIN_EXAMPLE
-      cd ~/git/jsr330activator
-      mvn clean install
       cd ../ukelonn
       mvn clean install
       cd karaf
@@ -221,10 +218,7 @@ Framgangsmåte:
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
-      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
-      cd ~/git/jsr330activator
-      mvn clean install
       cd ~/git/ukelonn
       mvn clean install
     #+END_EXAMPLE
