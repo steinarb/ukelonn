@@ -126,7 +126,6 @@ public class UkelonnServletTest {
     public void testGuessContentTypeFromResourceName() {
         UkelonnServlet servlet = new UkelonnServlet();
         assertEquals("text/html", servlet.guessContentTypeFromResourceName("/index.html"));
-        assertEquals("text/html", servlet.guessContentTypeFromResourceName("/index.xhtml"));
         assertEquals("application/javascript", servlet.guessContentTypeFromResourceName("/bundle.js"));
         assertEquals("text/css", servlet.guessContentTypeFromResourceName("/bundle.css"));
         assertNull(servlet.guessContentTypeFromResourceName("/bundle.nomatch"));
