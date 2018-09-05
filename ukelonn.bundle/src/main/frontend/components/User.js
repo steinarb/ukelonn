@@ -63,7 +63,7 @@ class User extends Component {
                             <div className="form-group row">
                                 <label htmlFor="date" className="col-form-label col-5">Dato</label>
                                 <div className="col-7">
-                                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} />
+                                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
                                 </div>
                             </div>
                             <div className="form-group row">

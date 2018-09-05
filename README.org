@@ -80,15 +80,11 @@ Dette trengs for å laste og teste ut denne programvaren
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
-      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
  3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
     #+BEGIN_EXAMPLE
-      cd ~/git/jsr330activator
-      mvn clean install
       cd ../ukelonn
-      git checkout using-vaadin
       mvn clean install
       cd karaf
       mvn clean install karaf:run
@@ -103,7 +99,7 @@ Dette trengs for å laste og teste ut denne programvaren
 NB! Databasen som brukes av "mvn karaf:run" er en ordentlig SQL-database med ekte data. Men databasen kjører kun i minnet, så ingen endringer blir persistert når prosesssen stoppes.
 
 * Beskrivelse av koden
-(/Beskriver versjonen fra using-vaadin/)
+(/Beskriver versjonen fra master/)
 
 Prosjektet er et maven-prosjekt med følgende struktur:
  - =pom.xml=
@@ -111,7 +107,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    - =ukelonn.api/pom.xml=
      Dette er en OSGi-bundle som definerer to OSGi-servicer: UkelonnService og UkelonnDatabase
    - =ukelonn.bundle/pom.xml=
-     Dette er selve webapplikasjonen.  Siden dette er en Vaadin-applikasjon som bruker servlet API, så er dette en WAR og ikke en JAR, men det er også en OSGi-bundle som krever en UkelonnDatabase service og som eksponerer en UkelonnService service
+     Dette er selve webapplikasjonen.  Dette er en OSGi-bundle som inneholder DS-komponenter som registrerer servlets og filtre med pax web whiteboard
    - =ukelonn.bundle.db.liquibase/pom.xml=
      Denne bundle'n inneholder skjemaet for ukelonn-webappen som et liquibase changeset som ressurser og kode som laster ressursen fra lokal classpath og kjører dem mot databasen
    - =ukelonn.bundle.db.test/pom.xml=
@@ -126,10 +122,6 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Dette er en POM for å starte webappen kjørende i gogoshell.  Dvs. en fullt funksjonell OSGi-kontainer som blir startet på nytt hver gang maven starter den
    - =karaf/pom.xml=
      Dette er en POM som lager en "feature"-fil for [[http://karaf.apache.org/][Apache karaf]]
-   - =ukelonn.rebundled/pom.xml=
-     Hver gang man trenger en avhengighet som ikke er en OSGi-bundle kan man "rebundle" avhengigheten ved å lage et nytt underprosjekt av dette prosjektet.
-     Apache Karaf har muligheter til å auto-bundle jar-filer ved lasting, men integrasjonstestene i ukelonn.tests og gogoshell-kjøring av prosjektet trenger begge avhengigheter som OSGi-bundler.
-     Vaadin TouchKit og noen av avhengighetene til TouchKit var /ikke/ bundler og måtte rebundles.  Men selve Vaadin og avhengighetene var allerede bundlet.
 
 * Kjøring på apache karaf med derby
 
@@ -226,10 +218,7 @@ Framgangsmåte:
     #+BEGIN_EXAMPLE
       mkdir -p ~/git
       cd ~/git
-      git clone https://github.com/sbang/jsr330activator.git
       git clone https://github.com/steinarb/ukelonn.git
-      cd ~/git/jsr330activator
-      mvn clean install
       cd ~/git/ukelonn
       mvn clean install
     #+END_EXAMPLE
@@ -293,7 +282,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  6. I karaf kommando-skall, legg til maven-repo som holder snapshots av ukelonn, bygd fra travis CI-bygg av det som blir pushet til master:
     #+BEGIN_EXAMPLE
       config:edit org.ops4j.pax.url.mvn
-      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots, http://maven.vaadin.com/vaadin-addons@id=vaadin"
+      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots"
       config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
       config:update
     #+END_EXAMPLE
