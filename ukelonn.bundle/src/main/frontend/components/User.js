@@ -40,7 +40,7 @@ class User extends Component {
                     <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" />
                     <br/>
                     <label htmlFor="date">Dato</label>
-                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} />
+                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
                     <br/>
 
                     <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
