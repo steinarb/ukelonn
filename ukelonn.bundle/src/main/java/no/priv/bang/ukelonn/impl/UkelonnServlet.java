@@ -108,10 +108,6 @@ public class UkelonnServlet extends HttpServlet {
         }
 
         String extension = resource.substring(resource.lastIndexOf('.') + 1);
-        if ("xhtml".equals(extension)) {
-            return "text/html";
-        }
-
         if ("js".equals(extension)) {
             return "application/javascript";
         }
@@ -125,7 +121,7 @@ public class UkelonnServlet extends HttpServlet {
 
     private String findResourceFromPathInfo(String pathInfo) {
         if (routes.contains(pathInfo)) {
-            return "index.xhtml";
+            return "index.html";
         }
 
         return pathInfo;
