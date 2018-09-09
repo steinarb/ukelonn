@@ -155,7 +155,9 @@ Dette trengs for å bygge og kjøre programvaren
     #+BEGIN_EXAMPLE
       feature:install ukelonn-db-derby-test
       feature:install ukelonn
+      bundle:watch *
     #+END_EXAMPLE
+    (kommandoen "bundle:watch *" får karaf til å lytte i local maven repo og plukke opp og oppdatere installerte bundler som blir bygd på nytt med "mvn install" eller "mvn clean install")
  7. Koble en nettleser mot http://localhost:8181/ukelonn/
     - For en vanlig bruker, brukernavn/passord: jad/1ad
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
