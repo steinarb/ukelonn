@@ -80,10 +80,6 @@ const emptyAccount = {
 };
 
 const mapStateToProps = state => {
-    if (!state.accounts.find((account) => account.accountId === -1)) {
-        state.accounts.unshift(emptyAccount);
-    }
-
     return {
         loginResponse: state.loginResponse,
         firstTimeAfterLogin: state.firstTimeAfterLogin,
@@ -91,7 +87,7 @@ const mapStateToProps = state => {
         payment: state.payment,
         paymenttype: state.paymenttype,
         accounts: state.accounts,
-        accountsMap: new Map(state.accounts.map(i => [i.fullName, i])),
+        accountsMap: state.accountsMap,
         paymenttypes: state.paymenttypes,
         paymenttypesMap: new Map(state.paymenttypes.map(i => [i.transactionTypeName, i])),
     };

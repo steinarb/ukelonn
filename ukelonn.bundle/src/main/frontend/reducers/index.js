@@ -27,6 +27,12 @@ const emptyPasswords = {
     password2: '',
 };
 
+const emptyAccount = {
+    accountId: -1,
+    fullName: '',
+    balance: 0.0,
+};
+
 
 export const ukelonnReducer = (state =
                                { username: null,
@@ -46,6 +52,7 @@ export const ukelonnReducer = (state =
                                  },
                                  performedjob: {...emptyPerformedTransaction, transactionDate: moment()},
                                  accounts: [],
+                                 accountsMap: {},
                                  paymenttypes: [],
                                  transactiontype: { ...emptyTransactionType },
                                  users: [],
@@ -127,9 +134,14 @@ export const ukelonnReducer = (state =
     }
 
     if (action.type === 'ACCOUNTS_RECEIVE') {
+        if (!action.accounts.find((account) => account.accountId === -1)) {
+            action.accounts.unshift(emptyAccount);
+        }
+
         return {
             ...state,
-            accounts: action.accounts
+            accounts: action.accounts,
+            accountsMap: new Map(action.accounts.map(i => [i.fullName, i])),
         };
     }
 
