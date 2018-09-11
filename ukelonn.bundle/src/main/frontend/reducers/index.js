@@ -105,7 +105,9 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'RECENTJOBS_RECEIVE') {
+    if (action.type === 'RECENTJOBS_RECEIVE' || action.type === 'DELETE_JOBS_RECEIVE') {
+        action.jobs.map((job) => { job.delete=false; return job; });
+
         return {
             ...state,
             jobs: action.jobs

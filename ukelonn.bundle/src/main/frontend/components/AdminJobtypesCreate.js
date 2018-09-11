@@ -30,7 +30,7 @@ class AdminJobtypesCreate extends Component {
             <div>
                 <h1>Lag ny jobbtype</h1>
                 <br/>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobbtyper</Link>
+                <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="amount">Navn på jobbtype</label>

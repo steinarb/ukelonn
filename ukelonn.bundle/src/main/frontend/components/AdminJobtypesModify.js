@@ -30,7 +30,7 @@ class AdminJobtypesModify extends Component {
             <div>
                 <h1>Endre jobbtyper</h1>
                 <br/>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobbtyper</Link>
+                <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobbtype</label>

@@ -63,7 +63,7 @@ class Admin extends Component {
                 <br/>
                 <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
                 <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
-                <Link to="/ukelonn/admin/jobtypes">Administrere jobbtyper</Link><br/>
+                <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
                 <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
                 <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>
                 <br/>
