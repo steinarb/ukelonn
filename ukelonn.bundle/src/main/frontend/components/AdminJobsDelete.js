@@ -35,39 +35,55 @@ class AdminJobsDelete extends Component {
 
         return (
             <div>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
-                <br/>
-                <h1>Slett feilregisterte jobber for {account.firstName}</h1>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer jobber og jobbtyper
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Slett feilregisterte jobber for {account.firstName}</h1>
+                    </div>
+                </header>
 
                 <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
                    <em>Ikke</em> slett jobber som skal utbetales</p>
-                <label htmlFor="account-selector">Velg konto:</label>
-                <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} onAccountsFieldChange={onAccountsFieldChange}/>
 
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>Slett</td>
-                            <td>Dato</td>
-                            <td>Jobber</td>
-                            <td>Beløp</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr key={job.id}>
-                                <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
-                                <td>{job.transactionTime}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="account-selector" className="col-form-label col-5">Velg konto:</label>
+                        <div className="col-7">
+                            <Accounts  id="account-selector" className="form-control" accounts={accounts} accountsMap={accountsMap} account={account} onAccountsFieldChange={onAccountsFieldChange}/>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Slett</td>
+                                <td>Dato</td>
+                                <td>Jobber</td>
+                                <td>Beløp</td>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-                <button onClick={() => onDeleteMarkedJobs(account, jobs)}>Slett merkede jobber</button>
+                        </thead>
+                        <tbody>
+                            {jobs.map((job) =>
+                                 <tr key={job.id}>
+                                     <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
+                                     <td>{job.transactionTime}</td>
+                                     <td>{job.name}</td>
+                                     <td>{job.transactionAmount}</td>
+                                 </tr>
+                           )}
+                        </tbody>
+                    </table>
+                </div>
+                <button className="btn btn-default" onClick={() => onDeleteMarkedJobs(account, jobs)}>Slett merkede jobber</button>
                 <br/>
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     }
