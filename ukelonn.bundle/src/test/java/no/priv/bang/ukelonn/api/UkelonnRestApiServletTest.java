@@ -47,6 +47,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.AccountWithJobIds;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
@@ -1145,6 +1146,55 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         List<Transaction> jobs = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() {});
         assertEquals(10, jobs.size());
+    }
+
+    @Test
+    public void testDeleteJobs() throws Exception {
+        try {
+            // Set up the request
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jod");
+            List<Transaction> jobs = getUkelonnServiceSingleton().getJobs(account.getAccountId());
+            List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+            AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
+            String accountWithJobIdsAsJson = ServletTestBase.mapper.writeValueAsString(accountWithJobIds);
+            HttpServletRequest request = buildRequestFromStringBody(accountWithJobIdsAsJson);
+            when(request.getMethod()).thenReturn("POST");
+            String requestURL = "http://localhost:8181/ukelonn/api/admin/jobs/delete";
+            String requestURI = "/ukelonn/api/admin/jobs/delete";
+            when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
+            when(request.getRequestURI()).thenReturn(requestURI);
+
+            // Create a response object that will receive and hold the servlet output
+            MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+            // Create the servlet that is to be tested
+            UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+
+            // Create mock OSGi services to inject and inject it
+            MockLogService logservice = new MockLogService();
+            servlet.setLogservice(logservice);
+
+            // Inject fake OSGi service UkelonnService
+            servlet.setUkelonnService(getUkelonnServiceSingleton());
+
+            // Activate the servlet DS component
+            servlet.activate();
+
+            // When the servlet is activated it will be plugged into the http whiteboard and configured
+            ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+            servlet.init(config);
+
+            // Call the method under test
+            servlet.service(request, response);
+
+            // Check the output
+            assertEquals(200, response.getStatus());
+            assertEquals("application/json", response.getContentType());
+            List<Transaction> jobsAfterDelete = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() { });
+            assertEquals(0, jobsAfterDelete.size());
+        } finally {
+            restoreTestDatabase();
+        }
     }
 
     @Test

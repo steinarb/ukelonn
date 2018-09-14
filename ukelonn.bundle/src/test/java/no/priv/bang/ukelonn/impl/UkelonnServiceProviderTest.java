@@ -24,13 +24,14 @@ import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
@@ -76,6 +77,142 @@ public class UkelonnServiceProviderTest {
         Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
         List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
         assertEquals(10, jobs.size());
+    }
+
+    @Test
+    public void testDeleteAllJobsOfUser() {
+        try {
+            // Create the delete arguments
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jod";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            assertEquals(2, jobs.size());
+            List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+
+            // Do the delete
+            List<Transaction> jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+
+            // Check that the job list that was two items earlier is now empty
+            assertEquals(0, jobsAfterDelete.size());
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test
+    public void testDeleteSomeJobsOfUser() {
+        try {
+            // Create the delete arguments
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jod";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            assertEquals(2, jobs.size());
+            List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
+
+            // Do the delete
+            List<Transaction> jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+
+            // Check that the job list that was two items earlier is now empty
+            assertEquals(1, jobsAfterDelete.size());
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test
+    public void verifyDeletingNoJobsOfUserHasNoEffect() {
+        try {
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jod";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+
+            // Check preconditions
+            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            assertEquals(2, jobs.size());
+
+            // Delete with an empty argument
+            List<Integer> idsOfJobsToDelete = Collections.emptyList();
+            List<Transaction> jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+
+            // Verify that nothing has been deleted
+            assertEquals(2, jobsAfterDelete.size());
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test
+    public void verifyThatTryingToDeletePaymentsAsJobsWillDoNothing() {
+        try {
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jod";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+
+            // Check the preconditions
+            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            assertEquals(2, jobs.size());
+            List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
+            assertEquals(1, payments.size());
+
+            // Try deleting the payment as a job
+            List<Integer> idsOfJobsToDelete = Arrays.asList(payments.get(0).getId());
+            List<Transaction> jobsAfterAttemptedDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+
+            // Verify that both the jobs and payments are unaffected
+            assertEquals(2, jobsAfterAttemptedDelete.size());
+            List<Transaction> paymentsAfterAttemptedDelete = ukelonn.getPayments(account.getAccountId());
+            assertEquals(1, paymentsAfterAttemptedDelete.size());
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test
+    public void verifyThatTryingToDeleteJobsOfDifferentAccountWillDoNothing() {
+        try {
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jod";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            String otherUsername = "jad";
+            Account otherAccount = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), otherUsername);
+
+            // Check the preconditions
+            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            assertEquals(2, jobs.size());
+            List<Transaction> otherAccountJobs = ukelonn.getJobs(otherAccount.getAccountId());
+            assertEquals(10, otherAccountJobs.size());
+
+            // Try deleting the payment as a job
+            List<Integer> idsOfJobsToDelete = Arrays.asList(otherAccountJobs.get(0).getId(), otherAccountJobs.get(1).getId(), otherAccountJobs.get(2).getId(), otherAccountJobs.get(3).getId(), otherAccountJobs.get(4).getId(), otherAccountJobs.get(5).getId(), otherAccountJobs.get(6).getId(), otherAccountJobs.get(7).getId(), otherAccountJobs.get(8).getId(), otherAccountJobs.get(9).getId());
+            List<Transaction> jobsAfterAttemptedDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+
+            // Verify that both the account's jobs and and the other account's jobs are unaffected
+            assertEquals(2, jobsAfterAttemptedDelete.size());
+            List<Transaction> otherAccountsJobsAfterAttemptedDelete = ukelonn.getJobs(otherAccount.getAccountId());
+            assertThat(otherAccountsJobsAfterAttemptedDelete).containsAll(otherAccountJobs);
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test(expected=UkelonnException.class)
+    public void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Mock a database that will fail
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        ukelonn.setUkelonnDatabase(database);
+
+        // trying to set the parameter here will throw an UkelonnException
+        ukelonn.addParametersToDeleteJobsStatement(1, statement);
+        fail("Should never get here!");
     }
 
     @Test
@@ -550,6 +687,15 @@ public class UkelonnServiceProviderTest {
         ukelonn.changePassword(passwords);
 
         fail("Should never get here");
+    }
+
+    @Test
+    public void testJoinIds() {
+        assertEquals("", UkelonnServiceProvider.joinIds(null).toString());
+        assertEquals("", UkelonnServiceProvider.joinIds(Collections.emptyList()).toString());
+        assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
+        assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
+        assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
     }
 
 }

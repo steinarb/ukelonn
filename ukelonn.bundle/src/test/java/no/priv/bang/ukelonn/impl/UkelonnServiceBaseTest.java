@@ -114,6 +114,12 @@ public class UkelonnServiceBaseTest {
                 public List<User> changePassword(PasswordsWithUser passwords) {
                     return null;
                 }
+
+                @Override
+                public List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
             };
 
         assertEquals("Hello world!", ukelonn.getMessage());

@@ -43,6 +43,10 @@ class AdminJobtypes extends Component {
                         Lag ny jobbtype
                         <i className="material-icons">chevron_right</i>
                     </Link>
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/jobs/delete">
+                        Slett jobber
+                        <i className="material-icons">chevron_right</i>
+                    </Link>
                 </main>
                 <br/>
                 <br/>

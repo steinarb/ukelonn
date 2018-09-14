@@ -23,7 +23,10 @@ import org.osgi.service.log.LogService;
 
 import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -100,6 +103,29 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<Transaction> getJobs(int accountId) {
         return getJobsFromAccount(accountId, getClass(), this);
+    }
+
+    @Override
+    public List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete) {
+        if (!idsOfJobsToDelete.isEmpty()) {
+            String deleteQuery = "delete from transactions where transaction_id in (select transaction_id from transactions inner join transaction_types on transactions.transaction_type_id=transaction_types.transaction_type_id where transaction_id in (" + joinIds(idsOfJobsToDelete) + ") and transaction_types.transaction_is_work=? and account_id=?)";
+            PreparedStatement statement = database.prepareStatement(deleteQuery);
+            addParametersToDeleteJobsStatement(accountId, statement);
+            database.update(statement);
+        }
+
+        return getJobs(accountId);
+    }
+
+    void addParametersToDeleteJobsStatement(int accountId, PreparedStatement statement) {
+        try {
+            statement.setBoolean(1, true);
+            statement.setInt(2, accountId);
+        } catch (SQLException e) {
+            String message = "Caught exception adding parameters to job delete statement";
+            logservice.log(LogService.LOG_ERROR, message, e);
+            throw new UkelonnException(message, e);
+        }
     }
 
     @Override
@@ -232,6 +258,25 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return passwords.getPassword().equals(passwords.getPassword2());
+    }
+
+    static StringBuilder joinIds(List<Integer> ids) {
+        StringBuilder commaList = new StringBuilder();
+        if (ids == null) {
+            return commaList;
+        }
+
+        Iterator<Integer> iterator = ids.iterator();
+        if (!iterator.hasNext()) {
+            return commaList; // Return an empty string builder instead of a null
+        }
+
+        commaList.append(iterator.next());
+        while(iterator.hasNext()) {
+            commaList.append(", ").append(iterator.next());
+        }
+
+        return commaList;
     }
 
     static boolean hasUserWithNonEmptyUsername(PasswordsWithUser passwords) {
