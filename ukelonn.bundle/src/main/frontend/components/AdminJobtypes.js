@@ -29,7 +29,7 @@ class AdminJobtypes extends Component {
                 </Link>
                 <header>
                     <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                        <h1>Administrer jobbtyper</h1>
+                        <h1>Administrer jobber og jobbtyper</h1>
                     </div>
                 </header>
                 <div className="container">
@@ -40,6 +40,11 @@ class AdminJobtypes extends Component {
                     </Link>
                     <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/create">
                         Lag ny jobbtype
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobs/delete">
+                        Slett jobber
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>

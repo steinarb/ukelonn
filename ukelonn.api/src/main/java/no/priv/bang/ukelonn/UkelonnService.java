@@ -54,6 +54,8 @@ public interface UkelonnService {
 
     List<Transaction> getJobs(int accountId);
 
+    List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete);
+
     List<Transaction> getPayments(int accountId);
 
     List<TransactionType> getPaymenttypes();

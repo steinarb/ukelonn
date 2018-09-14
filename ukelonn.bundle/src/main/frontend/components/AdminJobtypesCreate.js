@@ -31,7 +31,7 @@ class AdminJobtypesCreate extends Component {
                 <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
-                    Administer jobbtyper
+                    Administer jobber og jobbtyper
                 </Link>
                 <header>
                     <div className="pb-2 mt-0 mb-2 border-bottom bg-light">

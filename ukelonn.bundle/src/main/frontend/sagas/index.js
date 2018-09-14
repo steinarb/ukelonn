@@ -299,6 +299,28 @@ function* receiveCreateJobtypeSaga(action) {
 
 
 // watcher saga
+export function* requestDeleteJobsSaga() {
+    yield takeLatest("DELETE_JOBS_REQUEST", receiveDeleteJobsSaga);
+}
+
+function doDeleteJobs(accountWithJobIds) {
+    return axios.post('/ukelonn/api/admin/jobs/delete', accountWithJobIds);
+}
+
+// worker saga
+function* receiveDeleteJobsSaga(action) {
+    try {
+        const idsOfJobsToBeDeleted = action.jobsToDelete.map((job) => { return job.id; });
+        const response = yield call(doDeleteJobs, { account: action.account, jobIds: idsOfJobsToBeDeleted });
+        const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'DELETE_JOBS_RECEIVE', jobs });
+    } catch (error) {
+        yield put({ type: 'DELETE_JOBS_FAILURE', error });
+    }
+}
+
+
+// watcher saga
 export function* requestModifyPaymenttypeSaga() {
     yield takeLatest("MODIFY_PAYMENTTYPE_REQUEST", receiveModifyPaymenttypeSaga);
 }
@@ -442,6 +464,7 @@ export function* rootSaga() {
         fork(requestRegisterPaymentSaga),
         fork(requestModifyJobtypeSaga),
         fork(requestCreateJobtypeSaga),
+        fork(requestDeleteJobsSaga),
         fork(requestModifyPaymenttypeSaga),
         fork(requestCreatePaymenttypeSaga),
         fork(requestUsersSaga),
