@@ -19,14 +19,14 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ukelonn.api</artifactId>
+    <artifactId>ukelonn.services</artifactId>
     <packaging>bundle</packaging>
 
-    <name>Ukelonn webapp OSGi service definitions OSGi bundle</name>
+    <name>Ukelonn webapp OSGi service definitions</name>
 
     <properties>
-        <Bundle-SymbolicName>no.priv.bang.ukelonn.api</Bundle-SymbolicName>
-        <karaf-feature-name>ukelonn-api</karaf-feature-name>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.services</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-services</karaf-feature-name>
     </properties>
 
     <dependencies>

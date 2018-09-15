@@ -104,7 +104,7 @@ NB! Databasen som brukes av "mvn karaf:run" er en ordentlig SQL-database med ekt
 Prosjektet er et maven-prosjekt med følgende struktur:
  - =pom.xml=
    Dette er topp-prosjektet som definerer alle versjoner av programvare som brukes og alle versjoner av avhengigheter og felles-oppsett for plugins.
-   - =ukelonn.api/pom.xml=
+   - =ukelonn.services/pom.xml=
      Dette er en OSGi-bundle som definerer to OSGi-servicer: UkelonnService og UkelonnDatabase
    - =ukelonn.bundle/pom.xml=
      Dette er selve webapplikasjonen.  Dette er en OSGi-bundle som inneholder DS-komponenter som registrerer servlets og filtre med pax web whiteboard
@@ -305,7 +305,7 @@ Det kan også være lurt å sette opp en nattlig backup av denne databasen til e
 
 For å oppdatere til nyeste snapshot, ta "ssh -p 8101 karaf@localhost" og gi følgende kommandoer:
 #+BEGIN_EXAMPLE
-  bundle:update no.priv.bang.ukelonn.api; bundle:update no.priv.bang.ukelonn.db.liquibase; bundle:update no.priv.bang.ukelonn.db.postgresql; bundle:update no.priv.bang.ukelonn
+  bundle:update no.priv.bang.ukelonn.services; bundle:update no.priv.bang.ukelonn.db.liquibase; bundle:update no.priv.bang.ukelonn.db.postgresql; bundle:update no.priv.bang.ukelonn
 #+END_EXAMPLE
 
 (/Merk:/ Man kan ikke bruke "bundle:watch *" etter å ha installert -snapshot-versjoner fra et maven-repository man når med http, fordi "hundle:watch *" fungerer kun for automatisk oppdatering av snapshot-versjoner installert i det lokale maven-repoet i ~karaf/.m2/repository/ )

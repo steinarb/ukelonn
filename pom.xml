@@ -488,7 +488,7 @@
     </build>
 
     <modules>
-        <module>ukelonn.api</module>
+        <module>ukelonn.services</module>
         <module>ukelonn.bundle</module>
         <module>ukelonn.tests</module>
         <module>ukelonn.bundle.db.liquibase</module>

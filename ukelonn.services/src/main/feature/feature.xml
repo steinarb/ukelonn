@@ -13,7 +13,7 @@
 
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle">
     <repository>mvn:org.code-house.jackson/features/${jackson.version}/xml/features</repository>
-    <feature name="ukelonn-api">
+    <feature name="ukelonn-services">
         <feature>jackson-annotations</feature>
     </feature>
 </features>

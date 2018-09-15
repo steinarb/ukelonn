@@ -18,7 +18,7 @@
         <feature prerequisite="true">wrap</feature>
         <feature>pax-http-whiteboard</feature>
         <feature>scr</feature>
-        <feature>ukelonn-api</feature>
+        <feature>ukelonn-services</feature>
         <feature>jackson-core</feature>
         <feature>jackson-databind</feature>
     </feature>
