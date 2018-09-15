@@ -17,6 +17,9 @@ package no.priv.bang.ukelonn.beans;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 
 public class AccountWithJobIdsTest {
@@ -26,6 +29,15 @@ public class AccountWithJobIdsTest {
         AccountWithJobIds bean = new AccountWithJobIds();
         assertNull(bean.getAccount());
         assertEquals(0, bean.getJobIds().size());
+    }
+
+    @Test
+    public void testConstructorWithParameters() {
+        Account account = new Account();
+        List<Integer> ids = Arrays.asList(1, 2, 3, 4);
+        AccountWithJobIds bean = new AccountWithJobIds(account, ids);
+        assertEquals(account, bean.getAccount());
+        assertEquals(4, bean.getJobIds().size());
     }
 
 }
