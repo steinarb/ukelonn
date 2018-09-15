@@ -35,7 +35,7 @@ class AdminJobtypesModify extends Component {
                         <Link to="/ukelonn/admin/jobtypes" className="mdl-navigation__link">
                             <i className="material-icons" >chevron_left</i>
                             &nbsp;
-                            Administrer jobbtyper
+                            Administrer jobber og jobbtyper
                         </Link>
                         <span className="mdl-layout-title">Endre jobbtyper</span>
                     </div>
