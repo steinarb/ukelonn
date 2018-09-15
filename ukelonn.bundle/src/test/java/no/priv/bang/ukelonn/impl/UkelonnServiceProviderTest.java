@@ -689,4 +689,13 @@ public class UkelonnServiceProviderTest {
         fail("Should never get here");
     }
 
+    @Test
+    public void testJoinIds() {
+        assertEquals("", UkelonnServiceProvider.joinIds(null).toString());
+        assertEquals("", UkelonnServiceProvider.joinIds(Collections.emptyList()).toString());
+        assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
+        assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
+        assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
+    }
+
 }
