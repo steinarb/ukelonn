@@ -49,7 +49,10 @@ class AdminJobsDelete extends Component {
                 </header>
                 <main className="mdl-layout__content">
 
-                    <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
+                    <p className="alert">
+                        <i className="material-icons" >warning</i>
+                        <br/>
+                        <em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
                         <em>Ikke</em> slett jobber som skal utbetales</p>
 
                     <div className="mdl-grid hline-bottom">
