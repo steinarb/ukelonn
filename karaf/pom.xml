@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.bundle.db.postgresql</artifactId>
+            <artifactId>ukelonn.db.postgresql</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

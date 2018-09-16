@@ -493,7 +493,7 @@
         <module>ukelonn.tests</module>
         <module>ukelonn.db.liquibase</module>
         <module>ukelonn.db.derbytest</module>
-        <module>ukelonn.bundle.db.postgresql</module>
+        <module>ukelonn.db.postgresql</module>
         <module>karaf</module>
     </modules>
 

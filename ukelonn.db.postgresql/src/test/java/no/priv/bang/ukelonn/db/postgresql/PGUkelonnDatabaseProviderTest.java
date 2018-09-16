@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.bundle.db.postgresql;
+package no.priv.bang.ukelonn.db.postgresql;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
@@ -47,7 +47,7 @@ import liquibase.exception.LiquibaseException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
-import no.priv.bang.ukelonn.bundle.db.postgresql.mocks.MockLogService;
+import no.priv.bang.ukelonn.db.postgresql.mocks.MockLogService;
 
 public class PGUkelonnDatabaseProviderTest {
 

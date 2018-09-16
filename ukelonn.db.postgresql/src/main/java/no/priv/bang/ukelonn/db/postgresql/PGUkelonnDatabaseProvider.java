@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.bundle.db.postgresql;
+package no.priv.bang.ukelonn.db.postgresql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

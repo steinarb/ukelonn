@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.bundle.db.postgresql;
+package no.priv.bang.ukelonn.db.postgresql;
 
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
