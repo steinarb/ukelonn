@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.bundle.db.test;
+package no.priv.bang.ukelonn.db.derbytest;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
@@ -55,7 +55,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
-import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
+import no.priv.bang.ukelonn.db.derbytest.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
 

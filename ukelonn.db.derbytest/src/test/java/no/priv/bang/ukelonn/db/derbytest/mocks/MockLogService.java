@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.bundle.db.test.mocks;
+package no.priv.bang.ukelonn.db.derbytest.mocks;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;

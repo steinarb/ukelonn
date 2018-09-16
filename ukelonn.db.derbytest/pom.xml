@@ -19,12 +19,12 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ukelonn.bundle.db.test</artifactId>
+    <artifactId>ukelonn.db.derbytest</artifactId>
 
-    <name>Ukelonn webapp derby test database OSGi bundle</name>
+    <name>Ukelonn webapp derby test database</name>
 
     <properties>
-        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.test</Bundle-SymbolicName>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.derbytest</Bundle-SymbolicName>
         <karaf-feature-name>ukelonn-db-derby-test</karaf-feature-name>
     </properties>
 

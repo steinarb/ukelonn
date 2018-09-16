@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.bundle.db.test</artifactId>
+            <artifactId>ukelonn.db.derbytest</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
