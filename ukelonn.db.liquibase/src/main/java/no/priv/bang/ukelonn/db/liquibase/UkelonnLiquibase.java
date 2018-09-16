@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.bundle.db.liquibase;
+package no.priv.bang.ukelonn.db.liquibase;
 
 import java.sql.SQLException;
 import javax.sql.PooledConnection;

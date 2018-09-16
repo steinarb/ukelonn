@@ -54,7 +54,7 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
+import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.test.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {

@@ -46,7 +46,7 @@ import liquibase.database.DatabaseConnection;
 import liquibase.exception.LiquibaseException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
-import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
+import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.bundle.db.postgresql.mocks.MockLogService;
 
 public class PGUkelonnDatabaseProviderTest {

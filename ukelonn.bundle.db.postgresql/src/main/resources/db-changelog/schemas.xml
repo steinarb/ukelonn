@@ -12,5 +12,5 @@
 <!-- under the License.                                                              -->
 
 <locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
-    <include rules="../../../../../ukelonn.bundle.db.liquibase/src/main/resources/db-changelog/schemas.xml"/>
+    <include rules="../../../../../ukelonn.db.liquibase/src/main/resources/db-changelog/schemas.xml"/>
 </locatingRules>

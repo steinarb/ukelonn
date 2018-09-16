@@ -40,7 +40,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
-import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
+import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(service=UkelonnDatabase.class, immediate=true)
 public class UkelonnDatabaseProvider implements UkelonnDatabase {

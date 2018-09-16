@@ -108,7 +108,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      Dette er en OSGi-bundle som definerer to OSGi-servicer: UkelonnService og UkelonnDatabase
    - =ukelonn.bundle/pom.xml=
      Dette er selve webapplikasjonen.  Dette er en OSGi-bundle som inneholder DS-komponenter som registrerer servlets og filtre med pax web whiteboard
-   - =ukelonn.bundle.db.liquibase/pom.xml=
+   - =ukelonn.db.liquibase/pom.xml=
      Denne bundle'n inneholder skjemaet for ukelonn-webappen som et liquibase changeset som ressurser og kode som laster ressursen fra lokal classpath og kjører dem mot databasen
    - =ukelonn.bundle.db.test/pom.xml=
      Dette er en ikke-persistent SQL-database i minnet som setter opp forventet skjema og fyller opp databasen med test-data (dataene fylles opp som liquibase changesets så det er ok å starte denne basen mange ganger uten at det blir duplikat i dataene)

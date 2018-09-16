@@ -38,7 +38,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import static no.priv.bang.ukelonn.UkelonnDatabaseConstants.*;
-import no.priv.bang.ukelonn.bundle.db.liquibase.UkelonnLiquibase;
+import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(service=UkelonnDatabase.class, immediate=true)
 public class PGUkelonnDatabaseProvider implements UkelonnDatabase {

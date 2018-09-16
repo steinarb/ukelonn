@@ -491,7 +491,7 @@
         <module>ukelonn.services</module>
         <module>ukelonn.bundle</module>
         <module>ukelonn.tests</module>
-        <module>ukelonn.bundle.db.liquibase</module>
+        <module>ukelonn.db.liquibase</module>
         <module>ukelonn.bundle.db.test</module>
         <module>ukelonn.bundle.db.postgresql</module>
         <module>karaf</module>
