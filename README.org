@@ -110,6 +110,8 @@ Prosjektet er et maven-prosjekt med følgende struktur:
      - UkelonnService definerer alle operasjoner som REST-APIet tilbyr.  Alle beans som brukes i REST-APIet er også definert her
    - =ukelonn.backend/pom.xml=
      Dette er implementasjonen av UkelonnService.  Inneholder applikasjonens business-logikk. Trenger en OSGi-service av type UkelonnDatabase
+   - =ukelonn.web.security/pom.xml=
+     Dette er en DS-komponent som kobler Shiro-autentisering inn i web whiteboard
    - =ukelonn.bundle/pom.xml=
      Dette er selve webapplikasjonen.  Dette er en OSGi-bundle som inneholder DS-komponenter som registrerer servlets og filtre med pax web whiteboard
    - =ukelonn.db.liquibase/pom.xml=

@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.web.security;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;

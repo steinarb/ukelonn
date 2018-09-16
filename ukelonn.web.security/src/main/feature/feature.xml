@@ -12,14 +12,8 @@
 <!-- under the License.                                                              -->
 
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle">
-    <repository>mvn:org.code-house.jackson/features/${jackson.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.api/${project.version}/xml/features</repository>
-    <feature name="ukelonn">
-        <feature prerequisite="true">wrap</feature>
+    <feature name="ukelonn-web-security">
         <feature>pax-http-whiteboard</feature>
         <feature>scr</feature>
-        <feature>ukelonn-services</feature>
-        <feature>jackson-core</feature>
-        <feature>jackson-databind</feature>
     </feature>
 </features>

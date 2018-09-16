@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.web.security;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.http.context.ServletContextHelper;
