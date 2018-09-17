@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.backend;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
+import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -29,12 +29,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -854,26 +848,6 @@ public class CommonDatabaseMethodsTest {
     }
 
     @Test
-    public void testChangePasswordForUser() {
-        UkelonnShiroFilter shiroFilter = new UkelonnShiroFilter();
-        shiroFilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
-        UkelonnRealm realm = new UkelonnRealm(shiroFilter);
-        realm.setCredentialsMatcher(createSha256HashMatcher(1024));
-        String username = "jad";
-        String originalPassword = "1ad";
-
-        // Verify old password
-        assertTrue(passwordMatcher(realm, username, originalPassword));
-
-        // Change the password
-        String newPassword = "nupass";
-        changePasswordForUser(username, newPassword, getClass(), getUkelonnServiceSingleton());
-
-        // Verify new password
-        assertTrue(passwordMatcher(realm, username, newPassword));
-    }
-
-    @Test
     public void testUpdateTransactionTypeInDatabase() {
         // Verify the initial state of the transaction type that is to be modified
         Map<Integer, TransactionType> transactionTypes = getTransactionTypesFromUkelonnDatabase(getClass(), provider);
@@ -994,16 +968,6 @@ public class CommonDatabaseMethodsTest {
         assertNull(resource);
     }
 
-    private boolean passwordMatcher(UkelonnRealm realm, String username, String password) {
-        AuthenticationToken token = new UsernamePasswordToken(username, password.toCharArray());
-        try {
-            realm.getAuthenticationInfo(token);
-            return true;
-        } catch(AuthenticationException e) {
-            return false;
-        }
-    }
-
     private User findUserInListByName(List<User> users, String username) {
         for (User user : users) {
             if (username.equals(user.getUsername())) {
@@ -1022,13 +986,6 @@ public class CommonDatabaseMethodsTest {
         }
 
         return null;
-    }
-
-    private CredentialsMatcher createSha256HashMatcher(int iterations) {
-        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
-        credentialsMatcher.setStoredCredentialsHexEncoded(false);
-        credentialsMatcher.setHashIterations(iterations);
-        return credentialsMatcher;
     }
 
 }

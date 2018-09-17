@@ -5,5 +5,5 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.derbytest/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.postgresql/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.bundle/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
 </features>

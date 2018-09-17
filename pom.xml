@@ -89,6 +89,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>no.priv.bang.osgi.service.adapters</groupId>
+                <artifactId>service-mocks</artifactId>
+                <version>1.0.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.service.jdbc</artifactId>
                 <version>${dependency.osgi.jdbc.version}</version>
@@ -489,6 +495,7 @@
 
     <modules>
         <module>ukelonn.services</module>
+        <module>ukelonn.backend</module>
         <module>ukelonn.bundle</module>
         <module>ukelonn.tests</module>
         <module>ukelonn.db.liquibase</module>

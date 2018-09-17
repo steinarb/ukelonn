@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.backend;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
+import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +32,8 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
@@ -42,7 +44,6 @@ import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
-import no.priv.bang.ukelonn.mocks.MockLogService;
 
 public class UkelonnServiceProviderTest {
 
@@ -77,6 +78,22 @@ public class UkelonnServiceProviderTest {
         Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
         List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
         assertEquals(10, jobs.size());
+    }
+
+    @Test
+    public void testRegisterPerformedJob() {
+        try {
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jad";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            double oldBalance = account.getBalance();
+            TransactionType jobtype = ukelonn.getJobTypes().get(0);
+            PerformedTransaction performedJob = new PerformedTransaction(account, jobtype.getId(), jobtype.getTransactionAmount(), new Date());
+            Account updatedAccount = ukelonn.registerPerformedJob(performedJob);
+            assertThat(updatedAccount.getBalance()).isGreaterThan(oldBalance);
+        } finally {
+            restoreTestDatabase();
+        }
     }
 
     @Test

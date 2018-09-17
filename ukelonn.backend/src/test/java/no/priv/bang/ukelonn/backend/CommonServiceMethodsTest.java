@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.backend;
 
 import static org.junit.Assert.*;
 
@@ -21,8 +21,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.mocks.MockLogService;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 

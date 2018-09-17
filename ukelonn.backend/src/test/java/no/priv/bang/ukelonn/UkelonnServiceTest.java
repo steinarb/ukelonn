@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
+import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 /**
  * Unit test for the {@link UkelonnService} interface and its

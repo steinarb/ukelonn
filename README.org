@@ -106,6 +106,10 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    Dette er topp-prosjektet som definerer alle versjoner av programvare som brukes og alle versjoner av avhengigheter og felles-oppsett for plugins.
    - =ukelonn.services/pom.xml=
      Dette er en OSGi-bundle som definerer to OSGi-servicer: UkelonnService og UkelonnDatabase
+     - UkelonnDatabase gjør database-laget pluggbart
+     - UkelonnService definerer alle operasjoner som REST-APIet tilbyr.  Alle beans som brukes i REST-APIet er også definert her
+   - =ukelonn.backend/pom.xml=
+     Dette er implementasjonen av UkelonnService.  Inneholder applikasjonens business-logikk. Trenger en OSGi-service av type UkelonnDatabase
    - =ukelonn.bundle/pom.xml=
      Dette er selve webapplikasjonen.  Dette er en OSGi-bundle som inneholder DS-komponenter som registrerer servlets og filtre med pax web whiteboard
    - =ukelonn.db.liquibase/pom.xml=

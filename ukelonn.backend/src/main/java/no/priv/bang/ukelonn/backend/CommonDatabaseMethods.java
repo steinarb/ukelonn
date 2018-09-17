@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.backend;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
 
-import static no.priv.bang.ukelonn.impl.CommonServiceMethods.*;
+import static no.priv.bang.ukelonn.backend.CommonServiceMethods.*;
 
 public class CommonDatabaseMethods {
 
