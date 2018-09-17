@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.api;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
+import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -44,6 +44,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.beans.Account;
@@ -54,7 +55,6 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
 import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
-import no.priv.bang.ukelonn.mocks.MockLogService;
 
 /**
  * The tests in this test class mirrors the tests for the Jersey

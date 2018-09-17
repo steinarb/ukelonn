@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.*;
+import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 

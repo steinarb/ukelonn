@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.impl.CommonDatabaseMethods.getAccountInfoFromDatabase;
+import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.getUkelonnServiceSingleton;
 import static no.priv.bang.ukelonn.testutils.TestUtils.releaseFakeOsgiServices;
 import static no.priv.bang.ukelonn.testutils.TestUtils.restoreTestDatabase;
@@ -36,13 +36,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
 import no.priv.bang.ukelonn.beans.Transaction;
-import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
-import no.priv.bang.ukelonn.mocks.MockLogService;
+import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 public class AdminJobsTest {
 

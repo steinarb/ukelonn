@@ -26,9 +26,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
-import no.priv.bang.ukelonn.mocks.MockLogService;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 

@@ -33,11 +33,12 @@ import javax.ws.rs.InternalServerErrorException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.User;
-import no.priv.bang.ukelonn.impl.UkelonnServiceProvider;
-import no.priv.bang.ukelonn.mocks.MockLogService;
+import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 public class AdminUserResourceTest {
 

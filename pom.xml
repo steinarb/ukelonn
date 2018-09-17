@@ -497,6 +497,7 @@
         <module>ukelonn.services</module>
         <module>ukelonn.backend</module>
         <module>ukelonn.web.security</module>
+        <module>ukelonn.web.services</module>
         <module>ukelonn.testutils</module>
         <module>ukelonn.db.liquibase</module>
         <module>ukelonn.db.derbytest</module>
