@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.web.frontend;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
-import no.priv.bang.ukelonn.mocks.MockLogService;
 
 import static org.mockito.Mockito.*;
 

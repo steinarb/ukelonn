@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.impl;
+package no.priv.bang.ukelonn.web.frontend;
 
 import java.io.IOException;
 import java.io.InputStream;

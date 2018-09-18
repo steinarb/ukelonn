@@ -93,7 +93,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.bundle</artifactId>
+            <artifactId>ukelonn.web.frontend</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
