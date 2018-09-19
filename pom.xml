@@ -432,6 +432,12 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>no/priv/bang/ukelonn/mocks/**/*.class</exclude>
+                            <exclude>no/priv/bang/ukelonn/testutils/**/*.class</exclude>
+                        </excludes>
+                    </instrumentation>
                     <aggregate>true</aggregate>
                 </configuration>
             </plugin>
