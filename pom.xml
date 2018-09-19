@@ -89,6 +89,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>no.priv.bang.osgi.service.adapters</groupId>
+                <artifactId>service-mocks</artifactId>
+                <version>1.0.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.service.jdbc</artifactId>
                 <version>${dependency.osgi.jdbc.version}</version>
@@ -473,12 +479,16 @@
     </build>
 
     <modules>
-        <module>ukelonn.api</module>
-        <module>ukelonn.bundle</module>
+        <module>ukelonn.services</module>
+        <module>ukelonn.backend</module>
+        <module>ukelonn.web.security</module>
+        <module>ukelonn.web.services</module>
+        <module>ukelonn.web.frontend</module>
+        <module>ukelonn.testutils</module>
+        <module>ukelonn.db.liquibase</module>
+        <module>ukelonn.db.derbytest</module>
+        <module>ukelonn.db.postgresql</module>
         <module>ukelonn.tests</module>
-        <module>ukelonn.bundle.db.liquibase</module>
-        <module>ukelonn.bundle.db.test</module>
-        <module>ukelonn.bundle.db.postgresql</module>
         <module>karaf</module>
     </modules>
 
