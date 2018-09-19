@@ -230,12 +230,6 @@ public class CommonDatabaseMethods {
         return payments;
     }
 
-    public static List<Transaction> getPaymentsFromAccount(Account account, Class<?> clazz, UkelonnServiceProvider provider) {
-        List<Transaction> payments = getTransactionsFromAccount(account, clazz, provider, "/sql/query/payments_last_n.sql", "payments");
-        makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
-        return payments;
-    }
-
     private static void makePaymentAmountsPositive(List<Transaction> payments) {
         for (Transaction payment : payments) {
             double amount = Math.abs(payment.getTransactionAmount());
@@ -245,23 +239,6 @@ public class CommonDatabaseMethods {
 
     public static List<Transaction> getJobsFromAccount(int accountId, Class<?> clazz, UkelonnServiceProvider provider) {
         return getTransactionsFromAccount(accountId, clazz, provider, "/sql/query/jobs_last_n.sql", "job");
-    }
-
-    public static List<Transaction> getJobsFromAccount(Account account, Class<?> clazz, UkelonnServiceProvider provider) {
-        return getTransactionsFromAccount(account, clazz, provider, "/sql/query/jobs_last_n.sql", "job");
-    }
-
-    static List<Transaction> getTransactionsFromAccount(Account account,
-                                                        Class<?> clazz,
-                                                        UkelonnServiceProvider provider,
-                                                        String sqlTemplate,
-                                                        String transactionType)
-    {
-        if (null != account) {
-            return getTransactionsFromAccount(account.getAccountId(), clazz, provider, sqlTemplate, transactionType);
-        }
-
-        return Collections.emptyList();
     }
 
     static List<Transaction> getTransactionsFromAccount(int accountId,
@@ -297,23 +274,6 @@ public class CommonDatabaseMethods {
             // Oops! The parameter wasn't present!
             // Continue as if nothing happened
         }
-    }
-
-    /***
-     * Create a list of dummy transactions used to force the initial size of tables.
-     *
-     * @return A list of 10 transactions with empty values for everything
-     */
-    public static Collection<Transaction> getDummyTransactions() {
-        int lengthOfDummyList = 10;
-        TransactionType dummyTransactionType = new TransactionType(0, "", null, true, true);
-        ArrayList<Transaction> dummyTransactions = new ArrayList<>(lengthOfDummyList);
-        for (int i = 0; i < lengthOfDummyList; i++) {
-            Transaction dummyTransaction = new Transaction(0, dummyTransactionType, null, 0.0, false);
-            dummyTransactions.add(dummyTransaction);
-        }
-
-        return dummyTransactions;
     }
 
     private static Transaction mapTransaction(ResultSet resultset) throws SQLException {

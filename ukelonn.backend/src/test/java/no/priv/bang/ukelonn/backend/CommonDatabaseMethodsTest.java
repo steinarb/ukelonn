@@ -393,7 +393,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass(), provider);
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account.getAccountId(), getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, payments.size());
         } finally {
             // Restore the real derby database
@@ -424,7 +424,7 @@ public class CommonDatabaseMethodsTest {
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account, getClass(), provider);
+            List<Transaction> payments = CommonDatabaseMethods.getPaymentsFromAccount(account.getAccountId(), getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, payments.size());
         } finally {
             // Restore the real derby database
@@ -449,7 +449,7 @@ public class CommonDatabaseMethodsTest {
             when(database.prepareStatement(anyString())).thenReturn(statement);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass(), provider);
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account.getAccountId(), getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, jobs.size());
         } finally {
             // Restore the real derby database
@@ -480,7 +480,7 @@ public class CommonDatabaseMethodsTest {
             when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
             provider.setUkelonnDatabase(database);
             Account account = new Account(1, 1, "jad", "Jane", "Doe", 0.0);
-            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass(), provider);
+            List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account.getAccountId(), getClass(), provider);
             assertEquals("Expected a non-null, empty list", 0, jobs.size());
         } finally {
             // Restore the real derby database
@@ -745,9 +745,9 @@ public class CommonDatabaseMethodsTest {
         assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
-        List<Transaction> jobs = getJobsFromAccount(account, getClass(), provider);
+        List<Transaction> jobs = getJobsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(10, jobs.size());
-        List<Transaction> payments = getPaymentsFromAccount(account, getClass(), provider);
+        List<Transaction> payments = getPaymentsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(10, payments.size());
     }
 
@@ -875,7 +875,7 @@ public class CommonDatabaseMethodsTest {
     public void testDeleteTransactions() {
         // Verify initial job size for a user
         Account account = getAccountInfoFromDatabase(getClass(), provider, "jod");
-        List<Transaction> initialJobsForJod = getJobsFromAccount(account, getClass(), provider);
+        List<Transaction> initialJobsForJod = getJobsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(2, initialJobsForJod.size());
 
         // Add two jobs that are to be deleted later
@@ -883,7 +883,7 @@ public class CommonDatabaseMethodsTest {
         registerNewJobInDatabase(getClass(), provider, account, 2, 45, new Date());
 
         // Verify the number of jobs for the user in the database before deleting any
-        List<Transaction> jobs = getJobsFromAccount(account, getClass(), provider);
+        List<Transaction> jobs = getJobsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(4, jobs.size());
 
         // Delete two jobs for the user
@@ -891,7 +891,7 @@ public class CommonDatabaseMethodsTest {
         deleteTransactions(getClass(), provider, jobsToDelete);
 
         // Verify that the jobs has been deleted
-        List<Transaction> jobsAfterDelete = getJobsFromAccount(account, getClass(), provider);
+        List<Transaction> jobsAfterDelete = getJobsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(2, jobsAfterDelete.size());
     }
 
@@ -900,7 +900,7 @@ public class CommonDatabaseMethodsTest {
         assertEquals("", CommonDatabaseMethods.joinIds(null).toString());
         assertEquals("", CommonDatabaseMethods.joinIds(Collections.emptyList()).toString());
         Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
-        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account, getClass(), provider);
+        List<Transaction> jobs = CommonDatabaseMethods.getJobsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", CommonDatabaseMethods.joinIds(jobs).toString());
     }
 
@@ -908,7 +908,7 @@ public class CommonDatabaseMethodsTest {
     public void testAddNewPaymentToAccount() {
         // Verify initial number of payments for a user
         Account account = getAccountInfoFromDatabase(getClass(), provider, "jod");
-        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(account, getClass(), provider);
+        List<Transaction> initialPaymentsForJod = getPaymentsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(1, initialPaymentsForJod.size());
 
         // Register a payment
@@ -916,7 +916,7 @@ public class CommonDatabaseMethodsTest {
         addNewPaymentToAccount(getClass(), provider, account, transactionTypes.get(4), account.getBalance());
 
         // Verify that a payment have been added
-        List<Transaction> paymentsForJod = getPaymentsFromAccount(account, getClass(), provider);
+        List<Transaction> paymentsForJod = getPaymentsFromAccount(account.getAccountId(), getClass(), provider);
         assertEquals(2, paymentsForJod.size());
     }
 
