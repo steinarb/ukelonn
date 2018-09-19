@@ -41,8 +41,8 @@ import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
 
 /**
- * The OSGi component that listens for a {@link WebContainer} service
- * and registers a servlet with the web container.
+ * The OSGi component that provides the business logic of the ukelonn
+ * webapp.
  *
  * @author Steinar Bang
  *
