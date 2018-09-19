@@ -104,16 +104,24 @@ NB! Databasen som brukes av "mvn karaf:run" er en ordentlig SQL-database med ekt
 Prosjektet er et maven-prosjekt med følgende struktur:
  - =pom.xml=
    Dette er topp-prosjektet som definerer alle versjoner av programvare som brukes og alle versjoner av avhengigheter og felles-oppsett for plugins.
-   - =ukelonn.api/pom.xml=
+   - =ukelonn.services/pom.xml=
      Dette er en OSGi-bundle som definerer to OSGi-servicer: UkelonnService og UkelonnDatabase
-   - =ukelonn.bundle/pom.xml=
-     Dette er selve webapplikasjonen.  Dette er en OSGi-bundle som inneholder DS-komponenter som registrerer servlets og filtre med pax web whiteboard
-   - =ukelonn.bundle.db.liquibase/pom.xml=
+     - UkelonnDatabase gjør database-laget pluggbart
+     - UkelonnService definerer alle operasjoner som REST-APIet tilbyr.  Alle beans som brukes i REST-APIet er også definert her
+   - =ukelonn.backend/pom.xml=
+     Dette er implementasjonen av UkelonnService.  Inneholder applikasjonens business-logikk. Trenger en OSGi-service av type UkelonnDatabase
+   - =ukelonn.web.security/pom.xml=
+     Dette er en DS-komponent som kobler Shiro-autentisering inn i web whiteboard
+   - =ukelonn.web.services/pom.xml=
+     Dette er en DS-komponent som lager et REST-API og plugger inn i web whiteboard
+   - =ukelonn.web.frontend/pom.xml=
+     Dette er en react-applikasjon som plugger seg inn i web whiteboard
+   - =ukelonn.db.liquibase/pom.xml=
      Denne bundle'n inneholder skjemaet for ukelonn-webappen som et liquibase changeset som ressurser og kode som laster ressursen fra lokal classpath og kjører dem mot databasen
-   - =ukelonn.bundle.db.test/pom.xml=
+   - =ukelonn.db.derbytest/pom.xml=
      Dette er en ikke-persistent SQL-database i minnet som setter opp forventet skjema og fyller opp databasen med test-data (dataene fylles opp som liquibase changesets så det er ok å starte denne basen mange ganger uten at det blir duplikat i dataene)
      Dette er en fullt funksjonell database, men ingenting blir persistert mellom kjøringer.  Den brukes til test både av webappen i gogoshell og brukes som en vanlig jar-fil i enhetstestene i ukelonn.bundle
-   - =ukelonn.bundle.db.postgresql/pom.xml=
+   - =ukelonn.db.postgresql/pom.xml=
      Dette er en OSGi-bundle som forventer å finne en PostgreSQL-base som brukeren som kjører webappen har rettigheter til og som har en database "ukelonn".
      Databasen "ukelonn" vil få riktig skjema og en admin-bruker ved første gangs kjøring.
    - =ukelonn.tests/pom.xml=
@@ -305,7 +313,7 @@ Det kan også være lurt å sette opp en nattlig backup av denne databasen til e
 
 For å oppdatere til nyeste snapshot, ta "ssh -p 8101 karaf@localhost" og gi følgende kommandoer:
 #+BEGIN_EXAMPLE
-  bundle:update no.priv.bang.ukelonn.api; bundle:update no.priv.bang.ukelonn.db.liquibase; bundle:update no.priv.bang.ukelonn.db.postgresql; bundle:update no.priv.bang.ukelonn
+  bundle:update no.priv.bang.ukelonn.services; bundle:update no.priv.bang.ukelonn.db.liquibase; bundle:update no.priv.bang.ukelonn.db.postgresql; bundle:update no.priv.bang.ukelonn
 #+END_EXAMPLE
 
 (/Merk:/ Man kan ikke bruke "bundle:watch *" etter å ha installert -snapshot-versjoner fra et maven-repository man når med http, fordi "hundle:watch *" fungerer kun for automatisk oppdatering av snapshot-versjoner installert i det lokale maven-repoet i ~karaf/.m2/repository/ )
@@ -338,7 +346,7 @@ Framgangsmåte:
        #+END_EXAMPLE
  2. Fra karaf-konsollet, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
-      config:edit no.priv.bang.ukelonn.bundle.db.postgresql.PGUkelonnDatabaseProvider
+      config:edit no.priv.bang.ukelonn.db.postgresql.PGUkelonnDatabaseProvider
       config:property-set ukelonn.db.jdbc.url "jdbc:postgresql://lorenzo.hjemme.lan/ukelonn
       config:property-set ukelonn.db.jdbc.user "karaf"
       config:property-set ukelonn.db.jdbc.password "karaf"
