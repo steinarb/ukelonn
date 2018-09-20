@@ -60,44 +60,6 @@ I øyeblikket er det fire hoved-brancher:
 
 Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
-* Utsjekk og kjapp test av programvaren
-
-Dette trengs for å laste og teste ut denne programvaren
- 1. Installer det som trengs:
-    - På debian/ubuntu/mint/etc., logg inn som root og gi følgende kommandoer for å installere alle avhengighetene:
-      #+BEGIN_EXAMPLE
-        apt-get update
-        apt-get install git maven openjdk-8-jdk
-      #+END_EXAMPLE
-    - git: https://git-scm.com/download/win
-    - Java SDK 1.8:
-      http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-    - Apache maven:
-      - Download: https://maven.apache.org/download.cgi
-      - Install: https://maven.apache.org/install.html
-      - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-arkivene som trengs for å bygge applikasjonen (kommandoer for bash (funker også i git bash på windows)):
-    #+BEGIN_EXAMPLE
-      mkdir -p ~/git
-      cd ~/git
-      git clone https://github.com/steinarb/ukelonn.git
-    #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
-    #+BEGIN_EXAMPLE
-      cd ../ukelonn
-      mvn clean install
-      cd karaf
-      mvn clean install karaf:run
-    #+END_EXAMPLE
- 4. Koble en nettleser mot http://localhost:8181/ukelonn/
-    - For en vanlig bruker, brukernavn/passord: jad/1ad
-      - Vanlig bruker kan registrere nye jobber og sjekke saldo
-    - For en administrator-bruker, brukernavn/passord: admin/admin
-      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
- 5. Når man er ferdig med å teste så kan webappen stoppes med Ctrl-C
-
-NB! Databasen som brukes av "mvn karaf:run" er en ordentlig SQL-database med ekte data. Men databasen kjører kun i minnet, så ingen endringer blir persistert når prosesssen stoppes.
-
 * Beskrivelse av koden
 (/Beskriver versjonen fra master/)
 
