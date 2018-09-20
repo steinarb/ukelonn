@@ -120,7 +120,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    - =karaf/pom.xml=
      Dette er en POM som lager en "feature"-fil for [[http://karaf.apache.org/][Apache karaf]]
 
-* Kjøring på apache karaf med derby
+* Bygg applikasjonen fra kildekode og kjør applikasjonen
 
 For å teste og debugge, så kan man kjøre med samme database som enhetstestene og integrasjonstestene bruker.  Derby-databasen kjører i minnet og blir satt opp med faste data ved hjelp av liquibase, hver gang den blir startet.
 
@@ -132,24 +132,21 @@ Dette trengs for å bygge og kjøre programvaren
       - Download: https://maven.apache.org/download.cgi
       - Install: https://maven.apache.org/install.html
       - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-repositoriet
+ 2. I et kommandolinjevindu, gjør en klon av git-repositoriet
     #+BEGIN_EXAMPLE
-      mkdir %HOME%\git
-      cd %HOME%\git
+      mkdir git
+      cd git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+ 3. I kommandolinje-vinduet, bygg applikasjonen med følgende kommandoer:
     #+BEGIN_EXAMPLE
-      cd %HOME%\git\ukelonn
+      cd ukelonn
       mvn clean install
     #+END_EXAMPLE
- 4. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.2]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
- 5. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+ 4. Følge Apache Karaf quick start guide (NB! last ned og bruk karaf 4.1.6, ikke karaf 4.2.x) https://karaf.apache.org/manual/latest/quick-start.html
+ 5. Installer applikasjonen med følgende kommandoer fra "karaf console":
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
-    #+END_EXAMPLE
- 6. Installer webapplikasjonen:
-    #+BEGIN_EXAMPLE
       feature:install ukelonn-db-derby-test
       feature:install ukelonn
       bundle:watch *
