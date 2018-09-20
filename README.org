@@ -60,43 +60,31 @@ I øyeblikket er det fire hoved-brancher:
 
 Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
-* Utsjekk og kjapp test av programvaren
+* Kjapp test av programvaren uten å bygge koden
 
-Dette trengs for å laste og teste ut denne programvaren
- 1. Installer det som trengs:
-    - På debian/ubuntu/mint/etc., logg inn som root og gi følgende kommandoer for å installere alle avhengighetene:
-      #+BEGIN_EXAMPLE
-        apt-get update
-        apt-get install git maven openjdk-8-jdk
-      #+END_EXAMPLE
-    - git: https://git-scm.com/download/win
-    - Java SDK 1.8:
-      http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-    - Apache maven:
-      - Download: https://maven.apache.org/download.cgi
-      - Install: https://maven.apache.org/install.html
-      - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-arkivene som trengs for å bygge applikasjonen (kommandoer for bash (funker også i git bash på windows)):
+Det er mulig å teste programvaren uten å sjekke ut og bygge kode.  I denne testen kjører man mot en derby-database som settes opp med dummy-data.
+
+Framgangsmåten er som følger:
+ 1. Følge Apache Karaf quick start guide (NB! last ned og bruk karaf 4.1.6, ikke karaf 4.2.x) https://karaf.apache.org/manual/latest/quick-start.html
+ 2. Fra kommandolinja til karaf (aka. "karaf console") legg til et maven-repo som inneholder ukelonn bygd fra travis-ci
     #+BEGIN_EXAMPLE
-      mkdir -p ~/git
-      cd ~/git
-      git clone https://github.com/steinarb/ukelonn.git
+      config:edit org.ops4j.pax.url.mvn
+      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots"
+      config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
+      config:update
     #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer for å bygge koden (fortsatt kommandoer for bash:
+ 3. Fortsatt fra kommandolinja til karaf, innstaller ukelonn-appen med følgende kommandoer (applikasjonen ukelonn og alle dens avhengigheter blir dratt med hjelp av maven)
     #+BEGIN_EXAMPLE
-      cd ../ukelonn
-      mvn clean install
-      cd karaf
-      mvn clean install karaf:run
+      feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
+      feature:install ukelonn-with-derby
     #+END_EXAMPLE
- 4. Koble en nettleser mot http://localhost:8181/ukelonn/
+ 4. Åpne http://localhost:8181/ukelonn i en nettleser
     - For en vanlig bruker, brukernavn/passord: jad/1ad
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
     - For en administrator-bruker, brukernavn/passord: admin/admin
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
- 5. Når man er ferdig med å teste så kan webappen stoppes med Ctrl-C
 
-NB! Databasen som brukes av "mvn karaf:run" er en ordentlig SQL-database med ekte data. Men databasen kjører kun i minnet, så ingen endringer blir persistert når prosesssen stoppes.
+Databasen som kjører er en ekte SQL-database men kjører kun i minnet så endringer blir ikke persistert og blir borte nor karaf-prosessen blir stoppet.
 
 * Beskrivelse av koden
 (/Beskriver versjonen fra master/)
@@ -131,7 +119,7 @@ Prosjektet er et maven-prosjekt med følgende struktur:
    - =karaf/pom.xml=
      Dette er en POM som lager en "feature"-fil for [[http://karaf.apache.org/][Apache karaf]]
 
-* Kjøring på apache karaf med derby
+* Bygg applikasjonen fra kildekode og kjør applikasjonen
 
 For å teste og debugge, så kan man kjøre med samme database som enhetstestene og integrasjonstestene bruker.  Derby-databasen kjører i minnet og blir satt opp med faste data ved hjelp av liquibase, hver gang den blir startet.
 
@@ -143,26 +131,22 @@ Dette trengs for å bygge og kjøre programvaren
       - Download: https://maven.apache.org/download.cgi
       - Install: https://maven.apache.org/install.html
       - Run: https://maven.apache.org/run.html
- 2. Gjør en klon av git-repositoriet
+ 2. I et kommandolinjevindu, gjør en klon av git-repositoriet
     #+BEGIN_EXAMPLE
-      mkdir %HOME%\git
-      cd %HOME%\git
+      mkdir git
+      cd git
       git clone https://github.com/steinarb/ukelonn.git
     #+END_EXAMPLE
- 3. Åpne et kommandolinje-vindu og skriv følgende kommandoer:
+ 3. I kommandolinje-vinduet, bygg applikasjonen med følgende kommandoer:
     #+BEGIN_EXAMPLE
-      cd %HOME%\git\ukelonn
+      cd ukelonn
       mvn clean install
     #+END_EXAMPLE
- 4. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.2]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja
- 5. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
+ 4. Følge Apache Karaf quick start guide (NB! last ned og bruk karaf 4.1.6, ikke karaf 4.2.x) https://karaf.apache.org/manual/latest/quick-start.html
+ 5. Installer applikasjonen med følgende kommandoer fra "karaf console":
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
-    #+END_EXAMPLE
- 6. Installer webapplikasjonen:
-    #+BEGIN_EXAMPLE
-      feature:install ukelonn-db-derby-test
-      feature:install ukelonn
+      feature:install ukelonn-with-derby
       bundle:watch *
     #+END_EXAMPLE
     (kommandoen "bundle:watch *" får karaf til å lytte i local maven repo og plukke opp og oppdatere installerte bundler som blir bygd på nytt med "mvn install" eller "mvn clean install")
@@ -247,8 +231,7 @@ Framgangsmåte:
     #+END_EXAMPLE
  4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:install ukelonn-db-postgresql
-      feature:install ukelonn
+      feature:install ukelonn-with-postgresql
     #+END_EXAMPLE
  5. Koble en nettleser mot http://localhost:8181/ukelonn/
     - Admin-bruker, brukernavn/passord: admin/admin
@@ -299,8 +282,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  7. I karaf kommando-skall, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
-      feature:install ukelonn-db-postgresql
-      feature:install ukelonn
+      feature:install ukelonn-with-postgresql
     #+END_EXAMPLE
 
 Nå kjører webappen mot http://localhost:8181/ukelonn/ og databasen har blitt satt opp med admin-bruker, med brukernavn/passord: admin/admin.
