@@ -12,4 +12,12 @@
     <feature name="ukelonn" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-web-frontend</feature>
     </feature>
+    <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
+        <feature>ukelonn-db-derby-test</feature>
+        <feature>ukelonn</feature>
+    </feature>
+    <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
+        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn</feature>
+    </feature>
 </features>
