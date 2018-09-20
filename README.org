@@ -60,6 +60,33 @@ I øyeblikket er det fire hoved-brancher:
 
 Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
 
+* Kjapp test av programvaren uten å bygge koden
+
+Det er mulig å teste programvaren uten å sjekke ut og bygge kode.  I denne testen kjører man mot en derby-database som settes opp med dummy-data.
+
+Framgangsmåten er som følger:
+ 1. Følge Apache Karaf quick start guide (NB! last ned og bruk karaf 4.1.6, ikke karaf 4.2.x) https://karaf.apache.org/manual/latest/quick-start.html
+ 2. Fra kommandolinja til karaf (aka. "karaf console") legg til et maven-repo som inneholder ukelonn bygd fra travis-ci
+    #+BEGIN_EXAMPLE
+      config:edit org.ops4j.pax.url.mvn
+      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots"
+      config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
+      config:update
+    #+END_EXAMPLE
+ 3. Fortsatt fra kommandolinja til karaf, innstaller ukelonn-appen med følgende kommandoer (applikasjonen ukelonn og alle dens avhengigheter blir dratt med hjelp av maven)
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
+      feature:install ukelonn-db-derby-test
+      feature:install ukelonn
+    #+END_EXAMPLE
+ 4. Åpne http://localhost:8181/ukelonn i en nettleser
+    - For en vanlig bruker, brukernavn/passord: jad/1ad
+      - Vanlig bruker kan registrere nye jobber og sjekke saldo
+    - For en administrator-bruker, brukernavn/passord: admin/admin
+      - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+
+Databasen som kjører er en ekte SQL-database men kjører kun i minnet så endringer blir ikke persistert og blir borte nor karaf-prosessen blir stoppet.
+
 * Beskrivelse av koden
 (/Beskriver versjonen fra master/)
 
