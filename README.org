@@ -76,8 +76,7 @@ Framgangsmåten er som følger:
  3. Fortsatt fra kommandolinja til karaf, innstaller ukelonn-appen med følgende kommandoer (applikasjonen ukelonn og alle dens avhengigheter blir dratt med hjelp av maven)
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
-      feature:install ukelonn-db-derby-test
-      feature:install ukelonn
+      feature:install ukelonn-with-derby
     #+END_EXAMPLE
  4. Åpne http://localhost:8181/ukelonn i en nettleser
     - For en vanlig bruker, brukernavn/passord: jad/1ad
@@ -147,8 +146,7 @@ Dette trengs for å bygge og kjøre programvaren
  5. Installer applikasjonen med følgende kommandoer fra "karaf console":
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
-      feature:install ukelonn-db-derby-test
-      feature:install ukelonn
+      feature:install ukelonn-with-derby
       bundle:watch *
     #+END_EXAMPLE
     (kommandoen "bundle:watch *" får karaf til å lytte i local maven repo og plukke opp og oppdatere installerte bundler som blir bygd på nytt med "mvn install" eller "mvn clean install")
@@ -233,8 +231,7 @@ Framgangsmåte:
     #+END_EXAMPLE
  4. Installer webapplikasjonen:
     #+BEGIN_EXAMPLE
-      feature:install ukelonn-db-postgresql
-      feature:install ukelonn
+      feature:install ukelonn-with-postgresql
     #+END_EXAMPLE
  5. Koble en nettleser mot http://localhost:8181/ukelonn/
     - Admin-bruker, brukernavn/passord: admin/admin
@@ -285,8 +282,7 @@ Prosedyre (alle kommandolinje-eksempler gjort i bash, logget inn som root):
  7. I karaf kommando-skall, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
-      feature:install ukelonn-db-postgresql
-      feature:install ukelonn
+      feature:install ukelonn-with-postgresql
     #+END_EXAMPLE
 
 Nå kjører webappen mot http://localhost:8181/ukelonn/ og databasen har blitt satt opp med admin-bruker, med brukernavn/passord: admin/admin.
