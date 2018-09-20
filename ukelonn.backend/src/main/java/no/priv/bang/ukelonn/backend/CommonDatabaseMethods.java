@@ -302,7 +302,7 @@ public class CommonDatabaseMethods {
             statement.setInt(1, account.getAccountId());
             statement.setInt(2, newJobTypeId);
             statement.setDouble(3, newJobWages);
-            statement.setDate(4, new java.sql.Date(transactionDate.getTime()));
+            statement.setTimestamp(4, new java.sql.Timestamp(transactionDate.getTime()));
             database.update(statement);
 
             // Update the list of jobs and the updated balance from the DB
