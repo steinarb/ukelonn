@@ -86,7 +86,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onJobs: (account) => dispatch({ type: 'RECENTJOBS_REQUEST', account: account }),
+        onJobs: (account) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: account.accountId }),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {

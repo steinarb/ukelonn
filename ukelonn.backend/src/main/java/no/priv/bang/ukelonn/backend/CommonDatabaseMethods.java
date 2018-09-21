@@ -253,11 +253,10 @@ public class CommonDatabaseMethods {
         try(PreparedStatement statement = database.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
-            try(ResultSet resultSet = database.query(statement)) {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        transactions.add(mapTransaction(resultSet));
-                    }
+            ResultSet resultSet = database.query(statement);
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    transactions.add(mapTransaction(resultSet));
                 }
             }
         } catch (SQLException e) {

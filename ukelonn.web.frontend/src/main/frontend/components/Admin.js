@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { stringify } from 'qs';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -43,6 +44,8 @@ class Admin extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
+
         return (
             <div>
                 <h1>Registrer betaling</h1>
@@ -61,7 +64,7 @@ class Admin extends Component {
                     <button onClick={() => onRegisterPayment(payment)}>Registrer betaling</button>
                 </form>
                 <br/>
-                <Link to="/ukelonn/performedjobs">Utforte jobber</Link><br/>
+                <Link to={performedjobs}>Utforte jobber</Link><br/>
                 <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
                 <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
                 <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
