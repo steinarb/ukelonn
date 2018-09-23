@@ -55,8 +55,8 @@ public class UkelonnRealm extends AuthorizingRealm {
         Set<String> administrators = new HashSet<>();
         try {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
-            PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view");
-            try(ResultSet administratorsResults = ukelonnDatabase.query(statement)) {
+            try(PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view")) {
+                ResultSet administratorsResults = ukelonnDatabase.query(statement);
                 while (administratorsResults.next()) {
                     administrators.add(administratorsResults.getString("username"));
                 }
@@ -89,9 +89,9 @@ public class UkelonnRealm extends AuthorizingRealm {
         String username = usernamePasswordToken.getUsername();
         try {
             UkelonnDatabase ukelonnDatabase = connectionCheck();
-            PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?");
-            statement.setString(1, username);
-            try(ResultSet passwordResultSet = ukelonnDatabase.query(statement)) {
+            try(PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?")) {
+                statement.setString(1, username);
+                ResultSet passwordResultSet = ukelonnDatabase.query(statement);
                 if (passwordResultSet == null) {
                     throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
                 }
