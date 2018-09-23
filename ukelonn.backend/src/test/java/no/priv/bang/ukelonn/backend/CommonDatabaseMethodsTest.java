@@ -36,7 +36,6 @@ import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.AdminUser;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
@@ -262,60 +261,6 @@ public class CommonDatabaseMethodsTest {
             provider.setUkelonnDatabase(database);
             Account account = CommonDatabaseMethods.getAccountInfoFromDatabase(getClass(), provider, "jad");
             assertNull("Should never get here", account);
-        } finally {
-            // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
-        }
-    }
-
-    /**
-     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAdminUserFromDatabase(Class, String)}
-     * method when a null resultset is returned from the
-     * {@link UkelonnDatabase#query(PreparedStatement)} method.
-     *
-     * Expect no exception to be thrown, and a dummy {@link AdminUser} object to be returned.
-     */
-    @Test()
-    public void testGetAdminUserFromDatabaseNullResultSet() {
-        // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
-        try {
-            UkelonnDatabase database = mock(UkelonnDatabase.class);
-            PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
-            provider.setUkelonnDatabase(database);
-            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), provider, "on");
-            assertEquals("Ikke innlogget", user.getFirstname());
-        } finally {
-            // Restore the real derby database
-            provider.setUkelonnDatabase(originalDatabase);
-        }
-    }
-
-    /**
-     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateBalanseFromDatabase(Class, Account)}
-     * method when a resultset that throws SQLException is returned from the
-     * {@link UkelonnDatabase#query(PreparedStatement)} method.
-     *
-     * Expect no exception to be thrown, and a dummy {@link AdminUser} object to be returned.
-     *
-     * @throws SQLException
-     */
-    @SuppressWarnings("unchecked")
-    @Test()
-    public void testGetAdminUserFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
-        // Swap the real derby database with a mock
-        UkelonnDatabase originalDatabase = provider.getDatabase();
-        try {
-            UkelonnDatabase database = mock(UkelonnDatabase.class);
-            PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
-            ResultSet resultset = mock(ResultSet.class);
-            when(resultset.next()).thenThrow(SQLException.class);
-            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
-            provider.setUkelonnDatabase(database);
-            AdminUser user = CommonDatabaseMethods.getAdminUserFromDatabase(getClass(), provider, "on");
-            assertEquals("Ikke innlogget", user.getFirstname());
         } finally {
             // Restore the real derby database
             provider.setUkelonnDatabase(originalDatabase);
@@ -714,28 +659,6 @@ public class CommonDatabaseMethodsTest {
             // Restore the real derby database
             provider.setUkelonnDatabase(originalDatabase);
         }
-    }
-
-    @Test
-    public void testGetAdminUserFromDatabase() {
-        AdminUser admin = getAdminUserFromDatabase(getClass(), provider, "on");
-        assertEquals("on", admin.getUserName());
-        assertEquals(2, admin.getUserId());
-        assertEquals(2, admin.getAdministratorId());
-        assertEquals("Ola", admin.getFirstname());
-        assertEquals("Nordmann", admin.getSurname());
-
-        AdminUser notAdmin = getAdminUserFromDatabase(getClass(), provider, "jad");
-        assertEquals("jad", notAdmin.getUserName());
-        assertEquals(0, notAdmin.getUserId());
-        assertEquals("Ikke innlogget", notAdmin.getFirstname());
-        assertNull(notAdmin.getSurname());
-
-        AdminUser notInDabase = getAdminUserFromDatabase(getClass(), provider, "unknownuser");
-        assertEquals("unknownuser", notInDabase.getUserName());
-        assertEquals(0, notInDabase.getUserId());
-        assertEquals("Ikke innlogget", notInDabase.getFirstname());
-        assertNull(notInDabase.getSurname());
     }
 
     @Test

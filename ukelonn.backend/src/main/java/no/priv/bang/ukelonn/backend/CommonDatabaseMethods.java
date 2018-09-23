@@ -39,7 +39,6 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.AdminUser;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
@@ -185,23 +184,6 @@ public class CommonDatabaseMethods {
         } catch (SQLException e) {
             throw new UkelonnException(String.format("Caught SQLException while fetching account from the database for user \"%s\"", username), e);
         }
-    }
-
-    public static AdminUser getAdminUserFromDatabase(Class<?> clazz, UkelonnServiceProvider provider, String username) {
-        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz, provider);
-        try(PreparedStatement statement = database.prepareStatement("select * from administrators_view where username=?")) {
-            statement.setString(1, username);
-            try(ResultSet resultset = database.query(statement)) {
-                if (resultset != null && resultset.next())
-                {
-                    return mapAdminUser(resultset);
-                }
-            }
-        } catch (SQLException e) {
-            logError(CommonDatabaseMethods.class, provider, "Error getting administrator user info from the database", e);
-        }
-
-        return new AdminUser(username, 0, 0, "Ikke innlogget", null);
     }
 
     public static List<Account> getAccountsFromDatabase(Class<?> clazz, UkelonnServiceProvider provider) {
@@ -519,17 +501,6 @@ public class CommonDatabaseMethods {
         }
 
         return new User(userId, username, email, firstname, lastname);
-    }
-
-    private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
-        AdminUser adminUser;
-        adminUser = new AdminUser(
-            resultset.getString(USERNAME),
-            resultset.getInt(USER_ID),
-            resultset.getInt("administrator_id"),
-            resultset.getString(FIRST_NAME),
-            resultset.getString(LAST_NAME));
-        return adminUser;
     }
 
     static String getResourceAsString(UkelonnServiceProvider provider, String resourceName) {
