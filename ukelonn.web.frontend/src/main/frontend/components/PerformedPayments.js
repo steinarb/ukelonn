@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { parse } from 'qs';
 
 class PerformedPayments extends Component {
     constructor(props) {
@@ -10,7 +11,14 @@ class PerformedPayments extends Component {
     }
 
     componentDidMount() {
-        this.props.onPayments(this.props.account);
+        let { account } = this.props;
+        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
+        const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
+        this.props.onPayments(accountId);
+
+        if (account.firstName === "Ukjent" && queryParams.username) {
+            this.props.onAccount(queryParams.username);
+        }
     }
 
     componentWillReceiveProps(props) {
@@ -18,8 +26,8 @@ class PerformedPayments extends Component {
     }
 
     render() {
-        let { loginResponse, account, payments, onLogout } = this.state;
-        if (loginResponse.roles.length === 0) {
+        let { haveReceivedResponseFromLogin, loginResponse, account, payments, onLogout } = this.state;
+        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
 
@@ -63,6 +71,7 @@ class PerformedPayments extends Component {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
         payments: state.payments,
@@ -71,7 +80,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onPayments: (account) => dispatch({ type: 'RECENTPAYMENTS_REQUEST', account: account }),
+        onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
+        onPayments: (accountId) => dispatch({ type: 'RECENTPAYMENTS_REQUEST', accountId: accountId }),
     };
 };
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { parse } from 'qs';
 
 class PerformedJobs extends Component {
     constructor(props) {
@@ -10,7 +11,14 @@ class PerformedJobs extends Component {
     }
 
     componentDidMount() {
-        this.props.onJobs(this.props.account);
+        let { account } = this.props;
+        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
+        const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
+        this.props.onJobs(accountId);
+
+        if (account.firstName === "Ukjent" && queryParams.username) {
+            this.props.onAccount(queryParams.username);
+        }
     }
 
     componentWillReceiveProps(props) {
@@ -18,8 +26,8 @@ class PerformedJobs extends Component {
     }
 
     render() {
-        let { loginResponse, account, jobs, onLogout } = this.state;
-        if (loginResponse.roles.length === 0) {
+        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, onLogout } = this.state;
+        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
 
@@ -66,6 +74,7 @@ class PerformedJobs extends Component {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
         jobs: state.jobs,
@@ -74,7 +83,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onJobs: (account) => dispatch({ type: 'RECENTJOBS_REQUEST', account: account }),
+        onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
+        onJobs: (accountId) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: accountId }),
     };
 };
 

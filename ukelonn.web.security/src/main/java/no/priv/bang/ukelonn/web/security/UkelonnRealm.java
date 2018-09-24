@@ -54,9 +54,9 @@ public class UkelonnRealm extends AuthorizingRealm {
         roles.add("user");
         Set<String> administrators = new HashSet<>();
         try {
-            UkelonnDatabase ukelonnDatabase = connectionCheck();
-            PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view");
-            try(ResultSet administratorsResults = ukelonnDatabase.query(statement)) {
+            UkelonnDatabase ukelonnDatabase = getDatabase();
+            try(PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from administrators_view")) {
+                ResultSet administratorsResults = ukelonnDatabase.query(statement);
                 while (administratorsResults.next()) {
                     administrators.add(administratorsResults.getString("username"));
                 }
@@ -88,10 +88,10 @@ public class UkelonnRealm extends AuthorizingRealm {
         Object principal = usernamePasswordToken.getPrincipal();
         String username = usernamePasswordToken.getUsername();
         try {
-            UkelonnDatabase ukelonnDatabase = connectionCheck();
-            PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?");
-            statement.setString(1, username);
-            try(ResultSet passwordResultSet = ukelonnDatabase.query(statement)) {
+            UkelonnDatabase ukelonnDatabase = getDatabase();
+            try(PreparedStatement statement = ukelonnDatabase.prepareStatement("select * from users where username=?")) {
+                statement.setString(1, username);
+                ResultSet passwordResultSet = ukelonnDatabase.query(statement);
                 if (passwordResultSet == null) {
                     throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
                 }
@@ -110,17 +110,8 @@ public class UkelonnRealm extends AuthorizingRealm {
         }
     }
 
-    private UkelonnDatabase connectionCheck() {
-        if (shiroFilter == null) {
-            throw new AuthenticationException("UkelonnRealm shiro realm unable to find the ShiroFilterProvider, giving up");
-        }
-
-        UkelonnDatabase database = shiroFilter.getDatabase();
-        if (database == null) {
-            throw new AuthenticationException("UkelonnRealm shiro realm unable to find OSGi service UkelonnDatabase, giving up");
-        }
-
-        return database;
+    private UkelonnDatabase getDatabase() {
+        return shiroFilter.getDatabase();
     }
 
 }

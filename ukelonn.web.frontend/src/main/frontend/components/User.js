@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
@@ -27,6 +28,9 @@ class User extends Component {
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
+
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
 
         return (
             <div>
@@ -75,12 +79,12 @@ class User extends Component {
                         </div>
                     </form>
                     <div className="container">
-                        <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/performedjobs">
+                        <Link className="btn btn-block btn-primary right-align-cell" to={performedjobs}>
                             Utforte jobber
                             &nbsp;
                             <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                         </Link>
-                        <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/performedpayments">
+                        <Link className="btn btn-block btn-primary right-align-cell" to={performedpayments}>
                             Siste utbetalinger til bruker
                             &nbsp;
                             <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
