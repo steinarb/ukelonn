@@ -30,6 +30,7 @@ class User extends Component {
         }
 
         const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
 
         return (
             <div>
@@ -50,7 +51,7 @@ class User extends Component {
                 </form>
                 <br/>
                 <Link to={performedjobs}>Utforte jobber</Link><br/>
-                <Link to="/ukelonn/performedpayments">Siste utbetalinger til bruker</Link><br/>
+                <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
             </div>
