@@ -15,6 +15,7 @@
  */
 package no.priv.bang.ukelonn.db.derbytest;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +25,7 @@ import java.util.Properties;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -46,8 +48,8 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 public class UkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
     private PooledConnection connect = null;
+    private Connection connection;
     private DataSourceFactory dataSourceFactory;
-
     @Reference
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -56,16 +58,19 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     @Reference
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
-        if (this.dataSourceFactory != null) {
-            createConnection();
-            UkelonnLiquibase liquibase = new UkelonnLiquibase();
-            try {
-                liquibase.createInitialSchema(connect);
-                insertMockData();
-                liquibase.updateSchema(connect);
-            } catch (Exception e) {
-                logError("Failed to create derby test database schema", e);
-            }
+    }
+
+    @Activate
+    public void activate() {
+        createConnection();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        try {
+            liquibase.createInitialSchema(connect);
+            insertMockData();
+            liquibase.updateSchema(connect);
+            connection = connect.getConnection();
+        } catch (Exception e) {
+            logError("Failed to create derby test database schema", e);
         }
     }
 
@@ -116,7 +121,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     public boolean rollbackMockData() {
         try {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            DatabaseConnection databaseConnection = new JdbcConnection(connection);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
@@ -136,7 +141,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     @Override
     public PreparedStatement prepareStatement(String sql) {
         try {
-            return connect.getConnection().prepareStatement(sql);
+            return connection.prepareStatement(sql);
         } catch (Exception e) {
             logError("Derby mock database failed to create prepared statement", e);
             return null;

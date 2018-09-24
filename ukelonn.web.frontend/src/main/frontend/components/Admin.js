@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { stringify } from 'qs';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -42,6 +43,9 @@ class Admin extends Component {
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
+
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
@@ -94,11 +98,11 @@ class Admin extends Component {
                             </div>
                         </div>
                     </form>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedjobs">
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to={performedjobs}>
                         Siste jobber for bruker
                         <i className="material-icons">chevron_right</i>
                     </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/performedpayments">
+                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to={performedpayments}>
                         Siste utbetalinger til bruker
                         <i className="material-icons">chevron_right</i>
                     </Link>

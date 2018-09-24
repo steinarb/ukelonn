@@ -156,14 +156,14 @@ export function* requestRecentJobsSaga() {
     yield takeLatest("RECENTJOBS_REQUEST", receiveRecentJobsSaga);
 }
 
-function doRecentJobs(account) {
-    return axios.get('/ukelonn/api/jobs/' + account.accountId);
+function doRecentJobs(accountId) {
+    return axios.get('/ukelonn/api/jobs/' + accountId);
 }
 
 // worker saga
 function* receiveRecentJobsSaga(action) {
     try {
-        const response = yield call(doRecentJobs, action.account);
+        const response = yield call(doRecentJobs, action.accountId);
         const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'RECENTJOBS_RECEIVE', jobs: jobs });
     } catch (error) {
@@ -177,14 +177,14 @@ export function* requestRecentPaymentsSaga() {
     yield takeLatest("RECENTPAYMENTS_REQUEST", receiveRecentPaymentsSaga);
 }
 
-function doRecentPayments(account) {
-    return axios.get('/ukelonn/api/payments/' + account.accountId);
+function doRecentPayments(accountId) {
+    return axios.get('/ukelonn/api/payments/' + accountId);
 }
 
 // worker saga
 function* receiveRecentPaymentsSaga(action) {
     try {
-        const response = yield call(doRecentPayments, action.account);
+        const response = yield call(doRecentPayments, action.accountId);
         const payments = (response.headers['content-type'] == 'application/json') ? response.data : [];
         yield put({ type: 'RECENTPAYMENTS_RECEIVE', payments: payments });
     } catch (error) {
