@@ -39,7 +39,6 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.AdminUser;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.User;
@@ -187,23 +186,6 @@ public class CommonDatabaseMethods {
         }
     }
 
-    public static AdminUser getAdminUserFromDatabase(Class<?> clazz, UkelonnServiceProvider provider, String username) {
-        UkelonnDatabase database = CommonDatabaseMethods.connectionCheck(clazz, provider);
-        try(PreparedStatement statement = database.prepareStatement("select * from administrators_view where username=?")) {
-            statement.setString(1, username);
-            try(ResultSet resultset = database.query(statement)) {
-                if (resultset != null && resultset.next())
-                {
-                    return mapAdminUser(resultset);
-                }
-            }
-        } catch (SQLException e) {
-            logError(CommonDatabaseMethods.class, provider, "Error getting administrator user info from the database", e);
-        }
-
-        return new AdminUser(username, 0, 0, "Ikke innlogget", null);
-    }
-
     public static List<Account> getAccountsFromDatabase(Class<?> clazz, UkelonnServiceProvider provider) {
         ArrayList<Account> accounts = new ArrayList<>();
         UkelonnDatabase connection = connectionCheck(clazz, provider);
@@ -253,11 +235,10 @@ public class CommonDatabaseMethods {
         try(PreparedStatement statement = database.prepareStatement(sql)) {
             statement.setInt(1, accountId);
             trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
-            try(ResultSet resultSet = database.query(statement)) {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        transactions.add(mapTransaction(resultSet));
-                    }
+            ResultSet resultSet = database.query(statement);
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    transactions.add(mapTransaction(resultSet));
                 }
             }
         } catch (SQLException e) {
@@ -520,17 +501,6 @@ public class CommonDatabaseMethods {
         }
 
         return new User(userId, username, email, firstname, lastname);
-    }
-
-    private static AdminUser mapAdminUser(ResultSet resultset) throws SQLException {
-        AdminUser adminUser;
-        adminUser = new AdminUser(
-            resultset.getString(USERNAME),
-            resultset.getInt(USER_ID),
-            resultset.getInt("administrator_id"),
-            resultset.getString(FIRST_NAME),
-            resultset.getString(LAST_NAME));
-        return adminUser;
     }
 
     static String getResourceAsString(UkelonnServiceProvider provider, String resourceName) {

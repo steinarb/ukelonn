@@ -73,7 +73,8 @@ public class UkelonnDatabaseProviderTest {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+        provider.setDataSourceFactory(dataSourceFactory);
+        provider.activate(); // Create the database
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
@@ -103,7 +104,8 @@ public class UkelonnDatabaseProviderTest {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+        provider.setDataSourceFactory(dataSourceFactory);
+        provider.activate(); // Create the database
 
         UkelonnDatabase database = provider.get();
         // Test that the administrators_view is present
@@ -133,7 +135,8 @@ public class UkelonnDatabaseProviderTest {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+        provider.setDataSourceFactory(dataSourceFactory);
+        provider.activate(); // Create the database
 
         UkelonnDatabase database = provider.get();
 
@@ -169,7 +172,8 @@ public class UkelonnDatabaseProviderTest {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+        provider.setDataSourceFactory(dataSourceFactory);
+        provider.activate(); // Create the database
 
         UkelonnDatabase database = provider.get();
 
@@ -187,18 +191,6 @@ public class UkelonnDatabaseProviderTest {
         assertEquals(0, updateResult);
     }
 
-    @Test
-    public void testNullDataSourceFactory() throws Exception {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        provider.setDataSourceFactory(null); // Test what happens with a null datasource injection
-
-        UkelonnDatabase database = provider.get();
-        PreparedStatement statement = database.prepareStatement("select * from users");
-        ResultSet result = database.query(statement);
-        assertNull(result);
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testFailToCreateDatabaseConnection() throws SQLException {
@@ -207,6 +199,7 @@ public class UkelonnDatabaseProviderTest {
         DataSourceFactory dataSourceFactory = mock(DataSourceFactory.class);
         when(dataSourceFactory.createConnectionPoolDataSource(any(Properties.class))).thenThrow(SQLException.class);
         provider.setDataSourceFactory(dataSourceFactory); // Test what happens with failing datasource injection
+        provider.activate(); // Create the database
 
         UkelonnDatabase database = provider.get();
         PreparedStatement statement = database.prepareStatement("select * from users");
@@ -237,7 +230,8 @@ public class UkelonnDatabaseProviderTest {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory); // Simulate injection, this will create the database
+        provider.setDataSourceFactory(dataSourceFactory);
+        provider.activate(); // Create the database
 
         // Check that database has the mock data in place
         SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
@@ -376,10 +370,11 @@ public class UkelonnDatabaseProviderTest {
 
     private int findTheNumberOfRowsInTable(UkelonnDatabaseProvider provider, String tableName) throws Exception {
         String selectAllRowsStatement = String.format("select * from %s", tableName);
-        PreparedStatement selectAllRowsInTable = provider.prepareStatement(selectAllRowsStatement);
-        ResultSet userResults = provider.query(selectAllRowsInTable);
-        int numberOfUsers = countResults(userResults);
-        return numberOfUsers;
+        try(PreparedStatement selectAllRowsInTable = provider.prepareStatement(selectAllRowsStatement)) {
+            ResultSet userResults = provider.query(selectAllRowsInTable);
+            int numberOfUsers = countResults(userResults);
+            return numberOfUsers;
+        }
     }
 
     private int countResults(ResultSet results) throws Exception {
