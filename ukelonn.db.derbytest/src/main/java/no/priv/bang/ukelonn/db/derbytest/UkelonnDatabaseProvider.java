@@ -24,6 +24,7 @@ import java.util.Properties;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -56,16 +57,18 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     @Reference
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
-        if (this.dataSourceFactory != null) {
-            createConnection();
-            UkelonnLiquibase liquibase = new UkelonnLiquibase();
-            try {
-                liquibase.createInitialSchema(connect);
-                insertMockData();
-                liquibase.updateSchema(connect);
-            } catch (Exception e) {
-                logError("Failed to create derby test database schema", e);
-            }
+    }
+
+    @Activate
+    public void activate() {
+        createConnection();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        try {
+            liquibase.createInitialSchema(connect);
+            insertMockData();
+            liquibase.updateSchema(connect);
+        } catch (Exception e) {
+            logError("Failed to create derby test database schema", e);
         }
     }
 

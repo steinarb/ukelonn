@@ -71,6 +71,7 @@ public class TestUtils {
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
         LogService logservice = new MockLogService();
         ukelonnDatabaseProvider.setLogService(logservice);
+        ukelonnDatabaseProvider.activate();
 
         // Set up shiro
         shirofilter = new UkelonnShiroFilter();
@@ -119,6 +120,8 @@ public class TestUtils {
         UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) ukelonnServiceSingleton.getDatabase();
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
+        ukelonnDatabaseProvider.setLogService(ukelonnServiceSingleton.getLogservice());
+        ukelonnDatabaseProvider.activate();
     }
 
 }
