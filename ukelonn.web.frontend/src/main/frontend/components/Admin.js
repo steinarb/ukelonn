@@ -94,7 +94,7 @@ class Admin extends Component {
                                 &nbsp;
                             </div>
                             <div className="mdl-cell mdl-cell--2-col">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onRegisterPayment(payment)}>Registrer betaling</button>
+                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
                             </div>
                         </div>
                     </form>
@@ -197,7 +197,7 @@ const mapDispatchToProps = dispatch => {
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
-        onRegisterPayment: (payment) => dispatch({ type: 'REGISTERPAYMENT_REQUEST', payment }),
+        onRegisterPayment: (payment, paymenttype) => dispatch({ type: 'REGISTERPAYMENT_REQUEST', payment, paymenttype }),
     };
 };
 

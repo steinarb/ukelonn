@@ -66,6 +66,18 @@ public class ServletTestBase {
         return buildRequestFromStringBody(credentialsAsJson);
     }
 
+    protected HttpServletRequest buildGetRequest() throws IOException {
+        HttpSession session = mock(HttpSession.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn("HTTP/1.1");
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getContextPath()).thenReturn("/ukelonn");
+        when(request.getServletPath()).thenReturn("/api");
+        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
+        when(request.getSession()).thenReturn(session);
+        return request;
+    }
+
     protected HttpServletRequest buildRequestFromStringBody(String textToSendAsBody) throws IOException {
         ServletInputStream postBody = wrap(new ByteArrayInputStream(textToSendAsBody.getBytes(StandardCharsets.UTF_8)));
         HttpSession session = mock(HttpSession.class);

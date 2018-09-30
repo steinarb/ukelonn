@@ -24,16 +24,21 @@ import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
@@ -51,6 +56,7 @@ import no.priv.bang.ukelonn.beans.User;
 public class UkelonnServiceProvider extends UkelonnServiceBase {
     private UkelonnDatabase database;
     private LogService logservice;
+    private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>>();;
 
     @Activate
     public void activate() {
@@ -249,6 +255,33 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return getUsers();
+    }
+
+    @Override
+    public List<Notification> notificationsTo(String username) {
+        ConcurrentLinkedQueue<Notification> notifications = getNotificationQueueForUser(username);
+        Notification notification = notifications.poll();
+        if (notification == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.asList(notification);
+    }
+
+    @Override
+    public void notificationTo(String username, Notification notification) {
+        ConcurrentLinkedQueue<Notification> notifications = getNotificationQueueForUser(username);
+        notifications.add(notification);
+    }
+
+    private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
+        ConcurrentLinkedQueue<Notification> queue = notificationQueues.get(username);
+        if (queue == null) {
+            queue = new ConcurrentLinkedQueue<>();
+            notificationQueues.put(username, queue);
+        }
+
+        return queue;
     }
 
     static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {
