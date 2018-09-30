@@ -43,11 +43,12 @@ import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
 
 /**
- * The OSGi component that listens for a {@link WebContainer} service
- * and registers a servlet with the web container.
+ * The OSGi component that provides the business logic of the ukelonn
+ * webapp.
  *
  * @author Steinar Bang
  *
@@ -120,6 +121,22 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return getJobs(accountId);
+    }
+
+    @Override
+    public List<Transaction> updateJob(UpdatedTransaction editedJob) {
+        String sql = "update transactions set transaction_type_id=?, transaction_time=?, transaction_amount=? where transaction_id=?";
+        try(PreparedStatement statement = database.prepareStatement(sql)) {
+            statement.setInt(1, editedJob.getTransactionTypeId());
+            statement.setTimestamp(2, new java.sql.Timestamp(editedJob.getTransactionTime().getTime()));
+            statement.setDouble(3, editedJob.getTransactionAmount());
+            statement.setInt(4, editedJob.getId());
+            database.update(statement);
+        } catch (SQLException e) {
+            throw new UkelonnException(String.format("Failed to update job with id %d", editedJob.getId()) , e);
+        }
+
+        return getJobs(editedJob.getAccountId());
     }
 
     void addParametersToDeleteJobsStatement(int accountId, PreparedStatement statement) {

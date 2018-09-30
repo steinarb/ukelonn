@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
+import moment from 'moment';
 
 class PerformedJobs extends Component {
     constructor(props) {
@@ -48,10 +49,10 @@ class PerformedJobs extends Component {
                     <tbody>
                         {jobs.map((job) =>
                             <tr key={job.id}>
-                                <td>{job.transactionTime}</td>
+                                <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
                                 <td>{job.name}</td>
                                 <td>{job.transactionAmount}</td>
-                                <td><input type="checkbox" checked={job.paidOut}/></td>
+                                <td><input type="checkbox" checked={job.paidOut} readOnly="true"/></td>
                             </tr>
                         )}
                     </tbody>

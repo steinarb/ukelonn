@@ -70,15 +70,11 @@ const emptyJob = {
 };
 
 const mapStateToProps = state => {
-    if (!state.jobtypes.find((job) => job.id === -1)) {
-        state.jobtypes.unshift(emptyJob);
-    }
-
     return {
         loginResponse: state.loginResponse,
         account: state.account,
         jobtypes: state.jobtypes,
-        jobtypesMap: new Map(state.jobtypes.map(i => [i.transactionTypeName, i])),
+        jobtypesMap: state.jobtypesMap,
         performedjob: state.performedjob,
         notificationMessage: state.notificationMessage,
     };

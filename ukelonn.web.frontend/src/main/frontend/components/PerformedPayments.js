@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
+import moment from 'moment';
 
 class PerformedPayments extends Component {
     constructor(props) {
@@ -47,7 +48,7 @@ class PerformedPayments extends Component {
                     <tbody>
                         {payments.map((payment) =>
                             <tr key={payment.id}>
-                                <td>{payment.transactionTime}</td>
+                                <td>{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
                                 <td>{payment.name}</td>
                                 <td>{payment.transactionAmount}</td>
                             </tr>

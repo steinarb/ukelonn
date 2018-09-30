@@ -137,7 +137,7 @@ export function* requestRegisterJobSaga() {
 }
 
 function doRegisterJob(performedJob) {
-    return axios.post('/ukelonn/api/registerjob', performedJob);
+    return axios.post('/ukelonn/api/job/register', performedJob);
 }
 
 // worker saga
@@ -331,6 +331,27 @@ function* receiveDeleteJobsSaga(action) {
 
 
 // watcher saga
+export function* requestUpdateJobSaga() {
+    yield takeLatest("UPDATE_JOB_REQUEST", receiveUpdateJobSaga);
+}
+
+function doUpdateJob(updatedJob) {
+    return axios.post('/ukelonn/api/job/update', updatedJob);
+}
+
+// worker saga
+function* receiveUpdateJobSaga(action) {
+    try {
+        const response = yield call(doUpdateJob, { ...action.selectedjob });
+        const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
+        yield put({ type: 'UPDATE_JOB_RECEIVE', jobs });
+    } catch (error) {
+        yield put({ type: 'UPDATE_JOB_FAILURE', error });
+    }
+}
+
+
+// watcher saga
 export function* requestModifyPaymenttypeSaga() {
     yield takeLatest("MODIFY_PAYMENTTYPE_REQUEST", receiveModifyPaymenttypeSaga);
 }
@@ -504,6 +525,7 @@ export function* rootSaga() {
         fork(requestModifyJobtypeSaga),
         fork(requestCreateJobtypeSaga),
         fork(requestDeleteJobsSaga),
+        fork(requestUpdateJobSaga),
         fork(requestModifyPaymenttypeSaga),
         fork(requestCreatePaymenttypeSaga),
         fork(requestUsersSaga),

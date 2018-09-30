@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,6 +45,7 @@ import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
 
 public class UkelonnServiceProviderTest {
@@ -231,6 +233,57 @@ public class UkelonnServiceProviderTest {
         // trying to set the parameter here will throw an UkelonnException
         ukelonn.addParametersToDeleteJobsStatement(1, statement);
         fail("Should never get here!");
+    }
+
+    @Test
+    public void testUpdateJob() {
+        try {
+            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            String username = "jad";
+            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Transaction job = ukelonn.getJobs(account.getAccountId()).get(0);
+            int jobId = job.getId();
+
+            // Save initial values of the job for comparison later
+            Integer originalTransactionTypeId = job.getTransactionType().getId();
+            Date originalTransactionTime = job.getTransactionTime();
+            double originalTransactionAmount = job.getTransactionAmount();
+
+            // Find a different job type that has a different amount
+            TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
+
+            // Create a new job object with a different jobtype and the same id
+            Date now = new Date();
+            UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+
+            List<Transaction> updatedJobs = ukelonn.updateJob(editedJob);
+
+            Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+
+            assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
+            assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
+            assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
+        } finally {
+            restoreTestDatabase();
+        }
+    }
+
+    @Test(expected=UkelonnException.class)
+    public void testUpdateJobGetSQLException() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
+
+        ukelonn.setUkelonnDatabase(database);
+
+        ukelonn.updateJob(new UpdatedTransaction());
+        fail("Should never get here");
+    }
+
+    private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
+        return ukelonn.getJobTypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
     }
 
     @Test
