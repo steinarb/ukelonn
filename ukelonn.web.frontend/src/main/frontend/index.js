@@ -13,6 +13,14 @@ const history = createBrowserHistory();
 const store = createStore(ukelonnReducer, compose(applyMiddleware(sagaMiddleware, routerMiddleware(history)), window.devToolsExtension ? window.devToolsExtension() : f => f));
 sagaMiddleware.run(rootSaga);
 
+if (Notification) {
+    Notification.requestPermission().then(function(result) {
+        store.dispatch({ type: 'UPDATE', data: { notificationAvailable: true } });
+        console.log(result);
+    });
+}
+
+
 ReactDOM.render(
     <App store={store} />,
     document.getElementById('root')

@@ -39,6 +39,7 @@ import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
@@ -704,6 +705,23 @@ public class UkelonnServiceProviderTest {
         ukelonn.changePassword(passwords);
 
         fail("Should never get here");
+    }
+
+    @Test
+    public void testNotifications() {
+        UkelonnService ukelonn = new UkelonnServiceProvider();
+        List<Notification> notificationsToJad = ukelonn.notificationsTo("jad");
+        assertThat(notificationsToJad).isEmpty();
+
+        // Send notification to "jad"
+        Notification utbetalt = new Notification("Ukelønn", "150 kroner betalt til konto");
+        ukelonn.notificationTo("jad", utbetalt);
+
+        // Verify that notifcations to a different user is empty
+        assertThat(ukelonn.notificationsTo("jod")).isEmpty();
+
+        // Verify that notifications to "jad" contains the sent notification
+        assertEquals(utbetalt, ukelonn.notificationsTo("jad").get(0));
     }
 
     @Test

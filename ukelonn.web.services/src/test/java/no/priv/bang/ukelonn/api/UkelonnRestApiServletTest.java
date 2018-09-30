@@ -31,6 +31,7 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -45,10 +46,13 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
+import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
+import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
@@ -1715,6 +1719,57 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Verify that the number of users hasn't changed
         assertEquals(originalUserCount, updatedUsers.size());
+    }
+
+    @Test
+    public void testNotifications() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UkelonnService ukelonn = new UkelonnServiceProvider();
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(ukelonn);
+        servlet.activate();
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // A request for notifications to a user
+        HttpServletRequest requestGetNotifications = buildGetRequest();
+        when(requestGetNotifications.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/notificationsto/jad"));
+        when(requestGetNotifications.getRequestURI()).thenReturn("/ukelonn/api/notificationsto/jad");
+
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse notificationsResponse = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+
+        // Do a REST API call
+        servlet.service(requestGetNotifications, notificationsResponse);
+
+        // Check the REST API response (no notifications expected)
+        assertEquals(200, notificationsResponse.getStatus());
+        assertEquals("application/json", notificationsResponse.getContentType());
+        List<User> notificationsToJad = mapper.readValue(notificationsResponse.getOutput().toByteArray(), new TypeReference<List<Notification>>() {});
+        assertThat(notificationsToJad).isEmpty();
+
+        // Send a notification to user "jad" over the REST API
+        Notification utbetalt = new Notification("Ukelønn", "150 kroner betalt til konto");
+        String utbetaltAsJson = mapper.writeValueAsString(utbetalt);
+        HttpServletRequest sendNotificationRequest = buildRequestFromStringBody(utbetaltAsJson);
+        when(sendNotificationRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/notificationto/jad"));
+        when(sendNotificationRequest.getRequestURI()).thenReturn("/ukelonn/api/notificationto/jad");
+        MockHttpServletResponse sendNotificationResponse = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        servlet.service(sendNotificationRequest, sendNotificationResponse);
+
+        if (sendNotificationResponse.getStatus() == HttpServletResponse.SC_BAD_REQUEST) {
+            System.err.println("Error in POST request: " + sendNotificationResponse.getOutput().toString());
+        }
+
+        // A new REST API request for notifications to "jad" will return a single notification
+        MockHttpServletResponse notificationsResponse2 = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        servlet.service(requestGetNotifications, notificationsResponse2);
+        assertEquals(200, notificationsResponse2.getStatus());
+        assertEquals("application/json", notificationsResponse2.getContentType());
+        List<Notification> notificationsToJad2 = mapper.readValue(notificationsResponse2.getOutput().toByteArray(), new TypeReference<List<Notification>>() {});
+        assertEquals(utbetalt.getTitle(), notificationsToJad2.get(0).getTitle());
+        assertEquals(utbetalt.getMessage(), notificationsToJad2.get(0).getMessage());
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {

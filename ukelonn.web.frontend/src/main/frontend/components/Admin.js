@@ -83,7 +83,7 @@ class Admin extends Component {
                         <div className="form-group row">
                             <div className="col-5" />
                             <div className="col-7">
-                                <button className="btn btn-primary" onClick={() => onRegisterPayment(payment)}>Registrer betaling</button>
+                                <button className="btn btn-primary" onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
                             </div>
                         </div>
                     </div>
@@ -194,7 +194,7 @@ const mapDispatchToProps = dispatch => {
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
-        onRegisterPayment: (payment) => dispatch({ type: 'REGISTERPAYMENT_REQUEST', payment }),
+        onRegisterPayment: (payment, paymenttype) => dispatch({ type: 'REGISTERPAYMENT_REQUEST', payment, paymenttype }),
     };
 };
 

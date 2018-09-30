@@ -1,5 +1,6 @@
 import moment from 'moment';
 
+
 const emptyPerformedTransaction = {
     account: { id: -1 },
     transactionTypeId: -1,
@@ -38,6 +39,7 @@ export const ukelonnReducer = (state =
                                { username: null,
                                  password: null,
                                  firstTimeAfterLogin: false,
+                                 notificationAvailable: false,
                                  account: { firstName: 'Ukjent', fullName: '', balance: 0.0 },
                                  paymenttype: { id: -1, transactionTypeName: '', transactionAmount: 0.0, transactionIsWork: false, transactionIsWagePayment: true },
                                  payment: {...emptyPerformedTransaction},
@@ -204,6 +206,13 @@ export const ukelonnReducer = (state =
             ...state,
             user: {...emptyUser},
             passwords: {...emptyPasswords},
+        };
+    }
+
+    if (action.type === 'RECEIVED_NOTIFICATION') {
+        return {
+            notificationMessage: action.notifications[0],
+            ...state,
         };
     }
 
