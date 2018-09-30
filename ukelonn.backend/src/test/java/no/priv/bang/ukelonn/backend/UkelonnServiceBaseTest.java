@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
@@ -119,6 +120,18 @@ public class UkelonnServiceBaseTest {
                 public List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete) {
                     // TODO Auto-generated method stub
                     return null;
+                }
+
+                @Override
+                public List<Notification> notificationsTo(String username) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public void notificationTo(String username, Notification notification) {
+                    // TODO Auto-generated method stub
+
                 }
             };
 
