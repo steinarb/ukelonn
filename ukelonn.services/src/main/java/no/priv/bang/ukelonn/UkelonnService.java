@@ -25,6 +25,7 @@ import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
 
 /**
@@ -50,6 +51,8 @@ public interface UkelonnService {
     Account getAccount(String username);
 
     Account registerPerformedJob(PerformedTransaction job);
+
+    List<Transaction> updateJob(UpdatedTransaction editedJob);
 
     List<TransactionType> getJobTypes();
 

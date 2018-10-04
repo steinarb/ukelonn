@@ -28,6 +28,7 @@ import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
 
 public class UkelonnServiceBaseTest {
@@ -132,6 +133,12 @@ public class UkelonnServiceBaseTest {
                 public void notificationTo(String username, Notification notification) {
                     // TODO Auto-generated method stub
 
+                }
+
+                @Override
+                public List<Transaction> updateJob(UpdatedTransaction editedJob) {
+                    // TODO Auto-generated method stub
+                    return null;
                 }
             };
 

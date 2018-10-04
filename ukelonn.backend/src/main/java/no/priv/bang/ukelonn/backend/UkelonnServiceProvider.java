@@ -43,6 +43,7 @@ import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
+import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
 
 /**
@@ -56,7 +57,7 @@ import no.priv.bang.ukelonn.beans.User;
 public class UkelonnServiceProvider extends UkelonnServiceBase {
     private UkelonnDatabase database;
     private LogService logservice;
-    private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>>();;
+    private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
 
     @Activate
     public void activate() {
@@ -120,6 +121,22 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return getJobs(accountId);
+    }
+
+    @Override
+    public List<Transaction> updateJob(UpdatedTransaction editedJob) {
+        String sql = "update transactions set transaction_type_id=?, transaction_time=?, transaction_amount=? where transaction_id=?";
+        try(PreparedStatement statement = database.prepareStatement(sql)) {
+            statement.setInt(1, editedJob.getTransactionTypeId());
+            statement.setTimestamp(2, new java.sql.Timestamp(editedJob.getTransactionTime().getTime()));
+            statement.setDouble(3, editedJob.getTransactionAmount());
+            statement.setInt(4, editedJob.getId());
+            database.update(statement);
+        } catch (SQLException e) {
+            throw new UkelonnException(String.format("Failed to update job with id %d", editedJob.getId()) , e);
+        }
+
+        return getJobs(editedJob.getAccountId());
     }
 
     void addParametersToDeleteJobsStatement(int accountId, PreparedStatement statement) {
@@ -275,13 +292,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
-        ConcurrentLinkedQueue<Notification> queue = notificationQueues.get(username);
-        if (queue == null) {
-            queue = new ConcurrentLinkedQueue<>();
-            notificationQueues.put(username, queue);
-        }
-
-        return queue;
+        return notificationQueues.computeIfAbsent(username, k-> new ConcurrentLinkedQueue<>());
     }
 
     static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {
