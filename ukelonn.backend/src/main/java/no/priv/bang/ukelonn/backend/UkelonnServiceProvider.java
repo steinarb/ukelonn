@@ -57,7 +57,7 @@ import no.priv.bang.ukelonn.beans.User;
 public class UkelonnServiceProvider extends UkelonnServiceBase {
     private UkelonnDatabase database;
     private LogService logservice;
-    private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>>();;
+    private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
 
     @Activate
     public void activate() {
@@ -292,13 +292,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
-        ConcurrentLinkedQueue<Notification> queue = notificationQueues.get(username);
-        if (queue == null) {
-            queue = new ConcurrentLinkedQueue<>();
-            notificationQueues.put(username, queue);
-        }
-
-        return queue;
+        return notificationQueues.computeIfAbsent(username, k-> new ConcurrentLinkedQueue<>());
     }
 
     static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {
