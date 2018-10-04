@@ -48,6 +48,11 @@ class AdminJobtypes extends Component {
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobs/edit">
+                        Endre jobber
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
                 </div>
                 <br/>
                 <br/>
