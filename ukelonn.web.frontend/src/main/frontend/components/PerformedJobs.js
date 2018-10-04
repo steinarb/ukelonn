@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
+import moment from 'moment';
 
 class PerformedJobs extends Component {
     constructor(props) {
@@ -57,10 +58,10 @@ class PerformedJobs extends Component {
                         <tbody>
                             {jobs.map((job) =>
                                 <tr key={job.id}>
-                                    <td className="mdl-data-table__cell--non-numeric transaction-table-col">{job.transactionTime}</td>
+                                    <td className="mdl-data-table__cell--non-numeric transaction-table-col">{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
                                     <td className="mdl-data-table__cell--non-numeric transaction-table-col transaction-table-col-hide-overflow">{job.name}</td>
                                     <td className="transaction-table-col">{job.transactionAmount}</td>
-                                    <td className="mdl-data-table__cell--non-numeric transaction-table-col"><input type="checkbox" checked={job.paidOut}/></td>
+                                    <td className="mdl-data-table__cell--non-numeric transaction-table-col"><input type="checkbox" checked={job.paidOut} readOnly="true"/></td>
                                 </tr>
                             )}
                         </tbody>

@@ -13,6 +13,13 @@ const emptyTransactionType = {
     transactionAmount: 0.0
 };
 
+const emptyTransaction = {
+    id: -1,
+    transactionType: { ...emptyTransactionType },
+    transactionAmount: 0.0,
+    transactionTime: moment(),
+};
+
 const emptyUser = {
     userId: -1,
     fullName: '',
@@ -53,6 +60,7 @@ export const ukelonnReducer = (state =
                                      error: ''
                                  },
                                  performedjob: {...emptyPerformedTransaction, transactionDate: moment()},
+                                 selectedjob: { ...emptyTransaction },
                                  accounts: [],
                                  accountsMap: {},
                                  paymenttypes: [],
@@ -107,7 +115,7 @@ export const ukelonnReducer = (state =
         };
     }
 
-    if (action.type === 'RECENTJOBS_RECEIVE' || action.type === 'DELETE_JOBS_RECEIVE') {
+    if (action.type === 'RECENTJOBS_RECEIVE' || action.type === 'DELETE_JOBS_RECEIVE' || action.type === 'UPDATE_JOB_RECEIVE') {
         action.jobs.map((job) => { job.delete=false; return job; });
 
         return {
@@ -124,9 +132,14 @@ export const ukelonnReducer = (state =
     }
 
     if (action.type === 'JOBTYPELIST_RECEIVE') {
+        if (!action.jobtypes.find((job) => job.id === -1)) {
+            action.jobtypes.unshift(emptyTransactionType);
+        }
+
         return {
             ...state,
-            jobtypes: action.jobtypes
+            jobtypes: action.jobtypes,
+            jobtypesMap: new Map(action.jobtypes.map(i => [i.transactionTypeName, i])),
         };
     }
 

@@ -15,9 +15,12 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,13 +28,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
+import no.priv.bang.ukelonn.beans.Transaction;
+import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 
-@Path("/registerjob")
+@Path("/job")
 @Produces(MediaType.APPLICATION_JSON)
-public class RegisterJob extends ResourceBase {
+public class JobResource extends ResourceBase {
 
     @Inject
     LogService logservice;
@@ -39,6 +45,7 @@ public class RegisterJob extends ResourceBase {
     @Inject
     UkelonnService ukelonn;
 
+    @Path("/register")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Account doRegisterJob(PerformedTransaction performedJob) {
@@ -49,6 +56,18 @@ public class RegisterJob extends ResourceBase {
         }
 
         return ukelonn.registerPerformedJob(performedJob);
+    }
+
+    @Path("/update")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<Transaction> doUpdateJob(UpdatedTransaction editedJob) {
+        try {
+            return ukelonn.updateJob(editedJob);
+        } catch (UkelonnException e) {
+            logservice.log(LogService.LOG_ERROR, "REST endpoint /api/job/update failed", e);
+            throw new InternalServerErrorException("See log for details");
+        }
     }
 
 }

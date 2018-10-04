@@ -55,6 +55,7 @@ public class UkelonnServlet extends HttpServlet {
         "/admin/jobtypes/create",
         "/admin/jobtypes/modify",
         "/admin/jobs/delete",
+        "/admin/jobs/edit",
         "/admin/jobtypes",
         "/admin/paymenttypes/create",
         "/admin/paymenttypes/modify",

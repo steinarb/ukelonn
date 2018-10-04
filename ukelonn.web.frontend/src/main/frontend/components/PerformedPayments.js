@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
+import moment from 'moment';
 
 class PerformedPayments extends Component {
     constructor(props) {
@@ -56,7 +57,7 @@ class PerformedPayments extends Component {
                         <tbody>
                             {payments.map((payment) =>
                                 <tr key={payment.id}>
-                                     <td className="mdl-data-table__cell--non-numeric transaction-table-col">{payment.transactionTime}</td>
+                                     <td className="mdl-data-table__cell--non-numeric transaction-table-col">{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
                                      <td className="mdl-data-table__cell--non-numeric transaction-table-col transaction-table-col-hide-overflow">{payment.name}</td>
                                      <td className="transaction-table-col">{payment.transactionAmount}</td>
                                 </tr>
