@@ -262,7 +262,7 @@ public class CommonDatabaseMethods {
             new Transaction(
                 resultset.getInt("transaction_id"),
                 mapTransactionType(resultset),
-                resultset.getDate("transaction_time"),
+                resultset.getTimestamp("transaction_time"),
                 resultset.getDouble("transaction_amount"),
                 resultset.getBoolean("paid_out"));
     }
