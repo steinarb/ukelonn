@@ -4,9 +4,14 @@
                               http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
-            <id>ftp-maven-travis</id>
-            <username>${env.FTPUSER}</username>
-            <password>${env.FTPPASSWD}</password>
+            <id>ssh-maven-travis</id>
+            <username>${env.REPOUSER}</username>
+            <privateKey>${user.home}/.ssh/id_rsa</privateKey>
+            <configuration>
+                <strictHostKeyChecking>no</strictHostKeyChecking>
+                <preferredAuthentications>publickey,password</preferredAuthentications>
+                <interactive>false</interactive>
+            </configuration>
         </server>
     </servers>
     <profiles>

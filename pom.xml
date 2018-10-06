@@ -478,8 +478,8 @@
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>1.0-beta-6</version>
+                <artifactId>wagon-ssh</artifactId>
+                <version>3.2.0</version>
             </extension>
         </extensions>
     </build>
@@ -500,12 +500,12 @@
 
     <distributionManagement>
         <repository>
-            <id>ftp-maven-travis</id>
-            <url>ftp://maven.bang.priv.no/repository</url>
+            <id>ssh-maven-travis</id>
+            <url>sftp://maven.bang.priv.no/repository</url>
         </repository>
         <snapshotRepository>
-            <id>ftp-maven-travis</id>
-            <url>ftp://maven.bang.priv.no/repository</url>
+            <id>ssh-maven-travis</id>
+            <url>sftp://maven.bang.priv.no/repository</url>
         </snapshotRepository>
     </distributionManagement>
 
