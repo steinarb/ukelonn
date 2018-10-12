@@ -31,13 +31,14 @@ class User extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
+        const title = 'Ukelønn for ' + account.firstName;
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
 
         return (
             <div>
                 <Notification notificationMessage={notificationMessage}/>
-                <h1>Ukelønn for {account.firstName}</h1>
+                <h1>{title}</h1>
                 <div>Til gode: { account.balance }</div><br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobb</label>
