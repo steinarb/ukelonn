@@ -16,6 +16,8 @@ class PerformedPayments extends Component {
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
         const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
         this.props.onPayments(accountId);
+        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : "Register betaling";
+        this.props.onParentTitle(parentTitle);
 
         if (account.firstName === "Ukjent" && queryParams.username) {
             this.props.onAccount(queryParams.username);
@@ -27,7 +29,7 @@ class PerformedPayments extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, payments, onLogout } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, payments, onLogout } = this.state;
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
@@ -37,7 +39,7 @@ class PerformedPayments extends Component {
                 <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
-                    Register betaling
+                    {parentTitle}
                 </Link>
                 <header>
                     <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
@@ -74,6 +76,7 @@ const mapStateToProps = state => {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
+        parentTitle: state.parentTitle,
         account: state.account,
         payments: state.payments,
     };
@@ -83,6 +86,7 @@ const mapDispatchToProps = dispatch => {
         onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
         onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
         onPayments: (accountId) => dispatch({ type: 'RECENTPAYMENTS_REQUEST', accountId: accountId }),
+        onParentTitle: (parentTitle) => dispatch({ type: 'UPDATE', data: { parentTitle } }),
     };
 };
 
