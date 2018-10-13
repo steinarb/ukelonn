@@ -16,6 +16,8 @@ class PerformedJobs extends Component {
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
         const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
         this.props.onJobs(accountId);
+        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : "Register betaling";
+        this.props.onParentTitle(parentTitle);
 
         if (account.firstName === "Ukjent" && queryParams.username) {
             this.props.onAccount(queryParams.username);
@@ -27,7 +29,7 @@ class PerformedJobs extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, onLogout } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, jobs, onLogout } = this.state;
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
@@ -41,7 +43,7 @@ class PerformedJobs extends Component {
                         <Link to="/ukelonn/" className="mdl-navigation__link">
                             <i className="material-icons" >chevron_left</i>
                             &nbsp;
-                            Register jobb</Link>
+                            {parentTitle}</Link>
                         <span className="mdl-layout-title">Siste jobber</span>
                     </div>
                 </header>
@@ -79,6 +81,7 @@ const mapStateToProps = state => {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
+        parentTitle: state.parentTitle,
         account: state.account,
         jobs: state.jobs,
     };
@@ -88,6 +91,7 @@ const mapDispatchToProps = dispatch => {
         onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
         onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
         onJobs: (accountId) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: accountId }),
+        onParentTitle: (parentTitle) => dispatch({ type: 'UPDATE', data: { parentTitle } }),
     };
 };
 

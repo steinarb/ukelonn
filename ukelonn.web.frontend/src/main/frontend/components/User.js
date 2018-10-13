@@ -31,15 +31,16 @@ class User extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
+        const title = 'Ukelønn for ' + account.firstName;
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
                 <Notification notificationMessage={notificationMessage}/>
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row">
-                        <span className="mdl-layout-title">Registrere jobb</span>
+                        <span className="mdl-layout-title">{title}</span>
                         <div className="mdl-layout-spacer"></div>
                     </div>
                 </header>
