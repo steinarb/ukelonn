@@ -31,24 +31,20 @@ class User extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
+        const title = 'Ukelønn for ' + account.firstName;
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
                 <Notification notificationMessage={notificationMessage}/>
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row">
-                        <span className="mdl-layout-title">Registrere jobb</span>
+                        <span className="mdl-layout-title">{title}</span>
                         <div className="mdl-layout-spacer"></div>
                     </div>
                 </header>
                 <main className="mdl-layout__content">
-                    <div className="mdl-grid hline-bottom">
-                        <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--8-col-tablet mdl-cell--12-col-desktop">
-                            Ukelønn for {account.firstName}
-                        </div>
-                    </div>
                     <div className="mdl-grid hline-bottom">
                         <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
                             <label htmlFor="jobtype">Til gode:</label>
