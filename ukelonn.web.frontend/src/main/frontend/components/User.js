@@ -46,11 +46,6 @@ class User extends Component {
                 </header>
                 <main className="mdl-layout__content">
                     <div className="mdl-grid hline-bottom">
-                        <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--8-col-tablet mdl-cell--12-col-desktop">
-                            Ukelønn for {account.firstName}
-                        </div>
-                    </div>
-                    <div className="mdl-grid hline-bottom">
                         <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
                             <label htmlFor="jobtype">Til gode:</label>
                         </div>
