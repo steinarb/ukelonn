@@ -25,6 +25,7 @@ class AdminUsersCreate extends Component {
             loginResponse,
             user,
             passwords,
+            passwordsNotIdentical,
             onUserFieldChange,
             onPasswordsFieldChange,
             onSaveCreatedUser,
@@ -58,7 +59,8 @@ class AdminUsersCreate extends Component {
                     <input id="password" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
                     <br/>
                     <label htmlFor="password2">Gjenta passord:</label>
-                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)}/>
+                    { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                     <br/>
                     <button onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
                 </form>
@@ -75,7 +77,17 @@ const mapStateToProps = state => {
         loginResponse: state.loginResponse,
         user: state.user,
         passwords: state.passwords,
+        passwordsNotIdentical: state.passwordsNotIdentical,
     };
+};
+
+const checkIfPasswordsAreNotIdentical = (passwords) => {
+    let { password, password2 } = passwords;
+    if (!password2) {
+        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
+    }
+
+    return password !== password2;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -89,9 +101,12 @@ const mapDispatchToProps = dispatch => {
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
-        onPasswordsFieldChange: (formValue, passwords) => {
+        onPasswordsFieldChange: (formValue, passwordsFromState) => {
+            const passwords = { ...passwordsFromState, ...formValue };
+            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
             let changedField = {
-                passwords: { ...passwords, ...formValue }
+                passwords,
+                passwordsNotIdentical,
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
