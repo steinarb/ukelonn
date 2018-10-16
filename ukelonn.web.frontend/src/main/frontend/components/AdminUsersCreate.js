@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { isEmail } from 'validator';
 import Users from './Users';
 import Amount from './Amount';
 
@@ -48,6 +49,7 @@ class AdminUsersCreate extends Component {
                     <br/>
                     <label htmlFor="email">Epostadresse</label>
                     <input id="email" type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                    { user.email && !isEmail(user.email) && <span>Ikke en gyldig epostadresse</span> }
                     <br/>
                     <label htmlFor="firstname">Fornavn</label>
                     <input id="firstname" type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
