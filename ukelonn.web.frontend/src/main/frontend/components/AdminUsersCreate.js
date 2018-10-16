@@ -37,6 +37,10 @@ class AdminUsersCreate extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const emailIsNotValid = user.email && !isEmail(user.email);
+        const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
+        const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
+
         return (
             <div>
                 <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
@@ -60,8 +64,8 @@ class AdminUsersCreate extends Component {
                         <div className="form-group row">
                             <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
                             <div className="col-7">
-                                <input id="email" className="form-control" type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
-                                { user.email && !isEmail(user.email) && <span>Ikke en gyldig epostadresse</span> }
+                                <input id="email" className={emailInputClass} type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                                { emailIsNotValid && <span className="invalid-feedback d-block">Ikke en gyldig epostadresse</span> }
                             </div>
                         </div>
                         <div className="form-group row">
@@ -79,14 +83,14 @@ class AdminUsersCreate extends Component {
                         <div className="form-group row">
                             <label htmlFor="password" className="col-form-label col-5">Passord:</label>
                             <div className="col-7">
-                                <input id="password" className="form-control" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                                <input id="password" className={passwordGroupClass} type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
                             <div className="col-7">
-                                <input id="password2" className="form-control" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                                { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                                <input id="password2" className={passwordGroupClass} type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                { passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
                             </div>
                         </div>
                         <div className="form-group row">
