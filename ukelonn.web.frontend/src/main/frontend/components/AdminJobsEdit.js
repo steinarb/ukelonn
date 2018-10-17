@@ -98,7 +98,7 @@ class AdminJobsEdit extends Component {
                             <label htmlFor="amount">Beløp</label>
                          </div>
                          <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly="true" />
+                            <input id="amount" type="text" className='mdl-textfield__input' value={selectedjob.transactionAmount} readOnly="true" />
                          </div>
                     </div>
 

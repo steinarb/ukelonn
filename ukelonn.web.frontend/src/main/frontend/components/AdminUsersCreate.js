@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { isEmail } from 'validator';
 import Users from './Users';
 import Amount from './Amount';
 
@@ -25,6 +26,7 @@ class AdminUsersCreate extends Component {
             loginResponse,
             user,
             passwords,
+            passwordsNotIdentical,
             onUserFieldChange,
             onPasswordsFieldChange,
             onSaveCreatedUser,
@@ -34,6 +36,10 @@ class AdminUsersCreate extends Component {
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
+
+        const emailIsNotValid = user.email && !isEmail(user.email);
+        const emailInputClass = 'mdl-textfield mdl-js-textfield' + (emailIsNotValid ? ' is-invalid is-dirty' : '');
+        const passwordInputClass = 'mdl-textfield mdl-js-textfield' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
@@ -56,15 +62,18 @@ class AdminUsersCreate extends Component {
                                 <label htmlFor="username">Brukernavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="username" className="stretch-to-fill" type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                                <input id="username" className='mdl-textfield__input stretch-to-fill' type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
                                 <label htmlFor="email">Epostadresse</label>
                             </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="email" className="stretch-to-fill" type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                            <div className='mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop'>
+                                <div className={emailInputClass}>
+                                    <input id="email" className='mdl-textfield__input stretch-to-fill' type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                                    { emailIsNotValid && <span className='mdl-textfield__error'>Ikke en gyldig epostadresse</span> }
+                                </div>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -72,7 +81,7 @@ class AdminUsersCreate extends Component {
                                 <label htmlFor="firstname">Fornavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="firstname" className="stretch-to-fill" type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
+                                <input id="firstname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -80,7 +89,7 @@ class AdminUsersCreate extends Component {
                                 <label htmlFor="lastname">Etternavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="lastname" className="stretch-to-fill" type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
+                                <input id="lastname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -88,15 +97,18 @@ class AdminUsersCreate extends Component {
                                 <label htmlFor="password">Passord:</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password" className="stretch-to-fill" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                                <input id="password" className='mdl-textfield__password stretch-to-fill' type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
                                 <label htmlFor="password2">Gjenta passord:</label>
                             </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                            <div className='mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop'>
+                                <div className={passwordInputClass}>
+                                    <input id="password2" type='password' className='mdl-textfield__password stretch-to-fill' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                    { passwordsNotIdentical && <span className='mdl-textfield__error is-invalid'>Passordene er ikke identiske</span> }
+                                </div>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -121,7 +133,17 @@ const mapStateToProps = state => {
         loginResponse: state.loginResponse,
         user: state.user,
         passwords: state.passwords,
+        passwordsNotIdentical: state.passwordsNotIdentical,
     };
+};
+
+const checkIfPasswordsAreNotIdentical = (passwords) => {
+    let { password, password2 } = passwords;
+    if (!password2) {
+        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
+    }
+
+    return password !== password2;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -135,9 +157,12 @@ const mapDispatchToProps = dispatch => {
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
-        onPasswordsFieldChange: (formValue, passwords) => {
+        onPasswordsFieldChange: (formValue, passwordsFromState) => {
+            const passwords = { ...passwordsFromState, ...formValue };
+            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
             let changedField = {
-                passwords: { ...passwords, ...formValue }
+                passwords,
+                passwordsNotIdentical,
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
