@@ -37,6 +37,10 @@ class AdminUsersCreate extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const emailIsNotValid = user.email && !isEmail(user.email);
+        const emailInputClass = 'mdl-textfield mdl-js-textfield' + (emailIsNotValid ? ' is-invalid is-dirty' : '');
+        const passwordInputClass = 'mdl-textfield mdl-js-textfield' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
+
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
         return (
@@ -65,9 +69,11 @@ class AdminUsersCreate extends Component {
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
                                 <label htmlFor="email">Epostadresse</label>
                             </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="email" className='mdl-textfield__input stretch-to-fill' type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
-                                { user.email && !isEmail(user.email) && <span>Ikke en gyldig epostadresse</span> }
+                            <div className='mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop'>
+                                <div className={emailInputClass}>
+                                    <input id="email" className='mdl-textfield__input stretch-to-fill' type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                                    { emailIsNotValid && <span className='mdl-textfield__error'>Ikke en gyldig epostadresse</span> }
+                                </div>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -98,9 +104,11 @@ class AdminUsersCreate extends Component {
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
                                 <label htmlFor="password2">Gjenta passord:</label>
                             </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password2" type='password' className='mdl-textfield__password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                                { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                            <div className='mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop'>
+                                <div className={passwordInputClass}>
+                                    <input id="password2" type='password' className='mdl-textfield__password stretch-to-fill' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                    { passwordsNotIdentical && <span className='mdl-textfield__error is-invalid'>Passordene er ikke identiske</span> }
+                                </div>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
