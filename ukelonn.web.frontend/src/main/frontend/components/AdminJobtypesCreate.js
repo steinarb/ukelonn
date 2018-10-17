@@ -47,7 +47,7 @@ class AdminJobtypesCreate extends Component {
                                 <label htmlFor="amount">Navn på jobbtype</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="name" className="stretch-to-fill" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                                <input id="name" className='mdl-textfield__input stretch-to-fill' type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">

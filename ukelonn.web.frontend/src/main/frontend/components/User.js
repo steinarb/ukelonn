@@ -67,7 +67,7 @@ class User extends Component {
                                 <label htmlFor="amount">Beløp</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="amount" className="stretch-to-fill" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
+                                <input id="amount" className='mdl-textfield__input stretch-to-fill' type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">

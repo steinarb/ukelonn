@@ -65,7 +65,7 @@ class AdminUsersModify extends Component {
                                 <label htmlFor="username">Brukernavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="username" className="stretch-to-fill" type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
+                                <input id="username" className='mdl-textfield__input stretch-to-fill' type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -73,7 +73,7 @@ class AdminUsersModify extends Component {
                                 <label htmlFor="email">Epostadresse</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="email" className="stretch-to-fill" type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
+                                <input id="email" className='mdl-textfield__input stretch-to-fill' type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -81,7 +81,7 @@ class AdminUsersModify extends Component {
                                 <label htmlFor="firstname">Fornavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="firstname" className="stretch-to-fill" type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
+                                <input id="firstname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -89,7 +89,7 @@ class AdminUsersModify extends Component {
                                 <label htmlFor="lastname">Etternavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="lastname" className="stretch-to-fill" type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
+                                <input id="lastname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
