@@ -14,6 +14,7 @@ class AdminUsersCreate extends Component {
 
     componentDidMount() {
         this.props.onClearUserAndPassword();
+        this.props.onUserList();
     }
 
     componentWillReceiveProps(props) {
@@ -24,6 +25,7 @@ class AdminUsersCreate extends Component {
         let {
             haveReceivedResponseFromLogin,
             loginResponse,
+            usernames,
             user,
             passwords,
             passwordsNotIdentical,
@@ -37,6 +39,8 @@ class AdminUsersCreate extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const usernameEmpty = !user.username;
+        const usernameExists = usernames.indexOf(user.username) > -1;
         const emailIsNotValid = user.email && !isEmail(user.email);
         const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
         const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
@@ -59,6 +63,8 @@ class AdminUsersCreate extends Component {
                             <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
                             <div className="col-7">
                                 <input id="username" className="form-control" type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                                { usernameEmpty && <span>Brukernavn kan ikke være tomt</span> }
+                                { usernameExists && <span>Brukernavnet finnes fra før</span> }
                             </div>
                         </div>
                         <div className="form-group row">
@@ -115,6 +121,7 @@ const mapStateToProps = state => {
         user: state.user,
         passwords: state.passwords,
         passwordsNotIdentical: state.passwordsNotIdentical,
+        usernames: state.usernames,
     };
 };
 
@@ -132,6 +139,7 @@ const mapDispatchToProps = dispatch => {
         onClearUserAndPassword: () => {
             dispatch({ type: 'CLEAR_USER_AND_PASSWORD' });
         },
+        onUserList: () => dispatch({ type: 'USERS_REQUEST' }),
         onUserFieldChange: (formValue, user) => {
             let changedField = {
                 user: { ...user, ...formValue }
