@@ -27,6 +27,7 @@ class AdminUsersChangePassword extends Component {
             usersMap,
             user,
             passwords,
+            passwordsNotIdentical,
             onUsersFieldChange,
             onPasswordsFieldChange,
             onSaveUpdatedPassword,
@@ -38,6 +39,8 @@ class AdminUsersChangePassword extends Component {
         }
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+
+        const passwordInputClass = 'mdl-textfield mdl-js-textfield' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
@@ -74,7 +77,10 @@ class AdminUsersChangePassword extends Component {
                                 <label htmlFor="password2">Gjenta passord:</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password2" className="stretch-to-fill" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                <div className={passwordInputClass}>
+                                    <input id="password2" type='password' className='mdl-textfield__password stretch-to-fill' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                    { passwordsNotIdentical && <span className='mdl-textfield__error is-invalid'>Passordene er ikke identiske</span> }
+                                </div>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -101,7 +107,17 @@ const mapStateToProps = state => {
         usersMap: new Map(state.users.map(i => [i.fullname, i])),
         user: state.user,
         passwords: state.passwords,
+        passwordsNotIdentical: state.passwordsNotIdentical,
     };
+};
+
+const checkIfPasswordsAreNotIdentical = (passwords) => {
+    let { password, password2 } = passwords;
+    if (!password2) {
+        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
+    }
+
+    return password !== password2;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -114,9 +130,12 @@ const mapDispatchToProps = dispatch => {
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
-        onPasswordsFieldChange: (formValue, passwords) => {
+        onPasswordsFieldChange: (formValue, passwordsFromState) => {
+            const passwords = { ...passwordsFromState, ...formValue };
+            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
             let changedField = {
-                passwords: { ...passwords, ...formValue }
+                passwords,
+                passwordsNotIdentical,
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
