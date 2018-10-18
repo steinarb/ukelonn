@@ -38,6 +38,8 @@ class AdminUsersChangePassword extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const passwordInputClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
+
         return (
             <div>
                 <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
@@ -67,8 +69,8 @@ class AdminUsersChangePassword extends Component {
                         <div className="form-group row">
                             <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
                             <div className="col-7">
-                                <input id="password2" className="form-control" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                                { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                                <input id="password2" className={passwordInputClass} type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                { passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
                             </div>
                         </div>
                         <div className="form-group row">
