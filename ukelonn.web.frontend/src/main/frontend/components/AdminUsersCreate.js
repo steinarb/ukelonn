@@ -14,6 +14,7 @@ class AdminUsersCreate extends Component {
 
     componentDidMount() {
         this.props.onClearUserAndPassword();
+        this.props.onUserList();
     }
 
     componentWillReceiveProps(props) {
@@ -24,6 +25,7 @@ class AdminUsersCreate extends Component {
         let {
             haveReceivedResponseFromLogin,
             loginResponse,
+            usernames,
             user,
             passwords,
             passwordsNotIdentical,
@@ -37,6 +39,9 @@ class AdminUsersCreate extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const usernameEmpty = !user.username;
+        const usernameExists = usernames.indexOf(user.username) > -1;
+
         return (
             <div>
                 <h1>Legg til ny bruker</h1>
@@ -46,6 +51,8 @@ class AdminUsersCreate extends Component {
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="username">Brukernavn</label>
                     <input id="username" type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                    { usernameEmpty && <span>Brukernavn kan ikke være tomt</span> }
+                    { usernameExists && <span>Brukernavnet finnes fra før</span> }
                     <br/>
                     <label htmlFor="email">Epostadresse</label>
                     <input id="email" type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
@@ -80,6 +87,7 @@ const mapStateToProps = state => {
         user: state.user,
         passwords: state.passwords,
         passwordsNotIdentical: state.passwordsNotIdentical,
+        usernames: state.usernames,
     };
 };
 
@@ -97,6 +105,7 @@ const mapDispatchToProps = dispatch => {
         onClearUserAndPassword: () => {
             dispatch({ type: 'CLEAR_USER_AND_PASSWORD' });
         },
+        onUserList: () => dispatch({ type: 'USERS_REQUEST' }),
         onUserFieldChange: (formValue, user) => {
             let changedField = {
                 user: { ...user, ...formValue }
