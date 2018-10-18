@@ -42,6 +42,7 @@ class AdminUsersCreate extends Component {
         const usernameEmpty = !user.username;
         const usernameExists = usernames.indexOf(user.username) > -1;
         const emailIsNotValid = user.email && !isEmail(user.email);
+        const usernameInputClass = 'mdl-textfield mdl-js-textfield' + (usernameEmpty || usernameExists ? ' is-invalid is-dirty' : '');
         const emailInputClass = 'mdl-textfield mdl-js-textfield' + (emailIsNotValid ? ' is-invalid is-dirty' : '');
         const passwordInputClass = 'mdl-textfield mdl-js-textfield' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
 
@@ -66,9 +67,11 @@ class AdminUsersCreate extends Component {
                                 <label htmlFor="username">Brukernavn</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="username" className='mdl-textfield__input stretch-to-fill' type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
-                                { usernameEmpty && <span>Brukernavn kan ikke være tomt</span> }
-                                { usernameExists && <span>Brukernavnet finnes fra før</span> }
+                                <div className={usernameInputClass}>
+                                    <input id="username" className='mdl-textfield__input stretch-to-fill' type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                                    { usernameEmpty && <span className='mdl-textfield__error'>Brukernavn kan ikke være tomt</span> }
+                                    { usernameExists && <span className='mdl-textfield__error'>Brukernavnet finnes fra før</span> }
+                                </div>
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
