@@ -27,6 +27,7 @@ class AdminUsersChangePassword extends Component {
             usersMap,
             user,
             passwords,
+            passwordsNotIdentical,
             onUsersFieldChange,
             onPasswordsFieldChange,
             onSaveUpdatedPassword,
@@ -75,6 +76,7 @@ class AdminUsersChangePassword extends Component {
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
                                 <input id="password2" className="stretch-to-fill" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -101,7 +103,17 @@ const mapStateToProps = state => {
         usersMap: new Map(state.users.map(i => [i.fullname, i])),
         user: state.user,
         passwords: state.passwords,
+        passwordsNotIdentical: state.passwordsNotIdentical,
     };
+};
+
+const checkIfPasswordsAreNotIdentical = (passwords) => {
+    let { password, password2 } = passwords;
+    if (!password2) {
+        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
+    }
+
+    return password !== password2;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -114,9 +126,12 @@ const mapDispatchToProps = dispatch => {
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },
-        onPasswordsFieldChange: (formValue, passwords) => {
+        onPasswordsFieldChange: (formValue, passwordsFromState) => {
+            const passwords = { ...passwordsFromState, ...formValue };
+            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
             let changedField = {
-                passwords: { ...passwords, ...formValue }
+                passwords,
+                passwordsNotIdentical,
             };
             dispatch({ type: 'UPDATE', data: changedField });
         },

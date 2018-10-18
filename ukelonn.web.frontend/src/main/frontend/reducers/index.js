@@ -66,6 +66,7 @@ export const ukelonnReducer = (state =
                                  paymenttypes: [],
                                  transactiontype: { ...emptyTransactionType },
                                  users: [],
+                                 usernames: [],
                                  user: { ...emptyUser },
                                  passwords: {...emptyPasswords },
                                },
@@ -188,6 +189,7 @@ export const ukelonnReducer = (state =
 
     if (action.type === 'USERS_RECEIVE') {
         const users = action.users;
+        const usernames = users.map(u => u.username);
 
         if (!users.find((user) => user.userId === -1)) {
             users.unshift(emptyUser);
@@ -196,6 +198,7 @@ export const ukelonnReducer = (state =
         return {
             ...state,
             users: users,
+            usernames: usernames,
         };
     }
 
