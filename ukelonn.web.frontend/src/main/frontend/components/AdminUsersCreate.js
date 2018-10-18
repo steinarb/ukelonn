@@ -42,6 +42,7 @@ class AdminUsersCreate extends Component {
         const usernameEmpty = !user.username;
         const usernameExists = usernames.indexOf(user.username) > -1;
         const emailIsNotValid = user.email && !isEmail(user.email);
+        const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
         const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
         const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
@@ -62,9 +63,9 @@ class AdminUsersCreate extends Component {
                         <div className="form-group row">
                             <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
                             <div className="col-7">
-                                <input id="username" className="form-control" type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
-                                { usernameEmpty && <span>Brukernavn kan ikke være tomt</span> }
-                                { usernameExists && <span>Brukernavnet finnes fra før</span> }
+                                <input id="username" className={usernameInputClass} type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                                { usernameEmpty && <span className="invalid-feedback d-block">Brukernavn kan ikke være tomt</span> }
+                                { usernameExists && <span className="invalid-feedback d-block">Brukernavnet finnes fra før</span> }
                             </div>
                         </div>
                         <div className="form-group row">
