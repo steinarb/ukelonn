@@ -35,6 +35,10 @@
     padding-bottom: 1px;
 }
 
+.mdl-textfield {
+    padding: 0
+}
+
 .transaction-table {
     width: 100%;
 }

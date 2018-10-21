@@ -40,7 +40,7 @@ class AdminUsersChangePassword extends Component {
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
-        const passwordInputClass = 'mdl-textfield mdl-js-textfield' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
+        const passwordInputClass = 'mdl-textfield mdl-js-textfield stretch-to-fill' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">

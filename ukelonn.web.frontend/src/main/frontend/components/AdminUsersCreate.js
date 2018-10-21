@@ -44,7 +44,7 @@ class AdminUsersCreate extends Component {
         const emailIsNotValid = user.email && !isEmail(user.email);
         const usernameInputClass = 'mdl-textfield mdl-js-textfield' + (usernameEmpty || usernameExists ? ' is-invalid is-dirty' : '');
         const emailInputClass = 'mdl-textfield mdl-js-textfield' + (emailIsNotValid ? ' is-invalid is-dirty' : '');
-        const passwordInputClass = 'mdl-textfield mdl-js-textfield' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
+        const passwordInputClass = 'mdl-textfield mdl-js-textfield  stretch-to-fill' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
