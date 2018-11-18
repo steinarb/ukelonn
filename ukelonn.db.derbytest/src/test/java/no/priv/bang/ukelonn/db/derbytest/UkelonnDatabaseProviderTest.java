@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -345,10 +346,10 @@ public class UkelonnDatabaseProviderTest {
             dataSource.setCreateDatabase("create");
         }
 
-        PooledConnection connect = dataSource.getPooledConnection();
+        Connection connect = dataSource.getConnection();
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
         liquibase.createInitialSchema(connect);
-        DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+        DatabaseConnection databaseConnection = new JdbcConnection(connect);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
         Liquibase liquibase2 = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
         liquibase2.update("");

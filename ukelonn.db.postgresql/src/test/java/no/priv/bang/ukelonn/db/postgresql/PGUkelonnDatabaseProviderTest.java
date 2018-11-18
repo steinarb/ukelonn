@@ -33,9 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.PooledConnection;
-
+import javax.sql.DataSource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -145,9 +143,9 @@ public class PGUkelonnDatabaseProviderTest {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
-        ConnectionPoolDataSource datasource = mock(ConnectionPoolDataSource.class);
+        DataSource datasource = mock(DataSource.class);
         DataSourceFactory datasourcefactory = mock(DataSourceFactory.class);
-        when(datasourcefactory.createConnectionPoolDataSource(any())).thenReturn(datasource);
+        when(datasourcefactory.createDataSource(any())).thenReturn(datasource);
         provider.setDataSourceFactory(datasourcefactory);
         provider.createConnection(Collections.emptyMap());
         assertEquals(0, logservice.getLogmessagecount());
@@ -171,10 +169,10 @@ public class PGUkelonnDatabaseProviderTest {
         // Mock injected OSGi services
         MockLogService logservice = new MockLogService();
         DataSourceFactory datasourcefactory = mock(DataSourceFactory.class);
-        ConnectionPoolDataSource datasource = mock(ConnectionPoolDataSource.class);
-        PooledConnection connection = mock(PooledConnection.class);
-        when(datasource.getPooledConnection()).thenReturn(connection);
-        when(datasourcefactory.createConnectionPoolDataSource(any())).thenReturn(datasource);
+        DataSource datasource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        when(datasource.getConnection()).thenReturn(connection);
+        when(datasourcefactory.createDataSource(any())).thenReturn(datasource);
         provider.setLogService(logservice);
         provider.setDataSourceFactory(datasourcefactory);
 
@@ -426,12 +424,10 @@ public class PGUkelonnDatabaseProviderTest {
 
     DataSourceFactory mockDataSourceFactory() throws SQLException {
         DataSourceFactory datasourcefactory = mock(DataSourceFactory.class);
-        ConnectionPoolDataSource datasource = mock(ConnectionPoolDataSource.class);
-        PooledConnection pooledConnection = mock(PooledConnection.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(pooledConnection.getConnection()).thenReturn(connection);
-        when(datasource.getPooledConnection()).thenReturn(pooledConnection);
-        when(datasourcefactory.createConnectionPoolDataSource(any())).thenReturn(datasource);
+        when(datasource.getConnection()).thenReturn(connection);
+        when(datasourcefactory.createDataSource(any())).thenReturn(datasource);
         return datasourcefactory;
     }
 
