@@ -22,9 +22,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.PooledConnection;
-
+import javax.sql.DataSource;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,8 +45,7 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 @Component(service=UkelonnDatabase.class, immediate=true)
 public class UkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
-    private PooledConnection connect = null;
-    private Connection connection;
+    private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
     @Reference
     public void setLogService(LogService logService) {
@@ -68,7 +65,6 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
             liquibase.createInitialSchema(connect);
             insertMockData();
             liquibase.updateSchema(connect);
-            connection = connect.getConnection();
         } catch (Exception e) {
             logError("Failed to create derby test database schema", e);
         }
@@ -78,8 +74,8 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         try {
-            ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
-            connect = dataSource.getPooledConnection();
+            DataSource dataSource = dataSourceFactory.createDataSource(properties);
+            connect = dataSource.getConnection();
         } catch (Exception e) {
             logError("Derby mock database failed to create connection", e);
         }
@@ -93,7 +89,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
      */
     List<RanChangeSet> getChangeLogHistory() {
         try {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
             StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
             return logHistoryService.getRanChangeSets();
@@ -108,7 +104,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     public boolean insertMockData() {
         try {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
@@ -121,7 +117,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     public boolean rollbackMockData() {
         try {
-            DatabaseConnection databaseConnection = new JdbcConnection(connection);
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
@@ -141,7 +137,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     @Override
     public PreparedStatement prepareStatement(String sql) {
         try {
-            return connection.prepareStatement(sql);
+            return connect.prepareStatement(sql);
         } catch (Exception e) {
             logError("Derby mock database failed to create prepared statement", e);
             return null;

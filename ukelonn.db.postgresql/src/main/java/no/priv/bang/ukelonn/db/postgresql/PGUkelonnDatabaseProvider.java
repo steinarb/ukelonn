@@ -15,15 +15,14 @@
  */
 package no.priv.bang.ukelonn.db.postgresql;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.PooledConnection;
-
+import javax.sql.DataSource;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -43,7 +42,7 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 @Component(service=UkelonnDatabase.class, immediate=true)
 public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
-    private PooledConnection connect = null;
+    private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
@@ -75,8 +74,8 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         Properties properties = createDatabaseConnectionProperties(config);
 
         try {
-            ConnectionPoolDataSource dataSource = dataSourceFactory.createConnectionPoolDataSource(properties);
-            connect = dataSource.getPooledConnection();
+            DataSource dataSource = dataSourceFactory.createDataSource(properties);
+            connect = dataSource.getConnection();
         } catch (Exception e) {
             logError("PostgreSQL database service failed to create connection to local DB server", e);
         }
@@ -105,7 +104,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
 
     boolean insertInitialDataInDatabase() {
         try {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect.getConnection());
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = createLiquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
@@ -124,7 +123,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     @Override
     public PreparedStatement prepareStatement(String sql) {
         try {
-            return connect.getConnection().prepareStatement(sql);
+            return connect.prepareStatement(sql);
         } catch (Exception e) {
             logError("PostgreSQL database failed to create prepared statement", e);
             return null;
