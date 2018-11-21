@@ -31,12 +31,12 @@ class User extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const title = 'Ukelønn for ' + account.firstName;
+        const title = 'Ukelønn for ' + account.firstName + ', dobbelt julebonus!';
         const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
         const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
 
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
+            <div className="mdl-layout mdl-layout--fixed-header mdl-layout__header-waterfall">
                 <Notification notificationMessage={notificationMessage}/>
                 <header className="mdl-layout__header">
                     <div className="mdl-layout__header-row">
