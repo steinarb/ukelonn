@@ -11,6 +11,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.ukelonn.web.security.dbrealm.UkelonnRealm;
+
 public class UkelonnShiroFilterTest {
 
     @BeforeClass
@@ -26,7 +28,10 @@ public class UkelonnShiroFilterTest {
     @Test
     public void testAuthenticate() {
         UkelonnShiroFilter shirofilter = new UkelonnShiroFilter();
-        shirofilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm();
+        realm.setDatabase(getUkelonnServiceSingleton().getDatabase());
+        realm.activate();
+        shirofilter.setRealm(realm);
         shirofilter.activate();
         WebSecurityManager securitymanager = shirofilter.getSecurityManager();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());

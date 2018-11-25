@@ -13,8 +13,7 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <feature name="ukelonn-web-security">
-        <feature>pax-http-whiteboard</feature>
+    <feature name="ukelonn-web-security-dbrealm">
         <feature>scr</feature>
     </feature>
 </features>

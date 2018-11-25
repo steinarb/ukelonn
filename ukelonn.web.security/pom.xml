@@ -38,14 +38,13 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.backend</artifactId>
+            <artifactId>ukelonn.db.liquibase</artifactId>
             <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.liquibase</artifactId>
+            <artifactId>ukelonn.web.security.dbrealm</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

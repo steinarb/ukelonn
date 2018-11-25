@@ -19,7 +19,6 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-import org.apache.shiro.SecurityUtils;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
@@ -27,7 +26,6 @@ import org.osgi.service.log.LogService;
 import no.priv.bang.ukelonn.db.derbytest.UkelonnDatabaseProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
-import no.priv.bang.ukelonn.web.security.UkelonnShiroFilter;
 
 /**
  * Contains static methods used in more than one unit test.
@@ -38,14 +36,9 @@ import no.priv.bang.ukelonn.web.security.UkelonnShiroFilter;
 public class TestUtils {
 
     private static UkelonnServiceProvider ukelonnServiceSingleton;
-    private static UkelonnShiroFilter shirofilter;
 
     public static UkelonnServiceProvider getUkelonnServiceSingleton() {
         return ukelonnServiceSingleton;
-    }
-
-    public static UkelonnShiroFilter getShirofilter() {
-        return shirofilter;
     }
 
     /**
@@ -72,12 +65,6 @@ public class TestUtils {
         LogService logservice = new MockLogService();
         ukelonnDatabaseProvider.setLogService(logservice);
         ukelonnDatabaseProvider.activate();
-
-        // Set up shiro
-        shirofilter = new UkelonnShiroFilter();
-        shirofilter.setUkelonnDatabase(ukelonnDatabaseProvider.get());
-        shirofilter.activate();
-        SecurityUtils.setSecurityManager(shirofilter.getSecurityManager());
 
         ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
         ukelonnServiceSingleton.setLogservice(logservice);

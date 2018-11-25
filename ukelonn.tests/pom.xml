@@ -84,7 +84,8 @@
             <artifactId>karaf</artifactId>
             <groupId>no.priv.bang.ukelonn</groupId>
             <version>${project.version}</version>
-            <type>pom</type>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>

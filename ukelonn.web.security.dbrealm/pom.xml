@@ -20,13 +20,13 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ukelonn.web.security</artifactId>
+    <artifactId>ukelonn.web.security.dbrealm</artifactId>
 
-    <name>Ukelonn web security component</name>
+    <name>Custom shiro JDBC realm that supports base64 encoded password salt</name>
 
     <properties>
-        <Bundle-SymbolicName>no.priv.bang.ukelonn.web.security</Bundle-SymbolicName>
-        <karaf-feature-name>ukelonn-web-security</karaf-feature-name>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.web.security.dbrealm</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-web-security-dbrealm</karaf-feature-name>
     </properties>
 
     <dependencies>
@@ -35,13 +35,6 @@
             <artifactId>ukelonn.services</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.backend</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
@@ -94,23 +87,6 @@
             <artifactId>service-mocks</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-extender-whiteboard</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-derby</artifactId>
             <scope>test</scope>
@@ -134,16 +110,6 @@
                     <artifactId>commons-beanutils</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-web</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.commons-beanutils</artifactId>
-            <version>1.8.3_2</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
