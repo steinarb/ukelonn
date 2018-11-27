@@ -78,7 +78,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             junitBundles(),
             mavenBundle("org.apache.shiro", "shiro-core").versionAsInProject(),
             features(paxJdbcRepo),
-            features(ukelonnFeatureRepo, "ukelonn-db-derby-test", "ukelonn"));
+            features(ukelonnFeatureRepo, "ukelonn-with-derby"));
     }
 
     @Test
