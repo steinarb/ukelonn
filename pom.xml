@@ -47,6 +47,21 @@
         </sonar.cpd.exclusions>
     </properties>
 
+    <modules>
+        <module>ukelonn.services</module>
+        <module>ukelonn.backend</module>
+        <module>ukelonn.web.security.dbrealm</module>
+        <module>ukelonn.web.security</module>
+        <module>ukelonn.web.services</module>
+        <module>ukelonn.web.frontend</module>
+        <module>ukelonn.testutils</module>
+        <module>ukelonn.db.liquibase</module>
+        <module>ukelonn.db.derbytest</module>
+        <module>ukelonn.db.postgresql</module>
+        <module>ukelonn.tests</module>
+        <module>karaf</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -460,20 +475,6 @@
         </extensions>
     </build>
 
-    <modules>
-        <module>ukelonn.services</module>
-        <module>ukelonn.backend</module>
-        <module>ukelonn.web.security</module>
-        <module>ukelonn.web.services</module>
-        <module>ukelonn.web.frontend</module>
-        <module>ukelonn.testutils</module>
-        <module>ukelonn.db.liquibase</module>
-        <module>ukelonn.db.derbytest</module>
-        <module>ukelonn.db.postgresql</module>
-        <module>ukelonn.tests</module>
-        <module>karaf</module>
-    </modules>
-
     <distributionManagement>
         <repository>
             <id>ssh-maven-travis</id>
@@ -484,6 +485,5 @@
             <url>sftp://maven.bang.priv.no/repository</url>
         </snapshotRepository>
     </distributionManagement>
-
 
 </project>
