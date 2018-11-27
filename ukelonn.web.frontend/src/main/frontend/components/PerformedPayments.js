@@ -38,7 +38,7 @@ class PerformedPayments extends Component {
             <div>
                 <Link to="/ukelonn/">{parentTitle}</Link>
                 <br/>
-                <h1>Utførte jobber for {account.firstName}</h1>
+                <h1>Utførte utbetalinger til {account.firstName}</h1>
                 <table className="table table-bordered">
                     <thead>
                         <tr>
