@@ -20,40 +20,16 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ukelonn.web.security.dbrealm</artifactId>
+    <artifactId>ukelonn.web.security.memorysession</artifactId>
 
-    <name>Custom shiro JDBC realm that supports base64 encoded password salt</name>
+    <name>Shiro MemorySessionDAO exposed as OSGi SessionDAO service</name>
 
     <properties>
-        <Bundle-SymbolicName>no.priv.bang.ukelonn.web.security.dbrealm</Bundle-SymbolicName>
-        <karaf-feature-name>ukelonn-web-security-dbrealm</karaf-feature-name>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.web.security.memorysession</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-web-security-memorysession</karaf-feature-name>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.services</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.liquibase</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.backend</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
@@ -85,16 +61,6 @@
         <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
             <artifactId>service-mocks</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-derby</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.shiro</groupId>

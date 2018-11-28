@@ -51,6 +51,7 @@
         <module>ukelonn.services</module>
         <module>ukelonn.backend</module>
         <module>ukelonn.web.security.dbrealm</module>
+        <module>ukelonn.web.security.memorysession</module>
         <module>ukelonn.web.security</module>
         <module>ukelonn.web.services</module>
         <module>ukelonn.web.frontend</module>
