@@ -266,47 +266,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     /**
-     * Shiro fails because there is no WebSubject bound to the thread.
-     * @throws Exception
-     */
-    @Test
-    public void testLoginInternalServerError() throws Exception {
-        // Set up the request
-        LoginCredentials credentials = new LoginCredentials("jad", "1ad");
-        HttpServletRequest request = buildLoginRequest(credentials);
-
-        // Create the response that will cause a NullPointerException when
-        // trying to write the body
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
-        when(response.getWriter()).thenReturn(null);
-
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
-
-        // Clear the Subject to ensure that Shiro will fail
-        // no matter what order test methods are run in
-        ThreadContext.remove();
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
-
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
-        // Do the login
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(500, response.getStatus());
-    }
-
-    /**
      * Verify that a GET to the LoginServlet will return the current state
      * when a user is logged in
      *
