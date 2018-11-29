@@ -44,6 +44,11 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
+            <artifactId>ukelonn.web.security.dbrealm</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.web.frontend</artifactId>
             <version>${project.version}</version>
         </dependency>
