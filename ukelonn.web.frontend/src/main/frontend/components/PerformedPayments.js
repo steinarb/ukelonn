@@ -70,6 +70,8 @@ class PerformedPayments extends Component {
                 <br/>
                 <br/>
                 <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                <br/>
+                <a href="../..">Tilbake til topp</a>
             </div>
         );
     }
