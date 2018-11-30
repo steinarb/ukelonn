@@ -31,6 +31,8 @@ class AdminJobtypes extends Component {
                 <Link to="/ukelonn/admin/jobs/edit">Endre jobber</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
+                <br/>
+                <a href="../../..">Tilbake til topp</a>
             </div>
         );
     };

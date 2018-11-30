@@ -33,6 +33,8 @@ class AdminUsers extends Component {
                 <Link to="/ukelonn/admin/users/create">Legg til ny bruker</Link>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
+                <br/>
+                <a href="../../..">Tilbake til topp</a>
             </div>
         );
     };

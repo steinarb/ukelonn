@@ -59,6 +59,8 @@ class AdminUsersChangePassword extends Component {
                 </form>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
+                <br/>
+                <a href="../../../..">Tilbake til topp</a>
             </div>
         );
     };

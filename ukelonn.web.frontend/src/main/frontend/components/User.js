@@ -58,6 +58,8 @@ class User extends Component {
                 <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
+                <br/>
+                <a href="../..">Tilbake til topp</a>
             </div>
         );
     }
