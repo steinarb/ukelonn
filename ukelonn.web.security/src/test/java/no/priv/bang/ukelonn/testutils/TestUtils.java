@@ -19,7 +19,6 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-import org.apache.shiro.SecurityUtils;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
@@ -72,12 +71,6 @@ public class TestUtils {
         LogService logservice = new MockLogService();
         ukelonnDatabaseProvider.setLogService(logservice);
         ukelonnDatabaseProvider.activate();
-
-        // Set up shiro
-        shirofilter = new UkelonnShiroFilter();
-        shirofilter.setUkelonnDatabase(ukelonnDatabaseProvider.get());
-        shirofilter.activate();
-        SecurityUtils.setSecurityManager(shirofilter.getSecurityManager());
 
         ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
         ukelonnServiceSingleton.setLogservice(logservice);

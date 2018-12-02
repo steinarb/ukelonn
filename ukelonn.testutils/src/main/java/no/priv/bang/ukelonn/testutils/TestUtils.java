@@ -28,6 +28,8 @@ import no.priv.bang.ukelonn.db.derbytest.UkelonnDatabaseProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.web.security.UkelonnShiroFilter;
+import no.priv.bang.ukelonn.web.security.dbrealm.UkelonnRealm;
+import no.priv.bang.ukelonn.web.security.memorysession.MemorySession;
 
 /**
  * Contains static methods used in more than one unit test.
@@ -74,8 +76,14 @@ public class TestUtils {
         ukelonnDatabaseProvider.activate();
 
         // Set up shiro
+        MemorySession session = new MemorySession();
+        session.activate();
+        UkelonnRealm realm = new UkelonnRealm();
+        realm.setDatabase(ukelonnDatabaseProvider.get());
+        realm.activate();
         shirofilter = new UkelonnShiroFilter();
-        shirofilter.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+        shirofilter.setRealm(realm);
+        shirofilter.setSession(session);
         shirofilter.activate();
         SecurityUtils.setSecurityManager(shirofilter.getSecurityManager());
 

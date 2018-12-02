@@ -46,6 +46,8 @@ class AdminPaymenttypes extends Component {
                 </div>
                 <br/>
                 <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+                <br/>
+                <a href="../../..">Tilbake til topp</a>
             </div>
         );
     };

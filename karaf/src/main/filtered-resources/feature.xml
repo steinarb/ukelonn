@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="webapi">
 
-    <!--
-         Copyright 2016-2018 Steinar Bang
-
-         Licensed under the Apache License, Version 2.0 (the "License");
-         you may not use this file except in compliance with the License.
-         You may obtain a copy of the License at
-
-            http://www.apache.org/licenses/LICENSE-2.0
-
-         Unless required by applicable law or agreed to in writing,
-         software distributed under the License is distributed on an "AS IS" BASIS,
-         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-         See the License for the specific language governing permissions and limitations
-         under the License.
-    -->
+    <!-- Copyright 2016-2018 Steinar Bang                                                -->
+    <!--                                                                                 -->
+    <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
+    <!-- you may not use this file except in compliance with the License.                -->
+    <!-- You may obtain a copy of the License at                                         -->
+    <!--   http://www.apache.org/licenses/LICENSE-2.0                                    -->
+    <!-- Unless required by applicable law or agreed to in writing,                      -->
+    <!-- software distributed under the License is distributed on an "AS IS" BASIS,      -->
+    <!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.        -->
+    <!-- See the License for the specific language governing permissions and limitations -->
+    <!-- under the License.                                                              -->
 
     <repository>mvn:no.priv.bang.karaf/liquibase-core-karaf/${liquibase.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.services/${project.version}/xml/features</repository>
@@ -23,6 +19,8 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.derbytest/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.postgresql/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security.memorysession/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security.dbrealm/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.frontend/${project.version}/xml/features</repository>
@@ -30,11 +28,17 @@
         <feature>ukelonn-web-frontend</feature>
     </feature>
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
+        <feature>ukelonn-backend</feature>
         <feature>ukelonn-db-derby-test</feature>
+        <feature>ukelonn-web-security-memorysession</feature>
+        <feature>ukelonn-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
+        <feature>ukelonn-backend</feature>
         <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-web-security-memorysession</feature>
+        <feature>ukelonn-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
 </features>

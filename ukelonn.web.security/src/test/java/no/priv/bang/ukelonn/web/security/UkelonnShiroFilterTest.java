@@ -2,7 +2,6 @@ package no.priv.bang.ukelonn.web.security;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
-
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -10,6 +9,9 @@ import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import no.priv.bang.ukelonn.web.security.dbrealm.UkelonnRealm;
+import no.priv.bang.ukelonn.web.security.memorysession.MemorySession;
 
 public class UkelonnShiroFilterTest {
 
@@ -26,7 +28,13 @@ public class UkelonnShiroFilterTest {
     @Test
     public void testAuthenticate() {
         UkelonnShiroFilter shirofilter = new UkelonnShiroFilter();
-        shirofilter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
+        UkelonnRealm realm = new UkelonnRealm();
+        MemorySession session = new MemorySession();
+        session.activate();
+        realm.setDatabase(getUkelonnServiceSingleton().getDatabase());
+        realm.activate();
+        shirofilter.setSession(session);
+        shirofilter.setRealm(realm);
         shirofilter.activate();
         WebSecurityManager securitymanager = shirofilter.getSecurityManager();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
