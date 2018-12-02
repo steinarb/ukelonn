@@ -62,9 +62,14 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         createConnection(config);
         UkelonnLiquibase liquibase = createUkelonnLiquibase();
         try {
-            liquibase.createInitialSchema(connect);
-            insertInitialDataInDatabase();
-            liquibase.updateSchema(connect);
+            try {
+                liquibase.createInitialSchema(connect);
+                insertInitialDataInDatabase();
+                liquibase.updateSchema(connect);
+            } finally {
+                // Liquibase sets autocommit to false
+                connect.setAutoCommit(true);
+            }
         } catch (Exception e) {
             logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
         }

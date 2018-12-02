@@ -19,6 +19,7 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.derbytest/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.postgresql/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security.memorysession/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security.dbrealm/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.services/${project.version}/xml/features</repository>
@@ -29,12 +30,14 @@
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>ukelonn-db-derby-test</feature>
+        <feature>ukelonn-web-security-memorysession</feature>
         <feature>ukelonn-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-web-security-memorysession</feature>
         <feature>ukelonn-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
