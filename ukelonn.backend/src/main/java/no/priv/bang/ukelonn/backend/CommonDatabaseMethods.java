@@ -153,7 +153,7 @@ public class CommonDatabaseMethods {
             statement.setInt(1, accountId);
             statement.setInt(2, transactionTypeId);
             statement.setDouble(3, amount);
-            statement.setDate(4, new java.sql.Date(transactionDate.getTime()));
+            statement.setTimestamp(4, new java.sql.Timestamp(transactionDate.getTime()));
             updateResult = database.update(statement);
         } catch (SQLException e) {
             logError(clazz, provider, "Failed to set prepared statements value", e);

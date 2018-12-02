@@ -62,9 +62,14 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         createConnection();
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
         try {
-            liquibase.createInitialSchema(connect);
-            insertMockData();
-            liquibase.updateSchema(connect);
+            try {
+                liquibase.createInitialSchema(connect);
+                insertMockData();
+                liquibase.updateSchema(connect);
+            } finally {
+                // Liquibase sets Connection.autoCommit to false, set it back to true
+                connect.setAutoCommit(true);
+            }
         } catch (Exception e) {
             logError("Failed to create derby test database schema", e);
         }
