@@ -22,6 +22,22 @@
 
     <name>ukelonn parent project</name>
 
+    <modules>
+        <module>ukelonn.services</module>
+        <module>ukelonn.backend</module>
+        <module>ukelonn.web.security.dbrealm</module>
+        <module>ukelonn.web.security.memorysession</module>
+        <module>ukelonn.web.security</module>
+        <module>ukelonn.web.services</module>
+        <module>ukelonn.web.frontend</module>
+        <module>ukelonn.testutils</module>
+        <module>ukelonn.db.liquibase</module>
+        <module>ukelonn.db.derbytest</module>
+        <module>ukelonn.db.postgresql</module>
+        <module>ukelonn.tests</module>
+        <module>karaf</module>
+    </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
@@ -46,22 +62,6 @@
             **/UkelonnDatabaseProvider.java
         </sonar.cpd.exclusions>
     </properties>
-
-    <modules>
-        <module>ukelonn.services</module>
-        <module>ukelonn.backend</module>
-        <module>ukelonn.web.security.dbrealm</module>
-        <module>ukelonn.web.security.memorysession</module>
-        <module>ukelonn.web.security</module>
-        <module>ukelonn.web.services</module>
-        <module>ukelonn.web.frontend</module>
-        <module>ukelonn.testutils</module>
-        <module>ukelonn.db.liquibase</module>
-        <module>ukelonn.db.derbytest</module>
-        <module>ukelonn.db.postgresql</module>
-        <module>ukelonn.tests</module>
-        <module>karaf</module>
-    </modules>
 
     <dependencyManagement>
         <dependencies>
