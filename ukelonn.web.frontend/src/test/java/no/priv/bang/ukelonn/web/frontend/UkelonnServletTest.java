@@ -19,8 +19,9 @@ import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
 
+import com.mockrunner.mock.web.MockHttpServletResponse;
+
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 
 import static org.mockito.Mockito.*;
 
@@ -43,13 +44,13 @@ public class UkelonnServletTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         servlet.doGet(request, response);
 
         assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
-        assertThat(response.getOutput().size()).isGreaterThan(0);
+        assertThat(response.getBufferSize()).isGreaterThan(0);
     }
 
 
@@ -59,14 +60,14 @@ public class UkelonnServletTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn");
         when(request.getServletPath()).thenReturn("/frontend-karaf-demo");
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         UkelonnServlet servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
         servlet.doGet(request, response);
 
-        assertEquals(301, response.getStatus());
+        assertEquals(302, response.getStatus());
     }
 
     @Test
@@ -76,6 +77,7 @@ public class UkelonnServletTest {
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        response.resetAll();
         ServletOutputStream streamThrowingIOException = mock(ServletOutputStream.class);
         doThrow(IOException.class).when(streamThrowingIOException).write(anyInt());
         when(response.getOutputStream()).thenReturn(streamThrowingIOException);
@@ -96,6 +98,7 @@ public class UkelonnServletTest {
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        response.resetAll();
         when(response.getOutputStream()).thenThrow(IOException.class);
 
         UkelonnServlet servlet = new UkelonnServlet();
@@ -112,14 +115,14 @@ public class UkelonnServletTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/static/nosuchname.png");
         when(request.getPathInfo()).thenReturn("/static/nosuchname.png");
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         UkelonnServlet servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
         servlet.doGet(request, response);
 
-        assertEquals(404, response.getStatus());
+        assertEquals(404, response.getErrorCode());
     }
 
     @Test
