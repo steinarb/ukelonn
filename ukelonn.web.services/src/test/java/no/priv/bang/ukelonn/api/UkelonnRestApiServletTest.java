@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -45,6 +45,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -60,7 +62,6 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
-import no.priv.bang.ukelonn.mocks.MockHttpServletResponse;
 
 /**
  * The tests in this test class mirrors the tests for the Jersey
@@ -91,7 +92,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = buildLoginRequest(credentials);
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -116,7 +117,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertThat(result.getRoles().length).isGreaterThan(0);
         assertEquals("", result.getErrorMessage());
     }
@@ -128,7 +129,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = buildLoginRequest(credentials);
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -153,7 +154,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertThat(result.getRoles().length).isGreaterThan(0);
         assertEquals("", result.getErrorMessage());
     }
@@ -166,7 +167,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = buildLoginRequest(credentials);
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -191,7 +192,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("Unknown account", result.getErrorMessage());
     }
@@ -203,7 +204,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = buildLoginRequest(credentials);
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -228,7 +229,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("Wrong password", result.getErrorMessage());
     }
@@ -239,7 +240,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = buildRequestFromStringBody("xxxyzzy");
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -289,7 +290,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the response that will cause a NullPointerException
         // when trying to print the body
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -318,7 +319,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertThat(result.getRoles().length).isGreaterThan(0);
         assertEquals("", result.getErrorMessage());
     }
@@ -347,7 +348,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the response that will cause a NullPointerException
         // when trying to print the body
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -375,7 +376,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("", result.getErrorMessage());
     }
@@ -394,7 +395,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -421,7 +422,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("", result.getErrorMessage());
     }
@@ -446,7 +447,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create the response that will receive the login result
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -473,7 +474,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        LoginResult result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), LoginResult.class);
+        LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
         assertEquals(0, result.getRoles().length);
         assertEquals("", result.getErrorMessage());
     }
@@ -491,7 +492,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create the servlet that is to be tested
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -517,7 +518,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        List<TransactionType> jobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        List<TransactionType> jobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         assertThat(jobtypes.size()).isGreaterThan(0);
     }
 
@@ -536,7 +537,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -563,7 +564,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        List<Account> accounts = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Account>>() {});
+        List<Account> accounts = mapper.readValue(getBinaryContent(response), new TypeReference<List<Account>>() {});
         assertEquals(2, accounts.size());
     }
 
@@ -582,7 +583,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -610,7 +611,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         double expectedAccountBalance = getUkelonnServiceSingleton().getAccount("jad").getBalance();
-        Account result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
+        Account result = ServletTestBase.mapper.readValue(getBinaryContent(response), Account.class);
         assertEquals("jad", result.getUsername());
         assertEquals(expectedAccountBalance, result.getBalance(), 0.0);
     }
@@ -636,7 +637,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -684,7 +685,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -712,7 +713,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         double expectedAccountBalance = getUkelonnServiceSingleton().getAccount("jad").getBalance();
-        Account result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
+        Account result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
         assertEquals("jad", result.getUsername());
         assertEquals(expectedAccountBalance, result.getBalance(), 0.0);
     }
@@ -732,7 +733,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -776,7 +777,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -818,7 +819,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -845,7 +846,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        Account result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
+        Account result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
         assertEquals("jad", result.getUsername());
         assertThat(result.getBalance()).isGreaterThan(originalBalance);
     }
@@ -868,7 +869,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
@@ -914,7 +915,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
@@ -942,7 +943,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
 
-        Account result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
+        Account result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
         assertEquals("jad", result.getUsername());
         assertThat(result.getBalance()).isGreaterThan(originalBalance);
     }
@@ -959,7 +960,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -994,7 +995,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1083,7 +1084,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create the servlet that is to be tested
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -1109,7 +1110,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        List<Transaction> jobs = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() {});
+        List<Transaction> jobs = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() {});
         assertEquals(10, jobs.size());
     }
 
@@ -1130,7 +1131,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
             when(request.getRequestURI()).thenReturn(requestURI);
 
             // Create a response object that will receive and hold the servlet output
-            MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+            MockHttpServletResponse response = new MockHttpServletResponse();
 
             // Create the servlet that is to be tested
             UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -1155,7 +1156,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
             // Check the output
             assertEquals(200, response.getStatus());
             assertEquals("application/json", response.getContentType());
-            List<Transaction> jobsAfterDelete = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() { });
+            List<Transaction> jobsAfterDelete = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
             assertEquals(0, jobsAfterDelete.size());
         } finally {
             restoreTestDatabase();
@@ -1189,7 +1190,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
             when(request.getRequestURI()).thenReturn(requestURI);
 
             // Create a response object that will receive and hold the servlet output
-            MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+            MockHttpServletResponse response = new MockHttpServletResponse();
 
             // Create the servlet that is to be tested
             UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -1214,7 +1215,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
             // Check the output (compare the updated job against the edited job values)
             assertEquals(200, response.getStatus());
             assertEquals("application/json", response.getContentType());
-            List<Transaction> updatedJobs = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() { });
+            List<Transaction> updatedJobs = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
             Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
 
             assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
@@ -1241,7 +1242,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create the servlet that is to be tested
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -1267,7 +1268,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        List<Transaction> payments = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<Transaction>>() {});
+        List<Transaction> payments = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() {});
         assertEquals(10, payments.size());
     }
 
@@ -1284,7 +1285,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create the servlet that is to be tested
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -1310,7 +1311,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        List<TransactionType> paymenttypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        List<TransactionType> paymenttypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         assertEquals(2, paymenttypes.size());
     }
 
@@ -1327,7 +1328,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/registerpayment");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1351,7 +1352,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        Account result = ServletTestBase.mapper.readValue(response.getOutput().toString(StandardCharsets.UTF_8.toString()), Account.class);
+        Account result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
         assertEquals("jad", result.getUsername());
         assertThat(result.getBalance()).isLessThan(originalBalance);
     }
@@ -1373,7 +1374,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/jobtype/modify");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1397,8 +1398,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        // Verify that the updated amount is larger than the original amount
-        List<TransactionType> updatedJobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        List<TransactionType> updatedJobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         TransactionType updatedJobtype = updatedJobtypes.get(0);
         assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
@@ -1419,7 +1419,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/jobtype/create");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1444,7 +1444,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         // Verify that the updated have more items than the original jobtypes
-        List<TransactionType> updatedJobtypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        List<TransactionType> updatedJobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
     }
 
@@ -1465,7 +1465,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/paymenttype/modify");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1489,8 +1489,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        // Verify that the updated amount is larger than the original amount
-        List<TransactionType> updatedPaymenttypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        List<TransactionType> updatedPaymenttypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         TransactionType updatedPaymenttype = updatedPaymenttypes.get(0);
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
@@ -1510,7 +1509,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/paymenttype/create");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1535,7 +1534,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         // Verify that the updated have more items than the original jobtypes
-        List<TransactionType> updatedPaymenttypes = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<TransactionType>>() {});
+        List<TransactionType> updatedPaymenttypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
     }
 
@@ -1552,7 +1551,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create the servlet that is to be tested
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
@@ -1578,7 +1577,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        List<User> users = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+        List<User> users = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
         assertThat(users.size()).isGreaterThan(0);
     }
 
@@ -1604,7 +1603,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/modify");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1629,7 +1628,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         // Verify that the first user has the modified values
-        List<User> updatedUsers = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+        List<User> updatedUsers = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
         User firstUser = updatedUsers.get(userToModify);
         assertEquals(modifiedUsername, firstUser.getUsername());
         assertEquals(modifiedEmailaddress, firstUser.getEmail());
@@ -1659,7 +1658,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/create");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1684,7 +1683,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         // Verify that the first user has the modified values
-        List<User> updatedUsers = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+        List<User> updatedUsers = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
 
         // Verify that the last user has the expected values
         assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
@@ -1714,7 +1713,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/password");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -1738,8 +1737,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        // Verify that the first user has the modified values
-        List<User> updatedUsers = mapper.readValue(response.getOutput().toByteArray(), new TypeReference<List<User>>() {});
+        List<User> updatedUsers = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
 
         // Verify that the number of users hasn't changed
         assertEquals(originalUserCount, updatedUsers.size());
@@ -1762,7 +1760,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(requestGetNotifications.getRequestURI()).thenReturn("/ukelonn/api/notificationsto/jad");
 
         // Create a response object that will receive and hold the servlet output
-        MockHttpServletResponse notificationsResponse = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse notificationsResponse = new MockHttpServletResponse();
 
         // Do a REST API call
         servlet.service(requestGetNotifications, notificationsResponse);
@@ -1770,7 +1768,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Check the REST API response (no notifications expected)
         assertEquals(200, notificationsResponse.getStatus());
         assertEquals("application/json", notificationsResponse.getContentType());
-        List<User> notificationsToJad = mapper.readValue(notificationsResponse.getOutput().toByteArray(), new TypeReference<List<Notification>>() {});
+        List<User> notificationsToJad = mapper.readValue(getBinaryContent(notificationsResponse), new TypeReference<List<Notification>>() {});
         assertThat(notificationsToJad).isEmpty();
 
         // Send a notification to user "jad" over the REST API
@@ -1783,17 +1781,22 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.service(sendNotificationRequest, sendNotificationResponse);
 
         if (sendNotificationResponse.getStatus() == HttpServletResponse.SC_BAD_REQUEST) {
-            System.err.println("Error in POST request: " + sendNotificationResponse.getOutput().toString());
+            System.err.println("Error in POST request: " + sendNotificationResponse.getOutputStreamContent());
         }
 
         // A new REST API request for notifications to "jad" will return a single notification
-        MockHttpServletResponse notificationsResponse2 = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletResponse notificationsResponse2 = new MockHttpServletResponse();
         servlet.service(requestGetNotifications, notificationsResponse2);
         assertEquals(200, notificationsResponse2.getStatus());
         assertEquals("application/json", notificationsResponse2.getContentType());
-        List<Notification> notificationsToJad2 = mapper.readValue(notificationsResponse2.getOutput().toByteArray(), new TypeReference<List<Notification>>() {});
+        List<Notification> notificationsToJad2 = mapper.readValue(getBinaryContent(notificationsResponse2), new TypeReference<List<Notification>>() {});
         assertEquals(utbetalt.getTitle(), notificationsToJad2.get(0).getTitle());
         assertEquals(utbetalt.getMessage(), notificationsToJad2.get(0).getMessage());
+    }
+
+    private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
+        MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
+        return outputstream.getBinaryContent();
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
