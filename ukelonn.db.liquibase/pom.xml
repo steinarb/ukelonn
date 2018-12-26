@@ -97,29 +97,6 @@
                     <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.github.cjnygard</groupId>
-                <artifactId>rest-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>update-bundle</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>rest-request</goal>
-                        </goals>
-                        <configuration>
-                            <resource>system/console/bundles/${Bundle-SymbolicName}</resource>
-                            <method>POST</method>
-                            <fileset>
-                                <directory>${project.build.directory}</directory>
-                                <includes>
-                                    <include>karaf-console-rest-post-update-arguments</include>
-                                </includes>
-                            </fileset>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>
