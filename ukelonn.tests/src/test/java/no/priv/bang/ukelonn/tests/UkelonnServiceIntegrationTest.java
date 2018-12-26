@@ -76,7 +76,6 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             systemProperty("org.ops4j.pax.logging.DefaultSer‌​viceLog.level").value("DEBUG"),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
-            mavenBundle("org.apache.shiro", "shiro-core").versionAsInProject(),
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-with-derby"));
     }
