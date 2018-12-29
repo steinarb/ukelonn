@@ -15,7 +15,6 @@
  */
 package no.priv.bang.ukelonn.api;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -1074,7 +1073,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn("HTTP/1.1");
         when(request.getMethod()).thenReturn("GET");
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        Account account = getUkelonnServiceSingleton().getAccount("jad");
         String requestURL = String.format("http://localhost:8181/ukelonn/api/jobs/%d", account.getAccountId());
         String requestURI = String.format("/ukelonn/api/jobs/%d", account.getAccountId());
         when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
@@ -1118,7 +1117,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testDeleteJobs() throws Exception {
         try {
             // Set up the request
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jod");
+            Account account = getUkelonnServiceSingleton().getAccount("jod");
             List<Transaction> jobs = getUkelonnServiceSingleton().getJobs(account.getAccountId());
             List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
             AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
@@ -1167,7 +1166,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testUpdateJob() throws Exception {
         try {
             // Find the job that is to be modified
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jod");
+            Account account = getUkelonnServiceSingleton().getAccount("jod");
             Transaction job = getUkelonnServiceSingleton().getJobs(account.getAccountId()).get(0);
             Integer originalTransactionTypeId = job.getTransactionType().getId();
             double originalTransactionAmount = job.getTransactionAmount();
@@ -1232,7 +1231,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn("HTTP/1.1");
         when(request.getMethod()).thenReturn("GET");
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        Account account = getUkelonnServiceSingleton().getAccount("jad");
         String requestURL = String.format("http://localhost:8181/ukelonn/api/payments/%d", account.getAccountId());
         String requestURI = String.format("/ukelonn/api/payments/%d", account.getAccountId());
         when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));

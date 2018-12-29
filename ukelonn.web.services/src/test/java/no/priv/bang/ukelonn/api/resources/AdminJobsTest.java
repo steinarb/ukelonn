@@ -15,7 +15,6 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.getUkelonnServiceSingleton;
 import static no.priv.bang.ukelonn.testutils.TestUtils.releaseFakeOsgiServices;
 import static no.priv.bang.ukelonn.testutils.TestUtils.restoreTestDatabase;
@@ -176,9 +175,9 @@ public class AdminJobsTest {
 
         try {
             String username = "jod";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             String otherUsername = "jad";
-            Account otherAccount = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), otherUsername);
+            Account otherAccount = ukelonn.getAccount(otherUsername);
 
             // Check the preconditions
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
@@ -230,7 +229,7 @@ public class AdminJobsTest {
     }
 
     Account getAccount(String username) {
-        return getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+        return getUkelonnServiceSingleton().getAccount(username);
     }
 
 }

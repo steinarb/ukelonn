@@ -15,7 +15,6 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
@@ -252,7 +251,7 @@ public class JobResourceTest extends ServletTestBase {
             resource.ukelonn = ukelonn;
 
             String username = "jad";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             Transaction job = ukelonn.getJobs(account.getAccountId()).get(0);
             int jobId = job.getId();
 

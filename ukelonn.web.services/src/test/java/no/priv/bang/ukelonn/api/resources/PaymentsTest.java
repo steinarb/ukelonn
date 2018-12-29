@@ -15,7 +15,6 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 
@@ -43,7 +42,7 @@ public class PaymentsTest extends ServletTestBase {
 
     @Test
     public void testGetPayments() {
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        Account account = getUkelonnServiceSingleton().getAccount("jad");
         Payments resource = new Payments();
         resource.ukelonn = getUkelonnServiceSingleton();
         List<Transaction> jobs = resource.payments(account.getAccountId());
