@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -48,6 +49,7 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
@@ -99,7 +101,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
 
         // Activate the servlet DS component
@@ -136,7 +139,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
 
         // Activate the servlet DS component
@@ -174,7 +178,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
 
         // Activate the servlet DS component
@@ -211,7 +216,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
 
         // Activate the servlet DS component
@@ -247,7 +253,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
 
         // Activate the servlet DS component
@@ -302,7 +309,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -359,7 +367,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -405,7 +414,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -457,7 +467,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -501,7 +512,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getJobTypes()).thenReturn(getJobtypes());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -544,7 +557,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -590,7 +605,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -609,7 +626,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        double expectedAccountBalance = getUkelonnServiceSingleton().getAccount("jad").getBalance();
+        double expectedAccountBalance = getJadAccount().getBalance();
         Account result = ServletTestBase.mapper.readValue(getBinaryContent(response), Account.class);
         assertEquals("jad", result.getUsername());
         assertEquals(expectedAccountBalance, result.getBalance(), 0.0);
@@ -644,7 +661,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -692,7 +710,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -711,7 +731,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        double expectedAccountBalance = getUkelonnServiceSingleton().getAccount("jad").getBalance();
+        double expectedAccountBalance = getJadAccount().getBalance();
         Account result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
         assertEquals("jad", result.getUsername());
         assertEquals(expectedAccountBalance, result.getBalance(), 0.0);
@@ -740,7 +760,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -761,6 +782,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(404, response.getStatus());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request
@@ -784,7 +806,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -808,10 +832,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterJob() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         double originalBalance = account.getBalance();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
@@ -826,7 +851,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.registerPerformedJob(any())).thenReturn(account);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -859,8 +886,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterJobOtherUsername() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jod");
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        Account account = getJodAccount();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
@@ -879,7 +906,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -904,10 +932,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         double originalBalance = account.getBalance();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
@@ -925,7 +954,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.registerPerformedJob(any())).thenReturn(account);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -951,7 +982,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testRegisterJobNoUsername() throws Exception {
         // Create the request
         Account account = new Account();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
@@ -967,7 +998,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1002,7 +1034,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1031,7 +1064,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testRegisterJobInternalServerError() throws Exception {
         // Create the request
         Account account = new Account();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
@@ -1047,7 +1080,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1073,7 +1107,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn("HTTP/1.1");
         when(request.getMethod()).thenReturn("GET");
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         String requestURL = String.format("http://localhost:8181/ukelonn/api/jobs/%d", account.getAccountId());
         String requestURI = String.format("/ukelonn/api/jobs/%d", account.getAccountId());
         when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
@@ -1093,7 +1127,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1115,114 +1151,109 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
     @Test
     public void testDeleteJobs() throws Exception {
-        try {
-            // Set up the request
-            Account account = getUkelonnServiceSingleton().getAccount("jod");
-            List<Transaction> jobs = getUkelonnServiceSingleton().getJobs(account.getAccountId());
-            List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
-            AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
-            String accountWithJobIdsAsJson = ServletTestBase.mapper.writeValueAsString(accountWithJobIds);
-            HttpServletRequest request = buildRequestFromStringBody(accountWithJobIdsAsJson);
-            when(request.getMethod()).thenReturn("POST");
-            String requestURL = "http://localhost:8181/ukelonn/api/admin/jobs/delete";
-            String requestURI = "/ukelonn/api/admin/jobs/delete";
-            when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
-            when(request.getRequestURI()).thenReturn(requestURI);
+        // Set up the request
+        Account account = getJodAccount();
+        List<Transaction> jobs = getJodJobs();
+        List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+        AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
+        String accountWithJobIdsAsJson = ServletTestBase.mapper.writeValueAsString(accountWithJobIds);
+        HttpServletRequest request = buildRequestFromStringBody(accountWithJobIdsAsJson);
+        when(request.getMethod()).thenReturn("POST");
+        String requestURL = "http://localhost:8181/ukelonn/api/admin/jobs/delete";
+        String requestURI = "/ukelonn/api/admin/jobs/delete";
+        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
+        when(request.getRequestURI()).thenReturn(requestURI);
 
-            // Create a response object that will receive and hold the servlet output
-            MockHttpServletResponse response = new MockHttpServletResponse();
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-            // Create the servlet that is to be tested
-            UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        // Create the servlet that is to be tested
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
 
-            // Create mock OSGi services to inject and inject it
-            MockLogService logservice = new MockLogService();
-            servlet.setLogservice(logservice);
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        servlet.setLogservice(logservice);
 
-            // Inject fake OSGi service UkelonnService
-            servlet.setUkelonnService(getUkelonnServiceSingleton());
+        // Inject fake OSGi service UkelonnService
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        servlet.setUkelonnService(ukelonn);
 
-            // Activate the servlet DS component
-            servlet.activate();
+        // Activate the servlet DS component
+        servlet.activate();
 
-            // When the servlet is activated it will be plugged into the http whiteboard and configured
-            ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-            servlet.init(config);
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
 
-            // Call the method under test
-            servlet.service(request, response);
+        // Call the method under test
+        servlet.service(request, response);
 
-            // Check the output
-            assertEquals(200, response.getStatus());
-            assertEquals("application/json", response.getContentType());
-            List<Transaction> jobsAfterDelete = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
-            assertEquals(0, jobsAfterDelete.size());
-        } finally {
-            restoreTestDatabase();
-        }
+        // Check the output
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Transaction> jobsAfterDelete = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
+        assertEquals(0, jobsAfterDelete.size());
     }
 
     @Test
     public void testUpdateJob() throws Exception {
-        try {
-            // Find the job that is to be modified
-            Account account = getUkelonnServiceSingleton().getAccount("jod");
-            Transaction job = getUkelonnServiceSingleton().getJobs(account.getAccountId()).get(0);
-            Integer originalTransactionTypeId = job.getTransactionType().getId();
-            double originalTransactionAmount = job.getTransactionAmount();
+        // Find the job that is to be modified
+        Account account = getJodAccount();
+        Transaction job = getJodJobs().get(0);
+        Integer originalTransactionTypeId = job.getTransactionType().getId();
+        double originalTransactionAmount = job.getTransactionAmount();
 
-            // Find a different job type that has a different amount than the
-            // job's original type
-            TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(getUkelonnServiceSingleton(), originalTransactionTypeId, originalTransactionAmount);
+        // Find a different job type that has a different amount than the
+        // job's original type
+        TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(originalTransactionTypeId, originalTransactionAmount);
 
-            // Create a new job object with a different jobtype and the same id
-            Date now = new Date();
-            UpdatedTransaction editedJob = new UpdatedTransaction(job.getId(), account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+        // Create a new job object with a different jobtype and the same id
+        Date now = new Date();
+        UpdatedTransaction editedJob = new UpdatedTransaction(job.getId(), account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
 
-            // Build the HTTP request
-            String editedJobAsJson = ServletTestBase.mapper.writeValueAsString(editedJob);
-            HttpServletRequest request = buildRequestFromStringBody(editedJobAsJson);
-            when(request.getMethod()).thenReturn("POST");
-            String requestURL = "http://localhost:8181/ukelonn/api/job/update";
-            String requestURI = "/ukelonn/api/job/update";
-            when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
-            when(request.getRequestURI()).thenReturn(requestURI);
+        // Build the HTTP request
+        String editedJobAsJson = ServletTestBase.mapper.writeValueAsString(editedJob);
+        HttpServletRequest request = buildRequestFromStringBody(editedJobAsJson);
+        when(request.getMethod()).thenReturn("POST");
+        String requestURL = "http://localhost:8181/ukelonn/api/job/update";
+        String requestURI = "/ukelonn/api/job/update";
+        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
+        when(request.getRequestURI()).thenReturn(requestURI);
 
-            // Create a response object that will receive and hold the servlet output
-            MockHttpServletResponse response = new MockHttpServletResponse();
+        // Create a response object that will receive and hold the servlet output
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-            // Create the servlet that is to be tested
-            UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        // Create the servlet that is to be tested
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
 
-            // Create mock OSGi services to inject and inject it
-            MockLogService logservice = new MockLogService();
-            servlet.setLogservice(logservice);
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        servlet.setLogservice(logservice);
 
-            // Inject fake OSGi service UkelonnService
-            servlet.setUkelonnService(getUkelonnServiceSingleton());
+        // Inject fake OSGi service UkelonnService
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
+        servlet.setUkelonnService(ukelonn);
 
-            // Activate the servlet DS component
-            servlet.activate();
+        // Activate the servlet DS component
+        servlet.activate();
 
-            // When the servlet is activated it will be plugged into the http whiteboard and configured
-            ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-            servlet.init(config);
+        // When the servlet is activated it will be plugged into the http whiteboard and configured
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
 
-            // Call the method under test
-            servlet.service(request, response);
+        // Call the method under test
+        servlet.service(request, response);
 
-            // Check the output (compare the updated job against the edited job values)
-            assertEquals(200, response.getStatus());
-            assertEquals("application/json", response.getContentType());
-            List<Transaction> updatedJobs = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
-            Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+        // Check the output (compare the updated job against the edited job values)
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Transaction> updatedJobs = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
+        Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
 
-            assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
-            assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(job.getTransactionTime().getTime());
-            assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
-        } finally {
-            restoreTestDatabase();
-        }
+        assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
+        assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(job.getTransactionTime().getTime());
+        assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
     }
 
     @Test
@@ -1231,7 +1262,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getProtocol()).thenReturn("HTTP/1.1");
         when(request.getMethod()).thenReturn("GET");
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         String requestURL = String.format("http://localhost:8181/ukelonn/api/payments/%d", account.getAccountId());
         String requestURI = String.format("/ukelonn/api/payments/%d", account.getAccountId());
         when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
@@ -1251,7 +1282,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1294,7 +1327,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getPaymenttypes()).thenReturn(getPaymenttypes());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1317,10 +1352,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterPayments() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         double originalBalance = account.getBalance();
-        List<TransactionType> paymentTypes = getUkelonnServiceSingleton().getPaymenttypes();
+        List<TransactionType> paymentTypes = getPaymenttypes();
         PerformedTransaction payment = new PerformedTransaction(account, paymentTypes.get(0).getId(), account.getBalance(), new Date());
+        account.setBalance(0.0);
         String paymentAsJson = ServletTestBase.mapper.writeValueAsString(payment);
         HttpServletRequest request = buildRequestFromStringBody(paymentAsJson);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerpayment"));
@@ -1335,7 +1371,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.registerPayment(any())).thenReturn(account);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1359,7 +1397,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testModifyJobtype() throws Exception {
         // Find a jobtype to modify
-        List<TransactionType> jobtypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobtypes = getJobtypes();
         TransactionType jobtype = jobtypes.get(0);
         Double originalAmount = jobtype.getTransactionAmount();
 
@@ -1381,7 +1419,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1405,8 +1445,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testCreateJobtype() throws Exception {
         // Save the jobtypes before adding a new jobtype
-        List<TransactionType> originalJobtypes = getUkelonnServiceSingleton().getJobTypes();
-
+        List<TransactionType> originalJobtypes = getJobtypes();
 
         // Create new jobtyoe
         TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
@@ -1426,7 +1465,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        List<TransactionType> updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).collect(Collectors.toList());
+        when(ukelonn.createJobtype(any())).thenReturn(updatedjobtypes);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1450,8 +1492,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testModifyPaymenttype() throws Exception {
         // Find a payment type to modify
-        List<TransactionType> paymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
-        TransactionType paymenttype = paymenttypes.get(0);
+        List<TransactionType> paymenttypes = getPaymenttypes();
+        TransactionType paymenttype = paymenttypes.get(1);
         Double originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
@@ -1472,7 +1514,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.modifyPaymenttype(any())).thenReturn(Arrays.asList(paymenttype));
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1496,7 +1540,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testCreatePaymenttype() throws Exception {
         // Save the payment types before adding a new payment type
-        List<TransactionType> originalPaymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
+        List<TransactionType> originalPaymenttypes = getPaymenttypes();
 
         // Create new payment type
         TransactionType paymenttype = new TransactionType(-2, "Vipps", 0.0, false, true);
@@ -1516,7 +1560,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        List<TransactionType> updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).collect(Collectors.toList());
+        when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1560,7 +1607,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getUsers()).thenReturn(getUsers());
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1584,7 +1633,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testModifyUser() throws Exception {
         // Get a user and modify all properties except id
         int userToModify = 1;
-        List<User> users = getUkelonnServiceSingleton().getUsers();
+        List<User> users = getUsers();
         User user = users.get(userToModify);
         String modifiedUsername = "gandalf";
         String modifiedEmailaddress = "wizard@hotmail.com";
@@ -1610,7 +1659,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.modifyUser(any())).thenReturn(users);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1638,7 +1689,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testCreateUser() throws Exception {
         // Save the number of users before adding a user
-        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+        int originalUserCount = getUsers().size();
 
         // Create a user object
         String newUsername = "aragorn";
@@ -1665,7 +1716,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        List<User> updatedusers = Stream.concat(getUsers().stream(), Stream.of(user)).collect(Collectors.toList());
+        when(ukelonn.createUser(any())).thenReturn(updatedusers);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1695,12 +1749,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
     @Test
     public void testChangePassword() throws Exception {
+        List<User> users = getUsers();
+
         // Save the number of users before adding a user
-        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+        int originalUserCount = users.size();
 
         // Get a user with a valid username
-        List<User> users = getUkelonnServiceSingleton().getUsers();
-        User user = users.get(2);
+        User user = users.get(1);
 
         // Create a passwords object containing the user and with valid passwords
         PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
@@ -1720,7 +1775,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
-        servlet.setUkelonnService(getUkelonnServiceSingleton());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.changePassword(any())).thenReturn(users);
+        servlet.setUkelonnService(ukelonn);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1808,8 +1865,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         return config;
     }
 
-    private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
-        return ukelonn.getJobTypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
+    private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
+        return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
     }
 
 }

@@ -15,9 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.testutils.TestUtils.getUkelonnServiceSingleton;
-import static no.priv.bang.ukelonn.testutils.TestUtils.releaseFakeOsgiServices;
-import static no.priv.bang.ukelonn.testutils.TestUtils.setupFakeOsgiServices;
+import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -27,30 +25,21 @@ import static org.mockito.Mockito.when;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 public class AdminJobtypeTest {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testModifyJobtype() {
@@ -58,15 +47,17 @@ public class AdminJobtypeTest {
         AdminJobtype resource = new AdminJobtype();
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Find a jobtype to modify
-        List<TransactionType> jobtypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobtypes = getJobtypes();
         TransactionType jobtype = jobtypes.get(0);
         Double originalAmount = jobtype.getTransactionAmount();
 
         // Modify the amount of the jobtype
         jobtype.setTransactionAmount(originalAmount + 1);
+        when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
 
         // Run the method that is to be tested
         List<TransactionType> updatedJobtypes = resource.modify(jobtype);
@@ -113,13 +104,17 @@ public class AdminJobtypeTest {
         AdminJobtype resource = new AdminJobtype();
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Get the list of jobtypes before adding a new job type
-        List<TransactionType> originalJobtypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> originalJobtypes = getJobtypes();
+        List<TransactionType> newjobtypes = new ArrayList<>(originalJobtypes);
 
         // Create new jobtyoe
         TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+        newjobtypes.add(jobtype);
+        when(ukelonn.createJobtype(jobtype)).thenReturn(newjobtypes);
 
         // Update the job type in the database
         List<TransactionType> updatedJobtypes = resource.create(jobtype);

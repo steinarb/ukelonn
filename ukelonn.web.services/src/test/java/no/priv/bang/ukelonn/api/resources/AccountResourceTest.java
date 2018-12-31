@@ -31,6 +31,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.UkelonnException;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 
@@ -65,7 +67,9 @@ public class AccountResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         Account result = resource.getAccount("jad");
@@ -100,7 +104,8 @@ public class AccountResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test with a different username
         resource.getAccount("jod");
@@ -133,7 +138,9 @@ public class AccountResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         Account result = resource.getAccount("jad");
@@ -159,7 +166,8 @@ public class AccountResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         resource.getAccount(null);
@@ -169,6 +177,7 @@ public class AccountResourceTest extends ServletTestBase {
         fail("Should never get here, exception should be thrown");
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request and response for the Shiro login
@@ -188,7 +197,9 @@ public class AccountResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         resource.getAccount("on");
