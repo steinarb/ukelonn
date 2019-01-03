@@ -26,8 +26,6 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -37,16 +35,6 @@ import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 
 public class AccountResourceTest extends ServletTestBase {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testGetAccount() throws Exception {
@@ -209,4 +197,26 @@ public class AccountResourceTest extends ServletTestBase {
         fail("Should never get here, exception should be thrown");
     }
 
+    @Test(expected=InternalServerErrorException.class)
+    public void testGetAccountWhenSubjectHasNullPrincipal() {
+        createSubjectWithNullPrincipalAndBindItToThread();
+
+        // Create the object to be tested
+        AccountResource resource = new AccountResource();
+
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Inject fake OSGi service UkelonnService
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
+
+        // Run the method under test
+        Account account = resource.getAccount("on");
+
+        // Verify that the test never gets here
+        assertNull("Should never get here, exception should be thrown", account);
+        fail("Should never get here, exception should be thrown");
+    }
 }

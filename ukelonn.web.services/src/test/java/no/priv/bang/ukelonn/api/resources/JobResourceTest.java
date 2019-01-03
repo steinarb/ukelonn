@@ -38,8 +38,6 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.util.ThreadContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -54,16 +52,6 @@ import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 
 public class JobResourceTest extends ServletTestBase {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testRegisterJob() throws Exception {
@@ -253,42 +241,38 @@ public class JobResourceTest extends ServletTestBase {
 
     @Test
     public void testUpdateJob() {
-        try {
-            UkelonnService ukelonn = mock(UkelonnService.class);
-            JobResource resource = new JobResource();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        JobResource resource = new JobResource();
 
-            // Create mock OSGi services to inject and inject it
-            MockLogService logservice = new MockLogService();
-            resource.logservice = logservice;
-            resource.ukelonn = ukelonn;
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+        resource.ukelonn = ukelonn;
 
-            Account account = getJadAccount();
-            Transaction job = getJadJobs().get(0);
-            int jobId = job.getId();
+        Account account = getJadAccount();
+        Transaction job = getJadJobs().get(0);
+        int jobId = job.getId();
 
-            // Save initial values of the job for comparison later
-            Integer originalTransactionTypeId = job.getTransactionType().getId();
-            Date originalTransactionTime = job.getTransactionTime();
-            double originalTransactionAmount = job.getTransactionAmount();
+        // Save initial values of the job for comparison later
+        Integer originalTransactionTypeId = job.getTransactionType().getId();
+        Date originalTransactionTime = job.getTransactionTime();
+        double originalTransactionAmount = job.getTransactionAmount();
 
-            // Find a different job type that has a different amount
-            TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
+        // Find a different job type that has a different amount
+        TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
 
-            // Create a new job object with a different jobtype and the same id
-            Date now = new Date();
-            UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
-            when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
+        // Create a new job object with a different jobtype and the same id
+        Date now = new Date();
+        UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+        when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
 
-            List<Transaction> updatedJobs = resource.doUpdateJob(editedJob);
+        List<Transaction> updatedJobs = resource.doUpdateJob(editedJob);
 
-            Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+        Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
 
-            assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
-            assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
-            assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
-        } finally {
-            restoreTestDatabase();
-        }
+        assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
+        assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
+        assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
     }
 
     @Test(expected=InternalServerErrorException.class)
