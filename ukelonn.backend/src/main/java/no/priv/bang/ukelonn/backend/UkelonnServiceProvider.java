@@ -544,8 +544,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
      * Because of the sum() column of accounts_view, accounts without transactions
      * won't appear in the accounts list, so all accounts are created with a
      * payment of 0 kroner.
-     * @param provider The object used to get the SQL string for the statement
-     * @param database The {@link UkelonnDatabase} to register the payment in
      * @param userId Used as the key to do the update to the account
      * @return the update status
      */
