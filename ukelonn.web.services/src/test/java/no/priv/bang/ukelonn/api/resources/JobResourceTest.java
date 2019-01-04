@@ -15,7 +15,6 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.getAccountInfoFromDatabase;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
@@ -27,6 +26,7 @@ import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +38,6 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.util.ThreadContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -55,22 +53,12 @@ import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 
 public class JobResourceTest extends ServletTestBase {
 
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
-
     @Test
     public void testRegisterJob() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         double originalBalance = account.getBalance();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
@@ -90,7 +78,11 @@ public class JobResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        Account accountWithUpdatedBalance = copyAccount(account);
+        accountWithUpdatedBalance.setBalance(account.getBalance() + job.getTransactionAmount());
+        when(ukelonn.registerPerformedJob(any())).thenReturn(accountWithUpdatedBalance);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         Account result = resource.doRegisterJob(job);
@@ -109,8 +101,8 @@ public class JobResourceTest extends ServletTestBase {
     @Test(expected=ForbiddenException.class)
     public void testRegisterJobOtherUsername() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jod");
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        Account account = getJodAccount();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
@@ -130,7 +122,8 @@ public class JobResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         resource.doRegisterJob(job);
@@ -145,9 +138,9 @@ public class JobResourceTest extends ServletTestBase {
     @Test
     public void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
-        Account account = getUkelonnServiceSingleton().getAccount("jad");
+        Account account = getJadAccount();
         double originalBalance = account.getBalance();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
@@ -167,7 +160,11 @@ public class JobResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        Account accountWithUpdatedBalance = copyAccount(account);
+        accountWithUpdatedBalance.setBalance(account.getBalance() + job.getTransactionAmount());
+        when(ukelonn.registerPerformedJob(any())).thenReturn(accountWithUpdatedBalance);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         Account result = resource.doRegisterJob(job);
@@ -181,7 +178,7 @@ public class JobResourceTest extends ServletTestBase {
     public void testRegisterJobNoUsername() throws Exception {
         // Create the request
         Account account = new Account();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the request and response for the Shiro login
@@ -200,7 +197,8 @@ public class JobResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Run the method under test
         resource.doRegisterJob(job);
@@ -219,7 +217,7 @@ public class JobResourceTest extends ServletTestBase {
     public void testRegisterJobInternalServerError() throws Exception {
         // Create the request
         Account account = new Account();
-        List<TransactionType> jobTypes = getUkelonnServiceSingleton().getJobTypes();
+        List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
 
         // Create the object to be tested
@@ -230,7 +228,8 @@ public class JobResourceTest extends ServletTestBase {
         resource.logservice = logservice;
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Clear the Subject to ensure that Shiro will fail
         // no matter what order test methods are run in
@@ -242,42 +241,38 @@ public class JobResourceTest extends ServletTestBase {
 
     @Test
     public void testUpdateJob() {
-        try {
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
-            JobResource resource = new JobResource();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        JobResource resource = new JobResource();
 
-            // Create mock OSGi services to inject and inject it
-            MockLogService logservice = new MockLogService();
-            resource.logservice = logservice;
-            resource.ukelonn = ukelonn;
+        // Create mock OSGi services to inject and inject it
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+        resource.ukelonn = ukelonn;
 
-            String username = "jad";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
-            Transaction job = ukelonn.getJobs(account.getAccountId()).get(0);
-            int jobId = job.getId();
+        Account account = getJadAccount();
+        Transaction job = getJadJobs().get(0);
+        int jobId = job.getId();
 
-            // Save initial values of the job for comparison later
-            Integer originalTransactionTypeId = job.getTransactionType().getId();
-            Date originalTransactionTime = job.getTransactionTime();
-            double originalTransactionAmount = job.getTransactionAmount();
+        // Save initial values of the job for comparison later
+        Integer originalTransactionTypeId = job.getTransactionType().getId();
+        Date originalTransactionTime = job.getTransactionTime();
+        double originalTransactionAmount = job.getTransactionAmount();
 
-            // Find a different job type that has a different amount
-            TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
+        // Find a different job type that has a different amount
+        TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
 
-            // Create a new job object with a different jobtype and the same id
-            Date now = new Date();
-            UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+        // Create a new job object with a different jobtype and the same id
+        Date now = new Date();
+        UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+        when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
 
-            List<Transaction> updatedJobs = resource.doUpdateJob(editedJob);
+        List<Transaction> updatedJobs = resource.doUpdateJob(editedJob);
 
-            Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+        Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
 
-            assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
-            assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
-            assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
-        } finally {
-            restoreTestDatabase();
-        }
+        assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
+        assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
+        assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
     }
 
     @Test(expected=InternalServerErrorException.class)
@@ -301,7 +296,7 @@ public class JobResourceTest extends ServletTestBase {
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
-        return ukelonn.getJobTypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
+        return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
     }
 
 }

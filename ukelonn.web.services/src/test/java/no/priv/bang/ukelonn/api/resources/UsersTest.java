@@ -27,26 +27,15 @@ import java.util.List;
 
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.User;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 public class UsersTest {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testGet() {
@@ -54,7 +43,9 @@ public class UsersTest {
         Users resource = new Users();
 
         // Inject the UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getUsers()).thenReturn(getUsers());
+        resource.ukelonn = ukelonn;
 
         List<User> users = resource.get();
 
