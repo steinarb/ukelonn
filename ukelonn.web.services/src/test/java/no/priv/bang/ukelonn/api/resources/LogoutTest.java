@@ -22,27 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 
-import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-
 public class LogoutTest extends ServletTestBase {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testLogoutOk() throws Exception {

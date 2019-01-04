@@ -17,37 +17,27 @@ package no.priv.bang.ukelonn.api.resources;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.InternalServerErrorException;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
-
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 public class LoginTest extends ServletTestBase {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testLoginOk() throws Exception {
@@ -91,7 +81,6 @@ public class LoginTest extends ServletTestBase {
         assertEquals("", result.getErrorMessage());
     }
 
-    @Ignore("Gets wrong password exception instead of unknown user exception, don't know why")
     @Test
     public void testLoginUnknownUser() throws Exception {
         // Set up the request
@@ -132,6 +121,59 @@ public class LoginTest extends ServletTestBase {
         // Check the response
         assertEquals(0, result.getRoles().length);
         assertEquals("Wrong password", result.getErrorMessage());
+    }
+
+    @Test
+    public void testLoginLockedAccount() throws Exception {
+        try {
+            lockAccount("jad");
+            // Set up the request
+            LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+            HttpServletRequest request = buildLoginRequest(credentials);
+            HttpServletResponse response = mock(HttpServletResponse.class);
+            // Create mock OSGi services to inject
+            MockLogService logservice = new MockLogService();
+            // Create the servlet and do the login
+            Login resource = new Login();
+            resource.logservice = logservice;
+            createSubjectAndBindItToThread(request, response);
+            LoginResult result = resource.doLogin(credentials);
+            // Check the response
+            assertEquals(0, result.getRoles().length);
+            assertEquals("Locked account", result.getErrorMessage());
+        } finally {
+            unlockAccount("jad");
+        }
+    }
+
+    @Test
+    public void testLoginWithAuthenticationException() {
+        createSubjectThrowingExceptionAndBindItToThread(AuthenticationException.class);
+        LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+        // Create the servlet and do the login
+        Login resource = new Login();
+        resource.logservice = logservice;
+        LoginResult result = resource.doLogin(credentials);
+        // Check the response
+        assertEquals(0, result.getRoles().length);
+        assertEquals("Unknown error", result.getErrorMessage());
+    }
+
+    @Test(expected=InternalServerErrorException.class)
+    public void testLoginWithUnexpectedException() {
+        createSubjectThrowingExceptionAndBindItToThread(IllegalArgumentException.class);
+        LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+        // Create the servlet and do the login
+        Login resource = new Login();
+        resource.logservice = logservice;
+        LoginResult result = resource.doLogin(credentials);
+        // Check the response
+        assertEquals(0, result.getRoles().length);
+        assertEquals("Unknown error", result.getErrorMessage());
     }
 
     /**
@@ -199,5 +241,21 @@ public class LoginTest extends ServletTestBase {
         // Check the response
         assertEquals(0, result.getRoles().length);
         assertEquals("", result.getErrorMessage());
+    }
+
+    private void lockAccount(String username) {
+        getShiroAccountFromRealm(username).setLocked(true);
+    }
+
+    private void unlockAccount(String username) {
+        getShiroAccountFromRealm(username).setLocked(false);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private WebSubject createSubjectThrowingExceptionAndBindItToThread(Class exceptionClass) {
+        WebSubject subject = mock(WebSubject.class);
+        doThrow(exceptionClass).when(subject).login(any());
+        ThreadContext.bind(subject);
+        return subject;
     }
 }

@@ -24,31 +24,21 @@ import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 public class AdminPaymenttypeTest {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
-
 
     @Test
     public void testModifyPaymenttype() {
@@ -56,15 +46,17 @@ public class AdminPaymenttypeTest {
         AdminPaymenttype resource = new AdminPaymenttype();
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Find a payment type to modify
-        List<TransactionType> paymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
-        TransactionType paymenttype = paymenttypes.get(0);
+        List<TransactionType> paymenttypes = getPaymenttypes();
+        TransactionType paymenttype = paymenttypes.get(1);
         Double originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
         paymenttype.setTransactionAmount(originalAmount + 1);
+        when(ukelonn.modifyPaymenttype(paymenttype)).thenReturn(Arrays.asList(paymenttype));
 
         // Run the method that is to be tested
         List<TransactionType> updatedPaymenttypes = resource.modify(paymenttype);
@@ -87,6 +79,7 @@ public class AdminPaymenttypeTest {
         // Inject a fake OSGi log service
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
+        ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
@@ -110,13 +103,17 @@ public class AdminPaymenttypeTest {
         AdminPaymenttype resource = new AdminPaymenttype();
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
 
         // Get the list of payment types before adding a new job type
-        List<TransactionType> originalPaymenttypes = getUkelonnServiceSingleton().getPaymenttypes();
+        List<TransactionType> originalPaymenttypes = getPaymenttypes();
+        List<TransactionType> newPaymenttypes = new ArrayList<>(originalPaymenttypes);
 
         // Create new payment type
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+        newPaymenttypes.add(paymenttype);
+        when(ukelonn.createPaymenttype(any())).thenReturn(newPaymenttypes);
 
         // Add the payment type to the database
         List<TransactionType> updatedPaymenttypes = resource.create(paymenttype);
@@ -138,6 +135,7 @@ public class AdminPaymenttypeTest {
 
         // Inject a fake OSGi log service
         MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
         resource.logservice = logservice;
 
         // Create a mock database that throws exceptions and inject it

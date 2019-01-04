@@ -17,26 +17,16 @@ package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
 public class JobtypeListTest extends ServletTestBase {
-
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
 
     @Test
     public void testGetJobtypes() throws Exception {
@@ -44,7 +34,9 @@ public class JobtypeListTest extends ServletTestBase {
         JobtypeList resource = new JobtypeList();
 
         // Inject fake OSGi service UkelonnService
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getJobTypes()).thenReturn(getJobtypes());
+        resource.ukelonn = ukelonn;
 
         // Run the method that is to be tested
         List<TransactionType> jobtypes = resource.getJobtypes();

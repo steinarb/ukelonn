@@ -49,7 +49,13 @@ public class ServletTestBase {
     }
 
     protected WebSubject createSubjectAndBindItToThread(HttpServletRequest request, HttpServletResponse response) {
-        WebSubject subject = new WebSubject.Builder(getShirofilter().getSecurityManager(), request, response).buildWebSubject();
+        WebSubject subject = new WebSubject.Builder(getSecurityManager(), request, response).buildWebSubject();
+        ThreadContext.bind(subject);
+        return subject;
+    }
+
+    protected WebSubject createSubjectWithNullPrincipalAndBindItToThread() {
+        WebSubject subject = mock(WebSubject.class);
         ThreadContext.bind(subject);
         return subject;
     }

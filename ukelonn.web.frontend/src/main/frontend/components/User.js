@@ -136,7 +136,8 @@ const mapDispatchToProps = dispatch => {
                     transactionTypeId: jobtype.id,
                     transactionName: jobtype.transactionName,
                     transactionAmount: jobtype.transactionAmount,
-                    account: account
+                    account: account,
+                    transactionDate: moment(),
                 }
             };
             dispatch({ type: 'UPDATE', data: changedField });

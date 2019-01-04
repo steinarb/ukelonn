@@ -28,15 +28,22 @@ public class ResourceBase {
     }
 
     protected boolean isCurrentUserOrAdmin(String username, LogService logservice) {
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.getPrincipal() == null) {
-            logservice.log(LogService.LOG_ERROR, "No user available from Shiro");
-            throw new InternalServerErrorException();
-        }
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            if (subject.getPrincipal() == null) {
+                String message = "No user available from Shiro";
+                logservice.log(LogService.LOG_ERROR, message);
+                throw new InternalServerErrorException(message);
+            }
 
-        return
-            subject.getPrincipal().equals(username) ||
-            subject.hasRole("administrator");
+            return
+                subject.getPrincipal().equals(username) ||
+                subject.hasRole("administrator");
+        } catch (Exception e) {
+            String message = "Failure retrieving Shiro subject";
+            logservice.log(LogService.LOG_ERROR, message, e);
+            throw new InternalServerErrorException(message);
+        }
     }
 
 }

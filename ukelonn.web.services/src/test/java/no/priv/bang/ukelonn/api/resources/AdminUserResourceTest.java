@@ -25,45 +25,37 @@ import static org.mockito.Mockito.when;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.User;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 public class AdminUserResourceTest {
 
-    @BeforeClass
-    public static void setupForAllTests() {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
-        releaseFakeOsgiServices();
-    }
-
     @Test
     public void testModify() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
         // Get first user and modify all properties except id
-        List<User> users = getUkelonnServiceSingleton().getUsers();
-        User user = users.get(0);
+        User user = new User();
         String modifiedUsername = "gandalf";
         String modifiedEmailaddress = "wizard@hotmail.com";
         String modifiedFirstname = "Gandalf";
@@ -72,6 +64,7 @@ public class AdminUserResourceTest {
         user.setEmail(modifiedEmailaddress);
         user.setFirstname(modifiedFirstname);
         user.setLastname(modifiedLastname);
+        when(ukelonn.modifyUser(user)).thenReturn(Arrays.asList(user));
 
         // Save the modification
         List<User> updatedUsers = resource.modify(user);
@@ -117,12 +110,14 @@ public class AdminUserResourceTest {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
         // Save the number of users before adding a user
-        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+        int originalUserCount = getUsers().size();
+        List<User> originalUsersPlusOne = new ArrayList<>(getUsers());
 
         // Create a user object
         String newUsername = "aragorn";
@@ -130,6 +125,8 @@ public class AdminUserResourceTest {
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
         User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        originalUsersPlusOne.add(user);
+        when(ukelonn.createUser(any())).thenReturn(originalUsersPlusOne);
 
         // Create a passwords object containing the user
         PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
@@ -146,17 +143,20 @@ public class AdminUserResourceTest {
         assertEquals(newLastname, lastUser.getLastname());
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected=BadRequestException.class)
     public void testCreatePasswordsNotIdentical() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.createUser(any())).thenThrow(UkelonnBadRequestException.class);
+        resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
         // Save the number of users before adding a user
-        int originalUserCount = getUkelonnServiceSingleton().getUsers().size();
+        int originalUserCount = getUsers().size();
 
         // Create a user object
         String newUsername = "aragorn";
@@ -223,12 +223,14 @@ public class AdminUserResourceTest {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.changePassword(any())).thenReturn(getUsers());
+        resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
         // Get first user and modify all properties except id
-        List<User> users = getUkelonnServiceSingleton().getUsers();
+        List<User> users = getUsers();
         User user = users.get(0);
 
         // Create a passwords object containing the user and with
@@ -243,12 +245,15 @@ public class AdminUserResourceTest {
         assertEquals(users.size(), updatedUsers.size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected=BadRequestException.class)
     public void testPasswordWithEmptyUsername() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.changePassword(any())).thenThrow(UkelonnBadRequestException.class);
+        resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
@@ -265,18 +270,21 @@ public class AdminUserResourceTest {
         fail("Should never get here!");
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected=BadRequestException.class)
     public void testPasswordWhenPasswordsDontMatch() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.changePassword(any())).thenThrow(UkelonnBadRequestException.class);
+        resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
 
         // Get first user to get a user with valid username
-        List<User> users = getUkelonnServiceSingleton().getUsers();
+        List<User> users = getUsers();
         User user = users.get(0);
 
         // Create a passwords object containing the user and with
