@@ -15,37 +15,28 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Transaction;
 
 public class PaymentsTest extends ServletTestBase {
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        setupFakeOsgiServices();
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        releaseFakeOsgiServices();
-    }
-
     @Test
     public void testGetPayments() {
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), "jad");
+        Account account = getJadAccount();
         Payments resource = new Payments();
-        resource.ukelonn = getUkelonnServiceSingleton();
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
+        resource.ukelonn = ukelonn;
         List<Transaction> jobs = resource.payments(account.getAccountId());
         assertEquals(10, jobs.size());
     }

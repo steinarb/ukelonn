@@ -15,7 +15,6 @@
  */
 package no.priv.bang.ukelonn.backend;
 
-import static no.priv.bang.ukelonn.backend.CommonDatabaseMethods.*;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +22,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,18 +67,134 @@ public class UkelonnServiceProviderTest {
         assertThat(accounts.size()).isGreaterThan(1);
     }
 
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAccounts(Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test()
+    public void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            ukelonn.setUkelonnDatabase(database);
+            List<Account> accounts = ukelonn.getAccounts();
+            assertEquals("Expected a non-null, empty list", 0, accounts.size());
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAccounts(Class)}
+     * method when a null resultset is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty list to be returned
+     */
+    @Test()
+    public void testGetAccountsNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ukelonn.setUkelonnDatabase(database);
+            List<Account> accounts = ukelonn.getAccounts();
+            assertEquals("Expected a non-null, empty list", 0, accounts.size());
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
+    }
+
     @Test
     public void testGetAccount() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         Account account = provider.getAccount("jad");
         assertEquals("jad", account.getUsername());
+        assertEquals(4, account.getUserId());
+        assertEquals("Jane", account.getFirstName());
+        assertEquals("Doe", account.getLastName());
+        List<Transaction> jobs = provider.getJobs(account.getAccountId());
+        assertEquals(10, jobs.size());
+        List<Transaction> payments = provider.getPayments(account.getAccountId());
+        assertEquals(10, payments.size());
+    }
+
+    /**
+     * Corner case test: test what happens when an account has no transactions
+     * (the query result is empty)
+     */
+    @Test(expected=UkelonnException.class)
+    public void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
+        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        Account accountForAdmin = provider.getAccount("on");
+        assertNull("Should never get here", accountForAdmin);
+    }
+
+    /**
+     * Corner case test: test what happens when trying to get an
+     * account for a username that isn't present in the database
+     */
+    @Test(expected=UkelonnException.class)
+    public void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        Account accountNotInDatabase = ukelonn.getAccount("unknownuser");
+        assertNull("Should never get here", accountNotInDatabase);
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#updateBalanseFromDatabase(Class, Account)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a dummy {@link Account} object to be returned.
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            ukelonn.setUkelonnDatabase(database);
+            Account account = ukelonn.getAccount("jad");
+            assertNull("Should never get here", account);
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
     }
 
     @Test
     public void testGetJobs() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+        Account account = ukelonn.getAccount(username);
         List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
         assertEquals(10, jobs.size());
     }
@@ -88,7 +204,7 @@ public class UkelonnServiceProviderTest {
         try {
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             double oldBalance = account.getBalance();
             TransactionType jobtype = ukelonn.getJobTypes().get(0);
             PerformedTransaction performedJob = new PerformedTransaction(account, jobtype.getId(), jobtype.getTransactionAmount(), new Date());
@@ -99,13 +215,44 @@ public class UkelonnServiceProviderTest {
         }
     }
 
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#registerNewJobInDatabase(Class, Account, int, double)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and an empty map to be returned
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        Account account = ukelonn.getAccount("jad");
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            ukelonn.setUkelonnDatabase(database);
+            PerformedTransaction performedJob = new PerformedTransaction(account, 1, 45.0, new Date());
+            Account updatedAccount = ukelonn.registerPerformedJob(performedJob);
+            assertEquals("Expected account balance to be unchanged", account.getBalance(), updatedAccount.getBalance(), 0.0);
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
+    }
+
     @Test
     public void testDeleteAllJobsOfUser() {
         try {
             // Create the delete arguments
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
             List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
@@ -126,7 +273,7 @@ public class UkelonnServiceProviderTest {
             // Create the delete arguments
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
             List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
@@ -142,11 +289,30 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
+    public void testDeleteJobsWithErrorOnClosingStatement() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database with a prepared statement that will fail on close
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        doThrow(SQLException.class).when(statement).close();
+        when(database.prepareStatement(anyString())).thenReturn(statement);
+        ukelonn.setUkelonnDatabase(database);
+
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        assertEquals(0, logservice.getLogmessages().size());
+        ukelonn.deleteJobsFromAccount(1, Arrays.asList(1, 2, 3));
+        assertEquals("Expected the errors to be logged", 2, logservice.getLogmessages().size());
+    }
+
+    @Test
     public void verifyDeletingNoJobsOfUserHasNoEffect() {
         try {
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
 
             // Check preconditions
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
@@ -168,7 +334,7 @@ public class UkelonnServiceProviderTest {
         try {
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
 
             // Check the preconditions
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
@@ -194,9 +360,9 @@ public class UkelonnServiceProviderTest {
         try {
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             String otherUsername = "jad";
-            Account otherAccount = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), otherUsername);
+            Account otherAccount = ukelonn.getAccount(otherUsername);
 
             // Check the preconditions
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
@@ -240,7 +406,7 @@ public class UkelonnServiceProviderTest {
         try {
             UkelonnService ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
-            Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+            Account account = ukelonn.getAccount(username);
             Transaction job = ukelonn.getJobs(account.getAccountId()).get(0);
             int jobId = job.getId();
 
@@ -290,7 +456,7 @@ public class UkelonnServiceProviderTest {
     public void testGetPayments() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
-        Account account = getAccountInfoFromDatabase(getClass(), getUkelonnServiceSingleton(), username);
+        Account account = ukelonn.getAccount(username);
         List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
         assertEquals(10, payments.size());
     }
@@ -300,6 +466,46 @@ public class UkelonnServiceProviderTest {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
         List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
         assertEquals(2, paymenttypes.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetPaymenttypesWithDatabasePreparestatementFailure() throws Exception {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        MockLogService logservice = new MockLogService();
+        try {
+            ukelonn.setLogservice(logservice);
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            when(database.prepareStatement(anyString())).thenThrow(SQLException.class);
+            ukelonn.setUkelonnDatabase(database);
+            assertEquals(0, logservice.getLogmessages().size()); // Verify precondition: no logmessages
+            List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+            assertEquals("Expected empty list", 0, paymenttypes.size());
+            assertEquals("Expect database error to be logged", 1, logservice.getLogmessages().size());
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    @Test
+    public void testGetPaymenttypesWithDatabaseFailure() throws Exception {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ukelonn.setUkelonnDatabase(database);
+            List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+            assertEquals("Expected empty list", 0, paymenttypes.size());
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
     }
 
     @Test
@@ -345,7 +551,59 @@ public class UkelonnServiceProviderTest {
 
         // Check the response
         assertNull(result);
-        assertEquals(2, logservice.getLogmessages().size());
+        assertEquals(1, logservice.getLogmessages().size());
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getTransactionTypesFromUkelonnDatabase(Class)}
+     * method when a null resultset is returned from the {@link UkelonnDatabase#query(PreparedStatement)}
+     * method.
+     *
+     * Expect no exception to be thrown, and a non-null empty map to be returned.
+     */
+    @Test()
+    public void testGetJobTypesNullResultSet() {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            ukelonn.setUkelonnDatabase(database);
+            List<TransactionType> jobtypes = ukelonn.getJobTypes();
+            assertEquals("Expected a non-null, empty list", 0, jobtypes.size());
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getTransactionTypesFromUkelonnDatabase(Class)}
+     * methid when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and a non-null empty map to be returned.
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test()
+    public void testGetJobTypesWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            ukelonn.setUkelonnDatabase(database);
+            List<TransactionType> jobtypes = ukelonn.getJobTypes();
+            assertEquals("Expected a non-null, empty map", 0, jobtypes.size());
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
     }
 
     @Test
@@ -379,6 +637,8 @@ public class UkelonnServiceProviderTest {
         when(database.prepareStatement(anyString())).thenReturn(statement);
         when(database.update(any())).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
 
         // Create a non-existing jobtype
         TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
@@ -416,6 +676,8 @@ public class UkelonnServiceProviderTest {
         when(database.prepareStatement(anyString())).thenReturn(statement);
         when(database.update(any())).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
 
         // Create a new jobtype
         TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
@@ -456,6 +718,8 @@ public class UkelonnServiceProviderTest {
         when(database.prepareStatement(anyString())).thenReturn(statement);
         when(database.update(any())).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
 
         // Create a non-existing payment type
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
@@ -493,6 +757,8 @@ public class UkelonnServiceProviderTest {
         when(database.prepareStatement(anyString())).thenReturn(statement);
         when(database.update(any())).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
 
         // Create a new payment type
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
@@ -509,6 +775,37 @@ public class UkelonnServiceProviderTest {
         List<User> users = ukelonn.getUsers();
 
         assertThat(users.size()).isGreaterThan(0);
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getUsers(Class)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#query(PreparedStatement)} method.
+     *
+     * Expect an {@link UkelonnException} to be thrown
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testGetUsersWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            ResultSet resultset = mock(ResultSet.class);
+            when(resultset.next()).thenThrow(SQLException.class);
+            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            ukelonn.setUkelonnDatabase(database);
+            List<User> users = ukelonn.getUsers();
+            assertEquals(0, users.size()); // Will never get here, using the return value so the IDE won't complain
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
     }
 
     @Test
@@ -784,6 +1081,62 @@ public class UkelonnServiceProviderTest {
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
+        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        Account account = ukelonn.getAccount("jad");
+        List<Integer> jobs = ukelonn.getJobs(account.getAccountId()).stream().map(Transaction::getId).collect(Collectors.toList());
+        assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", UkelonnServiceProvider.joinIds(jobs).toString());
+    }
+
+    /**
+     * Corner case test for {@link UkelonnServiceProvider#mapUser}
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testMapUserWhenSQLExceptionIsThrown() throws SQLException {
+        ResultSet resultset = mock(ResultSet.class);
+        when(resultset.getInt(anyString())).thenThrow(SQLException.class);
+        User user = UkelonnServiceProvider.mapUser(resultset);
+        assertNull(user); // Should never get here because a UkelonnException is thrown
+    }
+
+    /**
+     * Corner case test: Tests what happens to the {@link UkelonnServiceProvider#addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(UkelonnDatabase, int)}
+     * method when a resultset that throws SQLException is returned from the
+     * {@link UkelonnDatabase#update(PreparedStatement)} method.
+     *
+     * Expect no exception to be thrown, and {@link CommonDatabaseMethods#UPDATE_FAILED} to be returned
+     *
+     * @throws SQLException
+     */
+    @SuppressWarnings("unchecked")
+    @Test()
+    public void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
+        // Swap the real derby database with a mock
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
+        try {
+            UkelonnDatabase database = mock(UkelonnDatabase.class);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            ukelonn.setUkelonnDatabase(database);
+            int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(1);
+            assertEquals(-1, updateStatus);
+        } finally {
+            // Restore the real derby database
+            ukelonn.setUkelonnDatabase(originalDatabase);
+        }
+    }
+
+    @Test
+    public void testGetResourceAsStringNoResource() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+        String resource = ukelonn.getResourceAsString("finnesikke");
+        assertNull(resource);
     }
 
 }

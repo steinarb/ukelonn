@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 
-import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +49,13 @@ public class ServletTestBase {
     }
 
     protected WebSubject createSubjectAndBindItToThread(HttpServletRequest request, HttpServletResponse response) {
-        WebSubject subject = new WebSubject.Builder(getShirofilter().getSecurityManager(), request, response).buildWebSubject();
+        WebSubject subject = new WebSubject.Builder(getSecurityManager(), request, response).buildWebSubject();
+        ThreadContext.bind(subject);
+        return subject;
+    }
+
+    protected WebSubject createSubjectWithNullPrincipalAndBindItToThread() {
+        WebSubject subject = mock(WebSubject.class);
         ThreadContext.bind(subject);
         return subject;
     }
@@ -101,24 +106,6 @@ public class ServletTestBase {
             @Override
             public int read() throws IOException {
                 return inputStream.read();
-            }
-
-            @Override
-            public void setReadListener(ReadListener readListener) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public boolean isReady() {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            @Override
-            public boolean isFinished() {
-                // TODO Auto-generated method stub
-                return false;
             }
         };
     }
