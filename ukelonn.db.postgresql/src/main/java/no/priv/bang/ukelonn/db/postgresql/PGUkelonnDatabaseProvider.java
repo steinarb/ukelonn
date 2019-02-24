@@ -104,10 +104,6 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         return properties;
     }
 
-    public UkelonnDatabase get() {
-        return this;
-    }
-
     boolean insertInitialDataInDatabase() {
         try {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);

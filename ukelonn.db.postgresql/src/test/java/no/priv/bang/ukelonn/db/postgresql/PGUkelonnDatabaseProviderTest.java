@@ -42,7 +42,6 @@ import org.postgresql.osgi.PGDataSourceFactory;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.exception.LiquibaseException;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.db.postgresql.mocks.MockLogService;
@@ -52,9 +51,8 @@ public class PGUkelonnDatabaseProviderTest {
     @Test
     public void testGetName() {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        UkelonnDatabase database = provider.get();
 
-        String databaseName = database.getName();
+        String databaseName = provider.getName();
         assertEquals("Ukelonn PostgreSQL database", databaseName);
     }
 
@@ -68,10 +66,9 @@ public class PGUkelonnDatabaseProviderTest {
         provider.createConnection(null);
 
         // Test the database by making a query using a view
-        UkelonnDatabase database = provider.get();
-        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        PreparedStatement statement = provider.prepareStatement("select * from accounts_view where username=?");
         statement.setString(1, "jad");
-        ResultSet onAccount = database.query(statement);
+        ResultSet onAccount = provider.query(statement);
         assertNotNull("Expected returned account JDBC resultset not to be null", onAccount);
         while (onAccount.next()) {
             int account_id = onAccount.getInt("account_id");
@@ -95,26 +92,24 @@ public class PGUkelonnDatabaseProviderTest {
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection
 
-        UkelonnDatabase database = provider.get();
-
         // Test that the database has users
-        PreparedStatement statement = database.prepareStatement("select * from users");
-        ResultSet allUsers = database.query(statement);
+        PreparedStatement statement = provider.prepareStatement("select * from users");
+        ResultSet allUsers = provider.query(statement);
         assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
         assertThat(allUserCount).isGreaterThan(0);
 
         // Test that the database administrators table has rows
-        PreparedStatement statement2 = database.prepareStatement("select * from administrators");
-        ResultSet allAdministrators = database.query(statement2);
+        PreparedStatement statement2 = provider.prepareStatement("select * from administrators");
+        ResultSet allAdministrators = provider.query(statement2);
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
         assertThat(allAdminstratorsCount).isGreaterThan(0);
 
         // Test that the administrators_view is present
-        PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
-        ResultSet allAdministratorsView = database.query(statement3);
+        PreparedStatement statement3 = provider.prepareStatement("select * from administrators_view");
+        ResultSet allAdministratorsView = provider.query(statement3);
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
         assertEquals(1, allAdminstratorsViewCount);

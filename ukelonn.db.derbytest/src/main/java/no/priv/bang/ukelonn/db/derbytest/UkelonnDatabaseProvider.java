@@ -104,10 +104,6 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
-    public UkelonnDatabase get() {
-        return this;
-    }
-
     public boolean insertMockData() {
         try {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);

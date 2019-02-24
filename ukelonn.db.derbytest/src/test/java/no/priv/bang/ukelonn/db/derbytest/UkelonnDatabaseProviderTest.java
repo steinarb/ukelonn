@@ -56,7 +56,6 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
@@ -65,9 +64,8 @@ public class UkelonnDatabaseProviderTest {
     @Test
     public void testGetName() {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        UkelonnDatabase database = provider.get();
 
-        String databaseName = database.getName();
+        String databaseName = provider.getName();
         assertEquals("Ukelonn Derby test database", databaseName);
     }
 
@@ -91,10 +89,9 @@ public class UkelonnDatabaseProviderTest {
         provider.forceReleaseLocks();
 
         // Test the database by making a query using a view
-        UkelonnDatabase database = provider.get();
-        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
+        PreparedStatement statement = provider.prepareStatement("select * from accounts_view where username=?");
         statement.setString(1, "jad");
-        ResultSet onAccount = database.query(statement);
+        ResultSet onAccount = provider.query(statement);
         assertNotNull(onAccount);
         assertTrue(onAccount.next());
         int account_id = onAccount.getInt("account_id");
@@ -121,24 +118,23 @@ public class UkelonnDatabaseProviderTest {
         provider.setDataSourceFactory(dataSourceFactory);
         provider.activate(); // Create the database
 
-        UkelonnDatabase database = provider.get();
         // Test that the administrators_view is present
-        PreparedStatement statement1 = database.prepareStatement("select * from users");
-        ResultSet allUsers = database.query(statement1);
+        PreparedStatement statement1 = provider.prepareStatement("select * from users");
+        ResultSet allUsers = provider.query(statement1);
         int allUserCount = 0;
         while (allUsers.next()) { ++allUserCount; }
         assertEquals(5, allUserCount);
 
         // Test that the administrators_view is present
-        PreparedStatement statement2 = database.prepareStatement("select * from administrators");
-        ResultSet allAdministrators = database.query(statement2);
+        PreparedStatement statement2 = provider.prepareStatement("select * from administrators");
+        ResultSet allAdministrators = provider.query(statement2);
         int allAdminstratorsCount = 0;
         while (allAdministrators.next()) { ++allAdminstratorsCount; }
         assertEquals(3, allAdminstratorsCount);
 
         // Test that the administrators_view is present
-        PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
-        ResultSet allAdministratorsView = database.query(statement3);
+        PreparedStatement statement3 = provider.prepareStatement("select * from administrators_view");
+        ResultSet allAdministratorsView = provider.query(statement3);
         int allAdminstratorsViewCount = 0;
         while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
         assertEquals(3, allAdminstratorsViewCount);
@@ -152,17 +148,15 @@ public class UkelonnDatabaseProviderTest {
         provider.setDataSourceFactory(dataSourceFactory);
         provider.activate(); // Create the database
 
-        UkelonnDatabase database = provider.get();
-
         // Verify that the user isn't present
-        PreparedStatement statement = database.prepareStatement("select * from users where username=?");
+        PreparedStatement statement = provider.prepareStatement("select * from users where username=?");
         statement.setString(1, "jjd");
-        ResultSet userJjdBeforeInsert = database.query(statement);
+        ResultSet userJjdBeforeInsert = provider.query(statement);
         int numberOfUserJjdBeforeInsert = 0;
         while (userJjdBeforeInsert.next()) { ++numberOfUserJjdBeforeInsert; }
         assertEquals(0, numberOfUserJjdBeforeInsert);
 
-        PreparedStatement updateStatement = database.prepareStatement("insert into users (username,password,salt,email,first_name,last_name) values (?, ?, ?, ?, ?, ?)");
+        PreparedStatement updateStatement = provider.prepareStatement("insert into users (username,password,salt,email,first_name,last_name) values (?, ?, ?, ?, ?, ?)");
         updateStatement.setString(1, "jjd");
         updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
         updateStatement.setString(3, "9SFDvohxZkZ9eWHiSEoMDw==");
@@ -173,9 +167,9 @@ public class UkelonnDatabaseProviderTest {
         assertEquals(1, count);
 
         // Verify that the user is now present
-        PreparedStatement statement2 = database.prepareStatement("select * from users where username=?");
+        PreparedStatement statement2 = provider.prepareStatement("select * from users where username=?");
         statement2.setString(1, "jjd");
-        ResultSet userJjd = database.query(statement2);
+        ResultSet userJjd = provider.query(statement2);
         int numberOfUserJjd = 0;
         while (userJjd.next()) { ++numberOfUserJjd; }
         assertEquals(1, numberOfUserJjd);
@@ -189,19 +183,17 @@ public class UkelonnDatabaseProviderTest {
         provider.setDataSourceFactory(dataSourceFactory);
         provider.activate(); // Create the database
 
-        UkelonnDatabase database = provider.get();
-
         // A bad select returns a null instead of a prepared statement
-        PreparedStatement statement = database.prepareStatement("zelect * from uzers");
+        PreparedStatement statement = provider.prepareStatement("zelect * from uzers");
         assertNull(statement);
         // A null statement in a query results in a null result (and no other errors)
-        ResultSet result = database.query(statement);
+        ResultSet result = provider.query(statement);
         assertNull(result);
 
         // A bad update returns 0 instead of the number of rows inserted
-        PreparedStatement statement2 = database.prepareStatement("inzert into uzers (username) values ('zed')");
+        PreparedStatement statement2 = provider.prepareStatement("inzert into uzers (username) values ('zed')");
         assertNull(statement2);
-        int updateResult = database.update(statement2);
+        int updateResult = provider.update(statement2);
         assertEquals(0, updateResult);
     }
 
@@ -215,9 +207,8 @@ public class UkelonnDatabaseProviderTest {
         provider.setDataSourceFactory(dataSourceFactory); // Test what happens with failing datasource injection
         provider.activate(); // Create the database
 
-        UkelonnDatabase database = provider.get();
-        PreparedStatement statement = database.prepareStatement("select * from users");
-        ResultSet result = database.query(statement);
+        PreparedStatement statement = provider.prepareStatement("select * from users");
+        ResultSet result = provider.query(statement);
         assertNull(result);
     }
 
@@ -298,23 +289,23 @@ public class UkelonnDatabaseProviderTest {
         boolean rollbackSuccessful = provider.rollbackMockData();
         assertFalse(rollbackSuccessful);
     }
-    
+
     @Test
     public void testFailToForceLock() {
-    	MockLogService logservice = new MockLogService();
+     MockLogService logservice = new MockLogService();
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(logservice);
-        
+
         // Check precondition that nothing has been logged
         assertEquals(0, logservice.getLogmessages().size());
-        
+
         // Run the method under test
         provider.forceReleaseLocks();
-        
+
         // Check that an error message has been logged
         assertEquals(1, logservice.getLogmessages().size());
     }
-    
+
     @Test(expected=UkelonnException.class)
     public void testGetChangeLogHistoryWithError() {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
