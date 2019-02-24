@@ -46,6 +46,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     private DataSourceFactory dataSourceFactory;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
+    private DataSource datasource;
 
     @Reference
     public void setLogService(LogService logService) {
@@ -79,8 +80,8 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         Properties properties = createDatabaseConnectionProperties(config);
 
         try {
-            DataSource dataSource = dataSourceFactory.createDataSource(properties);
-            connect = dataSource.getConnection();
+            datasource = dataSourceFactory.createDataSource(properties);
+            connect = datasource.getConnection();
         } catch (Exception e) {
             logError("PostgreSQL database service failed to create connection to local DB server", e);
         }
@@ -123,6 +124,16 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     @Override
     public String getName() {
         return "Ukelonn PostgreSQL database";
+    }
+
+    @Override
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return datasource.getConnection();
     }
 
     @Override

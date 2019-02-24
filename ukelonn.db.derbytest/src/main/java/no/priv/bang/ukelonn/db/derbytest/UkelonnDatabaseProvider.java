@@ -47,6 +47,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
     private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
+    private DataSource datasource;
     @Reference
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -79,8 +80,8 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         try {
-            DataSource dataSource = dataSourceFactory.createDataSource(properties);
-            connect = dataSource.getConnection();
+            datasource = dataSourceFactory.createDataSource(properties);
+            connect = datasource.getConnection();
         } catch (Exception e) {
             logError("Derby mock database failed to create connection", e);
         }
@@ -140,6 +141,16 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     @Override
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return datasource.getConnection();
+    }
+
+    @Override
     public PreparedStatement prepareStatement(String sql) {
         try {
             return connect.prepareStatement(sql);
@@ -175,7 +186,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         try {
             liquibase.forceReleaseLocks(connect);
         } catch (Exception e) {
-            logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);
+            logError("Failed to force release Liquibase changelog lock on derby database", e);
         }
     }
 

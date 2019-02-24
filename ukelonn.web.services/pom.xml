@@ -78,6 +78,11 @@
             <artifactId>org.osgi.service.jdbc</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.database</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>

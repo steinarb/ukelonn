@@ -181,6 +181,13 @@ public class PGUkelonnDatabaseProviderTest {
 
         // Verify that no errors have been logged
         assertEquals(0, logservice.getLogmessagecount());
+
+        // Verify that a datasource has been created
+        DataSource datasource2 = provider.getDatasource();
+        assertNotNull(datasource2);
+
+        Connection connection2 = provider.getConnection();
+        assertNotNull(connection2);
     }
 
     @Test

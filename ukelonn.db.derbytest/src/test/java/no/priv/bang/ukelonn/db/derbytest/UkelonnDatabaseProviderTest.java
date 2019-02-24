@@ -29,6 +29,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
+import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
@@ -54,9 +55,10 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
-import no.priv.bang.ukelonn.db.derbytest.mocks.MockLogService;
 
 public class UkelonnDatabaseProviderTest {
 
@@ -76,6 +78,17 @@ public class UkelonnDatabaseProviderTest {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory);
         provider.activate(); // Create the database
+
+        // test getting the datasource
+        DataSource datasource = provider.getDatasource();
+        assertNotNull(datasource);
+
+        try(Connection connect = provider.getConnection()) {
+            assertNotNull(connect);
+        }
+
+        // Successful force release liquibase lock
+        provider.forceReleaseLocks();
 
         // Test the database by making a query using a view
         UkelonnDatabase database = provider.get();
@@ -284,6 +297,30 @@ public class UkelonnDatabaseProviderTest {
 
         boolean rollbackSuccessful = provider.rollbackMockData();
         assertFalse(rollbackSuccessful);
+    }
+    
+    @Test
+    public void testFailToForceLock() {
+    	MockLogService logservice = new MockLogService();
+        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+        provider.setLogService(logservice);
+        
+        // Check precondition that nothing has been logged
+        assertEquals(0, logservice.getLogmessages().size());
+        
+        // Run the method under test
+        provider.forceReleaseLocks();
+        
+        // Check that an error message has been logged
+        assertEquals(1, logservice.getLogmessages().size());
+    }
+    
+    @Test(expected=UkelonnException.class)
+    public void testGetChangeLogHistoryWithError() {
+        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
+
+        List<RanChangeSet> history = provider.getChangeLogHistory();
+        assertEquals(0, history.size());
     }
 
     /**

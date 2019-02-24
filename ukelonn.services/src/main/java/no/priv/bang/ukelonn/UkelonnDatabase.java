@@ -19,7 +19,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public interface UkelonnDatabase {
+import no.priv.bang.osgiservice.database.DatabaseService;
+
+public interface UkelonnDatabase extends DatabaseService {
 
     String getName();
 
