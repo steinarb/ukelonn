@@ -20,6 +20,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,21 +90,23 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
 
     @Test
     public void testDerbyTestDatabase() throws SQLException {
-        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
-        statement.setString(1, "jad");
-        ResultSet onAccount = database.query(statement);
-        assertNotNull(onAccount);
-        assertTrue(onAccount.next()); // Verify that there is at least one result
-        int account_id = onAccount.getInt("account_id");
-        int user_id = onAccount.getInt("user_id");
-        String username = onAccount.getString("username");
-        String first_name = onAccount.getString("first_name");
-        String last_name = onAccount.getString("last_name");
-        assertEquals(4, account_id);
-        assertEquals(4, user_id);
-        assertEquals("jad", username);
-        assertEquals("Jane", first_name);
-        assertEquals("Doe", last_name);
+        try(Connection connection = database.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?");
+            statement.setString(1, "jad");
+            ResultSet onAccount = statement.executeQuery();
+            assertNotNull(onAccount);
+            assertTrue(onAccount.next()); // Verify that there is at least one result
+            int account_id = onAccount.getInt("account_id");
+            int user_id = onAccount.getInt("user_id");
+            String username = onAccount.getString("username");
+            String first_name = onAccount.getString("first_name");
+            String last_name = onAccount.getString("last_name");
+            assertEquals(4, account_id);
+            assertEquals(4, user_id);
+            assertEquals("jad", username);
+            assertEquals("Jane", first_name);
+            assertEquals("Doe", last_name);
+        }
     }
 
     @Ignore("I haven't been able to make this one work yet but hope I will.")

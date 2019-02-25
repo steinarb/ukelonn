@@ -26,6 +26,7 @@ import org.osgi.service.log.LogService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -98,12 +99,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<Account> getAccounts() {
         List<Account> accounts = new ArrayList<>();
-        try(PreparedStatement statement = database.prepareStatement("select * from accounts_view")) {
-            try(ResultSet results = database.query(statement)) {
-                if (results != null) {
-                    while(results.next()) {
-                        Account newaccount = UkelonnServiceProvider.mapAccount(results);
-                        accounts.add(newaccount);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view")) {
+                try(ResultSet results = statement.executeQuery()) {
+                    if (results != null) {
+                        while(results.next()) {
+                            Account newaccount = UkelonnServiceProvider.mapAccount(results);
+                            accounts.add(newaccount);
+                        }
                     }
                 }
             }
@@ -117,19 +120,19 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account getAccount(String username) {
-        try(PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?")) {
-            statement.setString(1, username);
-            ResultSet resultset = database.query(statement);
-            if (resultset == null) {
-                throw new UkelonnException(String.format("Got a null ResultSet while fetching account from the database for user \\\"%s\\\"", username));
-            }
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+                statement.setString(1, username);
+                try(ResultSet resultset = statement.executeQuery()) {
+                    if (resultset.next())
+                    {
+                        return UkelonnServiceProvider.mapAccount(resultset);
+                    }
 
-            if (resultset.next())
-            {
-                return UkelonnServiceProvider.mapAccount(resultset);
-            }
+                    throw new UkelonnException(String.format("Got an empty ResultSet while fetching account from the database for user \\\"%s\\\"", username));
+                }
 
-            throw new UkelonnException(String.format("Got an empty ResultSet while fetching account from the database for user \\\"%s\\\"", username));
+            }
         } catch (SQLException e) {
             throw new UkelonnException(String.format("Caught SQLException while fetching account from the database for user \"%s\"", username), e);
         }
@@ -141,12 +144,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         int jobtypeId = job.getTransactionTypeId();
         double jobamount = job.getTransactionAmount();
         Date timeofjob = job.getTransactionDate();
-        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
-            statement.setInt(1, accountId);
-            statement.setInt(2, jobtypeId);
-            statement.setDouble(3, jobamount);
-            statement.setTimestamp(4, new java.sql.Timestamp(timeofjob.getTime()));
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
+                statement.setInt(1, accountId);
+                statement.setInt(2, jobtypeId);
+                statement.setDouble(3, jobamount);
+                statement.setTimestamp(4, new java.sql.Timestamp(timeofjob.getTime()));
+                statement.executeUpdate();
+            }
         } catch (SQLException exception) {
             String message = String.format("Failed to register performed job in the database, account: %d  jobtype: %d  amount: %f", accountId, jobtypeId, jobamount);
             logError(message, exception);
@@ -158,12 +163,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<TransactionType> getJobTypes() {
         List<TransactionType> jobtypes = new ArrayList<>();
-        try(PreparedStatement statement = database.prepareStatement("select * from transaction_types where transaction_is_work=true")) {
-            try(ResultSet resultSet = database.query(statement)) {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        TransactionType transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
-                        jobtypes.add(transactiontype);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from transaction_types where transaction_is_work=true")) {
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet != null) {
+                        while (resultSet.next()) {
+                            TransactionType transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
+                            jobtypes.add(transactiontype);
+                        }
                     }
                 }
             }
@@ -192,13 +199,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     {
         List<Transaction> transactions = new ArrayList<>();
         String sql = String.format(getResourceAsString(sqlTemplate), UkelonnServiceProvider.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
-        try(PreparedStatement statement = database.prepareStatement(sql)) {
-            statement.setInt(1, accountId);
-            trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
-            ResultSet resultSet = database.query(statement);
-            if (resultSet != null) {
-                while (resultSet.next()) {
-                    transactions.add(UkelonnServiceProvider.mapTransaction(resultSet));
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, accountId);
+                trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        transactions.add(UkelonnServiceProvider.mapTransaction(resultSet));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -212,9 +220,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete) {
         if (!idsOfJobsToDelete.isEmpty()) {
             String deleteQuery = "delete from transactions where transaction_id in (select transaction_id from transactions inner join transaction_types on transactions.transaction_type_id=transaction_types.transaction_type_id where transaction_id in (" + joinIds(idsOfJobsToDelete) + ") and transaction_types.transaction_is_work=? and account_id=?)";
-            try (PreparedStatement statement = database.prepareStatement(deleteQuery)) {
-                addParametersToDeleteJobsStatement(accountId, statement);
-                database.update(statement);
+            try(Connection connection = database.getConnection()) {
+                try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+                    addParametersToDeleteJobsStatement(accountId, statement);
+                    statement.executeUpdate();
+                }
             } catch (SQLException e) {
                 String message = String.format("Failed to delete jobs from accountId: %d", accountId);
                 logError(message, e);
@@ -238,12 +248,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<Transaction> updateJob(UpdatedTransaction editedJob) {
         String sql = "update transactions set transaction_type_id=?, transaction_time=?, transaction_amount=? where transaction_id=?";
-        try(PreparedStatement statement = database.prepareStatement(sql)) {
-            statement.setInt(1, editedJob.getTransactionTypeId());
-            statement.setTimestamp(2, new java.sql.Timestamp(editedJob.getTransactionTime().getTime()));
-            statement.setDouble(3, editedJob.getTransactionAmount());
-            statement.setInt(4, editedJob.getId());
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, editedJob.getTransactionTypeId());
+                statement.setTimestamp(2, new java.sql.Timestamp(editedJob.getTransactionTime().getTime()));
+                statement.setDouble(3, editedJob.getTransactionAmount());
+                statement.setInt(4, editedJob.getId());
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new UkelonnException(String.format("Failed to update job with id %d", editedJob.getId()) , e);
         }
@@ -254,12 +266,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<TransactionType> getPaymenttypes() {
         List<TransactionType> paymenttypes = new ArrayList<>();
-        try(PreparedStatement statement = database.prepareStatement("select * from transaction_types where transaction_is_wage_payment=true")) {
-            try(ResultSet resultSet = database.query(statement)) {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        TransactionType transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
-                        paymenttypes.add(transactiontype);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from transaction_types where transaction_is_wage_payment=true")) {
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet != null) {
+                        while (resultSet.next()) {
+                            TransactionType transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
+                            paymenttypes.add(transactiontype);
+                        }
                     }
                 }
             }
@@ -276,12 +290,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         int transactionTypeId = payment.getTransactionTypeId();
         double amount = 0 - payment.getTransactionAmount();
         Date transactionDate = new Date();
-        try(PreparedStatement statement = database.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
-            statement.setInt(1, accountId);
-            statement.setInt(2, transactionTypeId);
-            statement.setDouble(3, amount);
-            statement.setTimestamp(4, new java.sql.Timestamp(transactionDate.getTime()));
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
+                statement.setInt(1, accountId);
+                statement.setInt(2, transactionTypeId);
+                statement.setDouble(3, amount);
+                statement.setTimestamp(4, new java.sql.Timestamp(transactionDate.getTime()));
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             String message = String.format("Failed to register payment  accountId: %d  transactionTypeId: %d  amount: %f", accountId, transactionTypeId, amount);
             logError(message, e);
@@ -293,11 +309,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> modifyJobtype(TransactionType jobtype) {
-        try(PreparedStatement statement = database.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=true, transaction_is_wage_payment=false where transaction_type_id=?")) {
-            statement.setString(1, jobtype.getTransactionTypeName());
-            statement.setDouble(2, jobtype.getTransactionAmount());
-            statement.setInt(3, jobtype.getId());
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=true, transaction_is_wage_payment=false where transaction_type_id=?")) {
+                statement.setString(1, jobtype.getTransactionTypeName());
+                statement.setDouble(2, jobtype.getTransactionAmount());
+                statement.setInt(3, jobtype.getId());
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             String message = String.format("Failed to update jobtype %d in the database", jobtype.getId());
             logError(message, e);
@@ -309,10 +327,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> createJobtype(TransactionType jobtype) {
-        try(PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)")) {
-            statement.setString(1, jobtype.getTransactionTypeName());
-            statement.setObject(2, jobtype.getTransactionAmount());
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)")) {
+                statement.setString(1, jobtype.getTransactionTypeName());
+                statement.setObject(2, jobtype.getTransactionAmount());
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             String message = String.format("Failed to create jobtype \"%s\" in the database", jobtype.getTransactionTypeName());
             logError(message, e);
@@ -324,11 +344,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> modifyPaymenttype(TransactionType paymenttype) {
-        try(PreparedStatement statement = database.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=false, transaction_is_wage_payment=true where transaction_type_id=?")) {
-            statement.setString(1, paymenttype.getTransactionTypeName());
-            statement.setDouble(2, paymenttype.getTransactionAmount());
-            statement.setInt(3, paymenttype.getId());
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=false, transaction_is_wage_payment=true where transaction_type_id=?")) {
+                statement.setString(1, paymenttype.getTransactionTypeName());
+                statement.setDouble(2, paymenttype.getTransactionAmount());
+                statement.setInt(3, paymenttype.getId());
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             String message = String.format("Failed to update payment type %d in the database", paymenttype.getId());
             logError(message, e);
@@ -340,10 +362,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> createPaymenttype(TransactionType paymenttype) {
-        try(PreparedStatement statement = database.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)")) {
-            statement.setString(1, paymenttype.getTransactionTypeName());
-            statement.setObject(2, paymenttype.getTransactionAmount());
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)")) {
+                statement.setString(1, paymenttype.getTransactionTypeName());
+                statement.setObject(2, paymenttype.getTransactionAmount());
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             String message = String.format("Failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName());
             logError(message, e);
@@ -356,11 +380,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<User> getUsers() {
         ArrayList<User> users = new ArrayList<>();
-        try(PreparedStatement statement = database.prepareStatement("select * from users order by user_id")) {
-            try(ResultSet resultSet = database.query(statement)) {
-                while (resultSet.next()) {
-                    User user = UkelonnServiceProvider.mapUser(resultSet);
-                    users.add(user);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from users order by user_id")) {
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        User user = UkelonnServiceProvider.mapUser(resultSet);
+                        users.add(user);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -372,13 +398,15 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<User> modifyUser(User user) {
-        try(PreparedStatement updateUserSql = database.prepareStatement("update users set username=?, email=?, first_name=?, last_name=? where user_id=?")) {
-            updateUserSql.setString(1, user.getUsername());
-            updateUserSql.setString(2, user.getEmail());
-            updateUserSql.setString(3, user.getFirstname());
-            updateUserSql.setString(4, user.getLastname());
-            updateUserSql.setInt(5, user.getUserId());
-            database.update(updateUserSql);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement updateUserSql = connection.prepareStatement("update users set username=?, email=?, first_name=?, last_name=? where user_id=?")) {
+                updateUserSql.setString(1, user.getUsername());
+                updateUserSql.setString(2, user.getEmail());
+                updateUserSql.setString(3, user.getFirstname());
+                updateUserSql.setString(4, user.getLastname());
+                updateUserSql.setInt(5, user.getUserId());
+                updateUserSql.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new UkelonnException(String.format("Failed to update user %d in the database", user.getUserId()), e);
         }
@@ -400,25 +428,27 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         String salt = UkelonnServiceProvider.getNewSalt();
         String hashedPassword = UkelonnServiceProvider.hashPassword(newUserPassword, salt);
 
-        try {
-            try(PreparedStatement insertUserSql = database.prepareStatement("insert into users (username, password, salt, email, first_name, last_name) values (?, ?, ?, ?, ?, ?)")) {
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement insertUserSql = connection.prepareStatement("insert into users (username, password, salt, email, first_name, last_name) values (?, ?, ?, ?, ?, ?)")) {
                 insertUserSql.setString(1, newUserUsername);
                 insertUserSql.setString(2, hashedPassword);
                 insertUserSql.setString(3, salt);
                 insertUserSql.setString(4, newUserEmail);
                 insertUserSql.setString(5, newUserFirstname);
                 insertUserSql.setString(6, newUserLastname);
-                database.update(insertUserSql);
+                insertUserSql.executeUpdate();
             }
 
-            try(PreparedStatement findUserIdFromUsernameSql = database.prepareStatement("select user_id from users where username=?")) {
+            try(PreparedStatement findUserIdFromUsernameSql = connection.prepareStatement("select user_id from users where username=?")) {
                 findUserIdFromUsernameSql.setString(1, newUserUsername);
-                try(ResultSet userIdResultSet = database.query(findUserIdFromUsernameSql)) {
+                try(ResultSet userIdResultSet = findUserIdFromUsernameSql.executeQuery()) {
                     if (userIdResultSet.next()) {
                         int userId = userIdResultSet.getInt(UkelonnServiceProvider.USER_ID);
-                        PreparedStatement insertAccountSql = database.prepareStatement("insert into accounts (user_id) values (?)");
-                        insertAccountSql.setInt(1, userId);
-                        database.update(insertAccountSql);
+                        try(PreparedStatement insertAccountSql = connection.prepareStatement("insert into accounts (user_id) values (?)")) {
+                            insertAccountSql.setInt(1, userId);
+                            insertAccountSql.executeUpdate();
+                        }
+
                         addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(userId);
                     }
                 }
@@ -450,11 +480,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         String password = passwords.getPassword();
         String salt = UkelonnServiceProvider.getNewSalt();
         String hashedPassword = UkelonnServiceProvider.hashPassword(password, salt);
-        try(PreparedStatement statement = database.prepareStatement("update users set password=?, salt=? where username=?")) { // NOSONAR It's hard to handle passwords without using the text password
-            statement.setString(1, hashedPassword);
-            statement.setString(2, salt);
-            statement.setString(3, username);
-            database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("update users set password=?, salt=? where username=?")) { // NOSONAR It's hard to handle passwords without using the text password
+                statement.setString(1, hashedPassword);
+                statement.setString(2, salt);
+                statement.setString(3, username);
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             String message = String.format("Database failure when changing password for user \"%s\"", passwords.getUser().getUsername());
             logservice.log(LogService.LOG_ERROR, message);
@@ -548,9 +580,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
      * @return the update status
      */
     int addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(int userId) {
-        try(PreparedStatement statement = database.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"))) {
-            statement.setInt(1, userId);
-            return database.update(statement);
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"))) {
+                statement.setInt(1, userId);
+                return statement.executeUpdate();
+            }
         } catch (SQLException e) {
             logError("Failed to set prepared statement argument", e);
         }
