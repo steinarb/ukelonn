@@ -73,6 +73,14 @@
             <artifactId>org.osgi.service.jdbc</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgi.service.adapters</groupId>
+            <artifactId>service-mocks</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>

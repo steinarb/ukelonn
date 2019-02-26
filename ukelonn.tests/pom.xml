@@ -94,6 +94,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.database</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.web.itest</groupId>
             <artifactId>pax-web-itest-base</artifactId>
             <version>${dependency.pax.web.version}</version>

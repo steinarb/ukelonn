@@ -23,6 +23,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class AdminUserResourceTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
-    public void testModifyInternalServerError() {
+    public void testModifyInternalServerError() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -90,9 +91,11 @@ public class AdminUserResourceTest {
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a user bean
@@ -182,16 +185,18 @@ public class AdminUserResourceTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
-    public void testCreateDatabaseException() {
+    public void testCreateDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a logservice and inject it
@@ -299,7 +304,7 @@ public class AdminUserResourceTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
-    public void testPasswordDatabaseException() {
+    public void testPasswordDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -311,9 +316,11 @@ public class AdminUserResourceTest {
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
 

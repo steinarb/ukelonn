@@ -15,19 +15,11 @@
  */
 package no.priv.bang.ukelonn;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import no.priv.bang.osgiservice.database.DatabaseService;
 
-public interface UkelonnDatabase {
+public interface UkelonnDatabase extends DatabaseService {
 
     String getName();
-
-    PreparedStatement prepareStatement(String sql);
-
-    ResultSet query(PreparedStatement statement) throws SQLException;
-
-    int update(PreparedStatement statement);
 
     void forceReleaseLocks();
 

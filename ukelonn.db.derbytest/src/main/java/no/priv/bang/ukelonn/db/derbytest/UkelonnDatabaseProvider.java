@@ -16,8 +16,6 @@
 package no.priv.bang.ukelonn.db.derbytest;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -37,6 +35,7 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
@@ -45,8 +44,8 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 @Component(service=UkelonnDatabase.class, immediate=true)
 public class UkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
-    private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
+    private DataSource datasource;
     @Reference
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -59,9 +58,9 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
 
     @Activate
     public void activate() {
-        createConnection();
+        createDatasource();
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        try {
+        try(Connection connect = getConnection()) {
             try {
                 liquibase.createInitialSchema(connect);
                 insertMockData();
@@ -75,14 +74,13 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
-    void createConnection() {
+    void createDatasource() {
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         try {
-            DataSource dataSource = dataSourceFactory.createDataSource(properties);
-            connect = dataSource.getConnection();
+            datasource = dataSourceFactory.createDataSource(properties);
         } catch (Exception e) {
-            logError("Derby mock database failed to create connection", e);
+            logError("Derby mock database failed to create datasource", e);
         }
     }
 
@@ -91,24 +89,24 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
      * been run.
      *
      * @return A list of all changesets run by liqubase in the derby database
+     * @throws DatabaseException
+     * @throws SQLException
      */
-    List<RanChangeSet> getChangeLogHistory() {
-        try {
+    List<RanChangeSet> getChangeLogHistory() throws DatabaseException, SQLException {
+        try(Connection connect = getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
-            StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
-            return logHistoryService.getRanChangeSets();
-        } catch (Exception e) {
-            throw new UkelonnException(e);
+            try {
+                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
+                StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
+                return logHistoryService.getRanChangeSets();
+            } finally {
+                databaseConnection.close();
+            }
         }
     }
 
-    public UkelonnDatabase get() {
-        return this;
-    }
-
     public boolean insertMockData() {
-        try {
+        try(Connection connect = getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
@@ -121,7 +119,7 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     public boolean rollbackMockData() {
-        try {
+        try(Connection connect = getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
@@ -140,42 +138,26 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql) {
-        try {
-            return connect.prepareStatement(sql);
-        } catch (Exception e) {
-            logError("Derby mock database failed to create prepared statement", e);
-            return null;
-        }
+    public DataSource getDatasource() {
+        return datasource;
     }
 
     @Override
-    public ResultSet query(PreparedStatement statement) throws SQLException {
-        if (statement != null) {
-            return statement.executeQuery();
+    public Connection getConnection() throws SQLException {
+        if (datasource == null) {
+            throw new UkelonnException("Couldn't create connection to Ukelonn Derby test database because the Derby datasource was null");
         }
 
-        return null;
-    }
-
-    @Override
-    public int update(PreparedStatement statement) {
-        try(PreparedStatement closableStatement = statement) {
-            return closableStatement.executeUpdate();
-        } catch (Exception e) {
-            logError("Derby mock database update failed", e);
-        }
-
-        return 0;
+        return datasource.getConnection();
     }
 
     @Override
     public void forceReleaseLocks() {
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        try {
+        try(Connection connect = getConnection()) {
             liquibase.forceReleaseLocks(connect);
         } catch (Exception e) {
-            logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);
+            logError("Failed to force release Liquibase changelog lock on derby database", e);
         }
     }
 
