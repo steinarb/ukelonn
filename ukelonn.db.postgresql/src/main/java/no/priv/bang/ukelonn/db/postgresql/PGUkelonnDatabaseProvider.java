@@ -16,8 +16,6 @@
 package no.priv.bang.ukelonn.db.postgresql;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
@@ -36,16 +34,18 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import no.priv.bang.ukelonn.UkelonnDatabase;
+import no.priv.bang.ukelonn.UkelonnException;
+
 import static no.priv.bang.ukelonn.UkelonnDatabaseConstants.*;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(service=UkelonnDatabase.class, immediate=true)
 public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
-    private Connection connect = null;
     private DataSourceFactory dataSourceFactory;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
+    private DataSource datasource;
 
     @Reference
     public void setLogService(LogService logService) {
@@ -59,9 +59,9 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
 
     @Activate
     public void activate(Map<String, Object> config) {
-        createConnection(config);
-        UkelonnLiquibase liquibase = createUkelonnLiquibase();
-        try {
+        createDatasource(config);
+        try(Connection connect = getConnection()) {
+            UkelonnLiquibase liquibase = createUkelonnLiquibase();
             try {
                 liquibase.createInitialSchema(connect);
                 insertInitialDataInDatabase();
@@ -75,12 +75,11 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
-    void createConnection(Map<String, Object> config) {
+    void createDatasource(Map<String, Object> config) {
         Properties properties = createDatabaseConnectionProperties(config);
 
         try {
-            DataSource dataSource = dataSourceFactory.createDataSource(properties);
-            connect = dataSource.getConnection();
+            datasource = dataSourceFactory.createDataSource(properties);
         } catch (Exception e) {
             logError("PostgreSQL database service failed to create connection to local DB server", e);
         }
@@ -103,12 +102,8 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         return properties;
     }
 
-    public UkelonnDatabase get() {
-        return this;
-    }
-
     boolean insertInitialDataInDatabase() {
-        try {
+        try(Connection connect = getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = createLiquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
@@ -126,39 +121,23 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql) {
-        try {
-            return connect.prepareStatement(sql);
-        } catch (Exception e) {
-            logError("PostgreSQL database failed to create prepared statement", e);
-            return null;
-        }
+    public DataSource getDatasource() {
+        return datasource;
     }
 
     @Override
-    public ResultSet query(PreparedStatement statement) throws SQLException {
-        if (statement != null) {
-            return statement.executeQuery();
+    public Connection getConnection() throws SQLException {
+        if (datasource == null) {
+            throw new UkelonnException("Couldn't create connection to Ukelonn Derby test database because the Derby datasource was null");
         }
 
-        return null;
-    }
-
-    @Override
-    public int update(PreparedStatement statement) {
-        try(PreparedStatement closableStatement = statement) {
-            return closableStatement.executeUpdate();
-        } catch (Exception e) {
-            logError("PostgreSQL database update failed", e);
-        }
-
-        return 0;
+        return datasource.getConnection();
     }
 
     @Override
     public void forceReleaseLocks() {
         UkelonnLiquibase liquibase = createUkelonnLiquibase();
-        try {
+        try(Connection connect = getConnection()) {
             liquibase.forceReleaseLocks(connect);
         } catch (Exception e) {
             logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);

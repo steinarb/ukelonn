@@ -15,6 +15,7 @@
  */
 package no.priv.bang.ukelonn.web.security.dbrealm;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,11 +68,12 @@ public class UkelonnRealm extends AuthorizingRealm {
         Set<String> roles = new HashSet<>();
         roles.add("user");
         Set<String> administrators = new HashSet<>();
-        try {
-            try(PreparedStatement statement = database.prepareStatement("select * from administrators_view")) {
-                ResultSet administratorsResults = database.query(statement);
-                while (administratorsResults.next()) {
-                    administrators.add(administratorsResults.getString("username"));
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from administrators_view")) {
+                try(ResultSet administratorsResults = statement.executeQuery()) {
+                    while (administratorsResults.next()) {
+                        administrators.add(administratorsResults.getString("username"));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -100,21 +102,18 @@ public class UkelonnRealm extends AuthorizingRealm {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         Object principal = usernamePasswordToken.getPrincipal();
         String username = usernamePasswordToken.getUsername();
-        try {
-            try(PreparedStatement statement = database.prepareStatement("select * from users where username=?")) {
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from users where username=?")) {
                 statement.setString(1, username);
-                ResultSet passwordResultSet = database.query(statement);
-                if (passwordResultSet == null) {
-                    throw new AuthenticationException("UkelonnRealm shiro realm failed to get passwords from the database");
-                }
-
-                if (passwordResultSet.next()) {
-                    String password = passwordResultSet.getString("password");
-                    String salt = passwordResultSet.getString("salt");
-                    ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
-                    return new SimpleAuthenticationInfo(principal, password, decodedSalt, getName());
-                } else {
-                    throw new IncorrectCredentialsException("Username \"" + username + "\" not found");
+                try(ResultSet passwordResultSet = statement.executeQuery()) {
+                    if (passwordResultSet.next()) {
+                        String password = passwordResultSet.getString("password");
+                        String salt = passwordResultSet.getString("salt");
+                        ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
+                        return new SimpleAuthenticationInfo(principal, password, decodedSalt, getName());
+                    } else {
+                        throw new IncorrectCredentialsException("Username \"" + username + "\" not found");
+                    }
                 }
             }
         } catch (SQLException e) {

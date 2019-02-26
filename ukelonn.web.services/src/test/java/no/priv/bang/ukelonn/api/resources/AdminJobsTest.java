@@ -19,6 +19,7 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -108,9 +109,11 @@ public class AdminJobsTest {
 
         // Create a mock database that will fail during query setup
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
-        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
         ukelonn.setUkelonnDatabase(database);
 
         // Create the jersey resource that is to be tested

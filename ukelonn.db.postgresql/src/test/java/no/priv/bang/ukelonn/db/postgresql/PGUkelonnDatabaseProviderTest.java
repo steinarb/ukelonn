@@ -42,8 +42,8 @@ import org.postgresql.osgi.PGDataSourceFactory;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.exception.LiquibaseException;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.db.postgresql.mocks.MockLogService;
 
@@ -52,9 +52,8 @@ public class PGUkelonnDatabaseProviderTest {
     @Test
     public void testGetName() {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        UkelonnDatabase database = provider.get();
 
-        String databaseName = database.getName();
+        String databaseName = provider.getName();
         assertEquals("Ukelonn PostgreSQL database", databaseName);
     }
 
@@ -65,25 +64,26 @@ public class PGUkelonnDatabaseProviderTest {
         provider.setLogService(new MockLogService());
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
         setPrivateField(provider, "dataSourceFactory", dataSourceFactory); // Avoid side effects of the public setter
-        provider.createConnection(null);
+        provider.createDatasource(null);
 
         // Test the database by making a query using a view
-        UkelonnDatabase database = provider.get();
-        PreparedStatement statement = database.prepareStatement("select * from accounts_view where username=?");
-        statement.setString(1, "jad");
-        ResultSet onAccount = database.query(statement);
-        assertNotNull("Expected returned account JDBC resultset not to be null", onAccount);
-        while (onAccount.next()) {
-            int account_id = onAccount.getInt("account_id");
-            int user_id = onAccount.getInt("user_id");
-            String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
-            assertEquals(3, account_id);
-            assertEquals(3, user_id);
-            assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
+        try(Connection connection = provider.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?");
+            statement.setString(1, "jad");
+            ResultSet onAccount = statement.executeQuery();
+            assertNotNull("Expected returned account JDBC resultset not to be null", onAccount);
+            while (onAccount.next()) {
+                int account_id = onAccount.getInt("account_id");
+                int user_id = onAccount.getInt("user_id");
+                String username = onAccount.getString("username");
+                String first_name = onAccount.getString("first_name");
+                String last_name = onAccount.getString("last_name");
+                assertEquals(3, account_id);
+                assertEquals(3, user_id);
+                assertEquals("jad", username);
+                assertEquals("Jane", first_name);
+                assertEquals("Doe", last_name);
+            }
         }
     }
 
@@ -95,29 +95,29 @@ public class PGUkelonnDatabaseProviderTest {
         DataSourceFactory dataSourceFactory = new PGDataSourceFactory();
         provider.setDataSourceFactory(dataSourceFactory); // Simulate injection
 
-        UkelonnDatabase database = provider.get();
-
         // Test that the database has users
-        PreparedStatement statement = database.prepareStatement("select * from users");
-        ResultSet allUsers = database.query(statement);
-        assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
-        int allUserCount = 0;
-        while (allUsers.next()) { ++allUserCount; }
-        assertThat(allUserCount).isGreaterThan(0);
+        try(Connection connection = provider.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from users");
+            ResultSet allUsers = statement.executeQuery();
+            assertNotNull("Expected returned allUsers JDBC resultset not to be null", allUsers);
+            int allUserCount = 0;
+            while (allUsers.next()) { ++allUserCount; }
+            assertThat(allUserCount).isGreaterThan(0);
 
-        // Test that the database administrators table has rows
-        PreparedStatement statement2 = database.prepareStatement("select * from administrators");
-        ResultSet allAdministrators = database.query(statement2);
-        int allAdminstratorsCount = 0;
-        while (allAdministrators.next()) { ++allAdminstratorsCount; }
-        assertThat(allAdminstratorsCount).isGreaterThan(0);
+            // Test that the database administrators table has rows
+            PreparedStatement statement2 = connection.prepareStatement("select * from administrators");
+            ResultSet allAdministrators = statement2.executeQuery();
+            int allAdminstratorsCount = 0;
+            while (allAdministrators.next()) { ++allAdminstratorsCount; }
+            assertThat(allAdminstratorsCount).isGreaterThan(0);
 
-        // Test that the administrators_view is present
-        PreparedStatement statement3 = database.prepareStatement("select * from administrators_view");
-        ResultSet allAdministratorsView = database.query(statement3);
-        int allAdminstratorsViewCount = 0;
-        while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
-        assertEquals(1, allAdminstratorsViewCount);
+            // Test that the administrators_view is present
+            PreparedStatement statement3 = connection.prepareStatement("select * from administrators_view");
+            ResultSet allAdministratorsView = statement3.executeQuery();
+            int allAdminstratorsViewCount = 0;
+            while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
+            assertEquals(1, allAdminstratorsViewCount);
+        }
     }
 
     @Test
@@ -147,7 +147,7 @@ public class PGUkelonnDatabaseProviderTest {
         DataSourceFactory datasourcefactory = mock(DataSourceFactory.class);
         when(datasourcefactory.createDataSource(any())).thenReturn(datasource);
         provider.setDataSourceFactory(datasourcefactory);
-        provider.createConnection(Collections.emptyMap());
+        provider.createDatasource(Collections.emptyMap());
         assertEquals(0, logservice.getLogmessagecount());
     }
 
@@ -181,6 +181,13 @@ public class PGUkelonnDatabaseProviderTest {
 
         // Verify that no errors have been logged
         assertEquals(0, logservice.getLogmessagecount());
+
+        // Verify that a datasource has been created
+        DataSource datasource2 = provider.getDatasource();
+        assertNotNull(datasource2);
+
+        Connection connection2 = provider.getConnection();
+        assertNotNull(connection2);
     }
 
     @Test
@@ -209,17 +216,19 @@ public class PGUkelonnDatabaseProviderTest {
         DataSourceFactory datasourcefactory = mockDataSourceFactory();
         provider.setLogService(logservice);
         provider.setDataSourceFactory(datasourcefactory);
-        provider.createConnection(Collections.emptyMap());
+        provider.createDatasource(Collections.emptyMap());
 
         // Run the code under test
-        PreparedStatement statement = provider.prepareStatement("select * from table");
-        assertNull(statement);
+        try(Connection connection = provider.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from table");
+            assertNull(statement);
+        }
 
         // Verify that no error has been logged
         assertEquals(0, logservice.getLogmessagecount());
     }
 
-    @Test
+    @Test(expected=UkelonnException.class)
     public void testPrepareStatementFailed() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
@@ -229,144 +238,10 @@ public class PGUkelonnDatabaseProviderTest {
         provider.setLogService(logservice);
 
         // Run the code under test
-        PreparedStatement statement = provider.prepareStatement("select * from table");
-        assertNull(statement);
-
-        // Verify that an error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
-    }
-
-    @Test
-    public void testQuery() throws Exception {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-
-        // Run the code under test
-        ResultSet resultset = provider.query(statement);
-        assertNull(resultset);
-
-        // Verify that no error has been logged
-        assertEquals(0, logservice.getLogmessagecount());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected=SQLException.class)
-    public void testQueryFailOnQuery() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-        when(statement.executeQuery()).thenThrow(SQLException.class);
-
-        // Run the code under test
-        ResultSet resultset = provider.query(statement);
-        assertNull(resultset);
-    }
-
-    @Test
-    public void testQueryFailOnClose() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-        doThrow(SQLException.class).when(statement).closeOnCompletion();
-
-        // Run the code under test
-        ResultSet resultset = provider.query(statement);
-        assertNull(resultset);
-
-        // Verify that no error has been logged
-        assertEquals(0, logservice.getLogmessagecount());
-    }
-
-    @Test
-    public void testQueryOnNullStatement() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Run the code under test
-        ResultSet resultset = provider.query(null);
-        assertNull(resultset);
-
-        // Verify that no error has been logged
-        assertEquals(0, logservice.getLogmessagecount());
-    }
-
-    @Test
-    public void testUpdate() {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-
-        // Run the code under test
-        int result = provider.update(statement);
-        assertEquals(0, result);
-
-        // Verify that no error has been logged
-        assertEquals(0, logservice.getLogmessagecount());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testUpdateFailOnUpdate() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Mock the argument
-        PreparedStatement statement = mock(PreparedStatement.class);
-        when(statement.executeUpdate()).thenThrow(SQLException.class);
-
-        // Run the code under test
-        int result = provider.update(statement);
-        assertEquals(0, result);
-
-        // Verify that 1 error has been logged
-        assertEquals(1, logservice.getLogmessagecount());
-    }
-
-    @Test
-    public void testUpdateOnNullStatement() throws SQLException {
-        // Create the object under test
-        PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-
-        // Mock injected OSGi service
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Run the code under test
-        int result = provider.update(null);
-        assertEquals(0, result);
+        try(Connection connection = provider.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from table");
+            assertNull(statement);
+        }
 
         // Verify that an error has been logged
         assertEquals(1, logservice.getLogmessagecount());
@@ -388,7 +263,7 @@ public class PGUkelonnDatabaseProviderTest {
         DataSourceFactory datasourcefactory = mockDataSourceFactory();
         provider.setLogService(logservice);
         provider.setDataSourceFactory(datasourcefactory);
-        provider.createConnection(Collections.emptyMap());
+        provider.createDatasource(Collections.emptyMap());
 
         // Run the code under test
         provider.forceReleaseLocks();

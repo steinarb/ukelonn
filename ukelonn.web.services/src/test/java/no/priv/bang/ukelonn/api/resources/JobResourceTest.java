@@ -24,6 +24,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -280,8 +281,10 @@ public class JobResourceTest extends ServletTestBase {
         // Create an ukelonn service with a mock database that throws exception
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
         ukelonn.setUkelonnDatabase(database);
 
