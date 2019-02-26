@@ -46,11 +46,36 @@ public class TransactionTypeTest {
     }
 
     @Test
-    public void testHash() {
+    public void testCompare() {
         TransactionType bean = new TransactionType(1, "Vaske", 45.0, true, false);
         Set<TransactionType> set = new HashSet<>();
         set.add(bean);
         assertTrue(set.contains(bean));
+
+        TransactionType emptyBean = new TransactionType();
+        set.add(emptyBean);
+        assertTrue(set.contains(emptyBean));
+
+        assertNotEquals(bean, null);
+        assertNotEquals(bean, "bean");
+        TransactionType beanWithNullAmount1 = new TransactionType(1, "Vaske", null, true, false);
+        assertNotEquals(beanWithNullAmount1, bean);
+        TransactionType beanWithNullAmount2 = new TransactionType(1, "Vaske", null, true, false);
+        assertEquals(beanWithNullAmount1, beanWithNullAmount2);
+        TransactionType beanDifferentAmount = new TransactionType(1, "Vaske", 42.0, true, false);
+        assertNotEquals(bean, beanDifferentAmount);
+        TransactionType beanCopy = new TransactionType(1, "Vaske", 45.0, true, false);
+        assertEquals(bean, beanCopy);
+        TransactionType beanFalseWork = new TransactionType(1, "Vaske", 45.0, false, false);
+        assertNotEquals(bean, beanFalseWork);
+        TransactionType beanTrueWage = new TransactionType(1, "Vaske", 45.0, true, true);
+        assertNotEquals(bean, beanTrueWage);
+        TransactionType beanWithNullName1 = new TransactionType(1, null, 45.0, true, false);
+        assertNotEquals(beanWithNullName1, bean);
+        TransactionType beanWithNullName2 = new TransactionType(1, null, 45.0, true, false);
+        assertEquals(beanWithNullName1, beanWithNullName2);
+        TransactionType beanWithDifferentName = new TransactionType(1, "Tørke", 45.0, true, false);
+        assertNotEquals(bean, beanWithDifferentName);
     }
 
     @Test
