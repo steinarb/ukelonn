@@ -371,7 +371,7 @@ public class UkelonnDatabaseProviderTest {
      */
     @Ignore("Not an actual unit test. This test is a convenient way to populate a derby network server running on localhost, with the ukelonn schema and test data, using liquibase.")
     @Test
-    public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException {
+    public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException { // NOSONAR This isn't an actual test, see the comments
         boolean createUkelonnDatabase = true;
         ClientConnectionPoolDataSource dataSource = new ClientConnectionPoolDataSource();
         dataSource.setServerName("localhost");

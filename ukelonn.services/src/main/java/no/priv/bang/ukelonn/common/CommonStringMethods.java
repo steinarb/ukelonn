@@ -36,7 +36,7 @@ public class CommonStringMethods {
     }
 
     public static boolean nullSafeEquals(String a, String b) {
-        if (a == b) {
+        if (a == b) { // NOSONAR Equality comparison is intended
             return true;
         }
 
