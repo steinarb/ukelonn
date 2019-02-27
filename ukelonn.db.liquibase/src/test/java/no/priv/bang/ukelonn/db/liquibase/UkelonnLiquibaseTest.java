@@ -68,7 +68,19 @@ public class UkelonnLiquibaseTest {
         try(Connection connection = createConnection()) {
             UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
             handleregLiquibase.forceReleaseLocks(connection);
-            // Nothing to test for but if we get here, no exceptions have been thrown
+        }
+
+        try(Connection connection = createConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from databasechangeloglock")) {
+                try(ResultSet results = statement.executeQuery()) {
+                    boolean locked = true;
+                    while(results.next()) {
+                        locked = results.getBoolean("locked");
+                    }
+
+                    assertFalse(locked);
+                }
+            }
         }
     }
 
