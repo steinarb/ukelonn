@@ -72,7 +72,7 @@ public class TestUtils {
         ukelonnDatabaseProvider.setLogService(logservice);
         ukelonnDatabaseProvider.activate();
 
-        ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider.get());
+        ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider);
         ukelonnServiceSingleton.setLogservice(logservice);
         return ukelonnServiceSingleton;
     }

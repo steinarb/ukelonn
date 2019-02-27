@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -84,11 +85,13 @@ public class UkelonnServiceProviderTest {
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
-            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setUkelonnDatabase(database);
             List<Account> accounts = ukelonn.getAccounts();
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
@@ -104,16 +107,19 @@ public class UkelonnServiceProviderTest {
      * {@link UkelonnDatabase#query(PreparedStatement)} method.
      *
      * Expect no exception to be thrown, and an empty list to be returned
+     * @throws Exception
      */
     @Test()
-    public void testGetAccountsNullResultSet() {
+    public void testGetAccountsNullResultSet() throws Exception {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setUkelonnDatabase(database);
             List<Account> accounts = ukelonn.getAccounts();
             assertEquals("Expected a non-null, empty list", 0, accounts.size());
@@ -177,10 +183,12 @@ public class UkelonnServiceProviderTest {
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
-            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setUkelonnDatabase(database);
             Account account = ukelonn.getAccount("jad");
             assertNull("Should never get here", account);
@@ -233,9 +241,12 @@ public class UkelonnServiceProviderTest {
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
-            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
+            when(statement.executeUpdate()).thenThrow(SQLException.class);
+            when(statement.executeQuery()).thenThrow(SQLException.class);
             ukelonn.setUkelonnDatabase(database);
             PerformedTransaction performedJob = new PerformedTransaction(account, 1, 45.0, new Date());
             Account updatedAccount = ukelonn.registerPerformedJob(performedJob);
@@ -294,9 +305,13 @@ public class UkelonnServiceProviderTest {
 
         // Create a mock database with a prepared statement that will fail on close
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
         doThrow(SQLException.class).when(statement).close();
-        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
         ukelonn.setUkelonnDatabase(database);
 
         MockLogService logservice = new MockLogService();
@@ -391,9 +406,11 @@ public class UkelonnServiceProviderTest {
 
         // Mock a database that will fail
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
-        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
         ukelonn.setUkelonnDatabase(database);
 
         // trying to set the parameter here will throw an UkelonnException
@@ -438,8 +455,10 @@ public class UkelonnServiceProviderTest {
     public void testUpdateJobGetSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
 
         ukelonn.setUkelonnDatabase(database);
@@ -478,7 +497,9 @@ public class UkelonnServiceProviderTest {
         try {
             ukelonn.setLogservice(logservice);
             UkelonnDatabase database = mock(UkelonnDatabase.class);
-            when(database.prepareStatement(anyString())).thenThrow(SQLException.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
             ukelonn.setUkelonnDatabase(database);
             assertEquals(0, logservice.getLogmessages().size()); // Verify precondition: no logmessages
             List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
@@ -497,8 +518,10 @@ public class UkelonnServiceProviderTest {
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setUkelonnDatabase(database);
             List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
             assertEquals("Expected empty list", 0, paymenttypes.size());
@@ -528,14 +551,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testRegisterPaymentWithDatabaseFailure() {
+    public void testRegisterPaymentWithDatabaseFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a mock log service
@@ -560,14 +585,19 @@ public class UkelonnServiceProviderTest {
      * method.
      *
      * Expect no exception to be thrown, and a non-null empty map to be returned.
+     * @throws Exception
      */
     @Test()
-    public void testGetJobTypesNullResultSet() {
+    public void testGetJobTypesNullResultSet() throws Exception {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setUkelonnDatabase(database);
             List<TransactionType> jobtypes = ukelonn.getJobTypes();
             assertEquals("Expected a non-null, empty list", 0, jobtypes.size());
@@ -594,9 +624,13 @@ public class UkelonnServiceProviderTest {
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
+            PreparedStatement statement = mock(PreparedStatement.class);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
-            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setUkelonnDatabase(database);
             List<TransactionType> jobtypes = ukelonn.getJobTypes();
             assertEquals("Expected a non-null, empty map", 0, jobtypes.size());
@@ -628,14 +662,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testModifyJobtypeFailure() {
+    public void testModifyJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -667,14 +703,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testCreateJobtypeFailure() {
+    public void testCreateJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -709,14 +747,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testModifyPaymenttypeFailure() {
+    public void testModifyPaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -748,14 +788,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testCreatePaymenttypeFailure() {
+    public void testCreatePaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -794,11 +836,13 @@ public class UkelonnServiceProviderTest {
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
             ResultSet resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
-            when(database.query(any(PreparedStatement.class))).thenReturn(resultset);
+            when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setUkelonnDatabase(database);
             List<User> users = ukelonn.getUsers();
             assertEquals(0, users.size()); // Will never get here, using the return value so the IDE won't complain
@@ -837,14 +881,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testModifyUserFailure() {
+    public void testModifyUserFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a user bean
@@ -908,14 +954,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testCreateUserDatabaseException() {
+    public void testCreateUserDatabaseException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a logservice and inject it
@@ -1031,14 +1079,16 @@ public class UkelonnServiceProviderTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=UkelonnException.class)
-    public void testChangePasswordDatabaseException() {
+    public void testChangePasswordDatabaseException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a logservice and inject it
@@ -1118,9 +1168,11 @@ public class UkelonnServiceProviderTest {
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
             UkelonnDatabase database = mock(UkelonnDatabase.class);
+            Connection connection = mock(Connection.class);
+            when(database.getConnection()).thenReturn(connection);
             PreparedStatement statement = mock(PreparedStatement.class);
-            when(database.prepareStatement(anyString())).thenReturn(statement);
-            when(database.update(any(PreparedStatement.class))).thenThrow(SQLException.class);
+            when(connection.prepareStatement(anyString())).thenReturn(statement);
+            when(statement.executeUpdate()).thenThrow(SQLException.class);
             ukelonn.setUkelonnDatabase(database);
             int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(1);
             assertEquals(-1, updateStatus);

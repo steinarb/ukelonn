@@ -22,6 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class AdminPaymenttypeTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
-    public void testModifyPaymenttypeFailure() {
+    public void testModifyPaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -83,9 +84,11 @@ public class AdminPaymenttypeTest {
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create a non-existing payment type
@@ -124,7 +127,7 @@ public class AdminPaymenttypeTest {
 
     @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
-    public void testCreatePaymenttypeFailure() {
+    public void testCreatePaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -140,9 +143,11 @@ public class AdminPaymenttypeTest {
 
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.update(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setUkelonnDatabase(database);
 
         // Create new payment type

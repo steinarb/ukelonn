@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,8 +66,10 @@ public class UsersTest {
         ResultSet results = mock(ResultSet.class);
         when(results.next()).thenThrow(SQLException.class);
         UkelonnDatabase database = mock(UkelonnDatabase.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.query(any())).thenReturn(results);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeQuery()).thenReturn(results);
         ukelonn.setUkelonnDatabase(database);
 
         // Inject the UkelonnService

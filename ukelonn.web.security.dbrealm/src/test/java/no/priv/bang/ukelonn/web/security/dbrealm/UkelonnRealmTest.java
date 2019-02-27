@@ -19,7 +19,9 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -162,9 +164,11 @@ public class UkelonnRealmTest {
     public void testGetAuthenticationWithDatabaseException() throws Exception {
         UkelonnRealm realm = new UkelonnRealm();
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.query(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeQuery()).thenThrow(SQLException.class);
         realm.setDatabase(database);
         realm.activate();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
@@ -179,8 +183,12 @@ public class UkelonnRealmTest {
     public void testGetAuthenticationWithDatabaseQueryReturningNull() throws Exception {
         UkelonnRealm realm = new UkelonnRealm();
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
         realm.setDatabase(database);
         realm.activate();
         AuthenticationToken token = new UsernamePasswordToken("jad", "1ad".toCharArray());
@@ -196,9 +204,11 @@ public class UkelonnRealmTest {
     public void testGetAuthorzationWithDatabaseException() throws Exception {
         UkelonnRealm realm = new UkelonnRealm();
         UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
-        when(database.prepareStatement(anyString())).thenReturn(statement);
-        when(database.query(any())).thenThrow(SQLException.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeQuery()).thenThrow(SQLException.class);
         realm.setDatabase(database);
         realm.activate();
         AuthorizationInfo authInfo = realm.doGetAuthorizationInfo(null);
