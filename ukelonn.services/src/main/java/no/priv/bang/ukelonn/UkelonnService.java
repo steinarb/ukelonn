@@ -21,7 +21,6 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Notification;
-import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
@@ -74,13 +73,7 @@ public interface UkelonnService {
 
     List<TransactionType> createPaymenttype(TransactionType paymenttype);
 
-    List<User> getUsers();
-
-    List<User> modifyUser(User user);
-
-    List<User> createUser(PasswordsWithUser passwords);
-
-    List<User> changePassword(PasswordsWithUser passwords);
+    Account addAccount(User user);
 
     List<Notification> notificationsTo(String username);
 

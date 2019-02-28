@@ -25,6 +25,7 @@
     <modules>
         <module>ukelonn.services</module>
         <module>ukelonn.backend</module>
+        <module>ukelonn.backend.users</module>
         <module>ukelonn.web.security.dbrealm</module>
         <module>ukelonn.web.security.memorysession</module>
         <module>ukelonn.web.security</module>
@@ -107,6 +108,12 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.service.log</artifactId>
                 <version>${dependency.osgi.log.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.osgiservice</groupId>
+                <artifactId>osgiservice.users</artifactId>
+                <version>${osgi-service.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

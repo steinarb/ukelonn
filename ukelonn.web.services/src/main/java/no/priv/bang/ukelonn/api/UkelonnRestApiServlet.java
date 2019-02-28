@@ -32,22 +32,24 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
+import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnService;
 
 @Component(
-        property= {
-            HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/api/*",
-            HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
-            HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonnapi",
-            HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX+ServerProperties.PROVIDER_PACKAGES+"=no.priv.bang.ukelonn.api.resources"},
-        service=Servlet.class,
-        immediate=true
-    )
+    property= {
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/api/*",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonnapi",
+        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX+ServerProperties.PROVIDER_PACKAGES+"=no.priv.bang.ukelonn.api.resources"},
+    service=Servlet.class,
+    immediate=true
+)
 @SuppressWarnings("serial")
 public class UkelonnRestApiServlet extends ServletContainer {
 
     private UkelonnService ukelonnService; // NOSONAR In an OSGi DS component injected dependencies are set before activation and is effectively a constant
     private LogService logservice; // NOSONAR In an OSGi DS component injected dependencies are set before activation and is effectively a constant
+    private UserManagementService useradmin; // NOSONAR In an OSGi DS component injected dependencies are set before activation and is effectively a constant
 
     @Activate
     public void activate() {
@@ -63,6 +65,7 @@ public class UkelonnRestApiServlet extends ServletContainer {
                 protected void configure() {
                     bind(logservice).to(LogService.class);
                     bind(ukelonnService).to(UkelonnService.class);
+                    bind(useradmin).to(UserManagementService.class);
                 }
             });
         reload(copyOfExistingConfig);
@@ -75,6 +78,11 @@ public class UkelonnRestApiServlet extends ServletContainer {
     public void setUkelonnService(UkelonnService ukelonnService) {
         this.ukelonnService = ukelonnService;
 
+    }
+
+    @Reference
+    public void setUserManagement(UserManagementService useradmin) {
+        this.useradmin = useradmin;
     }
 
     @Reference

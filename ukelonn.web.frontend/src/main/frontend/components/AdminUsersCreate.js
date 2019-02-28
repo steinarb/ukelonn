@@ -64,8 +64,8 @@ class AdminUsersCreate extends Component {
                     <label htmlFor="lastname">Etternavn</label>
                     <input id="lastname" type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
                     <br/>
-                    <label htmlFor="password">Passord:</label>
-                    <input id="password" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                    <label htmlFor="password1">Passord:</label>
+                    <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
                     <br/>
                     <label htmlFor="password2">Gjenta passord:</label>
                     <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)}/>
@@ -94,12 +94,12 @@ const mapStateToProps = state => {
 };
 
 const checkIfPasswordsAreNotIdentical = (passwords) => {
-    let { password, password2 } = passwords;
+    let { password1, password2 } = passwords;
     if (!password2) {
         return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
     }
 
-    return password !== password2;
+    return password1 !== password2;
 };
 
 const mapDispatchToProps = dispatch => {

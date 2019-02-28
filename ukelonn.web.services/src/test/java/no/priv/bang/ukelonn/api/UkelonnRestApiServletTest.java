@@ -47,6 +47,9 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.osgiservice.users.User;
+import no.priv.bang.osgiservice.users.UserAndPasswords;
+import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
@@ -55,12 +58,10 @@ import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
 import no.priv.bang.ukelonn.beans.Notification;
-import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
-import no.priv.bang.ukelonn.beans.User;
 
 /**
  * The tests in this test class mirrors the tests for the Jersey
@@ -85,10 +86,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
@@ -123,10 +126,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
@@ -200,10 +205,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
@@ -237,10 +244,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
@@ -288,6 +297,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Set up Shiro to be in a logged-in state
         WebSubject subject = createSubjectAndBindItToThread(request, response);
@@ -297,6 +307,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -347,6 +358,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Set up Shiro to be in a logged-in state
         WebSubject subject = createSubjectAndBindItToThread(request, response);
@@ -355,6 +367,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -395,6 +408,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Set up Shiro to be in a logged-in state
         loginUser(request, response, "jad", "1ad");
@@ -402,6 +416,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -448,6 +463,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Set up shiro
         createSubjectAndBindItToThread(request, response);
@@ -455,6 +471,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -498,6 +515,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
         servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -541,10 +560,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
         servlet.setUkelonnService(ukelonn);
@@ -589,10 +610,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
         servlet.setUkelonnService(ukelonn);
@@ -645,10 +668,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -694,10 +719,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
         servlet.setUkelonnService(ukelonn);
@@ -744,10 +771,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -798,6 +827,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
         servlet.setUkelonnService(ukelonn);
 
+        // Inject fake OSGi service UserAdminService
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
+
         // Activate the servlet DS component
         servlet.activate();
 
@@ -835,10 +868,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
         servlet.setUkelonnService(ukelonn);
@@ -890,10 +925,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -938,10 +975,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
         servlet.setUkelonnService(ukelonn);
@@ -982,10 +1021,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -1018,10 +1059,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -1064,10 +1107,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
 
@@ -1113,6 +1158,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
         servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -1161,6 +1208,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
         servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -1217,6 +1266,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
         servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -1268,6 +1319,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
         servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -1313,6 +1366,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
         servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -1355,10 +1410,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPayment(any())).thenReturn(account);
         servlet.setUkelonnService(ukelonn);
@@ -1403,10 +1460,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
         servlet.setUkelonnService(ukelonn);
@@ -1449,10 +1508,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<TransactionType> updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).collect(Collectors.toList());
         when(ukelonn.createJobtype(any())).thenReturn(updatedjobtypes);
@@ -1498,10 +1559,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyPaymenttype(any())).thenReturn(Arrays.asList(paymenttype));
         servlet.setUkelonnService(ukelonn);
@@ -1544,10 +1607,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<TransactionType> updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).collect(Collectors.toList());
         when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
@@ -1596,8 +1661,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getUsers()).thenReturn(getUsers());
         servlet.setUkelonnService(ukelonn);
+
+        // Inject fake OSGi service UserAdminService
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
+        servlet.setUserManagement(useradmin);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1620,17 +1689,14 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testModifyUser() throws Exception {
         // Get a user and modify all properties except id
-        int userToModify = 1;
-        List<User> users = getUsers();
-        User user = users.get(userToModify);
+        int userToModify = 0;
+        List<User> users = getUsersForUserManagement();
+        User userOriginal = users.get(userToModify);
         String modifiedUsername = "gandalf";
         String modifiedEmailaddress = "wizard@hotmail.com";
         String modifiedFirstname = "Gandalf";
         String modifiedLastname = "Grey";
-        user.setUsername(modifiedUsername);
-        user.setEmail(modifiedEmailaddress);
-        user.setFirstname(modifiedFirstname);
-        user.setLastname(modifiedLastname);
+        User user = new User(userOriginal.getUserid(), modifiedUsername, modifiedEmailaddress, modifiedFirstname, modifiedLastname);
 
         // Create the request
         String userAsJson = ServletTestBase.mapper.writeValueAsString(user);
@@ -1648,8 +1714,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.modifyUser(any())).thenReturn(users);
         servlet.setUkelonnService(ukelonn);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.modifyUser(any())).thenReturn(Arrays.asList(user));
+        servlet.setUserManagement(useradmin);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1687,7 +1755,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
 
         // Create a passwords object containing the user
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
 
         // Create the request
         String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
@@ -1705,9 +1773,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        List<User> updatedusers = Stream.concat(getUsers().stream(), Stream.of(user)).collect(Collectors.toList());
-        when(ukelonn.createUser(any())).thenReturn(updatedusers);
         servlet.setUkelonnService(ukelonn);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        List<User> updatedusers = Stream.concat(getUsersForUserManagement().stream(), Stream.of(user)).collect(Collectors.toList());
+        when(useradmin.addUser(any())).thenReturn(updatedusers);
+        servlet.setUserManagement(useradmin);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1737,7 +1807,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
     @Test
     public void testChangePassword() throws Exception {
-        List<User> users = getUsers();
+        List<User> users = getUsersForUserManagement();
 
         // Save the number of users before adding a user
         int originalUserCount = users.size();
@@ -1746,7 +1816,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         User user = users.get(1);
 
         // Create a passwords object containing the user and with valid passwords
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
+        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
 
         // Create the request
         String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
@@ -1764,8 +1834,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.changePassword(any())).thenReturn(users);
         servlet.setUkelonnService(ukelonn);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.updatePassword(any())).thenReturn(users);
+        servlet.setUserManagement(useradmin);
 
         // Activate the servlet DS component
         servlet.activate();
@@ -1790,9 +1862,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testNotifications() throws Exception {
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = new UkelonnServiceProvider();
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
         servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
         servlet.setUkelonnService(ukelonn);
         servlet.activate();
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();

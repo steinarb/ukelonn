@@ -15,10 +15,6 @@
  */
 package no.priv.bang.ukelonn.backend;
 
-import org.apache.shiro.crypto.RandomNumberGenerator;
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.util.ByteSource.Util;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,7 +28,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -40,7 +35,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import no.priv.bang.ukelonn.UkelonnBadRequestException;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -378,122 +372,22 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Override
-    public List<User> getUsers() {
-        ArrayList<User> users = new ArrayList<>();
+    public Account addAccount(User user) {
+        int userId = user.getUserId();
         try(Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from users order by user_id")) {
-                try(ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        User user = UkelonnServiceProvider.mapUser(resultSet);
-                        users.add(user);
-                    }
-                }
+            try(PreparedStatement insertAccountSql = connection.prepareStatement("insert into accounts (user_id) values (?)")) {
+                insertAccountSql.setInt(1, userId);
+                insertAccountSql.executeUpdate();
             }
+
+            addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(userId);
+
+            return getAccount(user.getUsername());
         } catch (SQLException e) {
-            throw new UkelonnException("Failed to get the list of users", e);
-        }
-
-        return users;
-    }
-
-    @Override
-    public List<User> modifyUser(User user) {
-        try(Connection connection = database.getConnection()) {
-            try(PreparedStatement updateUserSql = connection.prepareStatement("update users set username=?, email=?, first_name=?, last_name=? where user_id=?")) {
-                updateUserSql.setString(1, user.getUsername());
-                updateUserSql.setString(2, user.getEmail());
-                updateUserSql.setString(3, user.getFirstname());
-                updateUserSql.setString(4, user.getLastname());
-                updateUserSql.setInt(5, user.getUserId());
-                updateUserSql.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new UkelonnException(String.format("Failed to update user %d in the database", user.getUserId()), e);
-        }
-
-        return getUsers();
-    }
-
-    @Override
-    public List<User> createUser(PasswordsWithUser passwords) {
-        if (!passwordsEqualsAndNotEmpty(passwords)) {
-            throw new UkelonnBadRequestException("Passwords are not identical and/or empty");
-        }
-
-        String newUserUsername = passwords.getUser().getUsername();
-        String newUserPassword = passwords.getPassword();
-        String newUserEmail = passwords.getUser().getEmail();
-        String newUserFirstname = passwords.getUser().getFirstname();
-        String newUserLastname = passwords.getUser().getLastname();
-        String salt = UkelonnServiceProvider.getNewSalt();
-        String hashedPassword = UkelonnServiceProvider.hashPassword(newUserPassword, salt);
-
-        try(Connection connection = database.getConnection()) {
-            try(PreparedStatement insertUserSql = connection.prepareStatement("insert into users (username, password, salt, email, first_name, last_name) values (?, ?, ?, ?, ?, ?)")) {
-                insertUserSql.setString(1, newUserUsername);
-                insertUserSql.setString(2, hashedPassword);
-                insertUserSql.setString(3, salt);
-                insertUserSql.setString(4, newUserEmail);
-                insertUserSql.setString(5, newUserFirstname);
-                insertUserSql.setString(6, newUserLastname);
-                insertUserSql.executeUpdate();
-            }
-
-            try(PreparedStatement findUserIdFromUsernameSql = connection.prepareStatement("select user_id from users where username=?")) {
-                findUserIdFromUsernameSql.setString(1, newUserUsername);
-                try(ResultSet userIdResultSet = findUserIdFromUsernameSql.executeQuery()) {
-                    if (userIdResultSet.next()) {
-                        int userId = userIdResultSet.getInt(UkelonnServiceProvider.USER_ID);
-                        try(PreparedStatement insertAccountSql = connection.prepareStatement("insert into accounts (user_id) values (?)")) {
-                            insertAccountSql.setInt(1, userId);
-                            insertAccountSql.executeUpdate();
-                        }
-
-                        addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(userId);
-                    }
-                }
-            }
-
-            return getUsers();
-        } catch (SQLException e) {
-            String message = "Database exception when creating user";
+            String message = "Database exception when account for new user";
             logservice.log(LogService.LOG_ERROR, message, e);
             throw new UkelonnException(message, e);
         }
-    }
-
-    @Override
-    public List<User> changePassword(PasswordsWithUser passwords) {
-        if (!hasUserWithNonEmptyUsername(passwords)) {
-            String message = "Empty username when changing password";
-            logservice.log(LogService.LOG_WARNING, String.format("Bad request: %s", message));
-            throw new UkelonnBadRequestException(message);
-        }
-
-        if (!passwordsEqualsAndNotEmpty(passwords)) {
-            String message = String.format("Passwords don't match and/or are empty when changing passwords for user \"%s\"", passwords.getUser().getUsername());
-            logservice.log(LogService.LOG_WARNING, String.format("Bad request: %s", message));
-            throw new UkelonnBadRequestException(message);
-        }
-
-        String username = passwords.getUser().getUsername();
-        String password = passwords.getPassword();
-        String salt = UkelonnServiceProvider.getNewSalt();
-        String hashedPassword = UkelonnServiceProvider.hashPassword(password, salt);
-        try(Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("update users set password=?, salt=? where username=?")) { // NOSONAR It's hard to handle passwords without using the text password
-                statement.setString(1, hashedPassword);
-                statement.setString(2, salt);
-                statement.setString(3, username);
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            String message = String.format("Database failure when changing password for user \"%s\"", passwords.getUser().getUsername());
-            logservice.log(LogService.LOG_ERROR, message);
-            throw new UkelonnException(message);
-        }
-
-        return getUsers();
     }
 
     @Override
@@ -607,35 +501,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         }
 
         return null;
-    }
-
-    static User mapUser(ResultSet resultSet) {
-        int userId;
-        String username;
-        String email;
-        String firstname;
-        String lastname;
-        try {
-            userId = resultSet.getInt(USER_ID);
-            username = resultSet.getString(USERNAME);
-            email = resultSet.getString("email");
-            firstname = resultSet.getString(FIRST_NAME);
-            lastname = resultSet.getString(LAST_NAME);
-        } catch (SQLException e) {
-            throw new UkelonnException(e);
-        }
-
-        return new User(userId, username, email, firstname, lastname);
-    }
-
-    static String getNewSalt() {
-        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
-        return randomNumberGenerator.nextBytes().toBase64();
-    }
-
-    static String hashPassword(String newUserPassword, String salt) {
-        Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
-        return new Sha256Hash(newUserPassword, decodedSaltUsedWhenHashing, 1024).toBase64();
     }
 
     public static Account mapAccount(ResultSet results) throws SQLException {
