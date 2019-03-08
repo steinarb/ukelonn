@@ -37,7 +37,7 @@ const emptyPasswords = {
 
 const emptyAccount = {
     accountId: -1,
-    fullname: '',
+    fullName: '',
     balance: 0.0,
 };
 
@@ -53,7 +53,7 @@ export const ukelonnReducer = (state =
                                  password: null,
                                  firstTimeAfterLogin: false,
                                  notificationAvailable: false,
-                                 account: { firstName: 'Ukjent', fullname: '', balance: 0.0 },
+                                 account: { firstName: 'Ukjent', fullName: '', balance: 0.0 },
                                  paymenttype: { id: -1, transactionTypeName: '', transactionAmount: 0.0, transactionIsWork: false, transactionIsWagePayment: true },
                                  payment: {...emptyPerformedTransaction},
                                  jobs: [],
@@ -165,7 +165,7 @@ export const ukelonnReducer = (state =
                                        return {
                                            ...state,
                                            accounts: action.accounts,
-                                           accountsMap: new Map(action.accounts.map(i => [i.fullname, i])),
+                                           accountsMap: new Map(action.accounts.map(i => [i.fullName, i])),
                                        };
                                    }
 
