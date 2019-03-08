@@ -140,6 +140,10 @@ public class TestUtils {
         return new User(user.getUserId(), user.getUsername(), user.getEmail(), user.getFirstname(), user.getLastname());
     }
 
+    private static no.priv.bang.osgiservice.users.User copyUserForUserManagement(User user) {
+        return new no.priv.bang.osgiservice.users.User(user.getUserId(), user.getUsername(), user.getEmail(), user.getFirstname(), user.getLastname());
+    }
+
     public static Account copyAccount(Account account) {
         return new Account(account.getAccountId(), account.getUserId(), account.getUsername(), account.getFirstName(), account.getLastName(), account.getBalance());
     }
@@ -174,6 +178,10 @@ public class TestUtils {
 
     public static List<User> getUsers() {
         return Arrays.asList(copyUser(jadUser), copyUser(jodUser));
+    }
+
+    public static List<no.priv.bang.osgiservice.users.User> getUsersForUserManagement() {
+        return Arrays.asList(copyUserForUserManagement(jadUser), copyUserForUserManagement(jodUser));
     }
 
     public static Account getJadAccount() {

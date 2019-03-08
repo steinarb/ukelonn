@@ -333,7 +333,7 @@ Framgangsmåte:
  2. Fra karaf-konsollet, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
       config:edit no.priv.bang.ukelonn.db.postgresql.PGUkelonnDatabaseProvider
-      config:property-set ukelonn.db.jdbc.url "jdbc:postgresql://lorenzo.hjemme.lan/ukelonn
+      config:property-set ukelonn.db.jdbc.url "jdbc:postgresql://lorenzo.hjemme.lan/ukelonn"
       config:property-set ukelonn.db.jdbc.user "karaf"
       config:property-set ukelonn.db.jdbc.password "karaf"
       config:update

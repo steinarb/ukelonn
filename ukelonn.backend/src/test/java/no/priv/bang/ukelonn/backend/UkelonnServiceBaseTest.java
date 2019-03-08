@@ -24,7 +24,6 @@ import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Notification;
-import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
@@ -48,22 +47,12 @@ public class UkelonnServiceBaseTest {
                 }
 
                 @Override
-                public List<User> modifyUser(User user) {
-                    return null;
-                }
-
-                @Override
                 public List<TransactionType> modifyPaymenttype(TransactionType paymenttype) {
                     return null;
                 }
 
                 @Override
                 public List<TransactionType> modifyJobtype(TransactionType jobtype) {
-                    return null;
-                }
-
-                @Override
-                public List<User> getUsers() {
                     return null;
                 }
 
@@ -98,11 +87,6 @@ public class UkelonnServiceBaseTest {
                 }
 
                 @Override
-                public List<User> createUser(PasswordsWithUser passwords) {
-                    return null;
-                }
-
-                @Override
                 public List<TransactionType> createPaymenttype(TransactionType paymenttype) {
                     return null;
                 }
@@ -113,31 +97,27 @@ public class UkelonnServiceBaseTest {
                 }
 
                 @Override
-                public List<User> changePassword(PasswordsWithUser passwords) {
-                    return null;
-                }
-
-                @Override
                 public List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<Notification> notificationsTo(String username) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public void notificationTo(String username, Notification notification) {
-                    // TODO Auto-generated method stub
-
+                    // Empty method
                 }
 
                 @Override
                 public List<Transaction> updateJob(UpdatedTransaction editedJob) {
-                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public Account addAccount(User user) {
                     return null;
                 }
             };

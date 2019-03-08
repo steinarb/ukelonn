@@ -20,13 +20,13 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ukelonn.web.services</artifactId>
+    <artifactId>ukelonn.backend.users</artifactId>
 
-    <name>Ukelonn webapp REST API</name>
+    <name>Ukelonn implementation of the UserManagemenService</name>
 
     <properties>
-        <Bundle-SymbolicName>no.priv.bang.ukelonn.web.services</Bundle-SymbolicName>
-        <karaf-feature-name>ukelonn-web-services</karaf-feature-name>
+        <Bundle-SymbolicName>no.priv.bang.ukelonn.backend.users</Bundle-SymbolicName>
+        <karaf-feature-name>ukelonn-backend-users</karaf-feature-name>
     </properties>
 
     <dependencies>
@@ -37,8 +37,19 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
+            <version>${osgi-service.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.web.security</artifactId>
+            <artifactId>ukelonn.services</artifactId>
             <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
@@ -52,18 +63,6 @@
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.db.derbytest</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.testutils</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.backend.users</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -86,18 +85,6 @@
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.database</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.users</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.users</artifactId>
-            <version>${osgi-service.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -112,25 +99,8 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-extender-whiteboard</artifactId>
+            <groupId>no.priv.bang.osgi.service.adapters</groupId>
+            <artifactId>service-mocks</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
@@ -143,24 +113,23 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.console</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -187,7 +156,9 @@
                         <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Karaf-Commands>*</Karaf-Commands>
-                        <Import-Package>*</Import-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
                         <Export-Package>!*</Export-Package>
                         <Include-Resource>/=target/classes/</Include-Resource>
                         <_removeheaders>
