@@ -4,7 +4,7 @@ import delay from "delay";
 
 // Constants
 const emptyLoginResponse = { username: '', roles: [], error: '' };
-const emptyAccount = { firstName: 'Ukjent', fullname: '', balance: 0.0 };
+const emptyAccount = { firstName: 'Ukjent', fullName: '', balance: 0.0 };
 
 
 // watcher saga
