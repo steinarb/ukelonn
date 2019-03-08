@@ -103,10 +103,10 @@ class AdminUsersCreate extends Component {
                         </div>
                         <div className="mdl-grid hline-bottom">
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="password">Passord:</label>
+                                <label htmlFor="password1">Passord:</label>
                             </div>
                             <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password" className='mdl-textfield__password stretch-to-fill' type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                                <input id="password1" className='mdl-textfield__password stretch-to-fill' type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
                             </div>
                         </div>
                         <div className="mdl-grid hline-bottom">
@@ -150,12 +150,12 @@ const mapStateToProps = state => {
 };
 
 const checkIfPasswordsAreNotIdentical = (passwords) => {
-    let { password, password2 } = passwords;
+    let { password1, password2 } = passwords;
     if (!password2) {
         return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
     }
 
-    return password !== password2;
+    return password1 !== password2;
 };
 
 const mapDispatchToProps = dispatch => {
