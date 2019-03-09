@@ -22,7 +22,7 @@
 
     <artifactId>ukelonn.backend.users</artifactId>
 
-    <name>Ukelonn implementation of the UserManagemenService</name>
+    <name>Ukelonn implementation of the UserManagementService</name>
 
     <properties>
         <Bundle-SymbolicName>no.priv.bang.ukelonn.backend.users</Bundle-SymbolicName>
