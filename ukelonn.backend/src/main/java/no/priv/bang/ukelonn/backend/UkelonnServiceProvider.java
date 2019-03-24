@@ -373,14 +373,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account addAccount(User user) {
-        int userId = user.getUserId();
+        String username = user.getUsername();
         try(Connection connection = database.getConnection()) {
-            try(PreparedStatement insertAccountSql = connection.prepareStatement("insert into accounts (user_id) values (?)")) {
-                insertAccountSql.setInt(1, userId);
+            try(PreparedStatement insertAccountSql = connection.prepareStatement("insert into accounts (username) values (?)")) {
+                insertAccountSql.setString(1, username);
                 insertAccountSql.executeUpdate();
             }
 
-            addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(userId);
+            addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(username);
 
             return getAccount(user.getUsername());
         } catch (SQLException e) {
@@ -470,13 +470,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
      * Because of the sum() column of accounts_view, accounts without transactions
      * won't appear in the accounts list, so all accounts are created with a
      * payment of 0 kroner.
-     * @param userId Used as the key to do the update to the account
+     * @param username Used as the key to do the update to the account
      * @return the update status
      */
-    int addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(int userId) {
+    int addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(String username) {
         try(Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_user_id.sql"))) {
-                statement.setInt(1, userId);
+            try(PreparedStatement statement = connection.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_username.sql"))) {
+                statement.setString(1, username);
                 return statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -506,7 +506,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public static Account mapAccount(ResultSet results) throws SQLException {
         return new Account(
             results.getInt("account_id"),
-            results.getInt(USER_ID),
             results.getString(UkelonnServiceProvider.USERNAME),
             results.getString(UkelonnServiceProvider.FIRST_NAME),
             results.getString(UkelonnServiceProvider.LAST_NAME),

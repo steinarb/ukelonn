@@ -96,12 +96,10 @@ public class UkelonnDatabaseProviderTest {
             assertNotNull(onAccount);
             assertTrue(onAccount.next());
             int account_id = onAccount.getInt("account_id");
-            int user_id = onAccount.getInt("user_id");
             String username = onAccount.getString("username");
             String first_name = onAccount.getString("first_name");
             String last_name = onAccount.getString("last_name");
             assertEquals(4, account_id);
-            assertEquals(4, user_id);
             assertEquals("jad", username);
             assertEquals("Jane", first_name);
             assertEquals("Doe", last_name);
@@ -109,7 +107,7 @@ public class UkelonnDatabaseProviderTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
-        assertEquals(6, ranChangeSets.size());
+        assertEquals(17, ranChangeSets.size());
     }
 
     @Test

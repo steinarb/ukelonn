@@ -135,7 +135,6 @@ public class UkelonnServiceProviderTest {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         Account account = provider.getAccount("jad");
         assertEquals("jad", account.getUsername());
-        assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
         List<Transaction> jobs = provider.getJobs(account.getAccountId());
@@ -635,7 +634,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create the request
-        Account account = new Account(1, 1, "jad", "Jane", "Doe", 2.0);
+        Account account = new Account(1, "jad", "Jane", "Doe", 2.0);
         PerformedTransaction payment = new PerformedTransaction(account, 1, 2.0, new Date());
 
         // Run the method under test
@@ -937,7 +936,7 @@ public class UkelonnServiceProviderTest {
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         Account account = ukelonn.getAccount("jad");
         List<Integer> jobs = ukelonn.getJobs(account.getAccountId()).stream().map(Transaction::getId).collect(Collectors.toList());
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", UkelonnServiceProvider.joinIds(jobs).toString());
@@ -966,7 +965,7 @@ public class UkelonnServiceProviderTest {
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             when(statement.executeUpdate()).thenThrow(SQLException.class);
             ukelonn.setUkelonnDatabase(database);
-            int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(1);
+            int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView("jad");
             assertEquals(-1, updateStatus);
         } finally {
             // Restore the real derby database

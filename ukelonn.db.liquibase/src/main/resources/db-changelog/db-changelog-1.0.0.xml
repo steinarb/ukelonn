@@ -140,4 +140,59 @@
 
     </changeSet>
 
+    <changeSet author="sb" id="add-username-to-account-table">
+        <addColumn tableName="accounts">
+            <column name="username" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="sb" id="add-username-index-to-accounts-table">
+        <createIndex indexName="accounts-username-index" tableName="accounts" >
+            <column name="username" type="VARCHAR(64)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="sb" id="insert-usernames-in-accounts-table">
+        <sql>update accounts a set username=(select u.username from users u where u.user_id=a.user_id)</sql>
+    </changeSet>
+
+    <changeSet author="sb" id="give-users-username-an-uniqueness-constraint">
+        <addUniqueConstraint tableName="users" columnNames="username" />
+    </changeSet>
+
+    <changeSet author="sb" id="add-foreign-key-constraint-from-accounts-to-users">
+        <addForeignKeyConstraint baseTableName="accounts" baseColumnNames="username" constraintName="fk_account_username" referencedColumnNames="username" referencedTableName="users" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-old-foreign-key-constraint-from-accounts-to-users">
+        <dropForeignKeyConstraint baseTableName="accounts" constraintName="SQL170518210719040" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-old-index-from-accounts-userid-to-users">
+        <dropIndex tableName="accounts" indexName="SQL170518210719040" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-views-linking-to-account-user_id">
+        <dropView viewName="wage_payments_view" />
+        <dropView viewName="work_done_view" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-accounts-view">
+        <dropView viewName="accounts_view" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-column-userid-from-accounts">
+        <dropColumn tableName="accounts" columnName="user_id" />
+    </changeSet>
+
+    <changeSet author="sb" id="create-new-accountsview">
+        <createView fullDefinition="false" viewName="accounts_view">
+            select accounts.account_id, accounts.username, first_name, last_name, SUM(transaction_amount) as balance
+            from users
+            join accounts on accounts.username=users.username
+            join transactions on transactions.account_id=accounts.account_id
+            group by accounts.account_id, accounts.username, first_name, last_name
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
