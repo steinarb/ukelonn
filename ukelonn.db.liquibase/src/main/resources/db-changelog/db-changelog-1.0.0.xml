@@ -195,4 +195,49 @@
         </createView>
     </changeSet>
 
+    <changeSet author="sb" id="add-username-column-to-administrators-table">
+        <addColumn tableName="administrators">
+            <column name="username" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="sb" id="add-username-index-to-administrators-table">
+        <createIndex indexName="administrators-username-index" tableName="administrators" >
+            <column name="username" type="VARCHAR(64)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="sb" id="add-foreign-key-constraint-from-administrators-to-users">
+        <addForeignKeyConstraint baseTableName="administrators" baseColumnNames="username" constraintName="fk_administrators_username" referencedColumnNames="username" referencedTableName="users" />
+    </changeSet>
+
+    <changeSet author="sb" id="insert-usernames-in-administrators-table">
+        <sql>update administrators a set username=(select u.username from users u where u.user_id=a.user_id)</sql>
+    </changeSet>
+
+    <changeSet author="sb" id="drop-administrators-view">
+        <dropView viewName="administrators_view" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-old-foreign-key-constraint-from-administrators-to-users">
+        <dropForeignKeyConstraint baseTableName="administrators" constraintName="SQL170518210719120" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-old-index-from-administrators-userid-to-users">
+        <dropIndex tableName="administrators" indexName="SQL170518210719120" />
+    </changeSet>
+
+    <changeSet author="sb" id="drop-column-userid-from-administrators">
+        <dropColumn tableName="administrators" columnName="user_id" />
+    </changeSet>
+
+    <changeSet author="sb" id="create-new-administratorsview">
+        <createView fullDefinition="false" viewName="administrators_view">
+            select administrators.administrator_id, administrators.username, first_name, last_name
+            from users
+            join administrators on administrators.username=users.username
+            group by administrators.administrator_id, administrators.username, first_name, last_name
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
