@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,55 @@ public class UserManagementServiceProviderTest  {
         database.setLogService(logservice);
         database.setDataSourceFactory(derbyDataSourceFactory);
         database.activate();
+    }
+
+    @Test
+    public void testGetUser() {
+        UserManagementServiceProvider provider = new UserManagementServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDatabase(database);
+        provider.activate();
+
+        String username = "jod";
+        User user = provider.getUser(username);
+        assertEquals(username, user.getUsername());
+    }
+
+    @Test(expected=UkelonnException.class)
+    public void testGetUserWhenUserIsNotFound() throws Exception {
+        UserManagementServiceProvider provider = new UserManagementServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        UkelonnDatabase mockdatabase = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(mockdatabase.getConnection()).thenReturn(connection);
+        provider.setDatabase(mockdatabase);
+        provider.activate();
+
+        String username = "jod";
+        User user = provider.getUser(username);
+        assertEquals(username, user.getUsername());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testGetUserWhenSQLExceptionIsThrown() throws Exception {
+        UserManagementServiceProvider provider = new UserManagementServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        UkelonnDatabase mockdatabase = mock(UkelonnDatabase.class);
+        when(mockdatabase.getConnection()).thenThrow(SQLException.class);
+        provider.setDatabase(mockdatabase);
+        provider.activate();
+
+        String username = "jod";
+        User user = provider.getUser(username);
+        assertEquals(username, user.getUsername());
     }
 
     @Test
