@@ -123,6 +123,19 @@ public class UserManagementServiceProviderTest  {
     }
 
     @Test
+    public void testGetPermissionsForUser() {
+        UserManagementServiceProvider provider = new UserManagementServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDatabase(database);
+        provider.activate();
+
+        String username = "on";
+        List<Permission> permissions = provider.getPermissionsForUser(username);
+        assertEquals(0, permissions.size());
+    }
+
+    @Test
     public void testGetUsers() {
         UserManagementServiceProvider provider = new UserManagementServiceProvider();
         MockLogService logservice = new MockLogService();

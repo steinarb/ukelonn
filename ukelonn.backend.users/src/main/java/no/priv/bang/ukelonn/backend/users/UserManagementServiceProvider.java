@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +89,11 @@ public class UserManagementServiceProvider implements UserManagementService {
         }
 
         return roles;
+    }
+
+    @Override
+    public List<Permission> getPermissionsForUser(String username) {
+        return Collections.emptyList();
     }
 
     @Override
