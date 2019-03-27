@@ -94,6 +94,35 @@ public class UserManagementServiceProviderTest  {
     }
 
     @Test
+    public void testGetRolesForUser() {
+        UserManagementServiceProvider provider = new UserManagementServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDatabase(database);
+        provider.activate();
+
+        String username = "on";
+        List<Role> roles = provider.getRolesForUser(username);
+        assertThat(roles.size()).isGreaterThan(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testGetRolesForUserWhenSQLExceptionIsThrown() throws Exception {
+        UserManagementServiceProvider provider = new UserManagementServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        UkelonnDatabase mockdatabase = mock(UkelonnDatabase.class);
+        when(mockdatabase.getConnection()).thenThrow(SQLException.class);
+        provider.setDatabase(mockdatabase);
+        provider.activate();
+
+        String username = "on";
+        List<Role> roles = provider.getRolesForUser(username);
+        assertThat(roles.size()).isGreaterThan(0);
+    }
+
+    @Test
     public void testGetUsers() {
         UserManagementServiceProvider provider = new UserManagementServiceProvider();
         MockLogService logservice = new MockLogService();
