@@ -66,7 +66,7 @@ public class UkelonnRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         Set<String> roles = new HashSet<>();
-        roles.add("user");
+        roles.add("ukelonnuser");
         Set<String> administrators = new HashSet<>();
         try(Connection connection = database.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("select * from administrators_view")) {
@@ -87,7 +87,7 @@ public class UkelonnRealm extends AuthorizingRealm {
         }
 
         if (allPrincipalsAreAdministrators) {
-            roles.add("administrator");
+            roles.add("ukelonnadmin");
         }
 
         return new SimpleAuthorizationInfo(roles);

@@ -75,12 +75,13 @@ public class UserManagementServiceProvider implements UserManagementService {
     @Override
     public List<Role> getRolesForUser(String username) {
         List<Role> roles = new ArrayList<>();
+        roles.add(new Role(1, "ukelonnuser", "ukelonn users"));
         try(Connection connection = database.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("select * from administrators where username=?")) {
                 statement.setString(1, username);
                 try(ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        roles.add(new Role(1, "administrator", "ukelønn administrators"));
+                        roles.add(new Role(2, "ukelonnadmin", "ukelønn administrators"));
                     }
                 }
             }
