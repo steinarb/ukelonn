@@ -58,7 +58,13 @@
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.users</artifactId>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <version>${osgi-service.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>

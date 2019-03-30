@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -97,49 +96,15 @@ public class UkelonnDatabaseProviderTest {
             assertTrue(onAccount.next());
             int account_id = onAccount.getInt("account_id");
             String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
+            float balance = onAccount.getFloat("balance");
             assertEquals(4, account_id);
             assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
+            assertThat(balance).isGreaterThan(0);
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
-        assertEquals(26, ranChangeSets.size());
-    }
-
-    @Test
-    public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory);
-        provider.activate(); // Create the database
-
-        // Test that the administrators_view is present
-        try(Connection connection = provider.getConnection()) {
-            PreparedStatement statement1 = connection.prepareStatement("select * from users");
-            ResultSet allUsers = statement1.executeQuery();
-            int allUserCount = 0;
-            while (allUsers.next()) { ++allUserCount; }
-            assertEquals(5, allUserCount);
-
-            // Test that the administrators_view is present
-            PreparedStatement statement2 = connection.prepareStatement("select * from administrators");
-            ResultSet allAdministrators = statement2.executeQuery();
-            int allAdminstratorsCount = 0;
-            while (allAdministrators.next()) { ++allAdminstratorsCount; }
-            assertEquals(3, allAdminstratorsCount);
-
-            // Test that the administrators_view is present
-            PreparedStatement statement3 = connection.prepareStatement("select * from administrators_view");
-            ResultSet allAdministratorsView = statement3.executeQuery();
-            int allAdminstratorsViewCount = 0;
-            while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
-            assertEquals(3, allAdminstratorsViewCount);
-        }
+        assertEquals(29, ranChangeSets.size());
     }
 
     @Test

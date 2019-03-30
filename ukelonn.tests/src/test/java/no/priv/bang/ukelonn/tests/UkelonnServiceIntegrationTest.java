@@ -100,12 +100,10 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             assertTrue(onAccount.next()); // Verify that there is at least one result
             int account_id = onAccount.getInt("account_id");
             String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
+            float balance = onAccount.getFloat("balance");
             assertEquals(4, account_id);
             assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
+            assertNotEquals(0, balance);
         }
     }
 

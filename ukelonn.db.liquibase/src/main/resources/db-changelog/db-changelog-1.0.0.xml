@@ -240,4 +240,21 @@
         </createView>
     </changeSet>
 
+    <changeSet author="sb" id="drop-accounts-view-for-recreate-without-users-join">
+        <dropView viewName="accounts_view" />
+    </changeSet>
+
+    <changeSet author="sb" id="create-accountsview-without-users-join">
+        <createView fullDefinition="false" viewName="accounts_view">
+            select accounts.account_id, accounts.username, SUM(transaction_amount) as balance
+            from accounts
+            join transactions on transactions.account_id=accounts.account_id
+            group by accounts.account_id, accounts.username
+        </createView>
+    </changeSet>
+
+    <changeSet author="sb" id="drop-administrators-view-without-replacing-it">
+        <dropView viewName="administrators_view" />
+    </changeSet>
+
 </databaseChangeLog>

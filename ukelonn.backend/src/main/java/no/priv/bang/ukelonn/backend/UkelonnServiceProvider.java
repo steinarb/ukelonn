@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -57,6 +58,7 @@ import no.priv.bang.ukelonn.beans.User;
 @Component(service=UkelonnService.class, immediate=true)
 public class UkelonnServiceProvider extends UkelonnServiceBase {
     private UkelonnDatabase database;
+    private UserManagementService useradmin;
     private LogService logservice;
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
     static final String LAST_NAME = "last_name";
@@ -81,6 +83,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Reference
+    public void setUserAdmin(UserManagementService useradmin) {
+        this.useradmin = useradmin;
+    }
+
+    @Reference
     public void setLogservice(LogService logservice) {
         this.logservice = logservice;
     }
@@ -98,7 +105,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 try(ResultSet results = statement.executeQuery()) {
                     if (results != null) {
                         while(results.next()) {
-                            Account newaccount = UkelonnServiceProvider.mapAccount(results);
+                            Account newaccount = mapAccount(results);
                             accounts.add(newaccount);
                         }
                     }
@@ -120,7 +127,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 try(ResultSet resultset = statement.executeQuery()) {
                     if (resultset.next())
                     {
-                        return UkelonnServiceProvider.mapAccount(resultset);
+                        return mapAccount(resultset);
                     }
 
                     throw new UkelonnException(String.format("Got an empty ResultSet while fetching account from the database for user \\\"%s\\\"", username));
@@ -503,12 +510,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return null;
     }
 
-    public static Account mapAccount(ResultSet results) throws SQLException {
+    public Account mapAccount(ResultSet results) throws SQLException {
+        String username = results.getString(UkelonnServiceProvider.USERNAME);
+        no.priv.bang.osgiservice.users.User user = useradmin.getUser(username);
         return new Account(
             results.getInt("account_id"),
-            results.getString(UkelonnServiceProvider.USERNAME),
-            results.getString(UkelonnServiceProvider.FIRST_NAME),
-            results.getString(UkelonnServiceProvider.LAST_NAME),
+            username,
+            user.getFirstname(),
+            user.getLastname(),
             results.getDouble("balance"));
     }
 

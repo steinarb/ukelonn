@@ -69,7 +69,7 @@ public class UkelonnRealm extends AuthorizingRealm {
         roles.add("ukelonnuser");
         Set<String> administrators = new HashSet<>();
         try(Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from administrators_view")) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from administrators")) {
                 try(ResultSet administratorsResults = statement.executeQuery()) {
                     while (administratorsResults.next()) {
                         administrators.add(administratorsResults.getString("username"));
