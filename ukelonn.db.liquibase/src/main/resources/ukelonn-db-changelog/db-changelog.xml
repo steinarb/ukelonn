@@ -18,6 +18,6 @@
          under the License.
     -->
 
-    <include file="db-changelog/db-changelog-1.0.1.xml"/>
+    <include file="ukelonn-db-changelog/db-changelog-1.0.1.xml"/>
 
 </databaseChangeLog>
