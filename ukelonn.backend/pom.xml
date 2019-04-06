@@ -50,6 +50,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.db.liquibase</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.db.derbytest</artifactId>
             <version>${project.version}</version>
