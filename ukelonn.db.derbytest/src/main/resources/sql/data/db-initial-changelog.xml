@@ -14,11 +14,10 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <include file="sql/data/example_users.sql"/>
+    <include file="sql/data/example_initial_users.sql"/>
     <include file="sql/data/example_administrators.sql"/>
-    <include file="sql/data/example_transactions.sql"/>
-    <include file="sql/data/example_transaction_types.sql"/>
     <include file="sql/data/example_accounts.sql"/>
-    <!-- <include file="sql/data/example_user_roles.sql"/> -->
+    <include file="sql/data/example_transaction_types.sql"/>
+    <include file="sql/data/example_transactions.sql"/>
 
 </databaseChangeLog>

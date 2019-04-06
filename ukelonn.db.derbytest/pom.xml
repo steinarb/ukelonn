@@ -43,6 +43,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.db.liquibase</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.services</artifactId>
             <version>${project.version}</version>

@@ -51,7 +51,7 @@ public class UkelonnLiquibaseTest {
         }
 
         try(Connection connection = createConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from users")) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from transactions")) {
                 ResultSet results = statement.executeQuery();
                 int count = 0;
                 while(results.next()) {

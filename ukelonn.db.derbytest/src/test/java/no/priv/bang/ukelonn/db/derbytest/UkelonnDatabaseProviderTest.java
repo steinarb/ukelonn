@@ -104,7 +104,7 @@ public class UkelonnDatabaseProviderTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
-        assertEquals(29, ranChangeSets.size());
+        assertEquals(45, ranChangeSets.size());
     }
 
     @Test
@@ -124,7 +124,7 @@ public class UkelonnDatabaseProviderTest {
             while (userJjdBeforeInsert.next()) { ++numberOfUserJjdBeforeInsert; }
             assertEquals(0, numberOfUserJjdBeforeInsert);
 
-            PreparedStatement updateStatement = connection.prepareStatement("insert into users (username,password,salt,email,first_name,last_name) values (?, ?, ?, ?, ?, ?)");
+            PreparedStatement updateStatement = connection.prepareStatement("insert into users (username,password,password_salt,email,firstname,lastname) values (?, ?, ?, ?, ?, ?)");
             updateStatement.setString(1, "jjd");
             updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
             updateStatement.setString(3, "9SFDvohxZkZ9eWHiSEoMDw==");
@@ -222,8 +222,6 @@ public class UkelonnDatabaseProviderTest {
         expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isGreaterThan(0);
         int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(provider, "users");
         expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isGreaterThan(0);
-        int numberOfAdministratorsBeforeRollback = findTheNumberOfRowsInTable(provider, "administrators");
-        expectedStatusBeforeRollback.assertThat(numberOfAdministratorsBeforeRollback).isGreaterThan(0);
         int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(provider, "accounts");
         expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isGreaterThan(0);
         int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(provider, "transactions");
@@ -245,8 +243,6 @@ public class UkelonnDatabaseProviderTest {
         expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).isEqualTo(0);
         int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(provider, "users");
         expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).isEqualTo(0);
-        int numberOfAdministratorsAfterRollback = findTheNumberOfRowsInTable(provider, "administrators");
-        expectedStatusAfterRollback.assertThat(numberOfAdministratorsAfterRollback).isEqualTo(0);
         int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(provider, "accounts");
         expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
         int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(provider, "transactions");
