@@ -25,10 +25,10 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.BadRequestException;
@@ -36,15 +36,14 @@ import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.Test;
 
+import no.priv.bang.authservice.definitions.AuthserviceDatabaseService;
+import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
-import no.priv.bang.ukelonn.UkelonnBadRequestException;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
-import no.priv.bang.ukelonn.backend.users.UserManagementServiceProvider;
 
 public class AdminUserResourceTest {
 
@@ -91,9 +90,10 @@ public class AdminUserResourceTest {
         resource.useradmin = useradmin;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
+        useradmin.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
         Connection connection = mock(Connection.class);
         when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
@@ -151,17 +151,22 @@ public class AdminUserResourceTest {
         assertEquals(newLastname, lastUser.getLastname());
     }
 
-    @Test(expected=BadRequestException.class)
-    public void testCreatePasswordsNotIdentical() {
+    @SuppressWarnings("unchecked")
+    @Test(expected=InternalServerErrorException.class)
+    public void testCreatePasswordsNotIdentical() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
+        AuthserviceDatabaseService authservicebase = mock(AuthserviceDatabaseService.class);
+        when(authservicebase.getConnection()).thenThrow(SQLException.class);
+        useradmin.setDatabase(authservicebase);
         resource.useradmin = useradmin;
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
+        useradmin.setLogservice(logservice);
 
         // Save the number of users before adding a user
         int originalUserCount = getUsers().size();
@@ -192,7 +197,7 @@ public class AdminUserResourceTest {
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
         Connection connection = mock(Connection.class);
         when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
@@ -202,7 +207,7 @@ public class AdminUserResourceTest {
 
         // Create a logservice and inject it
         MockLogService logservice = new MockLogService();
-        useradmin.setLogService(logservice);
+        useradmin.setLogservice(logservice);
 
         // Inject OSGi services into the resource
         resource.ukelonn = ukelonn;
@@ -226,16 +231,25 @@ public class AdminUserResourceTest {
     }
 
     @Test(expected=InternalServerErrorException.class)
-    public void testCreateWhenUseridToCreateAccountCantBeFound() {
+    public void testCreateWhenUseridToCreateAccountCantBeFound() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        UserManagementService useradmin = mock(UserManagementService.class);
+        UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
+        AuthserviceDatabaseService authservicedatabase = mock(AuthserviceDatabaseService.class);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(authservicedatabase.getConnection()).thenReturn(connection);
+        useradmin.setDatabase(authservicedatabase);
         resource.useradmin = useradmin;
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
+        useradmin.setLogservice(logservice);
 
         // Create a user object
         String newUsername = "aragorn";
@@ -243,7 +257,6 @@ public class AdminUserResourceTest {
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
         User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
-        when(useradmin.addUser(any())).thenReturn(Collections.emptyList());
 
         // Create a passwords object containing the user
         UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
@@ -284,26 +297,22 @@ public class AdminUserResourceTest {
         assertEquals(users.size(), updatedUsers.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=BadRequestException.class)
     public void testPasswordWithEmptyUsername() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        UserManagementService useradmin = mock(UserManagementService.class);
-        when(useradmin.updatePassword(any())).thenThrow(UkelonnBadRequestException.class);
+        UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
         resource.useradmin = useradmin;
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
-
-        // Create a user with an empty username
-        User user = new User(0, "", null, null, null);
+        useradmin.setLogservice(logservice);
 
         // Create a passwords object containing the user and with
         // valid and identical passwords
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = new UserAndPasswords(null, "zecret", "zecret", false);
 
         // Changing the password should fail
         resource.password(passwords);
@@ -311,20 +320,18 @@ public class AdminUserResourceTest {
         fail("Should never get here!");
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=BadRequestException.class)
     public void testPasswordWhenPasswordsDontMatch() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
-        UserManagementService useradmin = mock(UserManagementService.class);
-        when(useradmin.updatePassword(any())).thenThrow(UkelonnBadRequestException.class);
+        UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
         resource.useradmin = useradmin;
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
-
+        useradmin.setLogservice(logservice);
 
         // Get first user to get a user with valid username
         List<User> users = getUsersForUserManagement();
@@ -353,10 +360,10 @@ public class AdminUserResourceTest {
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
         ukelonn.setLogservice(logservice);
-        useradmin.setLogService(logservice);
+        useradmin.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
         Connection connection = mock(Connection.class);
         when(database.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
