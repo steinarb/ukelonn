@@ -13,7 +13,7 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <changeSet author="sb" id="ukelonn-1.0.0">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="ukelonn-1.0.0">
 
         <createTable tableName="users">
             <column autoIncrement="true" name="user_id" type="INTEGER">
@@ -140,52 +140,52 @@
 
     </changeSet>
 
-    <changeSet author="sb" id="add-username-to-account-table">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-to-account-table">
         <addColumn tableName="accounts">
             <column name="username" type="VARCHAR(64)" />
         </addColumn>
     </changeSet>
 
-    <changeSet author="sb" id="add-username-index-to-accounts-table">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-index-to-accounts-table">
         <createIndex indexName="accounts-username-index" tableName="accounts" >
             <column name="username" type="VARCHAR(64)" />
         </createIndex>
     </changeSet>
 
-    <changeSet author="sb" id="insert-usernames-in-accounts-table">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="insert-usernames-in-accounts-table">
         <sql>update accounts a set username=(select u.username from users u where u.user_id=a.user_id)</sql>
     </changeSet>
 
-    <changeSet author="sb" id="give-users-username-an-uniqueness-constraint">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="give-users-username-an-uniqueness-constraint">
         <addUniqueConstraint tableName="users" columnNames="username" />
     </changeSet>
 
-    <changeSet author="sb" id="add-foreign-key-constraint-from-accounts-to-users">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-foreign-key-constraint-from-accounts-to-users">
         <addForeignKeyConstraint baseTableName="accounts" baseColumnNames="username" constraintName="fk_account_username" referencedColumnNames="username" referencedTableName="users" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-old-foreign-key-constraint-from-accounts-to-users">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-foreign-key-constraint-from-accounts-to-users">
         <dropForeignKeyConstraint baseTableName="accounts" constraintName="SQL170518210719040" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-old-index-from-accounts-userid-to-users">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-index-from-accounts-userid-to-users">
         <dropIndex tableName="accounts" indexName="SQL170518210719040" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-views-linking-to-account-user_id">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-views-linking-to-account-user_id">
         <dropView viewName="wage_payments_view" />
         <dropView viewName="work_done_view" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-accounts-view">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-accounts-view">
         <dropView viewName="accounts_view" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-column-userid-from-accounts">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-column-userid-from-accounts">
         <dropColumn tableName="accounts" columnName="user_id" />
     </changeSet>
 
-    <changeSet author="sb" id="create-new-accountsview">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="create-new-accountsview">
         <createView fullDefinition="false" viewName="accounts_view">
             select accounts.account_id, accounts.username, first_name, last_name, SUM(transaction_amount) as balance
             from users
@@ -195,43 +195,43 @@
         </createView>
     </changeSet>
 
-    <changeSet author="sb" id="add-username-column-to-administrators-table">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-column-to-administrators-table">
         <addColumn tableName="administrators">
             <column name="username" type="VARCHAR(64)" />
         </addColumn>
     </changeSet>
 
-    <changeSet author="sb" id="add-username-index-to-administrators-table">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-index-to-administrators-table">
         <createIndex indexName="administrators-username-index" tableName="administrators" >
             <column name="username" type="VARCHAR(64)" />
         </createIndex>
     </changeSet>
 
-    <changeSet author="sb" id="add-foreign-key-constraint-from-administrators-to-users">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-foreign-key-constraint-from-administrators-to-users">
         <addForeignKeyConstraint baseTableName="administrators" baseColumnNames="username" constraintName="fk_administrators_username" referencedColumnNames="username" referencedTableName="users" />
     </changeSet>
 
-    <changeSet author="sb" id="insert-usernames-in-administrators-table">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="insert-usernames-in-administrators-table">
         <sql>update administrators a set username=(select u.username from users u where u.user_id=a.user_id)</sql>
     </changeSet>
 
-    <changeSet author="sb" id="drop-administrators-view">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-administrators-view">
         <dropView viewName="administrators_view" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-old-foreign-key-constraint-from-administrators-to-users">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-foreign-key-constraint-from-administrators-to-users">
         <dropForeignKeyConstraint baseTableName="administrators" constraintName="SQL170518210719120" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-old-index-from-administrators-userid-to-users">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-index-from-administrators-userid-to-users">
         <dropIndex tableName="administrators" indexName="SQL170518210719120" />
     </changeSet>
 
-    <changeSet author="sb" id="drop-column-userid-from-administrators">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-column-userid-from-administrators">
         <dropColumn tableName="administrators" columnName="user_id" />
     </changeSet>
 
-    <changeSet author="sb" id="create-new-administratorsview">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="create-new-administratorsview">
         <createView fullDefinition="false" viewName="administrators_view">
             select administrators.administrator_id, administrators.username, first_name, last_name
             from users
@@ -240,11 +240,11 @@
         </createView>
     </changeSet>
 
-    <changeSet author="sb" id="drop-accounts-view-for-recreate-without-users-join">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-accounts-view-for-recreate-without-users-join">
         <dropView viewName="accounts_view" />
     </changeSet>
 
-    <changeSet author="sb" id="create-accountsview-without-users-join">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="create-accountsview-without-users-join">
         <createView fullDefinition="false" viewName="accounts_view">
             select accounts.account_id, accounts.username, SUM(transaction_amount) as balance
             from accounts
@@ -253,7 +253,7 @@
         </createView>
     </changeSet>
 
-    <changeSet author="sb" id="drop-administrators-view-without-replacing-it">
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-administrators-view-without-replacing-it">
         <dropView viewName="administrators_view" />
     </changeSet>
 
