@@ -4,6 +4,12 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import moment from 'moment';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
+    RECENTPAYMENTS_REQUEST,
+    UPDATE,
+} from '../actiontypes';
 
 class PerformedPayments extends Component {
     constructor(props) {
@@ -78,10 +84,10 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
-        onPayments: (accountId) => dispatch({ type: 'RECENTPAYMENTS_REQUEST', accountId: accountId }),
-        onParentTitle: (parentTitle) => dispatch({ type: 'UPDATE', data: { parentTitle } }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onAccount: (username) => dispatch({ type: ACCOUNT_REQUEST, username }),
+        onPayments: (accountId) => dispatch({ type: RECENTPAYMENTS_REQUEST, accountId: accountId }),
+        onParentTitle: (parentTitle) => dispatch({ type: UPDATE, data: { parentTitle } }),
     };
 };
 

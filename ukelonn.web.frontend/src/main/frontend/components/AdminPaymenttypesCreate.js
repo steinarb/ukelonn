@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    PAYMENTTYPELIST_REQUEST,
+    UPDATE,
+    CREATE_PAYMENTTYPE_REQUEST,
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 
@@ -68,28 +74,28 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onPaymenttypeList: () => dispatch({ type: 'PAYMENTTYPELIST_REQUEST' }),
+        onPaymenttypeList: () => dispatch({ type: PAYMENTTYPELIST_REQUEST }),
         onPaymenttypeFieldChange: (selectedValue, paymenttypesMap, account, performedpayment) => {
             let paymenttype = paymenttypesMap.get(selectedValue);
             let changedField = {
                 transactiontype: {...paymenttype},
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onNameFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionTypeName: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onAmountFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionAmount: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
-        onSaveUpdatedPaymentType: (transactiontype) => dispatch({ type: 'CREATE_PAYMENTTYPE_REQUEST', transactiontype }),
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onSaveUpdatedPaymentType: (transactiontype) => dispatch({ type: CREATE_PAYMENTTYPE_REQUEST, transactiontype }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
     };
 };
 

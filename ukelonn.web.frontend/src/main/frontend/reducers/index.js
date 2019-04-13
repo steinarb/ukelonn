@@ -1,4 +1,34 @@
 import moment from 'moment';
+import {
+    UPDATE,
+    LOGIN_REQUEST,
+    LOGOUT_REQUEST,
+    INITIAL_LOGIN_STATE_REQUEST,
+    LOGIN_RECEIVE,
+    LOGOUT_RECEIVE,
+    INITIAL_LOGIN_STATE_RECEIVE,
+    ACCOUNT_RECEIVE,
+    REGISTERJOB_RECEIVE,
+    REGISTERPAYMENT_RECEIVE,
+    RECENTJOBS_RECEIVE,
+    DELETE_JOBS_RECEIVE,
+    UPDATE_JOB_RECEIVE,
+    RECENTPAYMENTS_RECEIVE,
+    JOBTYPELIST_RECEIVE,
+    PAYMENTTYPELIST_RECEIVE,
+    ACCOUNTS_RECEIVE,
+    PAYMENTTYPES_RECEIVE,
+    MODIFY_JOBTYPE_RECEIVE,
+    CREATE_JOBTYPE_RECEIVE,
+    MODIFY_PAYMENTTYPE_RECEIVE,
+    CREATE_PAYMENTTYPE_RECEIVE,
+    USERS_RECEIVE,
+    MODIFY_USER_RECEIVE,
+    CREATE_USER_RECEIVE,
+    MODIFY_USER_PASSWORD_RECEIVE,
+    CLEAR_USER_AND_PASSWORD,
+    RECEIVED_NOTIFICATION,
+} from '../actiontypes';
 
 
 const emptyPerformedTransaction = {
@@ -77,20 +107,20 @@ export const ukelonnReducer = (state =
                                  passwords: {...emptyPasswords },
                                },
                                action) => {
-                                   if (action.type == 'UPDATE') {
+                                   if (action.type == UPDATE) {
                                        return {
                                            ...state,
                                            ...action.data
                                        };
                                    }
 
-                                   if (action.type === 'LOGIN_REQUEST' || action.type === 'LOGOUT_REQUEST' || action.type === 'INITIAL_LOGIN_STATE_REQUEST') {
+                                   if (action.type === LOGIN_REQUEST || action.type === LOGOUT_REQUEST || action.type === INITIAL_LOGIN_STATE_REQUEST) {
                                        return {
                                            ...state
                                        };
                                    }
 
-                                   if (action.type === 'LOGIN_RECEIVE' || action.type === 'LOGOUT_RECEIVE' || action.type === 'INITIAL_LOGIN_STATE_RECEIVE') {
+                                   if (action.type === LOGIN_RECEIVE || action.type === LOGOUT_RECEIVE || action.type === INITIAL_LOGIN_STATE_RECEIVE) {
                                        return {
                                            ...state,
                                            firstTimeAfterLogin: true,
@@ -99,14 +129,14 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'ACCOUNT_RECEIVE') {
+                                   if (action.type === ACCOUNT_RECEIVE) {
                                        return {
                                            ...state,
                                            account: action.account
                                        };
                                    }
 
-                                   if (action.type === 'REGISTERJOB_RECEIVE') {
+                                   if (action.type === REGISTERJOB_RECEIVE) {
                                        return {
                                            ...state,
                                            performedjob: {...emptyPerformedTransaction, transactionName: '', transactionDate: moment() },
@@ -114,7 +144,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'REGISTERPAYMENT_RECEIVE') {
+                                   if (action.type === REGISTERPAYMENT_RECEIVE) {
                                        return {
                                            ...state,
                                            payment: {...emptyPerformedTransaction},
@@ -122,7 +152,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'RECENTJOBS_RECEIVE' || action.type === 'DELETE_JOBS_RECEIVE' || action.type === 'UPDATE_JOB_RECEIVE') {
+                                   if (action.type === RECENTJOBS_RECEIVE || action.type === DELETE_JOBS_RECEIVE || action.type === UPDATE_JOB_RECEIVE) {
                                        action.jobs.map((job) => { job.delete=false; return job; });
 
                                        return {
@@ -131,14 +161,14 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'RECENTPAYMENTS_RECEIVE') {
+                                   if (action.type === RECENTPAYMENTS_RECEIVE) {
                                        return {
                                            ...state,
                                            payments: action.payments
                                        };
                                    }
 
-                                   if (action.type === 'JOBTYPELIST_RECEIVE') {
+                                   if (action.type === JOBTYPELIST_RECEIVE) {
                                        if (!action.jobtypes.find((job) => job.id === -1)) {
                                            action.jobtypes.unshift(emptyTransactionType);
                                        }
@@ -150,14 +180,14 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'PAYMENTTYPELIST_RECEIVE') {
+                                   if (action.type === PAYMENTTYPELIST_RECEIVE) {
                                        return {
                                            ...state,
                                            paymenttypes: action.paymenttypes
                                        };
                                    }
 
-                                   if (action.type === 'ACCOUNTS_RECEIVE') {
+                                   if (action.type === ACCOUNTS_RECEIVE) {
                                        if (!action.accounts.find((account) => account.accountId === -1)) {
                                            action.accounts.unshift(emptyAccount);
                                        }
@@ -169,7 +199,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'PAYMENTTYPES_RECEIVE') {
+                                   if (action.type === PAYMENTTYPES_RECEIVE) {
                                        return {
                                            ...state,
                                            paymenttype: action.paymenttype,
@@ -177,7 +207,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'MODIFY_JOBTYPE_RECEIVE' || action.type === 'CREATE_JOBTYPE_RECEIVE') {
+                                   if (action.type === MODIFY_JOBTYPE_RECEIVE || action.type === CREATE_JOBTYPE_RECEIVE) {
                                        return {
                                            ...state,
                                            jobtypes: action.jobtypes,
@@ -185,7 +215,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'MODIFY_PAYMENTTYPE_RECEIVE' || action.type === 'CREATE_PAYMENTTYPE_RECEIVE') {
+                                   if (action.type === MODIFY_PAYMENTTYPE_RECEIVE || action.type === CREATE_PAYMENTTYPE_RECEIVE) {
                                        return {
                                            ...state,
                                            paymenttypes: action.paymenttypes,
@@ -193,7 +223,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'USERS_RECEIVE') {
+                                   if (action.type === USERS_RECEIVE) {
                                        const users = addFullnameToUsers(action.users);
                                        const usernames = users.map(u => u.username);
 
@@ -208,7 +238,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'MODIFY_USER_RECEIVE' || action.type === 'CREATE_USER_RECEIVE' || action.type === 'MODIFY_USER_PASSWORD_RECEIVE') {
+                                   if (action.type === MODIFY_USER_RECEIVE || action.type === CREATE_USER_RECEIVE || action.type === MODIFY_USER_PASSWORD_RECEIVE) {
                                        const users = addFullnameToUsers(action.users);
 
                                        if (!users.find((user) => user.userid === -1)) {
@@ -223,7 +253,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'CLEAR_USER_AND_PASSWORD') {
+                                   if (action.type === CLEAR_USER_AND_PASSWORD) {
                                        return {
                                            ...state,
                                            user: {...emptyUser},
@@ -231,7 +261,7 @@ export const ukelonnReducer = (state =
                                        };
                                    }
 
-                                   if (action.type === 'RECEIVED_NOTIFICATION') {
+                                   if (action.type === RECEIVED_NOTIFICATION) {
                                        return {
                                            notificationMessage: action.notifications[0],
                                            ...state,

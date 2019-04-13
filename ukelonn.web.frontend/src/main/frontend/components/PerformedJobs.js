@@ -4,6 +4,12 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import moment from 'moment';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
+    RECENTJOBS_REQUEST,
+    UPDATE,
+} from '../actiontypes';
 
 class PerformedJobs extends Component {
     constructor(props) {
@@ -80,10 +86,10 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
-        onJobs: (accountId) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: accountId }),
-        onParentTitle: (parentTitle) => dispatch({ type: 'UPDATE', data: { parentTitle } }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onAccount: (username) => dispatch({ type: ACCOUNT_REQUEST, username }),
+        onJobs: (accountId) => dispatch({ type: RECENTJOBS_REQUEST, accountId: accountId }),
+        onParentTitle: (parentTitle) => dispatch({ type: UPDATE, data: { parentTitle } }),
     };
 };
 

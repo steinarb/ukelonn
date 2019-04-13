@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    USERS_REQUEST,
+    UPDATE,
+    MODIFY_USER_PASSWORD_REQUEST,
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 import Users from './Users';
 import Amount from './Amount';
 
@@ -89,13 +95,13 @@ const checkIfPasswordsAreNotIdentical = (passwords) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onUserList: () => dispatch({ type: 'USERS_REQUEST' }),
+        onUserList: () => dispatch({ type: USERS_REQUEST }),
         onUsersFieldChange: (selectedValue, usersMap) => {
             let user = usersMap.get(selectedValue);
             let changedField = {
                 user: {...user},
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onPasswordsFieldChange: (formValue, passwordsFromState) => {
             const passwords = { ...passwordsFromState, ...formValue };
@@ -104,10 +110,10 @@ const mapDispatchToProps = dispatch => {
                 passwords,
                 passwordsNotIdentical,
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
-        onSaveUpdatedPassword: (user, passwords) => dispatch({ type: 'MODIFY_USER_PASSWORD_REQUEST', user, passwords }),
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onSaveUpdatedPassword: (user, passwords) => dispatch({ type: MODIFY_USER_PASSWORD_REQUEST, user, passwords }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
     };
 };
 

@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    LOGOUT_REQUEST,
+    RECENTJOBS_REQUEST,
+    UPDATE,
+    DELETE_JOBS_REQUEST,
+} from '../actiontypes';
 import Accounts from './Accounts';
 
 function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
@@ -87,25 +93,25 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onJobs: (account) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: account.accountId }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onJobs: (account) => dispatch({ type: RECENTJOBS_REQUEST, accountId: account.accountId }),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {
                 account,
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onCheckboxTicked: (deleteChecked, job, jobs) => {
             job.delete = deleteChecked;
             let changedField = {
                 jobs: [...jobs],
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onDeleteMarkedJobs: (account, jobs) => {
             const jobsToDelete = jobs.filter(job => job.delete);
-            dispatch({ type: 'DELETE_JOBS_REQUEST', account, jobsToDelete });
+            dispatch({ type: DELETE_JOBS_REQUEST, account, jobsToDelete });
         },
     };
 };

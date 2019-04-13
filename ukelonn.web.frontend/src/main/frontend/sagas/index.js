@@ -1,6 +1,77 @@
 import { takeLatest, call, put, fork } from "redux-saga/effects";
 import axios from "axios";
 import delay from "delay";
+import {
+    INITIAL_LOGIN_STATE_REQUEST,
+    INITIAL_LOGIN_STATE_RECEIVE,
+    INITIAL_LOGIN_STATE_FAILURE,
+    LOGIN_REQUEST,
+    LOGIN_RECEIVE,
+    LOGIN_FAILURE,
+    LOGOUT_REQUEST,
+    LOGOUT_RECEIVE,
+    LOGOUT_FAILURE,
+    ACCOUNT_REQUEST,
+    ACCOUNT_RECEIVE,
+    ACCOUNT_FAILURE,
+    JOBTYPELIST_REQUEST,
+    JOBTYPELIST_RECEIVE,
+    JOBTYPELIST_FAILURE,
+    PAYMENTTYPELIST_REQUEST,
+    PAYMENTTYPELIST_RECEIVE,
+    PAYMENTTYPELIST_FAILURE,
+    REGISTERJOB_REQUEST,
+    REGISTERJOB_RECEIVE,
+    REGISTERJOB_FAILURE,
+    RECENTJOBS_REQUEST,
+    RECENTJOBS_RECEIVE,
+    RECENTJOBS_FAILURE,
+    RECENTPAYMENTS_REQUEST,
+    RECENTPAYMENTS_RECEIVE,
+    RECENTPAYMENTS_FAILURE,
+    ACCOUNTS_REQUEST,
+    ACCOUNTS_RECEIVE,
+    ACCOUNTS_FAILURE,
+    PAYMENTTYPES_REQUEST,
+    PAYMENTTYPES_RECEIVE,
+    PAYMENTTYPES_FAILURE,
+    REGISTERPAYMENT_REQUEST,
+    REGISTERPAYMENT_RECEIVE,
+    REGISTERPAYMENT_FAILURE,
+    MODIFY_JOBTYPE_REQUEST,
+    MODIFY_JOBTYPE_RECEIVE,
+    MODIFY_JOBTYPE_FAILURE,
+    CREATE_JOBTYPE_REQUEST,
+    CREATE_JOBTYPE_RECEIVE,
+    CREATE_JOBTYPE_FAILURE,
+    DELETE_JOBS_REQUEST,
+    DELETE_JOBS_RECEIVE,
+    DELETE_JOBS_FAILURE,
+    UPDATE_JOB_REQUEST,
+    UPDATE_JOB_RECEIVE,
+    UPDATE_JOB_FAILURE,
+    MODIFY_PAYMENTTYPE_REQUEST,
+    MODIFY_PAYMENTTYPE_RECEIVE,
+    MODIFY_PAYMENTTYPE_FAILURE,
+    CREATE_PAYMENTTYPE_REQUEST,
+    CREATE_PAYMENTTYPE_RECEIVE,
+    CREATE_PAYMENTTYPE_FAILURE,
+    USERS_REQUEST,
+    USERS_RECEIVE,
+    USERS_FAILURE,
+    MODIFY_USER_REQUEST,
+    MODIFY_USER_RECEIVE,
+    MODIFY_USER_FAILURE,
+    CREATE_USER_REQUEST,
+    CREATE_USER_RECEIVE,
+    CREATE_USER_FAILURE,
+    MODIFY_USER_PASSWORD_REQUEST,
+    MODIFY_USER_PASSWORD_RECEIVE,
+    MODIFY_USER_PASSWORD_FAILURE,
+    START_NOTIFICATION_LISTENING,
+    RECEIVED_NOTIFICATION,
+    ERROR_RECEIVED_NOTIFICATION,
+} from '../actiontypes';
 
 // Constants
 const emptyLoginResponse = { username: '', roles: [], error: '' };
@@ -9,7 +80,7 @@ const emptyAccount = { firstName: 'Ukjent', fullName: '', balance: 0.0 };
 
 // watcher saga
 export function* requestInitialLoginStateSaga() {
-    yield takeLatest("INITIAL_LOGIN_STATE_REQUEST", receiveInitialLoginStateSaga);
+    yield takeLatest(INITIAL_LOGIN_STATE_REQUEST, receiveInitialLoginStateSaga);
 }
 
 function doGetLogin() {
@@ -21,15 +92,15 @@ export function* receiveInitialLoginStateSaga() {
     try {
         const response = yield call(doGetLogin);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
-        yield put({ type: 'INITIAL_LOGIN_STATE_RECEIVE', loginResponse: loginResponse });
+        yield put({ type: INITIAL_LOGIN_STATE_RECEIVE, loginResponse: loginResponse });
     } catch (error) {
-        yield put({ type: 'INITIAL_LOGIN_STATE_FAILURE', error });
+        yield put({ type: INITIAL_LOGIN_STATE_FAILURE, error });
     }
 }
 
 // watcher saga
 export function* requestLoginSaga() {
-    yield takeLatest("LOGIN_REQUEST", receiveLoginSaga);
+    yield takeLatest(LOGIN_REQUEST, receiveLoginSaga);
 }
 
 function doLogin(username, password) {
@@ -41,15 +112,15 @@ function* receiveLoginSaga(action) {
     try {
         const response = yield call(doLogin, action.username, action.password);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
-        yield put({ type: 'LOGIN_RECEIVE', loginResponse: loginResponse });
+        yield put({ type: LOGIN_RECEIVE, loginResponse: loginResponse });
     } catch (error) {
-        yield put({ type: 'LOGIN_FAILURE', error });
+        yield put({ type: LOGIN_FAILURE, error });
     }
 }
 
 // watcher saga
 export function* requestLogoutSaga() {
-    yield takeLatest("LOGOUT_REQUEST", receiveLogoutSaga);
+    yield takeLatest(LOGOUT_REQUEST, receiveLogoutSaga);
 }
 
 function doLogout() {
@@ -61,16 +132,16 @@ function* receiveLogoutSaga(action) {
     try {
         const response = yield call(doLogout);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
-        yield put({ type: 'LOGOUT_RECEIVE', loginResponse: loginResponse });
+        yield put({ type: LOGOUT_RECEIVE, loginResponse: loginResponse });
     } catch (error) {
-        yield put({ type: 'LOGOUT_FAILURE', error });
+        yield put({ type: LOGOUT_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestAccountSaga() {
-    yield takeLatest("ACCOUNT_REQUEST", receiveAccountSaga);
+    yield takeLatest(ACCOUNT_REQUEST, receiveAccountSaga);
 }
 
 function doAccount(username) {
@@ -82,16 +153,16 @@ function* receiveAccountSaga(action) {
     try {
         const response = yield call(doAccount, action.username);
         const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
-        yield put({ type: 'ACCOUNT_RECEIVE', account: account });
+        yield put({ type: ACCOUNT_RECEIVE, account: account });
     } catch (error) {
-        yield put({ type: 'ACCOUNT_FAILURE', error });
+        yield put({ type: ACCOUNT_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestJobtypeListSaga() {
-    yield takeLatest("JOBTYPELIST_REQUEST", receiveJobtypeListSaga);
+    yield takeLatest(JOBTYPELIST_REQUEST, receiveJobtypeListSaga);
 }
 
 function doJobtypeList() {
@@ -103,16 +174,16 @@ function* receiveJobtypeListSaga(action) {
     try {
         const response = yield call(doJobtypeList);
         const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'JOBTYPELIST_RECEIVE', jobtypes: jobtypes });
+        yield put({ type: JOBTYPELIST_RECEIVE, jobtypes: jobtypes });
     } catch (error) {
-        yield put({ type: 'JOBTYPELIST_FAILURE', error });
+        yield put({ type: JOBTYPELIST_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestPaymenttypeListSaga() {
-    yield takeLatest("PAYMENTTYPELIST_REQUEST", receivePaymenttypeListSaga);
+    yield takeLatest(PAYMENTTYPELIST_REQUEST, receivePaymenttypeListSaga);
 }
 
 function doPaymenttypeList() {
@@ -124,16 +195,16 @@ function* receivePaymenttypeListSaga(action) {
     try {
         const response = yield call(doPaymenttypeList);
         const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'PAYMENTTYPELIST_RECEIVE', paymenttypes: paymenttypes });
+        yield put({ type: PAYMENTTYPELIST_RECEIVE, paymenttypes: paymenttypes });
     } catch (error) {
-        yield put({ type: 'PAYMENTTYPELIST_FAILURE', error });
+        yield put({ type: PAYMENTTYPELIST_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestRegisterJobSaga() {
-    yield takeLatest("REGISTERJOB_REQUEST", receiveRegisterJobSaga);
+    yield takeLatest(REGISTERJOB_REQUEST, receiveRegisterJobSaga);
 }
 
 function doRegisterJob(performedJob) {
@@ -145,16 +216,16 @@ function* receiveRegisterJobSaga(action) {
     try {
         const response = yield call(doRegisterJob, action.performedjob);
         const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
-        yield put({ type: 'REGISTERJOB_RECEIVE', account: account });
+        yield put({ type: REGISTERJOB_RECEIVE, account: account });
     } catch (error) {
-        yield put({ type: 'REGISTERJOB_FAILURE', error });
+        yield put({ type: REGISTERJOB_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestRecentJobsSaga() {
-    yield takeLatest("RECENTJOBS_REQUEST", receiveRecentJobsSaga);
+    yield takeLatest(RECENTJOBS_REQUEST, receiveRecentJobsSaga);
 }
 
 function doRecentJobs(accountId) {
@@ -166,16 +237,16 @@ function* receiveRecentJobsSaga(action) {
     try {
         const response = yield call(doRecentJobs, action.accountId);
         const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'RECENTJOBS_RECEIVE', jobs: jobs });
+        yield put({ type: RECENTJOBS_RECEIVE, jobs: jobs });
     } catch (error) {
-        yield put({ type: 'RECENTJOBS_FAILURE', error });
+        yield put({ type: RECENTJOBS_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestRecentPaymentsSaga() {
-    yield takeLatest("RECENTPAYMENTS_REQUEST", receiveRecentPaymentsSaga);
+    yield takeLatest(RECENTPAYMENTS_REQUEST, receiveRecentPaymentsSaga);
 }
 
 function doRecentPayments(accountId) {
@@ -187,16 +258,16 @@ function* receiveRecentPaymentsSaga(action) {
     try {
         const response = yield call(doRecentPayments, action.accountId);
         const payments = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'RECENTPAYMENTS_RECEIVE', payments: payments });
+        yield put({ type: RECENTPAYMENTS_RECEIVE, payments: payments });
     } catch (error) {
-        yield put({ type: 'RECENTPAYMENTS_FAILURE', error });
+        yield put({ type: RECENTPAYMENTS_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestAccountsSaga() {
-    yield takeLatest("ACCOUNTS_REQUEST", receiveAccountsSaga);
+    yield takeLatest(ACCOUNTS_REQUEST, receiveAccountsSaga);
 }
 
 function doAccounts() {
@@ -208,16 +279,16 @@ function* receiveAccountsSaga(action) {
     try {
         const response = yield call(doAccounts);
         const accounts = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'ACCOUNTS_RECEIVE', accounts: accounts });
+        yield put({ type: ACCOUNTS_RECEIVE, accounts: accounts });
     } catch (error) {
-        yield put({ type: 'ACCOUNTS_FAILURE', error });
+        yield put({ type: ACCOUNTS_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestPaymenttypesSaga() {
-    yield takeLatest("PAYMENTTYPES_REQUEST", receivePaymenttypesSaga);
+    yield takeLatest(PAYMENTTYPES_REQUEST, receivePaymenttypesSaga);
 }
 
 function doPaymenttypes() {
@@ -229,16 +300,16 @@ function* receivePaymenttypesSaga(action) {
     try {
         const response = yield call(doPaymenttypes);
         const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'PAYMENTTYPES_RECEIVE', paymenttype: paymenttypes[0], paymenttypes: paymenttypes });
+        yield put({ type: PAYMENTTYPES_RECEIVE, paymenttype: paymenttypes[0], paymenttypes: paymenttypes });
     } catch (error) {
-        yield put({ type: 'PAYMENTTYPES_FAILURE', error });
+        yield put({ type: PAYMENTTYPES_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestRegisterPaymentSaga() {
-    yield takeLatest("REGISTERPAYMENT_REQUEST", receiveRegisterPaymentSaga);
+    yield takeLatest(REGISTERPAYMENT_REQUEST, receiveRegisterPaymentSaga);
 }
 
 function doRegisterPayment(payment) {
@@ -259,16 +330,16 @@ function* receiveRegisterPaymentSaga(action) {
         const response = yield call(doRegisterPayment, action.payment);
         const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
         doNotifyPaymentdone(action.payment, action.paymenttype);
-        yield put({ type: 'REGISTERPAYMENT_RECEIVE', account: account });
+        yield put({ type: REGISTERPAYMENT_RECEIVE, account: account });
     } catch (error) {
-        yield put({ type: 'REGISTERPAYMENT_FAILURE', error });
+        yield put({ type: REGISTERPAYMENT_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestModifyJobtypeSaga() {
-    yield takeLatest("MODIFY_JOBTYPE_REQUEST", receiveModifyJobtypeSaga);
+    yield takeLatest(MODIFY_JOBTYPE_REQUEST, receiveModifyJobtypeSaga);
 }
 
 function doModifyJobtype(jobtype) {
@@ -280,16 +351,16 @@ function* receiveModifyJobtypeSaga(action) {
     try {
         const response = yield call(doModifyJobtype, action.transactiontype);
         const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'MODIFY_JOBTYPE_RECEIVE', jobtypes });
+        yield put({ type: MODIFY_JOBTYPE_RECEIVE, jobtypes });
     } catch (error) {
-        yield put({ type: 'MODIFY_JOBTYPE_FAILURE', error });
+        yield put({ type: MODIFY_JOBTYPE_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestCreateJobtypeSaga() {
-    yield takeLatest("CREATE_JOBTYPE_REQUEST", receiveCreateJobtypeSaga);
+    yield takeLatest(CREATE_JOBTYPE_REQUEST, receiveCreateJobtypeSaga);
 }
 
 function doCreateJobtype(jobtype) {
@@ -301,16 +372,16 @@ function* receiveCreateJobtypeSaga(action) {
     try {
         const response = yield call(doCreateJobtype, action.transactiontype);
         const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'CREATE_JOBTYPE_RECEIVE', jobtypes });
+        yield put({ type: CREATE_JOBTYPE_RECEIVE, jobtypes });
     } catch (error) {
-        yield put({ type: 'CREATE_JOBTYPE_FAILURE', error });
+        yield put({ type: CREATE_JOBTYPE_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestDeleteJobsSaga() {
-    yield takeLatest("DELETE_JOBS_REQUEST", receiveDeleteJobsSaga);
+    yield takeLatest(DELETE_JOBS_REQUEST, receiveDeleteJobsSaga);
 }
 
 function doDeleteJobs(accountWithJobIds) {
@@ -323,16 +394,16 @@ function* receiveDeleteJobsSaga(action) {
         const idsOfJobsToBeDeleted = action.jobsToDelete.map((job) => { return job.id; });
         const response = yield call(doDeleteJobs, { account: action.account, jobIds: idsOfJobsToBeDeleted });
         const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'DELETE_JOBS_RECEIVE', jobs });
+        yield put({ type: DELETE_JOBS_RECEIVE, jobs });
     } catch (error) {
-        yield put({ type: 'DELETE_JOBS_FAILURE', error });
+        yield put({ type: DELETE_JOBS_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestUpdateJobSaga() {
-    yield takeLatest("UPDATE_JOB_REQUEST", receiveUpdateJobSaga);
+    yield takeLatest(UPDATE_JOB_REQUEST, receiveUpdateJobSaga);
 }
 
 function doUpdateJob(updatedJob) {
@@ -344,16 +415,16 @@ function* receiveUpdateJobSaga(action) {
     try {
         const response = yield call(doUpdateJob, { ...action.selectedjob });
         const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'UPDATE_JOB_RECEIVE', jobs });
+        yield put({ type: UPDATE_JOB_RECEIVE, jobs });
     } catch (error) {
-        yield put({ type: 'UPDATE_JOB_FAILURE', error });
+        yield put({ type: UPDATE_JOB_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestModifyPaymenttypeSaga() {
-    yield takeLatest("MODIFY_PAYMENTTYPE_REQUEST", receiveModifyPaymenttypeSaga);
+    yield takeLatest(MODIFY_PAYMENTTYPE_REQUEST, receiveModifyPaymenttypeSaga);
 }
 
 function doModifyPaymenttype(paymenttype) {
@@ -365,16 +436,16 @@ function* receiveModifyPaymenttypeSaga(action) {
     try {
         const response = yield call(doModifyPaymenttype, action.transactiontype);
         const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'MODIFY_PAYMENTTYPE_RECEIVE', paymenttypes });
+        yield put({ type: MODIFY_PAYMENTTYPE_RECEIVE, paymenttypes });
     } catch (error) {
-        yield put({ type: 'MODIFY_PAYMENTTYPE_FAILURE', error });
+        yield put({ type: MODIFY_PAYMENTTYPE_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestCreatePaymenttypeSaga() {
-    yield takeLatest("CREATE_PAYMENTTYPE_REQUEST", receiveCreatePaymenttypeSaga);
+    yield takeLatest(CREATE_PAYMENTTYPE_REQUEST, receiveCreatePaymenttypeSaga);
 }
 
 function doCreatePaymenttype(paymenttype) {
@@ -386,16 +457,16 @@ function* receiveCreatePaymenttypeSaga(action) {
     try {
         const response = yield call(doCreatePaymenttype, action.transactiontype);
         const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'CREATE_PAYMENTTYPE_RECEIVE', paymenttypes });
+        yield put({ type: CREATE_PAYMENTTYPE_RECEIVE, paymenttypes });
     } catch (error) {
-        yield put({ type: 'CREATE_PAYMENTTYPE_FAILURE', error });
+        yield put({ type: CREATE_PAYMENTTYPE_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestUsersSaga() {
-    yield takeLatest("USERS_REQUEST", receiveUsersSaga);
+    yield takeLatest(USERS_REQUEST, receiveUsersSaga);
 }
 
 function doUsers() {
@@ -407,16 +478,16 @@ function* receiveUsersSaga(action) {
     try {
         const response = yield call(doUsers);
         const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'USERS_RECEIVE', users: users });
+        yield put({ type: USERS_RECEIVE, users: users });
     } catch (error) {
-        yield put({ type: 'USERS_FAILURE', error });
+        yield put({ type: USERS_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestModifyUserSaga() {
-    yield takeLatest("MODIFY_USER_REQUEST", receiveModifyUserSaga);
+    yield takeLatest(MODIFY_USER_REQUEST, receiveModifyUserSaga);
 }
 
 function doModifyUser(user) {
@@ -429,16 +500,16 @@ function* receiveModifyUserSaga(action) {
     try {
         const response = yield call(doModifyUser, action.user);
         const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'MODIFY_USER_RECEIVE', users });
+        yield put({ type: MODIFY_USER_RECEIVE, users });
     } catch (error) {
-        yield put({ type: 'MODIFY_USER_FAILURE', error });
+        yield put({ type: MODIFY_USER_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestCreateUserSaga() {
-    yield takeLatest("CREATE_USER_REQUEST", receiveCreateUserSaga);
+    yield takeLatest(CREATE_USER_REQUEST, receiveCreateUserSaga);
 }
 
 function doCreateUser(passwords) {
@@ -452,16 +523,16 @@ function* receiveCreateUserSaga(action) {
         const passwords = {...action.passwords, user: {...action.user}};
         const response = yield call(doCreateUser, passwords);
         const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'CREATE_USER_RECEIVE', users });
+        yield put({ type: CREATE_USER_RECEIVE, users });
     } catch (error) {
-        yield put({ type: 'CREATE_USER_FAILURE', error });
+        yield put({ type: CREATE_USER_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* requestChangePasswordSaga() {
-    yield takeLatest("MODIFY_USER_PASSWORD_REQUEST", receiveChangePasswordSaga);
+    yield takeLatest(MODIFY_USER_PASSWORD_REQUEST, receiveChangePasswordSaga);
 }
 
 function doChangePassword(passwords) {
@@ -475,16 +546,16 @@ function* receiveChangePasswordSaga(action) {
         const passwords = {...action.passwords, user: {...action.user}};
         const response = yield call(doChangePassword, passwords);
         const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: 'MODIFY_USER_PASSWORD_RECEIVE', users });
+        yield put({ type: MODIFY_USER_PASSWORD_RECEIVE, users });
     } catch (error) {
-        yield put({ type: 'MODIFY_USER_PASSWORD_FAILURE', error });
+        yield put({ type: MODIFY_USER_PASSWORD_FAILURE, error });
     }
 }
 
 
 // watcher saga
 export function* startNotificationListening() {
-    yield takeLatest("START_NOTIFICATION_LISTENING", pollNotification);
+    yield takeLatest(START_NOTIFICATION_LISTENING, pollNotification);
 }
 
 // worker saga
@@ -495,7 +566,7 @@ function* pollNotification(action) {
         while (loop) {
             const response = yield call(() => axios({ url: notificationsRestEndpoint }));
             if (response.headers["content-type"] === "application/json" && response.data.length > 0) {
-                yield put({ type: 'RECEIVED_NOTIFICATION', notifications: response.data });
+                yield put({ type: RECEIVED_NOTIFICATION, notifications: response.data });
             }
 
             if (response.headers["content-type"] === "text/html") { // Happens in redirect to login page after logout
@@ -506,7 +577,7 @@ function* pollNotification(action) {
         }
     } catch (err) {
         // Error will break the loop
-        yield put({ type: 'ERROR_RECEIVED_NOTIFICATION', err });
+        yield put({ type: ERROR_RECEIVED_NOTIFICATION, err });
     }
 }
 

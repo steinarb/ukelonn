@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    JOBTYPELIST_REQUEST,
+    UPDATE,
+    CREATE_JOBTYPE_REQUEST,
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 import Jobtypes from './Jobtypes';
 import Amount from './Amount';
 
@@ -68,28 +74,28 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onJobtypeList: () => dispatch({ type: 'JOBTYPELIST_REQUEST' }),
+        onJobtypeList: () => dispatch({ type: JOBTYPELIST_REQUEST }),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
                 transactiontype: {...jobtype},
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onNameFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionTypeName: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onAmountFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionAmount: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
-        onSaveUpdatedJobType: (transactiontype) => dispatch({ type: 'CREATE_JOBTYPE_REQUEST', transactiontype }),
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onSaveUpdatedJobType: (transactiontype) => dispatch({ type: CREATE_JOBTYPE_REQUEST, transactiontype }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
     };
 };
 

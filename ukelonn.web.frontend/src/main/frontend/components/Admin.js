@@ -3,6 +3,13 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNTS_REQUEST,
+    PAYMENTTYPES_REQUEST,
+    UPDATE,
+    REGISTERPAYMENT_REQUEST,
+} from '../actiontypes';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -101,7 +108,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
         onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
             if (firstTimeAfterLogin) {
                 dispatch({ type: 'UPDATE',
@@ -117,8 +124,8 @@ const mapDispatchToProps = dispatch => {
                          });
             }
         },
-        onAccounts: () => dispatch({ type: 'ACCOUNTS_REQUEST' }),
-        onPaymenttypeList: () => dispatch({ type: 'PAYMENTTYPES_REQUEST' }),
+        onAccounts: () => dispatch({ type: ACCOUNTS_REQUEST }),
+        onPaymenttypeList: () => dispatch({ type: PAYMENTTYPES_REQUEST }),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
@@ -130,7 +137,7 @@ const mapDispatchToProps = dispatch => {
                     account: account,
                 },
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);
@@ -143,15 +150,15 @@ const mapDispatchToProps = dispatch => {
                     account: account,
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onAmountFieldChange: (formValue, payment) => {
             let changedField = {
                 payment: { ...payment, transactionAmount: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
-        onRegisterPayment: (payment, paymenttype) => dispatch({ type: 'REGISTERPAYMENT_REQUEST', payment, paymenttype }),
+        onRegisterPayment: (payment, paymenttype) => dispatch({ type: REGISTERPAYMENT_REQUEST, payment, paymenttype }),
     };
 };
 

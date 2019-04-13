@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 
 class AdminUsers extends Component {
     constructor(props) {
@@ -49,7 +52,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
     };
 };
 

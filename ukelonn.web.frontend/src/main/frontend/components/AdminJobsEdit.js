@@ -4,6 +4,14 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNTS_REQUEST,
+    JOBTYPELIST_REQUEST,
+    RECENTJOBS_REQUEST,
+    UPDATE,
+    UPDATE_JOB_REQUEST,
+} from '../actiontypes';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 
@@ -111,17 +119,17 @@ const emptyJob = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onAccounts: () => dispatch({ type: 'ACCOUNTS_REQUEST' }),
-        onJobtypeList: () => dispatch({ type: 'JOBTYPELIST_REQUEST' }),
-        onJobs: (account) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: account.accountId }),
+        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onAccounts: () => dispatch({ type: ACCOUNTS_REQUEST }),
+        onJobtypeList: () => dispatch({ type: JOBTYPELIST_REQUEST }),
+        onJobs: (account) => dispatch({ type: RECENTJOBS_REQUEST, accountId: account.accountId }),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {
                 account,
                 selectedjob: { ...emptyJob },
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onRowClick: (account, job) => {
             const jobtype = job.transactionType;
@@ -133,7 +141,7 @@ const mapDispatchToProps = dispatch => {
                     transactionTime: moment(job.transactionTime),
                 },
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, selectedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
@@ -145,7 +153,7 @@ const mapDispatchToProps = dispatch => {
                     transactionAmount: jobtype.transactionAmount,
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onDateFieldChange: (selectedValue, selectedjob) => {
             let changedField = {
@@ -154,17 +162,17 @@ const mapDispatchToProps = dispatch => {
                     transactionTime: selectedValue,
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
         onSaveEditedJob: (selectedjob) => {
-            dispatch({ type: 'UPDATE_JOB_REQUEST', selectedjob });
+            dispatch({ type: UPDATE_JOB_REQUEST, selectedjob });
             let changedField = {
                 selectedjob: {
                     ...emptyJob,
                     transactionType: { transactionTypeName: '' },
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch({ type: UPDATE, data: changedField });
         },
     };
 };

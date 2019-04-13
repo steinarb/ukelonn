@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect, Provider } from 'react-redux';
 import { Switch, Route, BrowserRouter as Router, NavLink } from 'react-router-dom';
+import {
+    INITIAL_LOGIN_STATE_REQUEST,
+} from '../actiontypes';
 import Home from "./Home";
 import Login from "./Login";
 import User from "./User";
@@ -67,7 +70,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        initialLoginStateRequest: () => dispatch({ type: 'INITIAL_LOGIN_STATE_REQUEST' })
+        initialLoginStateRequest: () => dispatch({ type: INITIAL_LOGIN_STATE_REQUEST })
     };
 };
 

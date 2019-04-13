@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import App from "./components/App";
 import { applyMiddleware, createStore, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import {
+    UPDATE,
+} from './actiontypes';
 import { ukelonnReducer } from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
@@ -15,11 +18,11 @@ sagaMiddleware.run(rootSaga);
 
 if (typeof Notification !== "undefined") {
     Notification.requestPermission().then(function(result) {
-        store.dispatch({ type: 'UPDATE', data: { notificationAvailable: true } });
+        store.dispatch({ type: UPDATE, data: { notificationAvailable: true } });
         console.log(result);
     });
 } else {
-    store.dispatch({ type: 'UPDATE', data: { notificationAvailable: false } });
+    store.dispatch({ type: UPDATE, data: { notificationAvailable: false } });
 }
 
 
