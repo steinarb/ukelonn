@@ -25,9 +25,6 @@
     <modules>
         <module>ukelonn.services</module>
         <module>ukelonn.backend</module>
-        <module>ukelonn.backend.users</module>
-        <module>ukelonn.web.security.dbrealm</module>
-        <module>ukelonn.web.security.memorysession</module>
         <module>ukelonn.web.security</module>
         <module>ukelonn.web.services</module>
         <module>ukelonn.web.frontend</module>
@@ -35,6 +32,7 @@
         <module>ukelonn.db.liquibase</module>
         <module>ukelonn.db.derbytest</module>
         <module>ukelonn.db.postgresql</module>
+        <module>ukelonn.db.authservicedbadapter</module>
         <module>ukelonn.tests</module>
         <module>karaf</module>
     </modules>
@@ -50,7 +48,8 @@
         <derby.version>10.11.1.1</derby.version>
         <postgresql.version>9.4.1211.jre7</postgresql.version>
         <dependency.osgi.version>6.0.0</dependency.osgi.version>
-        <osgi-service.version>1.1.0</osgi-service.version>
+        <osgi-service.version>1.2.0</osgi-service.version>
+        <authservice.version>1.0.1</authservice.version>
         <osgi.service.version>1.3.0</osgi.service.version>
         <dependency.osgi.log.version>1.3.0</dependency.osgi.log.version>
         <dependency.osgi.jdbc.version>1.0.0</dependency.osgi.jdbc.version>
@@ -114,6 +113,36 @@
                 <groupId>no.priv.bang.osgiservice</groupId>
                 <artifactId>osgiservice.users</artifactId>
                 <version>${osgi-service.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice.definitions</artifactId>
+                <version>${authservice.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice.db.liquibase</artifactId>
+                <version>${authservice.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice.users</artifactId>
+                <version>${authservice.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice.web.security.dbrealm</artifactId>
+                <version>${authservice.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice.web.security.memorysession</artifactId>
+                <version>${authservice.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

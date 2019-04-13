@@ -16,6 +16,9 @@
 package no.priv.bang.ukelonn.db.derbytest;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -46,6 +49,8 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     private LogService logService;
     private DataSourceFactory dataSourceFactory;
     private DataSource datasource;
+    private boolean initialChangelog = false;
+
     @Reference
     public void setLogService(LogService logService) {
         this.logService = logService;
@@ -109,8 +114,16 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         try(Connection connect = getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-            liquibase.update("");
+            if (hasTable(connect, "user_roles")) {
+                initialChangelog = false;
+                Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+                liquibase.update("");
+            } else {
+                // Schema before authservice schema applied
+                initialChangelog = true;
+                Liquibase liquibase = new Liquibase("sql/data/db-initial-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+                liquibase.update("");
+            }
             return true;
         } catch (Exception e) {
             logError("Failed to fill derby test database with data.", e);
@@ -118,13 +131,36 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
+    private boolean hasTable(Connection connection, String tablename) throws SQLException {
+        DatabaseMetaData metadata = connection.getMetaData();
+        ResultSet tables = metadata.getTables(null, null, "%", null);
+        while(tables.next()) {
+            if (tablename.equals(tables.getString(3))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public boolean rollbackMockData() {
         try(Connection connect = getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-            liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
-            // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
+            if (initialChangelog) {
+                try(PreparedStatement statement = connect.prepareStatement("delete from user_roles")) {
+                    statement.executeUpdate();
+                }
+                try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
+                    statement.executeUpdate();
+                }
+                Liquibase liquibase = new Liquibase("sql/data/db-initial-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+                liquibase.rollback(3, "");
+            } else {
+                Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+                liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
+                // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
+            }
             return true;
         } catch (Exception e) {
             logError("Failed to roll back mock data from derby test database.", e);

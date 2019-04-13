@@ -10,8 +10,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import no.priv.bang.ukelonn.web.security.dbrealm.UkelonnRealm;
-import no.priv.bang.ukelonn.web.security.memorysession.MemorySession;
+import no.priv.bang.authservice.web.security.dbrealm.AuthserviceDbRealm;
+import no.priv.bang.authservice.web.security.memorysession.MemorySession;
+import no.priv.bang.ukelonn.db.authservicedbadapter.UkelonnDatabaseToAuthserviceDatabaseAdapter;
 
 public class UkelonnShiroFilterTest {
 
@@ -28,10 +29,13 @@ public class UkelonnShiroFilterTest {
     @Test
     public void testAuthenticate() {
         UkelonnShiroFilter shirofilter = new UkelonnShiroFilter();
-        UkelonnRealm realm = new UkelonnRealm();
+        AuthserviceDbRealm realm = new AuthserviceDbRealm();
         MemorySession session = new MemorySession();
         session.activate();
-        realm.setDatabase(getUkelonnServiceSingleton().getDatabase());
+        UkelonnDatabaseToAuthserviceDatabaseAdapter adapter = new UkelonnDatabaseToAuthserviceDatabaseAdapter();
+        adapter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
+        adapter.activate();
+        realm.setDatabaseService(adapter);
         realm.activate();
         shirofilter.setSession(session);
         shirofilter.setRealm(realm);

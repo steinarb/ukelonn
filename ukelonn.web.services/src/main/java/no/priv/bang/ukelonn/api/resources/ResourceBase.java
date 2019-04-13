@@ -38,7 +38,7 @@ public class ResourceBase {
 
             return
                 subject.getPrincipal().equals(username) ||
-                subject.hasRole("administrator");
+                subject.hasRole("ukelonnadmin");
         } catch (Exception e) {
             String message = "Failure retrieving Shiro subject";
             logservice.log(LogService.LOG_ERROR, message, e);

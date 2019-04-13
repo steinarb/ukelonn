@@ -38,6 +38,7 @@ public class TestUtils {
     private static UkelonnServiceProvider ukelonnServiceSingleton;
 
     public static UkelonnServiceProvider getUkelonnServiceSingleton() {
+        ukelonnServiceSingleton.setUserAdmin(null); // Set to null so that usage will fail with NPE until replaced by mock
         return ukelonnServiceSingleton;
     }
 

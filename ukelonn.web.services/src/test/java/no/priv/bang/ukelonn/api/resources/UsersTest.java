@@ -29,12 +29,11 @@ import java.util.List;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.Test;
-
+import no.priv.bang.authservice.definitions.AuthserviceDatabaseService;
+import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.backend.users.UserManagementServiceProvider;
 
 public class UsersTest {
 
@@ -65,7 +64,7 @@ public class UsersTest {
         PreparedStatement statement = mock(PreparedStatement.class);
         ResultSet results = mock(ResultSet.class);
         when(results.next()).thenThrow(SQLException.class);
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
         Connection connection = mock(Connection.class);
         when(database.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
@@ -78,6 +77,7 @@ public class UsersTest {
         // Inject a log service
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
+        useradmin.setLogservice(logservice);
 
         // Do a get operation that will fail
         resource.get();

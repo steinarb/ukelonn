@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <!-- Copyright 2016-2019 Steinar Bang                                                -->
+    <!--                                                                                 -->
+    <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
+    <!-- you may not use this file except in compliance with the License.                -->
+    <!-- You may obtain a copy of the License at                                         -->
+    <!--   http://www.apache.org/licenses/LICENSE-2.0                                    -->
+    <!-- Unless required by applicable law or agreed to in writing,                      -->
+    <!-- software distributed under the License is distributed on an "AS IS" BASIS,      -->
+    <!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.        -->
+    <!-- See the License for the specific language governing permissions and limitations -->
+    <!-- under the License.                                                              -->
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="ukelonn-1.0.0">
+
+        <createTable tableName="users">
+            <column autoIncrement="true" name="user_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="SQL170518210719000"/>
+            </column>
+            <column name="username" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="salt" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="transaction_types">
+            <column autoIncrement="true" name="transaction_type_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="SQL170518210719080"/>
+            </column>
+            <column name="transaction_type_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_amount" type="DOUBLE"/>
+            <column defaultValueBoolean="false" name="transaction_is_work" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="transaction_is_wage_payment" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="administrators">
+            <column autoIncrement="true" name="administrator_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="SQL170518210719121"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="SQL170518210719120" tableName="administrators">
+            <column name="user_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="administrators" constraintName="SQL170518210719120" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="users"/>
+
+        <createTable tableName="accounts">
+            <column autoIncrement="true" name="account_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="SQL170518210719041"/>
+            </column>
+            <column name="user_id" type="INTEGER"/>
+        </createTable>
+
+        <createIndex indexName="SQL170518210719040" tableName="accounts">
+            <column name="user_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="accounts" constraintName="SQL170518210719040" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="users"/>
+
+        <createTable tableName="transactions">
+            <column autoIncrement="true" name="transaction_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="SQL170518210719092"/>
+            </column>
+            <column name="account_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_time" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="SQL170518210719090" tableName="transactions">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex indexName="SQL170518210719091" tableName="transactions">
+            <column name="transaction_type_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="transactions" constraintName="SQL170518210719090" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="account_id" referencedTableName="accounts"/>
+
+        <addForeignKeyConstraint baseColumnNames="transaction_type_id" baseTableName="transactions" constraintName="SQL170518210719091" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="transaction_type_id" referencedTableName="transaction_types"/>
+
+        <createView fullDefinition="false" viewName="accounts_view">select accounts.account_id, users.user_id, username, first_name, last_name, SUM(transaction_amount) as balance&#13;
+        from users&#13;
+        join accounts on accounts.user_id=users.user_id&#13;
+        join transactions on transactions.account_id=accounts.account_id&#13;
+        group by accounts.account_id, users.user_id, username, first_name, last_name</createView>
+
+        <createView fullDefinition="false" viewName="administrators_view">select administrators.administrator_id, users.user_id, username, first_name, last_name&#13;
+        from users&#13;
+        join administrators on administrators.user_id=users.user_id&#13;
+        group by administrators.administrator_id, users.user_id, username, first_name, last_name</createView>
+
+        <createView fullDefinition="false" viewName="wage_payments_view">select accounts.account_id, users.user_id, username, transaction_time, transaction_type_name, ABS(transactions.transaction_amount) as transaction_amount&#13;
+        from users&#13;
+        join accounts on accounts.user_id=users.user_id&#13;
+        join transactions on transactions.account_id=accounts.account_id&#13;
+        join transaction_types on transaction_types.transaction_type_id=transactions.transaction_type_id and transaction_is_wage_payment&#13;
+        order by transaction_time desc</createView>
+
+        <createView fullDefinition="false" viewName="work_done_view">select accounts.account_id, users.user_id, username, transaction_time, transaction_type_name, transactions.transaction_amount&#13;
+        from users&#13;
+        join accounts on accounts.user_id=users.user_id&#13;
+        join transactions on transactions.account_id=accounts.account_id&#13;
+        join transaction_types on transaction_types.transaction_type_id=transactions.transaction_type_id and transaction_is_work&#13;
+        order by transaction_time desc</createView>
+
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-to-account-table">
+        <addColumn tableName="accounts">
+            <column name="username" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-index-to-accounts-table">
+        <createIndex indexName="accounts-username-index" tableName="accounts" >
+            <column name="username" type="VARCHAR(64)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="insert-usernames-in-accounts-table">
+        <sql>update accounts a set username=(select u.username from users u where u.user_id=a.user_id)</sql>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="give-users-username-an-uniqueness-constraint">
+        <addUniqueConstraint tableName="users" columnNames="username" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-foreign-key-constraint-from-accounts-to-users">
+        <addForeignKeyConstraint baseTableName="accounts" baseColumnNames="username" constraintName="fk_account_username" referencedColumnNames="username" referencedTableName="users" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-foreign-key-constraint-from-accounts-to-users">
+        <dropForeignKeyConstraint baseTableName="accounts" constraintName="SQL170518210719040" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-index-from-accounts-userid-to-users">
+        <dropIndex tableName="accounts" indexName="SQL170518210719040" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-views-linking-to-account-user_id">
+        <dropView viewName="wage_payments_view" />
+        <dropView viewName="work_done_view" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-accounts-view">
+        <dropView viewName="accounts_view" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-column-userid-from-accounts">
+        <dropColumn tableName="accounts" columnName="user_id" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="create-new-accountsview">
+        <createView fullDefinition="false" viewName="accounts_view">
+            select accounts.account_id, accounts.username, first_name, last_name, SUM(transaction_amount) as balance
+            from users
+            join accounts on accounts.username=users.username
+            join transactions on transactions.account_id=accounts.account_id
+            group by accounts.account_id, accounts.username, first_name, last_name
+        </createView>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-column-to-administrators-table">
+        <addColumn tableName="administrators">
+            <column name="username" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-username-index-to-administrators-table">
+        <createIndex indexName="administrators-username-index" tableName="administrators" >
+            <column name="username" type="VARCHAR(64)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="add-foreign-key-constraint-from-administrators-to-users">
+        <addForeignKeyConstraint baseTableName="administrators" baseColumnNames="username" constraintName="fk_administrators_username" referencedColumnNames="username" referencedTableName="users" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="insert-usernames-in-administrators-table">
+        <sql>update administrators a set username=(select u.username from users u where u.user_id=a.user_id)</sql>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-administrators-view">
+        <dropView viewName="administrators_view" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-foreign-key-constraint-from-administrators-to-users">
+        <dropForeignKeyConstraint baseTableName="administrators" constraintName="SQL170518210719120" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-old-index-from-administrators-userid-to-users">
+        <dropIndex tableName="administrators" indexName="SQL170518210719120" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-column-userid-from-administrators">
+        <dropColumn tableName="administrators" columnName="user_id" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="create-new-administratorsview">
+        <createView fullDefinition="false" viewName="administrators_view">
+            select administrators.administrator_id, administrators.username, first_name, last_name
+            from users
+            join administrators on administrators.username=users.username
+            group by administrators.administrator_id, administrators.username, first_name, last_name
+        </createView>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-accounts-view-for-recreate-without-users-join">
+        <dropView viewName="accounts_view" />
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="create-accountsview-without-users-join">
+        <createView fullDefinition="false" viewName="accounts_view">
+            select accounts.account_id, accounts.username, SUM(transaction_amount) as balance
+            from accounts
+            join transactions on transactions.account_id=accounts.account_id
+            group by accounts.account_id, accounts.username
+        </createView>
+    </changeSet>
+
+    <changeSet logicalFilePath="db-changelog/db-changelog-1.0.0.xml" author="sb" id="drop-administrators-view-without-replacing-it">
+        <dropView viewName="administrators_view" />
+    </changeSet>
+
+</databaseChangeLog>

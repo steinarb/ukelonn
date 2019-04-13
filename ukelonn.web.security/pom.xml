@@ -43,15 +43,29 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <artifactId>ukelonn.db.authservicedbadapter</artifactId>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.web.security.memorysession</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.web.security.dbrealm</artifactId>
-            <version>${project.version}</version>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.definitions</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.db.liquibase</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.web.security.dbrealm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.web.security.memorysession</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
