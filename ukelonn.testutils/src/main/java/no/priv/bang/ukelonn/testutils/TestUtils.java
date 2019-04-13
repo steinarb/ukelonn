@@ -51,8 +51,8 @@ public class TestUtils {
 
     private static User jadUser = new User(1, "jad", "jane1203@gmail.no", "Jane", "Doe");
     private static User jodUser = new User(1, "jod", "john1203@gmail.no", "John", "Doe");
-    private static Account jadAccount = new Account(1, 1, "jad", "Jane", "Doe", 673.0);
-    private static Account jodAccount = new Account(1, 1, "jod", "John", "Doe", 278.0);
+    private static Account jadAccount = new Account(1, "jad", "Jane", "Doe", 673.0);
+    private static Account jodAccount = new Account(1, "jod", "John", "Doe", 278.0);
     private static TransactionType jobtype1 = new TransactionType(1, "Støvsuging", 45.0, true, false);
     private static TransactionType jobtype2 = new TransactionType(3, "Tømme oppvaskmaskin", 35.0, true, false);
     private static TransactionType jobtype3 = new TransactionType(5, "Gå med resirk", 20.0, true, false);
@@ -145,7 +145,7 @@ public class TestUtils {
     }
 
     public static Account copyAccount(Account account) {
-        return new Account(account.getAccountId(), account.getUserId(), account.getUsername(), account.getFirstName(), account.getLastName(), account.getBalance());
+        return new Account(account.getAccountId(), account.getUsername(), account.getFirstName(), account.getLastName(), account.getBalance());
     }
 
     public static TransactionType copyTransactionType(TransactionType transactiontype) {

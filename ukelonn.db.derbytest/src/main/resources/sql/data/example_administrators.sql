@@ -1,6 +1,7 @@
 --liquibase formatted sql
---changeset sb:example_administrators
-insert into administrators (user_id) values (1);
-insert into administrators (user_id) values (2);
-insert into administrators (user_id) values (3);
+-- Will run successfully with the original ukelonn users table schema (and fail on the authservice schema)
+--changeset sb:example_administrators failOnError:false
+insert into administrators (username) values ('admin');
+insert into administrators (username) values ('on');
+insert into administrators (username) values ('kn');
 --rollback truncate table administrators; alter table administrators alter administrator_id restart with 1;

@@ -62,9 +62,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.backend.users</artifactId>
-            <version>${project.version}</version>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.definitions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.users</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

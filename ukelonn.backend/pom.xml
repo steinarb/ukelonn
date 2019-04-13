@@ -44,9 +44,20 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
+            <artifactId>ukelonn.db.authservicedbadapter</artifactId>
+            <groupId>no.priv.bang.ukelonn</groupId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.db.liquibase</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.db.liquibase</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -58,12 +69,17 @@
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.users</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.backend.users</artifactId>
-            <version>${project.version}</version>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+            <version>${osgi-service.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.users</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

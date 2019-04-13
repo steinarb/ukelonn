@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 let Home = ({loginResponse}) => {
     if (loginResponse.roles.length > 0) {
-        if (loginResponse.roles[0] === 'administrator') {
+        if (loginResponse.roles[0] === 'ukelonnadmin') {
             return <Redirect to="/ukelonn/admin" />;
         }
 
