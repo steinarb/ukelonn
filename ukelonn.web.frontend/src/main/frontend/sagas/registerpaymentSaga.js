@@ -5,6 +5,7 @@ import {
     REGISTERPAYMENT_RECEIVE,
     REGISTERPAYMENT_FAILURE,
 } from '../actiontypes';
+import { emptyAccount } from './constants';
 
 // watcher saga
 export function* requestRegisterPaymentSaga() {
@@ -26,11 +27,12 @@ function doNotifyPaymentdone(payment, paymenttype) {
 // worker saga
 function* receiveRegisterPaymentSaga(action) {
     try {
-        const response = yield call(doRegisterPayment, action.payment);
-        const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
-        doNotifyPaymentdone(action.payment, action.paymenttype);
-        yield put({ type: REGISTERPAYMENT_RECEIVE, account: account });
+        const payload = action.payload || {};
+        const response = yield call(doRegisterPayment, payload.payment);
+        const account = (response.headers['content-type'] === 'application/json') ? response.data : emptyAccount;
+        doNotifyPaymentdone(payload.payment, payload.paymenttype);
+        yield put(REGISTERPAYMENT_RECEIVE(account));
     } catch (error) {
-        yield put({ type: REGISTERPAYMENT_FAILURE, error });
+        yield put(REGISTERPAYMENT_FAILURE(error));
     }
 }

@@ -119,17 +119,17 @@ const emptyJob = {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
-        onAccounts: () => dispatch({ type: ACCOUNTS_REQUEST }),
-        onJobtypeList: () => dispatch({ type: JOBTYPELIST_REQUEST }),
-        onJobs: (account) => dispatch({ type: RECENTJOBS_REQUEST, accountId: account.accountId }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onAccounts: () => dispatch(ACCOUNTS_REQUEST()),
+        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
+        onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {
                 account,
                 selectedjob: { ...emptyJob },
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onRowClick: (account, job) => {
             const jobtype = job.transactionType;
@@ -141,7 +141,7 @@ const mapDispatchToProps = dispatch => {
                     transactionTime: moment(job.transactionTime),
                 },
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, selectedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
@@ -153,7 +153,7 @@ const mapDispatchToProps = dispatch => {
                     transactionAmount: jobtype.transactionAmount,
                 }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onDateFieldChange: (selectedValue, selectedjob) => {
             let changedField = {
@@ -162,17 +162,17 @@ const mapDispatchToProps = dispatch => {
                     transactionTime: selectedValue,
                 }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onSaveEditedJob: (selectedjob) => {
-            dispatch({ type: UPDATE_JOB_REQUEST, selectedjob });
+            dispatch(UPDATE_JOB_REQUEST({ selectedjob }));
             let changedField = {
                 selectedjob: {
                     ...emptyJob,
                     transactionType: { transactionTypeName: '' },
                 }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
     };
 };

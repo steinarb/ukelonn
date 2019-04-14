@@ -15,13 +15,14 @@ export function* startNotificationListening() {
 
 // worker saga
 function* pollNotification(action) {
-    const notificationsRestEndpoint = '/ukelonn/api/notificationsto/' + action.username;
+    const username = action.payload;
+    const notificationsRestEndpoint = '/ukelonn/api/notificationsto/' + username;
     var loop = true;
     try {
         while (loop) {
             const response = yield call(() => axios({ url: notificationsRestEndpoint }));
             if (response.headers["content-type"] === "application/json" && response.data.length > 0) {
-                yield put({ type: RECEIVED_NOTIFICATION, notifications: response.data });
+                yield put(RECEIVED_NOTIFICATION(response.data));
             }
 
             if (response.headers["content-type"] === "text/html") { // Happens in redirect to login page after logout
@@ -32,6 +33,6 @@ function* pollNotification(action) {
         }
     } catch (err) {
         // Error will break the loop
-        yield put({ type: ERROR_RECEIVED_NOTIFICATION, err });
+        yield put(ERROR_RECEIVED_NOTIFICATION(err));
     }
 }

@@ -19,9 +19,9 @@ function doUsers() {
 function* receiveUsersSaga(action) {
     try {
         const response = yield call(doUsers);
-        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: USERS_RECEIVE, users: users });
+        const users = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(USERS_RECEIVE(users));
     } catch (error) {
-        yield put({ type: USERS_FAILURE, error });
+        yield put(USERS_FAILURE(error));
     }
 }

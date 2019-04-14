@@ -6,7 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import {
     UPDATE,
 } from './actiontypes';
-import { ukelonnReducer } from './reducers';
+import ukelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
@@ -18,11 +18,11 @@ sagaMiddleware.run(rootSaga);
 
 if (typeof Notification !== "undefined") {
     Notification.requestPermission().then(function(result) {
-        store.dispatch({ type: UPDATE, data: { notificationAvailable: true } });
+        store.dispatch(UPDATE({ notificationAvailable: true }));
         console.log(result);
     });
 } else {
-    store.dispatch({ type: UPDATE, data: { notificationAvailable: false } });
+    store.dispatch(UPDATE({ notificationAvailable: false }));
 }
 
 

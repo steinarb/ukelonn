@@ -18,10 +18,10 @@ function doRecentJobs(accountId) {
 // worker saga
 function* receiveRecentJobsSaga(action) {
     try {
-        const response = yield call(doRecentJobs, action.accountId);
-        const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: RECENTJOBS_RECEIVE, jobs: jobs });
+        const response = yield call(doRecentJobs, action.payload);
+        const jobs = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(RECENTJOBS_RECEIVE(jobs));
     } catch (error) {
-        yield put({ type: RECENTJOBS_FAILURE, error });
+        yield put(RECENTJOBS_FAILURE(error));
     }
 }

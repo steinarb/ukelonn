@@ -93,10 +93,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
-        onAccount: (username) => dispatch({ type: ACCOUNT_REQUEST, username }),
-        onNotifyStart: (username) => dispatch({ type: START_NOTIFICATION_LISTENING, username }),
-        onJobtypeList: () => dispatch({ type: JOBTYPELIST_REQUEST }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
+        onNotifyStart: (username) => dispatch(START_NOTIFICATION_LISTENING(username)),
+        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
@@ -109,7 +109,7 @@ const mapDispatchToProps = dispatch => {
                     transactionDate: moment(),
                 }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onDateFieldChange: (selectedValue, performedjob) => {
             let changedField = {
@@ -118,9 +118,9 @@ const mapDispatchToProps = dispatch => {
                     transactionDate: selectedValue,
                 }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onRegisterJob: (performedjob) => dispatch({ type: REGISTERJOB_REQUEST, performedjob: performedjob }),
+        onRegisterJob: (performedjob) => dispatch(REGISTERJOB_REQUEST(performedjob)),
     };
 };
 

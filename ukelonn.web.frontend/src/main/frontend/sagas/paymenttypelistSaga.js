@@ -20,8 +20,8 @@ function* receivePaymenttypeListSaga(action) {
     try {
         const response = yield call(doPaymenttypeList);
         const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: PAYMENTTYPELIST_RECEIVE, paymenttypes: paymenttypes });
+        yield put(PAYMENTTYPELIST_RECEIVE(paymenttypes));
     } catch (error) {
-        yield put({ type: PAYMENTTYPELIST_FAILURE, error });
+        yield put(PAYMENTTYPELIST_FAILURE(error));
     }
 }

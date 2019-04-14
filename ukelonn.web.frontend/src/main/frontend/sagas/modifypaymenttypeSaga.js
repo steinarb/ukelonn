@@ -18,10 +18,10 @@ function doModifyPaymenttype(paymenttype) {
 // worker saga
 function* receiveModifyPaymenttypeSaga(action) {
     try {
-        const response = yield call(doModifyPaymenttype, action.transactiontype);
+        const response = yield call(doModifyPaymenttype, action.payload);
         const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: MODIFY_PAYMENTTYPE_RECEIVE, paymenttypes });
+        yield put(MODIFY_PAYMENTTYPE_RECEIVE(paymenttypes));
     } catch (error) {
-        yield put({ type: MODIFY_PAYMENTTYPE_FAILURE, error });
+        yield put(MODIFY_PAYMENTTYPE_FAILURE(error));
     }
 }

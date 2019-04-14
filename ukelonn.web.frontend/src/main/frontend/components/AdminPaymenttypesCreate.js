@@ -74,28 +74,28 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onPaymenttypeList: () => dispatch({ type: PAYMENTTYPELIST_REQUEST }),
+        onPaymenttypeList: () => dispatch(PAYMENTTYPELIST_REQUEST()),
         onPaymenttypeFieldChange: (selectedValue, paymenttypesMap, account, performedpayment) => {
             let paymenttype = paymenttypesMap.get(selectedValue);
             let changedField = {
                 transactiontype: {...paymenttype},
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onNameFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionTypeName: formValue }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onAmountFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionAmount: formValue }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveUpdatedPaymentType: (transactiontype) => dispatch({ type: CREATE_PAYMENTTYPE_REQUEST, transactiontype }),
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onSaveUpdatedPaymentType: (transactiontype) => dispatch(CREATE_PAYMENTTYPE_REQUEST(transactiontype)),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

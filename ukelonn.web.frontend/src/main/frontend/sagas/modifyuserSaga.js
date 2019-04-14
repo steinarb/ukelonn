@@ -19,10 +19,10 @@ function doModifyUser(user) {
 // worker saga
 function* receiveModifyUserSaga(action) {
     try {
-        const response = yield call(doModifyUser, action.user);
-        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: MODIFY_USER_RECEIVE, users });
+        const response = yield call(doModifyUser, action.payload);
+        const users = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(MODIFY_USER_RECEIVE(users));
     } catch (error) {
-        yield put({ type: MODIFY_USER_FAILURE, error });
+        yield put(MODIFY_USER_FAILURE(error));
     }
 }

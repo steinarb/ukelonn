@@ -19,11 +19,12 @@ function doChangePassword(passwords) {
 // worker saga
 function* receiveChangePasswordSaga(action) {
     try {
-        const passwords = {...action.passwords, user: {...action.user}};
+        const payload = action.payload || {};
+        const passwords = {...payload.passwords, user: {...payload.user}};
         const response = yield call(doChangePassword, passwords);
-        const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: MODIFY_USER_PASSWORD_RECEIVE, users });
+        const users = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(MODIFY_USER_PASSWORD_RECEIVE(users));
     } catch (error) {
-        yield put({ type: MODIFY_USER_PASSWORD_FAILURE, error });
+        yield put(MODIFY_USER_PASSWORD_FAILURE(error));
     }
 }

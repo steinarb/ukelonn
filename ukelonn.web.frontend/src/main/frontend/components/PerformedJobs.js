@@ -86,10 +86,10 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
-        onAccount: (username) => dispatch({ type: ACCOUNT_REQUEST, username }),
-        onJobs: (accountId) => dispatch({ type: RECENTJOBS_REQUEST, accountId: accountId }),
-        onParentTitle: (parentTitle) => dispatch({ type: UPDATE, data: { parentTitle } }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
+        onJobs: (accountId) => dispatch(RECENTJOBS_REQUEST(accountId)),
+        onParentTitle: (parentTitle) => dispatch(UPDATE({ parentTitle })),
     };
 };
 

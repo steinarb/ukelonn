@@ -20,10 +20,10 @@ function doAccount(username) {
 // worker saga
 function* receiveAccountSaga(action) {
     try {
-        const response = yield call(doAccount, action.username);
-        const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
-        yield put({ type: ACCOUNT_RECEIVE, account: account });
+        const response = yield call(doAccount, action.payload);
+        const account = (response.headers['content-type'] === 'application/json') ? response.data : emptyAccount;
+        yield put(ACCOUNT_RECEIVE(account));
     } catch (error) {
-        yield put({ type: ACCOUNT_FAILURE, error });
+        yield put(ACCOUNT_FAILURE(error));
     }
 }

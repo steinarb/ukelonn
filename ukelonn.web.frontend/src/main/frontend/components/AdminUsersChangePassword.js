@@ -95,13 +95,13 @@ const checkIfPasswordsAreNotIdentical = (passwords) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onUserList: () => dispatch({ type: USERS_REQUEST }),
+        onUserList: () => dispatch(USERS_REQUEST()),
         onUsersFieldChange: (selectedValue, usersMap) => {
             let user = usersMap.get(selectedValue);
             let changedField = {
                 user: {...user},
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onPasswordsFieldChange: (formValue, passwordsFromState) => {
             const passwords = { ...passwordsFromState, ...formValue };
@@ -110,10 +110,10 @@ const mapDispatchToProps = dispatch => {
                 passwords,
                 passwordsNotIdentical,
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveUpdatedPassword: (user, passwords) => dispatch({ type: MODIFY_USER_PASSWORD_REQUEST, user, passwords }),
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onSaveUpdatedPassword: (user, passwords) => dispatch(MODIFY_USER_PASSWORD_REQUEST({ user, passwords })),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

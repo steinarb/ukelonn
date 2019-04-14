@@ -19,11 +19,12 @@ function doCreateUser(passwords) {
 // worker saga
 function* receiveCreateUserSaga(action) {
     try {
-        const passwords = {...action.passwords, user: {...action.user}};
+        const payload = action.payload || {};
+        const passwords = {...payload.passwords, user: {...payload.user}};
         const response = yield call(doCreateUser, passwords);
         const users = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: CREATE_USER_RECEIVE, users });
+        yield put(CREATE_USER_RECEIVE(users));
     } catch (error) {
-        yield put({ type: CREATE_USER_FAILURE, error });
+        yield put(CREATE_USER_FAILURE(error));
     }
 }

@@ -20,8 +20,8 @@ function* receiveJobtypeListSaga(action) {
     try {
         const response = yield call(doJobtypeList);
         const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: JOBTYPELIST_RECEIVE, jobtypes: jobtypes });
+        yield put(JOBTYPELIST_RECEIVE(jobtypes));
     } catch (error) {
-        yield put({ type: JOBTYPELIST_FAILURE, error });
+        yield put(JOBTYPELIST_FAILURE(error));
     }
 }

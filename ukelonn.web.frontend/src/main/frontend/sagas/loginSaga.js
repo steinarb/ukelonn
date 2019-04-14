@@ -23,9 +23,9 @@ export function* receiveInitialLoginStateSaga() {
     try {
         const response = yield call(doGetLogin);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
-        yield put({ type: INITIAL_LOGIN_STATE_RECEIVE, loginResponse: loginResponse });
+        yield put(INITIAL_LOGIN_STATE_RECEIVE(loginResponse));
     } catch (error) {
-        yield put({ type: INITIAL_LOGIN_STATE_FAILURE, error });
+        yield put(INITIAL_LOGIN_STATE_FAILURE(error));
     }
 }
 
@@ -41,10 +41,11 @@ function doLogin(username, password) {
 // worker saga
 function* receiveLoginSaga(action) {
     try {
-        const response = yield call(doLogin, action.username, action.password);
-        const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
-        yield put({ type: LOGIN_RECEIVE, loginResponse: loginResponse });
+        const payload = action.payload || {};
+        const response = yield call(doLogin, payload.username, payload.password);
+        const loginResponse = (response.headers['content-type'] === 'application/json') ? response.data : emptyLoginResponse;
+        yield put(LOGIN_RECEIVE(loginResponse));
     } catch (error) {
-        yield put({ type: LOGIN_FAILURE, error });
+        yield put(LOGIN_FAILURE(error));
     }
 }

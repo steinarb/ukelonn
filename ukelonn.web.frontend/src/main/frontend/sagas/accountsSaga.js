@@ -20,8 +20,8 @@ function* receiveAccountsSaga(action) {
     try {
         const response = yield call(doAccounts);
         const accounts = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: ACCOUNTS_RECEIVE, accounts: accounts });
+        yield put(ACCOUNTS_RECEIVE(accounts));
     } catch (error) {
-        yield put({ type: ACCOUNTS_FAILURE, error });
+        yield put(ACCOUNTS_FAILURE(error));
     }
 }

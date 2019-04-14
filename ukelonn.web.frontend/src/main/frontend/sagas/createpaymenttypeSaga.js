@@ -18,10 +18,10 @@ function doCreatePaymenttype(paymenttype) {
 // worker saga
 function* receiveCreatePaymenttypeSaga(action) {
     try {
-        const response = yield call(doCreatePaymenttype, action.transactiontype);
-        const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: CREATE_PAYMENTTYPE_RECEIVE, paymenttypes });
+        const response = yield call(doCreatePaymenttype, action.payload);
+        const paymenttypes = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(CREATE_PAYMENTTYPE_RECEIVE(paymenttypes));
     } catch (error) {
-        yield put({ type: CREATE_PAYMENTTYPE_FAILURE, error });
+        yield put(CREATE_PAYMENTTYPE_FAILURE(error));
     }
 }

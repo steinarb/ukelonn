@@ -74,28 +74,28 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onJobtypeList: () => dispatch({ type: JOBTYPELIST_REQUEST }),
+        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
                 transactiontype: {...jobtype},
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onNameFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionTypeName: formValue }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onAmountFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionAmount: formValue }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveUpdatedJobType: (transactiontype) => dispatch({ type: CREATE_JOBTYPE_REQUEST, transactiontype }),
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onSaveUpdatedJobType: (transactiontype) => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

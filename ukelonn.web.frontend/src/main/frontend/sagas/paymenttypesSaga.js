@@ -19,9 +19,9 @@ function doPaymenttypes() {
 function* receivePaymenttypesSaga(action) {
     try {
         const response = yield call(doPaymenttypes);
-        const paymenttypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: PAYMENTTYPES_RECEIVE, paymenttype: paymenttypes[0], paymenttypes: paymenttypes });
+        const paymenttypes = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(PAYMENTTYPES_RECEIVE(paymenttypes));
     } catch (error) {
-        yield put({ type: PAYMENTTYPES_FAILURE, error });
+        yield put(PAYMENTTYPES_FAILURE(error));
     }
 }

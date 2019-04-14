@@ -18,10 +18,10 @@ function doModifyJobtype(jobtype) {
 // worker saga
 function* receiveModifyJobtypeSaga(action) {
     try {
-        const response = yield call(doModifyJobtype, action.transactiontype);
-        const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: MODIFY_JOBTYPE_RECEIVE, jobtypes });
+        const response = yield call(doModifyJobtype, action.payload);
+        const jobtypes = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(MODIFY_JOBTYPE_RECEIVE(jobtypes));
     } catch (error) {
-        yield put({ type: MODIFY_JOBTYPE_FAILURE, error });
+        yield put(MODIFY_JOBTYPE_FAILURE(error));
     }
 }

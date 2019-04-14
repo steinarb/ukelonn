@@ -21,8 +21,8 @@ function* receiveLogoutSaga(action) {
     try {
         const response = yield call(doLogout);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
-        yield put({ type: LOGOUT_RECEIVE, loginResponse: loginResponse });
+        yield put(LOGOUT_RECEIVE(loginResponse));
     } catch (error) {
-        yield put({ type: LOGOUT_FAILURE, error });
+        yield put(LOGOUT_FAILURE(error));
     }
 }

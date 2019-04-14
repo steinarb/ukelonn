@@ -18,10 +18,11 @@ function doUpdateJob(updatedJob) {
 // worker saga
 function* receiveUpdateJobSaga(action) {
     try {
-        const response = yield call(doUpdateJob, { ...action.selectedjob });
+        const payload = action.payload || {};
+        const response = yield call(doUpdateJob, { ...payload.selectedjob });
         const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: UPDATE_JOB_RECEIVE, jobs });
+        yield put(UPDATE_JOB_RECEIVE(jobs));
     } catch (error) {
-        yield put({ type: UPDATE_JOB_FAILURE, error });
+        yield put(UPDATE_JOB_FAILURE(error));
     }
 }

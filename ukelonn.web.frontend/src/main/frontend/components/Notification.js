@@ -26,7 +26,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onNullNotification: () => dispatch({ type: UPDATE, data: { notificationMessage: null } }),
+        onNullNotification: () => dispatch(UPDATE({ notificationMessage: null })),
     };
 };
 

@@ -93,25 +93,25 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
-        onJobs: (account) => dispatch({ type: RECENTJOBS_REQUEST, accountId: account.accountId }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {
                 account,
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onCheckboxTicked: (deleteChecked, job, jobs) => {
             job.delete = deleteChecked;
             let changedField = {
                 jobs: [...jobs],
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onDeleteMarkedJobs: (account, jobs) => {
             const jobsToDelete = jobs.filter(job => job.delete);
-            dispatch({ type: DELETE_JOBS_REQUEST, account, jobsToDelete });
+            dispatch(DELETE_JOBS_REQUEST({ account, jobsToDelete }));
         },
     };
 };

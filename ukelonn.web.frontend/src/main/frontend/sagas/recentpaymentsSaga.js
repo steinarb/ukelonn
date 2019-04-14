@@ -18,10 +18,10 @@ function doRecentPayments(accountId) {
 // worker saga
 function* receiveRecentPaymentsSaga(action) {
     try {
-        const response = yield call(doRecentPayments, action.accountId);
-        const payments = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: RECENTPAYMENTS_RECEIVE, payments: payments });
+        const response = yield call(doRecentPayments, action.payload);
+        const payments = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(RECENTPAYMENTS_RECEIVE(payments));
     } catch (error) {
-        yield put({ type: RECENTPAYMENTS_FAILURE, error });
+        yield put(RECENTPAYMENTS_FAILURE(error));
     }
 }

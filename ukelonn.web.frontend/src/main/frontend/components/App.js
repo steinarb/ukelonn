@@ -70,7 +70,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        initialLoginStateRequest: () => dispatch({ type: INITIAL_LOGIN_STATE_REQUEST })
+        initialLoginStateRequest: () => dispatch(INITIAL_LOGIN_STATE_REQUEST())
     };
 };
 

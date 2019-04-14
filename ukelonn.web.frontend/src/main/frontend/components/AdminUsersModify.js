@@ -87,22 +87,22 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onUserList: () => dispatch({ type: USERS_REQUEST }),
+        onUserList: () => dispatch(USERS_REQUEST()),
         onUsersFieldChange: (selectedValue, usersMap) => {
             let user = usersMap.get(selectedValue);
             let changedField = {
                 user: {...user},
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onFieldChange: (formValue, user) => {
             let changedField = {
                 user: { ...user, ...formValue }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveUpdatedUser: (user) => dispatch({ type: MODIFY_USER_REQUEST, user }),
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onSaveUpdatedUser: (user) => dispatch(MODIFY_USER_REQUEST(user)),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

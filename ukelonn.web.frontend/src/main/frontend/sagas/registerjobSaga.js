@@ -20,10 +20,10 @@ function doRegisterJob(performedJob) {
 // worker saga
 function* receiveRegisterJobSaga(action) {
     try {
-        const response = yield call(doRegisterJob, action.performedjob);
+        const response = yield call(doRegisterJob, action.payload);
         const account = (response.headers['content-type'] == 'application/json') ? response.data : emptyAccount;
-        yield put({ type: REGISTERJOB_RECEIVE, account: account });
+        yield put(REGISTERJOB_RECEIVE(account));
     } catch (error) {
-        yield put({ type: REGISTERJOB_FAILURE, error });
+        yield put(REGISTERJOB_FAILURE(error));
     }
 }

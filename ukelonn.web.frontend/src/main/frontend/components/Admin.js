@@ -108,24 +108,22 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: LOGOUT_REQUEST }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
         onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
             if (firstTimeAfterLogin) {
-                dispatch({ type: 'UPDATE',
-                           data: {
-                               firstTimeAfterLogin: false,
-                               account: emptyAccount,
-                               payment: {
-                                   account: emptyAccount,
-                                   transactionAmount: 0.0,
-                                   transactionTypeId: -1
-                               }
-                           }
-                         });
+                dispatch(UPDATE({
+                    firstTimeAfterLogin: false,
+                    account: emptyAccount,
+                    payment: {
+                        account: emptyAccount,
+                        transactionAmount: 0.0,
+                        transactionTypeId: -1
+                    }
+                }));
             }
         },
-        onAccounts: () => dispatch({ type: ACCOUNTS_REQUEST }),
-        onPaymenttypeList: () => dispatch({ type: PAYMENTTYPES_REQUEST }),
+        onAccounts: () => dispatch(ACCOUNTS_REQUEST()),
+        onPaymenttypeList: () => dispatch(PAYMENTTYPES_REQUEST()),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
@@ -137,7 +135,7 @@ const mapDispatchToProps = dispatch => {
                     account: account,
                 },
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);
@@ -150,15 +148,15 @@ const mapDispatchToProps = dispatch => {
                     account: account,
                 }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onAmountFieldChange: (formValue, payment) => {
             let changedField = {
                 payment: { ...payment, transactionAmount: formValue }
             };
-            dispatch({ type: UPDATE, data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onRegisterPayment: (payment, paymenttype) => dispatch({ type: REGISTERPAYMENT_REQUEST, payment, paymenttype }),
+        onRegisterPayment: (payment, paymenttype) => dispatch(REGISTERPAYMENT_REQUEST({ payment, paymenttype })),
     };
 };
 

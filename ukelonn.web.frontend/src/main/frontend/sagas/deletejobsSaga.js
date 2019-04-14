@@ -18,11 +18,13 @@ function doDeleteJobs(accountWithJobIds) {
 // worker saga
 function* receiveDeleteJobsSaga(action) {
     try {
-        const idsOfJobsToBeDeleted = action.jobsToDelete.map((job) => { return job.id; });
-        const response = yield call(doDeleteJobs, { account: action.account, jobIds: idsOfJobsToBeDeleted });
+        const payload = action.payload || {};
+        const jobsToDelete = payload.jobsToDelete || [];
+        const idsOfJobsToBeDeleted = jobsToDelete.map((job) => { return job.id; });
+        const response = yield call(doDeleteJobs, { account: payload.account, jobIds: idsOfJobsToBeDeleted });
         const jobs = (response.headers['content-type'] == 'application/json') ? response.data : [];
-        yield put({ type: DELETE_JOBS_RECEIVE, jobs });
+        yield put(DELETE_JOBS_RECEIVE(jobs));
     } catch (error) {
-        yield put({ type: DELETE_JOBS_FAILURE, error });
+        yield put(DELETE_JOBS_FAILURE(error));
     }
 }
