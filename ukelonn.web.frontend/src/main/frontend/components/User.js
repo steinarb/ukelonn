@@ -18,23 +18,14 @@ import Jobtypes from './Jobtypes';
 import Notification from './Notification';
 
 class User extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onAccount(this.props.loginResponse.username);
         this.props.onNotifyStart(this.props.loginResponse.username);
         this.props.onJobtypeList();
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({...props});
-    }
-
     render() {
-        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.state;
+        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }

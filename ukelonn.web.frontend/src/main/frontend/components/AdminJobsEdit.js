@@ -22,11 +22,6 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
 }
 
 class AdminJobsEdit extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onAccounts();
         this.props.onJobtypeList();
@@ -40,7 +35,7 @@ class AdminJobsEdit extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, jobtypes, jobtypesMap, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, jobtypes, jobtypesMap, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;

@@ -12,17 +12,8 @@ import Users from './Users';
 import Amount from './Amount';
 
 class AdminUsersChangePassword extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onUserList();
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
     }
 
     render() {
@@ -38,7 +29,7 @@ class AdminUsersChangePassword extends Component {
             onPasswordsFieldChange,
             onSaveUpdatedPassword,
             onLogout,
-        } = this.state;
+        } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;

@@ -12,17 +12,8 @@ import Users from './Users';
 import Amount from './Amount';
 
 class AdminUsersModify extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onUserList();
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
     }
 
     render() {
@@ -36,7 +27,7 @@ class AdminUsersModify extends Component {
             onFieldChange,
             onSaveUpdatedUser,
             onLogout,
-        } = this.state;
+        } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;

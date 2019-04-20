@@ -12,11 +12,6 @@ import {
 } from '../actiontypes';
 
 class PerformedJobs extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         let { account } = this.props;
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
@@ -30,12 +25,8 @@ class PerformedJobs extends Component {
         }
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({...props});
-    }
-
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, jobs, onLogout } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, jobs, onLogout } = this.props;
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }

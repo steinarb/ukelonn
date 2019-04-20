@@ -17,23 +17,12 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
 }
 
 class AdminJobsDelete extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onJobs(this.props.account);
     }
 
-    componentWillReceiveProps(props) {
-        reloadJobListWhenAccountHasChanged(this.props.account, props.account, this.props.onJobs);
-
-        this.setState({...props});
-    }
-
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;

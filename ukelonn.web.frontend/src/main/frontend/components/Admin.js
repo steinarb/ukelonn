@@ -15,19 +15,10 @@ import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 
 class Admin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
-        this.props.onDeselectAccountInDropdown(this.state.firstTimeAfterLogin);
+        this.props.onDeselectAccountInDropdown(this.props.firstTimeAfterLogin);
         this.props.onAccounts();
         this.props.onPaymenttypeList();
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
     }
 
     render() {
@@ -45,7 +36,7 @@ class Admin extends Component {
             onPaymenttypeFieldChange,
             onAmountFieldChange,
             onRegisterPayment,
-            onLogout } = this.state;
+            onLogout } = this.props;
 
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
