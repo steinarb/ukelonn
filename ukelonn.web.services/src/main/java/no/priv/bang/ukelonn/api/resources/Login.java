@@ -81,8 +81,8 @@ public class Login {
     private LoginResult createLoginResultFromSubject(Subject subject) {
         if (subject.isAuthenticated()) {
             String[] roles = { "user" };
-            if (subject.hasRole("administrator")) {
-                roles =  new String[]{ "administrator" };
+            if (subject.hasRole("ukelonnadmin")) {
+                roles =  new String[]{ "ukelonnadmin" };
             }
 
             String username = (String) subject.getPrincipal();

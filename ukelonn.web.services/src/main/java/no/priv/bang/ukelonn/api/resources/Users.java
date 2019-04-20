@@ -26,16 +26,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.ukelonn.UkelonnException;
-import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.User;
+import no.priv.bang.authservice.definitions.AuthserviceException;
+import no.priv.bang.osgiservice.users.User;
+import no.priv.bang.osgiservice.users.UserManagementService;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 public class Users {
 
     @Inject
-    UkelonnService ukelonn;
+    UserManagementService useradmin;
 
     @Inject
     LogService logservice;
@@ -43,8 +43,8 @@ public class Users {
     @GET
     public List<User> get() {
         try {
-            return ukelonn.getUsers();
-        } catch (UkelonnException e) {
+            return useradmin.getUsers();
+        } catch (AuthserviceException e) {
             logservice.log(LogService.LOG_ERROR, "REST API endpoint /ukelonn/api/users failed with exception", e);
             throw new InternalServerErrorException("See log file for details");
         }

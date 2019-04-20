@@ -45,14 +45,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.web.security.memorysession</artifactId>
-            <version>${project.version}</version>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.web.security.dbrealm</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.web.security.dbrealm</artifactId>
-            <version>${project.version}</version>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.web.security.memorysession</artifactId>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
@@ -82,6 +80,10 @@
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>

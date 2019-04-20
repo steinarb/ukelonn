@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,52 +95,16 @@ public class UkelonnDatabaseProviderTest {
             assertNotNull(onAccount);
             assertTrue(onAccount.next());
             int account_id = onAccount.getInt("account_id");
-            int user_id = onAccount.getInt("user_id");
             String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
+            float balance = onAccount.getFloat("balance");
             assertEquals(4, account_id);
-            assertEquals(4, user_id);
             assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
+            assertThat(balance).isGreaterThan(0);
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
-        assertEquals(6, ranChangeSets.size());
-    }
-
-    @Test
-    public void testAdministratorsView() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory);
-        provider.activate(); // Create the database
-
-        // Test that the administrators_view is present
-        try(Connection connection = provider.getConnection()) {
-            PreparedStatement statement1 = connection.prepareStatement("select * from users");
-            ResultSet allUsers = statement1.executeQuery();
-            int allUserCount = 0;
-            while (allUsers.next()) { ++allUserCount; }
-            assertEquals(5, allUserCount);
-
-            // Test that the administrators_view is present
-            PreparedStatement statement2 = connection.prepareStatement("select * from administrators");
-            ResultSet allAdministrators = statement2.executeQuery();
-            int allAdminstratorsCount = 0;
-            while (allAdministrators.next()) { ++allAdminstratorsCount; }
-            assertEquals(3, allAdminstratorsCount);
-
-            // Test that the administrators_view is present
-            PreparedStatement statement3 = connection.prepareStatement("select * from administrators_view");
-            ResultSet allAdministratorsView = statement3.executeQuery();
-            int allAdminstratorsViewCount = 0;
-            while (allAdministratorsView.next()) { ++allAdminstratorsViewCount; }
-            assertEquals(3, allAdminstratorsViewCount);
-        }
+        assertEquals(45, ranChangeSets.size());
     }
 
     @Test
@@ -161,7 +124,7 @@ public class UkelonnDatabaseProviderTest {
             while (userJjdBeforeInsert.next()) { ++numberOfUserJjdBeforeInsert; }
             assertEquals(0, numberOfUserJjdBeforeInsert);
 
-            PreparedStatement updateStatement = connection.prepareStatement("insert into users (username,password,salt,email,first_name,last_name) values (?, ?, ?, ?, ?, ?)");
+            PreparedStatement updateStatement = connection.prepareStatement("insert into users (username,password,password_salt,email,firstname,lastname) values (?, ?, ?, ?, ?, ?)");
             updateStatement.setString(1, "jjd");
             updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
             updateStatement.setString(3, "9SFDvohxZkZ9eWHiSEoMDw==");
@@ -259,8 +222,6 @@ public class UkelonnDatabaseProviderTest {
         expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isGreaterThan(0);
         int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(provider, "users");
         expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isGreaterThan(0);
-        int numberOfAdministratorsBeforeRollback = findTheNumberOfRowsInTable(provider, "administrators");
-        expectedStatusBeforeRollback.assertThat(numberOfAdministratorsBeforeRollback).isGreaterThan(0);
         int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(provider, "accounts");
         expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isGreaterThan(0);
         int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(provider, "transactions");
@@ -282,8 +243,6 @@ public class UkelonnDatabaseProviderTest {
         expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).isEqualTo(0);
         int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(provider, "users");
         expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).isEqualTo(0);
-        int numberOfAdministratorsAfterRollback = findTheNumberOfRowsInTable(provider, "administrators");
-        expectedStatusAfterRollback.assertThat(numberOfAdministratorsAfterRollback).isEqualTo(0);
         int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(provider, "accounts");
         expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
         int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(provider, "transactions");

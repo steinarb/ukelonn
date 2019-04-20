@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -28,15 +29,21 @@ import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.ukelonn.UkelonnBadRequestException;
+import no.priv.bang.authservice.definitions.AuthserviceException;
+import no.priv.bang.authservice.definitions.AuthservicePasswordEmptyException;
+import no.priv.bang.authservice.definitions.AuthservicePasswordsNotIdenticalException;
+import no.priv.bang.osgiservice.users.User;
+import no.priv.bang.osgiservice.users.UserAndPasswords;
+import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.PasswordsWithUser;
-import no.priv.bang.ukelonn.beans.User;
 
 @Path("/admin/user")
 @Produces(MediaType.APPLICATION_JSON)
 public class AdminUserResource {
+
+    @Inject
+    UserManagementService useradmin;
 
     @Inject
     UkelonnService ukelonn;
@@ -49,9 +56,9 @@ public class AdminUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public List<User> modify(User user) {
         try {
-            return ukelonn.modifyUser(user);
-        } catch (UkelonnException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.getUserId()));
+            return useradmin.modifyUser(user);
+        } catch (AuthserviceException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.getUserid()));
             throw new InternalServerErrorException("See log for details");
         }
     }
@@ -59,13 +66,22 @@ public class AdminUserResource {
     @Path("create")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<User> create(PasswordsWithUser passwords) {
+    public List<User> create(UserAndPasswords passwords) {
         try {
-            return ukelonn.createUser(passwords);
-        } catch (UkelonnBadRequestException e) {
-            logservice.log(LogService.LOG_WARNING, String.format("REST endpoint /ukelonn/api/admin/user/create got bad request: %s", e.getMessage()));
-            throw new BadRequestException(e.getMessage());
-        } catch (UkelonnException e) {
+            List<User> users = useradmin.addUser(passwords);
+
+            // Create an account with a balance for the new user
+            String username = passwords.getUser().getUsername();
+            Optional<User> createdUser = users.stream().filter(u -> username.equals(u.getUsername())).findFirst();
+            if (!createdUser.isPresent()) {
+                throw new UkelonnException(String.format("Found no user matching %s in the users table", username));
+            }
+
+            no.priv.bang.ukelonn.beans.User user = new no.priv.bang.ukelonn.beans.User(createdUser.get().getUserid(), username, createdUser.get().getEmail(), createdUser.get().getFirstname(), createdUser.get().getLastname());
+            ukelonn.addAccount(user);
+
+            return users;
+        } catch (AuthserviceException e) {
             logservice.log(LogService.LOG_ERROR, "REST endpoint /ukelonn/api/admin/user/create got error from the database", e);
             throw new InternalServerErrorException("See log for error cause");
         }
@@ -74,13 +90,16 @@ public class AdminUserResource {
     @Path("password")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<User> password(PasswordsWithUser passwords) {
+    public List<User> password(UserAndPasswords passwords) {
         try {
-            return ukelonn.changePassword(passwords);
-        } catch (UkelonnBadRequestException e) {
-            logservice.log(LogService.LOG_WARNING, String.format("REST endpoint /ukelonn/api/admin/user/password got bad request: %s", e.getMessage()));
+            return useradmin.updatePassword(passwords);
+        } catch (AuthservicePasswordEmptyException e) {
+            logservice.log(LogService.LOG_WARNING, "REST endpoint /ukelonn/api/admin/user/password received empty password");
             throw new BadRequestException(e.getMessage());
-        } catch (UkelonnException e) {
+        } catch (AuthservicePasswordsNotIdenticalException e) {
+            logservice.log(LogService.LOG_WARNING, "REST endpoint /ukelonn/api/admin/user/password received passwords that weren't identical");
+            throw new BadRequestException(e.getMessage());
+        } catch (AuthserviceException e) {
             logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/password got bad request: %s", e.getMessage()));
             throw new InternalServerErrorException("See log for error details");
         }

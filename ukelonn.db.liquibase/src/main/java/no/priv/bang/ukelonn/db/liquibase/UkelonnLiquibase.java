@@ -21,27 +21,32 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
 
 public class UkelonnLiquibase {
 
     public void createInitialSchema(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
+        Liquibase liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
         liquibase.update("");
     }
 
     public void updateSchema(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+        Liquibase liquibase101 = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection);
+        liquibase101.update("");
+        AuthserviceLiquibase authserviceLiquibase = new AuthserviceLiquibase();
+        authserviceLiquibase.createInitialSchema(connect);
+        Liquibase liquibase = new Liquibase("ukelonn-db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
         liquibase.update("");
     }
 
     public void forceReleaseLocks(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
+        Liquibase liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
         liquibase.forceReleaseLocks();
     }
 

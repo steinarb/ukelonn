@@ -61,9 +61,9 @@ class AdminUsersChangePassword extends Component {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="password" className="col-form-label col-5">Passord:</label>
+                            <label htmlFor="password1" className="col-form-label col-5">Passord:</label>
                             <div className="col-7">
-                                <input id="password" className="form-control" type='password' value={passwords.password} onChange={(event) => onPasswordsFieldChange({ password: event.target.value }, passwords)} />
+                                <input id="password1" className="form-control" type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
                             </div>
                         </div>
                         <div className="form-group row">
@@ -103,12 +103,12 @@ const mapStateToProps = state => {
 };
 
 const checkIfPasswordsAreNotIdentical = (passwords) => {
-    let { password, password2 } = passwords;
+    let { password1, password2 } = passwords;
     if (!password2) {
         return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
     }
 
-    return password !== password2;
+    return password1 !== password2;
 };
 
 const mapDispatchToProps = dispatch => {

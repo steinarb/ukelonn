@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Account {
     int accountId;
-    int userId;
     String username;
     String firstName;
     String lastName;
@@ -32,10 +31,9 @@ public class Account {
         // No-arg constructor required by jackson
     }
 
-    public Account(int accountId, int userId, String username, String firstName, String lastName, double balance) {
+    public Account(int accountId, String username, String firstName, String lastName, double balance) {
         super();
         this.accountId = accountId;
-        this.userId = userId;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -44,10 +42,6 @@ public class Account {
 
     public int getAccountId() {
         return accountId;
-    }
-
-    public int getUserId() {
-        return userId;
     }
 
     public String getUsername() {
@@ -81,7 +75,6 @@ public class Account {
         result = prime * result + accountId;
         result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-        result = prime * result + userId;
         result = prime * result + ((username == null) ? 0 : username.hashCode());
         return result;
     }
@@ -103,13 +96,12 @@ public class Account {
             accountId == other.accountId &&
             nullSafeEquals(firstName, other.firstName) &&
             nullSafeEquals(lastName, other.lastName) &&
-            userId == other.userId &&
             nullSafeEquals(username, other.username);
     }
 
     @Override
     public String toString() {
-        return "Account [getAccountId()=" + getAccountId() + ", getUserId()=" + getUserId() + ", getUsername()=" + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
+        return "Account [getAccountId()=" + getAccountId() + ", getUsername()=" + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
     }
 
 }

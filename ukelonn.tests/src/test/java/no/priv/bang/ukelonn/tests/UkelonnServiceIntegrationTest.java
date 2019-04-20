@@ -60,6 +60,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
         final String jmxPort = freePortAsString();
         final String httpPort = freePortAsString();
         final String httpsPort = freePortAsString();
+        final MavenArtifactUrlReference derbyUrl = maven().groupId("org.apache.derby").artifactId("derby").versionAsInProject();
         final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
         final MavenArtifactUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features").versionAsInProject().type("xml").classifier("features");
         final MavenArtifactUrlReference ukelonnFeatureRepo = maven().groupId("no.priv.bang.ukelonn").artifactId("karaf").versionAsInProject().type("xml").classifier("features");
@@ -77,6 +78,7 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             systemProperty("org.ops4j.pax.logging.DefaultSer‌​viceLog.level").value("DEBUG"),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
             junitBundles(),
+            mavenBundle(derbyUrl), // Without this mavenbundle the test gets ClassNotFoundException when trying to load derby exceptions
             features(paxJdbcRepo),
             features(ukelonnFeatureRepo, "ukelonn-with-derby"));
     }
@@ -97,15 +99,11 @@ public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTest
             assertNotNull(onAccount);
             assertTrue(onAccount.next()); // Verify that there is at least one result
             int account_id = onAccount.getInt("account_id");
-            int user_id = onAccount.getInt("user_id");
             String username = onAccount.getString("username");
-            String first_name = onAccount.getString("first_name");
-            String last_name = onAccount.getString("last_name");
+            float balance = onAccount.getFloat("balance");
             assertEquals(4, account_id);
-            assertEquals(4, user_id);
             assertEquals("jad", username);
-            assertEquals("Jane", first_name);
-            assertEquals("Doe", last_name);
+            assertNotEquals(0, balance);
         }
     }
 

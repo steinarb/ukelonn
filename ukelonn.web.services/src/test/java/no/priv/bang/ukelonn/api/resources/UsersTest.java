@@ -29,12 +29,11 @@ import java.util.List;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.Test;
-
+import no.priv.bang.authservice.definitions.AuthserviceDatabaseService;
+import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.User;
-import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
+import no.priv.bang.osgiservice.users.User;
+import no.priv.bang.osgiservice.users.UserManagementService;
 
 public class UsersTest {
 
@@ -43,10 +42,10 @@ public class UsersTest {
         // Create the resource to be tested
         Users resource = new Users();
 
-        // Inject the UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getUsers()).thenReturn(getUsers());
-        resource.ukelonn = ukelonn;
+        // Inject the user management service
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
+        resource.useradmin = useradmin;
 
         List<User> users = resource.get();
 
@@ -61,23 +60,24 @@ public class UsersTest {
 
         // Create an UkelonnService with a mock database
         // that throws SqlException
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
         PreparedStatement statement = mock(PreparedStatement.class);
         ResultSet results = mock(ResultSet.class);
         when(results.next()).thenThrow(SQLException.class);
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
         Connection connection = mock(Connection.class);
         when(database.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(results);
-        ukelonn.setUkelonnDatabase(database);
+        useradmin.setDatabase(database);
 
         // Inject the UkelonnService
-        resource.ukelonn = ukelonn;
+        resource.useradmin = useradmin;
 
         // Inject a log service
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
+        useradmin.setLogservice(logservice);
 
         // Do a get operation that will fail
         resource.get();

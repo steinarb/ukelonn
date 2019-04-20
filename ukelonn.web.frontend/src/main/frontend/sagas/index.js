@@ -420,6 +420,7 @@ export function* requestModifyUserSaga() {
 }
 
 function doModifyUser(user) {
+    delete user.fullname;
     return axios.post('/ukelonn/api/admin/user/modify', user);
 }
 
@@ -441,6 +442,7 @@ export function* requestCreateUserSaga() {
 }
 
 function doCreateUser(passwords) {
+    delete passwords.user.fullname;
     return axios.post('/ukelonn/api/admin/user/create', passwords);
 }
 
@@ -463,6 +465,7 @@ export function* requestChangePasswordSaga() {
 }
 
 function doChangePassword(passwords) {
+    delete passwords.user.fullname;
     return axios.post('/ukelonn/api/admin/user/password', passwords);
 }
 

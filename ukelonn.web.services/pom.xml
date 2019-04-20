@@ -62,6 +62,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.definitions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.users</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
@@ -81,6 +90,17 @@
             <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.database</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgiservice</groupId>
+            <artifactId>osgiservice.users</artifactId>
+            <version>${osgi-service.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

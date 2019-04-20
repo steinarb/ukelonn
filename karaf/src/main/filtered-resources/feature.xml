@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="webapi">
 
-    <!-- Copyright 2016-2018 Steinar Bang                                                -->
+    <!-- Copyright 2016-2019 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -17,10 +17,12 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.derbytest/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.authservicedbadapter/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.postgresql/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security.memorysession/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security.dbrealm/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.authservice/authservice.web.security.dbrealm/${authservice.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.authservice/authservice.web.security.memorysession/${authservice.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.authservice/authservice.users/${authservice.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.frontend/${project.version}/xml/features</repository>
@@ -29,16 +31,20 @@
     </feature>
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
+        <feature>authservice-users</feature>
         <feature>ukelonn-db-derby-test</feature>
-        <feature>ukelonn-web-security-memorysession</feature>
-        <feature>ukelonn-web-security-dbrealm</feature>
+        <feature>ukelonn-db-authservice-db-adapter</feature>
+        <feature>authservice-web-security-memorysession</feature>
+        <feature>authservice-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
+        <feature>authservice-users</feature>
         <feature>ukelonn-db-postgresql</feature>
-        <feature>ukelonn-web-security-memorysession</feature>
-        <feature>ukelonn-web-security-dbrealm</feature>
+        <feature>ukelonn-db-authservice-db-adapter</feature>
+        <feature>authservice-web-security-memorysession</feature>
+        <feature>authservice-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
 </features>

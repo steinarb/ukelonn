@@ -35,8 +35,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnBadRequestException;
+import no.priv.bang.osgiservice.users.UserAndPasswords;
+import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -48,6 +50,7 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
+import no.priv.bang.ukelonn.db.authservicedbadapter.UkelonnDatabaseToAuthserviceDatabaseAdapter;
 
 public class UkelonnServiceProviderTest {
 
@@ -64,6 +67,10 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testGetAccounts() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        provider.setUserAdmin(useradmin);
         List<Account> accounts = provider.getAccounts();
         assertThat(accounts.size()).isGreaterThan(1);
     }
@@ -132,9 +139,12 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testGetAccount() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        provider.setUserAdmin(useradmin);
         Account account = provider.getAccount("jad");
         assertEquals("jad", account.getUsername());
-        assertEquals(4, account.getUserId());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
         List<Transaction> jobs = provider.getJobs(account.getAccountId());
@@ -199,9 +209,86 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
+    public void testAddAccount() {
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
+        usermanagement.setLogservice(ukelonn.getLogservice());
+        UkelonnDatabaseToAuthserviceDatabaseAdapter adapter = new UkelonnDatabaseToAuthserviceDatabaseAdapter();
+        adapter.setUkelonnDatabase(ukelonn.getDatabase());
+        adapter.activate();
+        usermanagement.setDatabase(adapter);
+        ukelonn.setUserAdmin(usermanagement);
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+
+        // Create a user in the database, and retrieve it (to get the user id)
+        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
+        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
+
+        // Add a new account to the database
+        User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
+        Account newAccount = ukelonn.addAccount(userWithUserId);
+        assertThat(newAccount.getAccountId()).isGreaterThan(0);
+        assertEquals(0.0, newAccount.getBalance(), 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected=UkelonnException.class)
+    public void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
+        UkelonnDatabaseToAuthserviceDatabaseAdapter adapter = new UkelonnDatabaseToAuthserviceDatabaseAdapter();
+        adapter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
+        adapter.activate();
+        usermanagement.setDatabase(adapter);
+        usermanagement.setLogservice(getUkelonnServiceSingleton().getLogservice());
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+        ukelonn.setLogservice(getUkelonnServiceSingleton().getLogservice());
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create a passwords object containing the user
+        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+
+        // Create a user in the database, and retrieve it (to get the user id)
+        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
+        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
+
+        // Add a new account to the database
+        User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
+        Account newAccount = ukelonn.addAccount(userWithUserId);
+        assertThat(newAccount.getAccountId()).isGreaterThan(0);
+        assertEquals(0.0, newAccount.getBalance(), 0);
+    }
+
+    @Test
     public void testGetJobs() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
+        UserManagementService useradmin = mock(UserManagementService.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount(username);
         List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
         assertEquals(10, jobs.size());
@@ -210,8 +297,12 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testRegisterPerformedJob() {
         try {
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
             double oldBalance = account.getBalance();
             TransactionType jobtype = ukelonn.getJobTypes().get(0);
@@ -237,6 +328,10 @@ public class UkelonnServiceProviderTest {
     public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount("jad");
         UkelonnDatabase originalDatabase = ukelonn.getDatabase();
         try {
@@ -261,8 +356,12 @@ public class UkelonnServiceProviderTest {
     public void testDeleteAllJobsOfUser() {
         try {
             // Create the delete arguments
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
@@ -282,8 +381,12 @@ public class UkelonnServiceProviderTest {
     public void testDeleteSomeJobsOfUser() {
         try {
             // Create the delete arguments
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
             List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
@@ -325,8 +428,12 @@ public class UkelonnServiceProviderTest {
     @Test
     public void verifyDeletingNoJobsOfUserHasNoEffect() {
         try {
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
 
             // Check preconditions
@@ -347,8 +454,12 @@ public class UkelonnServiceProviderTest {
     @Test
     public void verifyThatTryingToDeletePaymentsAsJobsWillDoNothing() {
         try {
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
 
             // Check the preconditions
@@ -373,8 +484,12 @@ public class UkelonnServiceProviderTest {
     @Test
     public void verifyThatTryingToDeleteJobsOfDifferentAccountWillDoNothing() {
         try {
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
             String otherUsername = "jad";
             Account otherAccount = ukelonn.getAccount(otherUsername);
@@ -421,8 +536,12 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testUpdateJob() {
         try {
-            UkelonnService ukelonn = getUkelonnServiceSingleton();
+            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+            when(useradmin.getUser(anyString())).thenReturn(user);
+            ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
             Transaction job = ukelonn.getJobs(account.getAccountId()).get(0);
             int jobId = job.getId();
@@ -473,8 +592,12 @@ public class UkelonnServiceProviderTest {
 
     @Test
     public void testGetPayments() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
+        UserManagementService useradmin = mock(UserManagementService.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount(username);
         List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
         assertEquals(10, payments.size());
@@ -533,7 +656,11 @@ public class UkelonnServiceProviderTest {
 
     @Test
     public void testRegisterPayment() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        ukelonn.setUserAdmin(useradmin);
 
         // Create the request
         Account account = ukelonn.getAccount("jad");
@@ -568,7 +695,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create the request
-        Account account = new Account(1, 1, "jad", "Jane", "Doe", 2.0);
+        Account account = new Account(1, "jad", "Jane", "Doe", 2.0);
         PerformedTransaction payment = new PerformedTransaction(account, 1, 2.0, new Date());
 
         // Run the method under test
@@ -811,182 +938,6 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetUsers() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        List<User> users = ukelonn.getUsers();
-
-        assertThat(users.size()).isGreaterThan(0);
-    }
-
-    /**
-     * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getUsers(Class)}
-     * method when a resultset that throws SQLException is returned from the
-     * {@link UkelonnDatabase#query(PreparedStatement)} method.
-     *
-     * Expect an {@link UkelonnException} to be thrown
-     *
-     * @throws SQLException
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
-    public void testGetUsersWhenSQLExceptionIsThrown() throws SQLException {
-        // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        UkelonnDatabase originalDatabase = ukelonn.getDatabase();
-        try {
-            UkelonnDatabase database = mock(UkelonnDatabase.class);
-            Connection connection = mock(Connection.class);
-            when(database.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
-            when(connection.prepareStatement(anyString())).thenReturn(statement);
-            ResultSet resultset = mock(ResultSet.class);
-            when(resultset.next()).thenThrow(SQLException.class);
-            when(statement.executeQuery()).thenReturn(resultset);
-            ukelonn.setUkelonnDatabase(database);
-            List<User> users = ukelonn.getUsers();
-            assertEquals(0, users.size()); // Will never get here, using the return value so the IDE won't complain
-        } finally {
-            // Restore the real derby database
-            ukelonn.setUkelonnDatabase(originalDatabase);
-        }
-    }
-
-    @Test
-    public void testModifyUser() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        // Get first user and modify all properties except id
-        List<User> users = ukelonn.getUsers();
-        User user = users.get(0);
-        String modifiedUsername = "gandalf";
-        String modifiedEmailaddress = "wizard@hotmail.com";
-        String modifiedFirstname = "Gandalf";
-        String modifiedLastname = "Grey";
-        user.setUsername(modifiedUsername);
-        user.setEmail(modifiedEmailaddress);
-        user.setFirstname(modifiedFirstname);
-        user.setLastname(modifiedLastname);
-
-        // Save the modification
-        List<User> updatedUsers = ukelonn.modifyUser(user);
-
-        // Verify that the first user has the modified values
-        User firstUser = updatedUsers.get(0);
-        assertEquals(modifiedUsername, firstUser.getUsername());
-        assertEquals(modifiedEmailaddress, firstUser.getEmail());
-        assertEquals(modifiedFirstname, firstUser.getFirstname());
-        assertEquals(modifiedLastname, firstUser.getLastname());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
-    public void testModifyUserFailure() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-
-        // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
-        Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
-        when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setUkelonnDatabase(database);
-
-        // Create a user bean
-        User user = new User();
-
-        // Save the modification
-        ukelonn.modifyUser(user);
-
-        // Verify that the update fails
-        fail("Should never get here!");
-    }
-
-    @Test
-    public void testCreateUser() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        // Save the number of users before adding a user
-        int originalUserCount = ukelonn.getUsers().size();
-
-        // Create a user object
-        String newUsername = "aragorn";
-        String newEmailaddress = "strider@hotmail.com";
-        String newFirstname = "Aragorn";
-        String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
-
-        // Create a passwords object containing the user
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
-
-        // Create a user
-        List<User> updatedUsers = ukelonn.createUser(passwords);
-
-        // Verify that the first user has the modified values
-        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
-        User lastUser = updatedUsers.get(updatedUsers.size() - 1);
-        assertEquals(newUsername, lastUser.getUsername());
-        assertEquals(newEmailaddress, lastUser.getEmail());
-        assertEquals(newFirstname, lastUser.getFirstname());
-        assertEquals(newLastname, lastUser.getLastname());
-    }
-
-    @Test(expected=UkelonnBadRequestException.class)
-    public void testCreateUserPasswordsNotIdentical() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        // Create a user object
-        String newUsername = "aragorn";
-        String newEmailaddress = "strider@hotmail.com";
-        String newFirstname = "Aragorn";
-        String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
-
-        // Create a passwords object containing the user
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "secret");
-
-        // Creating user should fail
-        ukelonn.createUser(passwords);
-
-        fail("Should never get here");
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
-    public void testCreateUserDatabaseException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-
-        // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
-        Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
-        when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setUkelonnDatabase(database);
-
-        // Create a logservice and inject it
-        MockLogService logservice = new MockLogService();
-        ukelonn.setLogservice(logservice);
-
-        // Create a user object
-        String newUsername = "aragorn";
-        String newEmailaddress = "strider@hotmail.com";
-        String newFirstname = "Aragorn";
-        String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
-
-        // Create a passwords object containing the user
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
-
-        // Creating user should fail
-        ukelonn.createUser(passwords);
-
-        fail("Should never get here");
-    }
-
-    @Test
     public void testPasswordsEqualAndNotEmpty() {
         PasswordsWithUser equalPasswords = new PasswordsWithUser(null, "zekret", "zekret");
         assertTrue(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(equalPasswords));
@@ -1007,61 +958,6 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testChangePassword() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        // Get first user and modify all properties except id
-        List<User> users = ukelonn.getUsers();
-        User user = users.get(0);
-
-        // Create a passwords object containing the user and with
-        // valid and identical passwords
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
-
-        // Save the modification
-        List<User> updatedUsers = ukelonn.changePassword(passwords);
-
-        // Verify that the size of the users list hasn't changed
-        // (passwords can't be downloaded so we can't check the change)
-        assertEquals(users.size(), updatedUsers.size());
-    }
-
-    @Test(expected = UkelonnBadRequestException.class)
-    public void testChangePasswordWithEmptyUsername() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        // Create a user with an empty username
-        User user = new User(0, "", null, null, null);
-
-        // Create a passwords object containing the user and with
-        // valid and identical passwords
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
-
-        // Save the modification and cause an exception
-        ukelonn.changePassword(passwords);
-
-        fail("Should never get here");
-    }
-
-    @Test(expected=UkelonnBadRequestException.class)
-    public void testChangePasswordWhenPasswordsDontMatch() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-
-        // Get first user to get a user with valid username
-        List<User> users = ukelonn.getUsers();
-        User user = users.get(0);
-
-        // Create a passwords object containing the user and with
-        // valid but non-identical passwords
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "secret");
-
-        // Change the passwords and cause the exception
-        ukelonn.changePassword(passwords);
-
-        fail("Should never get here");
-    }
-
-    @Test
     public void testHasUserWithNonEmptyUsername() {
         PasswordsWithUser passwords = new PasswordsWithUser();
         User userWithUsername = new User(1, "foo", null, null, null);
@@ -1075,36 +971,6 @@ public class UkelonnServiceProviderTest {
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
         passwords.setUser(null);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
-    public void testChangePasswordDatabaseException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-
-        // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
-        Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
-        when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setUkelonnDatabase(database);
-
-        // Create a logservice and inject it
-        MockLogService logservice = new MockLogService();
-        ukelonn.setLogservice(logservice);
-
-        // Create a user object with a valid username
-        User user = new User(0, "validusername", null, null, null);
-
-        // Create a passwords object containing the user
-        PasswordsWithUser passwords = new PasswordsWithUser(user, "zecret", "zecret");
-
-        // Changing the password should fail
-        ukelonn.changePassword(passwords);
-
-        fail("Should never get here");
     }
 
     @Test
@@ -1131,24 +997,14 @@ public class UkelonnServiceProviderTest {
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        UserManagementServiceProvider useradmin = mock(UserManagementServiceProvider.class);
+        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        when(useradmin.getUser(anyString())).thenReturn(user);
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount("jad");
         List<Integer> jobs = ukelonn.getJobs(account.getAccountId()).stream().map(Transaction::getId).collect(Collectors.toList());
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", UkelonnServiceProvider.joinIds(jobs).toString());
-    }
-
-    /**
-     * Corner case test for {@link UkelonnServiceProvider#mapUser}
-     *
-     * @throws SQLException
-     */
-    @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
-    public void testMapUserWhenSQLExceptionIsThrown() throws SQLException {
-        ResultSet resultset = mock(ResultSet.class);
-        when(resultset.getInt(anyString())).thenThrow(SQLException.class);
-        User user = UkelonnServiceProvider.mapUser(resultset);
-        assertNull(user); // Should never get here because a UkelonnException is thrown
     }
 
     /**
@@ -1174,7 +1030,7 @@ public class UkelonnServiceProviderTest {
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             when(statement.executeUpdate()).thenThrow(SQLException.class);
             ukelonn.setUkelonnDatabase(database);
-            int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(1);
+            int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView("jad");
             assertEquals(-1, updateStatus);
         } finally {
             // Restore the real derby database
