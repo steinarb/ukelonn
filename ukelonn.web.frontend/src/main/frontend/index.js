@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from "./components/App";
-import { applyMiddleware, createStore, compose } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
@@ -14,7 +15,14 @@ import { createBrowserHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 
 const history = createBrowserHistory();
-const store = createStore(ukelonnReducer, compose(applyMiddleware(sagaMiddleware, routerMiddleware(history)), window.devToolsExtension ? window.devToolsExtension() : f => f));
+const store = createStore(ukelonnReducer,
+                          composeWithDevTools(
+                              applyMiddleware(
+                                  sagaMiddleware,
+                                  routerMiddleware(history)
+                              )
+                          )
+                         );
 sagaMiddleware.run(rootSaga);
 
 if (typeof Notification !== "undefined") {
