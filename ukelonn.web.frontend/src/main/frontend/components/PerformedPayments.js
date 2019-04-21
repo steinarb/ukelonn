@@ -4,13 +4,14 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import moment from 'moment';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
+    RECENTPAYMENTS_REQUEST,
+    UPDATE,
+} from '../actiontypes';
 
 class PerformedPayments extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         let { account } = this.props;
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
@@ -24,12 +25,8 @@ class PerformedPayments extends Component {
         }
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({...props});
-    }
-
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, payments, onLogout } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, payments, onLogout } = this.props;
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
@@ -88,10 +85,10 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
-        onPayments: (accountId) => dispatch({ type: 'RECENTPAYMENTS_REQUEST', accountId: accountId }),
-        onParentTitle: (parentTitle) => dispatch({ type: 'UPDATE', data: { parentTitle } }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
+        onPayments: (accountId) => dispatch(RECENTPAYMENTS_REQUEST(accountId)),
+        onParentTitle: (parentTitle) => dispatch(UPDATE({ parentTitle })),
     };
 };
 
