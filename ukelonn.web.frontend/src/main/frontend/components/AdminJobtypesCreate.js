@@ -2,25 +2,22 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    JOBTYPELIST_REQUEST,
+    UPDATE,
+    CREATE_JOBTYPE_REQUEST,
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 import Jobtypes from './Jobtypes';
 import Amount from './Amount';
 
 class AdminJobtypesCreate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onJobtypeList();
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({...props});
-    }
-
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
@@ -87,28 +84,28 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onJobtypeList: () => dispatch({ type: 'JOBTYPELIST_REQUEST' }),
+        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
                 transactiontype: {...jobtype},
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onNameFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionTypeName: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onAmountFieldChange: (formValue, transactiontype) => {
             let changedField = {
                 transactiontype: { ...transactiontype, transactionAmount: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveUpdatedJobType: (transactiontype) => dispatch({ type: 'CREATE_JOBTYPE_REQUEST', transactiontype }),
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onSaveUpdatedJobType: (transactiontype) => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

@@ -6,27 +6,26 @@ import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
+    START_NOTIFICATION_LISTENING,
+    JOBTYPELIST_REQUEST,
+    UPDATE,
+    REGISTERJOB_REQUEST,
+} from '../actiontypes';
 import Jobtypes from './Jobtypes';
 import Notification from './Notification';
 
 class User extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onAccount(this.props.loginResponse.username);
         this.props.onNotifyStart(this.props.loginResponse.username);
         this.props.onJobtypeList();
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({...props});
-    }
-
     render() {
-        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.state;
+        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
@@ -125,10 +124,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onAccount: (username) => dispatch({ type: 'ACCOUNT_REQUEST', username }),
-        onNotifyStart: (username) => dispatch({ type: 'START_NOTIFICATION_LISTENING', username }),
-        onJobtypeList: () => dispatch({ type: 'JOBTYPELIST_REQUEST' }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
+        onNotifyStart: (username) => dispatch(START_NOTIFICATION_LISTENING(username)),
+        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
@@ -141,7 +140,7 @@ const mapDispatchToProps = dispatch => {
                     transactionDate: moment(),
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onDateFieldChange: (selectedValue, performedjob) => {
             let changedField = {
@@ -150,9 +149,9 @@ const mapDispatchToProps = dispatch => {
                     transactionDate: selectedValue,
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onRegisterJob: (performedjob) => dispatch({ type: 'REGISTERJOB_REQUEST', performedjob: performedjob }),
+        onRegisterJob: (performedjob) => dispatch(REGISTERJOB_REQUEST(performedjob)),
     };
 };
 

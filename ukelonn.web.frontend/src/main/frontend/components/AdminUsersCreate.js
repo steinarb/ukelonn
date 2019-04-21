@@ -3,22 +3,20 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { isEmail } from 'validator';
+import {
+    CLEAR_USER_AND_PASSWORD,
+    USERS_REQUEST,
+    UPDATE,
+    CREATE_USER_REQUEST,
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 import Users from './Users';
 import Amount from './Amount';
 
 class AdminUsersCreate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onClearUserAndPassword();
         this.props.onUserList();
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
     }
 
     render() {
@@ -33,7 +31,7 @@ class AdminUsersCreate extends Component {
             onPasswordsFieldChange,
             onSaveCreatedUser,
             onLogout,
-        } = this.state;
+        } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
@@ -140,14 +138,14 @@ const checkIfPasswordsAreNotIdentical = (passwords) => {
 const mapDispatchToProps = dispatch => {
     return {
         onClearUserAndPassword: () => {
-            dispatch({ type: 'CLEAR_USER_AND_PASSWORD' });
+            dispatch(CLEAR_USER_AND_PASSWORD());
         },
-        onUserList: () => dispatch({ type: 'USERS_REQUEST' }),
+        onUserList: () => dispatch(USERS_REQUEST()),
         onUserFieldChange: (formValue, user) => {
             let changedField = {
                 user: { ...user, ...formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onPasswordsFieldChange: (formValue, passwordsFromState) => {
             const passwords = { ...passwordsFromState, ...formValue };
@@ -156,10 +154,10 @@ const mapDispatchToProps = dispatch => {
                 passwords,
                 passwordsNotIdentical,
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveCreatedUser: (user, passwords) => dispatch({ type: 'CREATE_USER_REQUEST', user, passwords }),
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onSaveCreatedUser: (user, passwords) => dispatch(CREATE_USER_REQUEST({ user, passwords })),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

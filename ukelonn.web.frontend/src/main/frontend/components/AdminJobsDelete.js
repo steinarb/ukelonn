@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    LOGOUT_REQUEST,
+    RECENTJOBS_REQUEST,
+    UPDATE,
+    DELETE_JOBS_REQUEST,
+} from '../actiontypes';
 import Accounts from './Accounts';
 
 function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
@@ -11,23 +17,12 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
 }
 
 class AdminJobsDelete extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onJobs(this.props.account);
     }
 
-    componentWillReceiveProps(props) {
-        reloadJobListWhenAccountHasChanged(this.props.account, props.account, this.props.onJobs);
-
-        this.setState({...props});
-    }
-
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
@@ -103,25 +98,25 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
-        onJobs: (account) => dispatch({ type: 'RECENTJOBS_REQUEST', accountId: account.accountId }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
+        onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {
                 account,
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onCheckboxTicked: (deleteChecked, job, jobs) => {
             job.delete = deleteChecked;
             let changedField = {
                 jobs: [...jobs],
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onDeleteMarkedJobs: (account, jobs) => {
             const jobsToDelete = jobs.filter(job => job.delete);
-            dispatch({ type: 'DELETE_JOBS_REQUEST', account, jobsToDelete });
+            dispatch(DELETE_JOBS_REQUEST({ account, jobsToDelete }));
         },
     };
 };
