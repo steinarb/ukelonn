@@ -3,24 +3,22 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
+import {
+    LOGOUT_REQUEST,
+    ACCOUNTS_REQUEST,
+    PAYMENTTYPES_REQUEST,
+    UPDATE,
+    REGISTERPAYMENT_REQUEST,
+} from '../actiontypes';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 
 class Admin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
-        this.props.onDeselectAccountInDropdown(this.state.firstTimeAfterLogin);
+        this.props.onDeselectAccountInDropdown(this.props.firstTimeAfterLogin);
         this.props.onAccounts();
         this.props.onPaymenttypeList();
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
     }
 
     render() {
@@ -38,7 +36,7 @@ class Admin extends Component {
             onPaymenttypeFieldChange,
             onAmountFieldChange,
             onRegisterPayment,
-            onLogout } = this.state;
+            onLogout } = this.props;
 
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
@@ -149,24 +147,22 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
         onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
             if (firstTimeAfterLogin) {
-                dispatch({ type: 'UPDATE',
-                           data: {
-                               firstTimeAfterLogin: false,
-                               account: emptyAccount,
-                               payment: {
-                                   account: emptyAccount,
-                                   transactionAmount: 0.0,
-                                   transactionTypeId: -1
-                               }
-                           }
-                         });
+                dispatch(UPDATE({
+                    firstTimeAfterLogin: false,
+                    account: emptyAccount,
+                    payment: {
+                        account: emptyAccount,
+                        transactionAmount: 0.0,
+                        transactionTypeId: -1
+                    }
+                }));
             }
         },
-        onAccounts: () => dispatch({ type: 'ACCOUNTS_REQUEST' }),
-        onPaymenttypeList: () => dispatch({ type: 'PAYMENTTYPES_REQUEST' }),
+        onAccounts: () => dispatch(ACCOUNTS_REQUEST()),
+        onPaymenttypeList: () => dispatch(PAYMENTTYPES_REQUEST()),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
@@ -178,7 +174,7 @@ const mapDispatchToProps = dispatch => {
                     account: account,
                 },
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);
@@ -191,15 +187,15 @@ const mapDispatchToProps = dispatch => {
                     account: account,
                 }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onAmountFieldChange: (formValue, payment) => {
             let changedField = {
                 payment: { ...payment, transactionAmount: formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onRegisterPayment: (payment, paymenttype) => dispatch({ type: 'REGISTERPAYMENT_REQUEST', payment, paymenttype }),
+        onRegisterPayment: (payment, paymenttype) => dispatch(REGISTERPAYMENT_REQUEST({ payment, paymenttype })),
     };
 };
 

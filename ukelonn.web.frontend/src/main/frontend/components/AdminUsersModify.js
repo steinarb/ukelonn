@@ -2,21 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    USERS_REQUEST,
+    UPDATE,
+    MODIFY_USER_REQUEST,
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 import Users from './Users';
 import Amount from './Amount';
 
 class AdminUsersModify extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
     componentDidMount() {
         this.props.onUserList();
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
     }
 
     render() {
@@ -30,7 +27,7 @@ class AdminUsersModify extends Component {
             onFieldChange,
             onSaveUpdatedUser,
             onLogout,
-        } = this.state;
+        } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
@@ -122,22 +119,22 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onUserList: () => dispatch({ type: 'USERS_REQUEST' }),
+        onUserList: () => dispatch(USERS_REQUEST()),
         onUsersFieldChange: (selectedValue, usersMap) => {
             let user = usersMap.get(selectedValue);
             let changedField = {
                 user: {...user},
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
         onFieldChange: (formValue, user) => {
             let changedField = {
                 user: { ...user, ...formValue }
             };
-            dispatch({ type: 'UPDATE', data: changedField });
+            dispatch(UPDATE(changedField));
         },
-        onSaveUpdatedUser: (user) => dispatch({ type: 'MODIFY_USER_REQUEST', user }),
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onSaveUpdatedUser: (user) => dispatch(MODIFY_USER_REQUEST(user)),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 

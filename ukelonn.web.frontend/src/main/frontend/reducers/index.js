@@ -1,242 +1,56 @@
-import moment from 'moment';
+import { combineReducers } from 'redux';
+import usernameReducer from './usernameReducer';
+import passwordReducer from './passwordReducer';
+import firstTimeAfterLoginReducer from './firstTimeAfterLoginReducer';
+import notificationAvailableReducer from './notificationAvailableReducer';
+import notificationMessageReducer from './notificationMessageReducer';
+import accountReducer from './accountReducer';
+import paymenttypeReducer from './paymenttypeReducer';
+import paymentReducer from './paymentReducer';
+import jobsReducer from './jobsReducer';
+import paymentsReducer from './paymentsReducer';
+import jobtypesReducer from './jobtypesReducer';
+import jobtypesMapReducer from './jobtypesMapReducer';
+import haveReceivedResponseFromLoginReducer from './haveReceivedResponseFromLoginReducer';
+import loginResponseReducer from './loginResponseReducer';
+import performedjobReducer from './performedjobReducer';
+import selectedjobReducer from './selectedjobReducer';
+import accountsReducer from './accountsReducer';
+import accountsMapReducer from './accountsMapReducer';
+import paymenttypesReducer from './paymenttypesReducer';
+import transactiontypeReducer from './transactiontypeReducer';
+import usersReducer from './usersReducer';
+import usernamesReducer from './usernamesReducer';
+import userReducer from './userReducer';
+import passwordsReducer from './passwordsReducer';
+import passwordsNotIdenticalReducer from './passwordsNotIdenticalReducer';
 
+const ukelonnReducer = combineReducers({
+    username: usernameReducer,
+    password: passwordReducer,
+    firstTimeAfterLogin: firstTimeAfterLoginReducer,
+    notificationAvailable: notificationAvailableReducer,
+    notificationMessage: notificationMessageReducer,
+    account: accountReducer,
+    paymenttype: paymenttypeReducer,
+    payment: paymentReducer,
+    jobs: jobsReducer,
+    payments: paymentsReducer,
+    jobtypes: jobtypesReducer,
+    jobtypesMap: jobtypesMapReducer,
+    haveReceivedResponseFromLogin: haveReceivedResponseFromLoginReducer,
+    loginResponse: loginResponseReducer,
+    performedjob: performedjobReducer,
+    selectedjob: selectedjobReducer,
+    accounts: accountsReducer,
+    accountsMap: accountsMapReducer,
+    paymenttypes: paymenttypesReducer,
+    transactiontype: transactiontypeReducer,
+    users: usersReducer,
+    usernames: usernamesReducer,
+    user: userReducer,
+    passwords: passwordsReducer,
+    passwordsNotIdentical: passwordsNotIdenticalReducer,
+});
 
-const emptyPerformedTransaction = {
-    account: { id: -1 },
-    transactionTypeId: -1,
-    transactionAmount: 0.0
-};
-
-const emptyTransactionType = {
-    id: -1,
-    transactionTypeName: '',
-    transactionAmount: 0.0
-};
-
-const emptyTransaction = {
-    id: -1,
-    transactionType: { ...emptyTransactionType },
-    transactionAmount: 0.0,
-    transactionTime: moment(),
-};
-
-const emptyUser = {
-    userid: -1,
-    fullname: '',
-    username: '',
-    email: '',
-    firstname: '',
-    lastname: '',
-};
-
-const emptyPasswords = {
-    user: {...emptyUser},
-    password1: '',
-    password2: '',
-};
-
-const emptyAccount = {
-    accountId: -1,
-    fullName: '',
-    balance: 0.0,
-};
-
-function addFullnameToUsers(users) {
-    return users.map(user => {
-        const fullname = user.firstname + ' ' + user.lastname;
-        return { ...user, fullname };
-    });
-}
-
-export const ukelonnReducer = (state =
-                               { username: null,
-                                 password: null,
-                                 firstTimeAfterLogin: false,
-                                 notificationAvailable: false,
-                                 account: { firstName: 'Ukjent', fullName: '', balance: 0.0 },
-                                 paymenttype: { id: -1, transactionTypeName: '', transactionAmount: 0.0, transactionIsWork: false, transactionIsWagePayment: true },
-                                 payment: {...emptyPerformedTransaction},
-                                 jobs: [],
-                                 payments: [],
-                                 jobtypes: [],
-                                 haveReceivedResponseFromLogin: false,
-                                 loginResponse: {
-                                     username: '',
-                                     roles: [],
-                                     error: ''
-                                 },
-                                 performedjob: {...emptyPerformedTransaction, transactionDate: moment()},
-                                 selectedjob: { ...emptyTransaction },
-                                 accounts: [],
-                                 accountsMap: {},
-                                 paymenttypes: [],
-                                 transactiontype: { ...emptyTransactionType },
-                                 users: [],
-                                 usernames: [],
-                                 user: { ...emptyUser },
-                                 passwords: {...emptyPasswords },
-                               },
-                               action) => {
-                                   if (action.type == 'UPDATE') {
-                                       return {
-                                           ...state,
-                                           ...action.data
-                                       };
-                                   }
-
-                                   if (action.type === 'LOGIN_REQUEST' || action.type === 'LOGOUT_REQUEST' || action.type === 'INITIAL_LOGIN_STATE_REQUEST') {
-                                       return {
-                                           ...state
-                                       };
-                                   }
-
-                                   if (action.type === 'LOGIN_RECEIVE' || action.type === 'LOGOUT_RECEIVE' || action.type === 'INITIAL_LOGIN_STATE_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           firstTimeAfterLogin: true,
-                                           haveReceivedResponseFromLogin: true,
-                                           loginResponse: action.loginResponse
-                                       };
-                                   }
-
-                                   if (action.type === 'ACCOUNT_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           account: action.account
-                                       };
-                                   }
-
-                                   if (action.type === 'REGISTERJOB_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           performedjob: {...emptyPerformedTransaction, transactionName: '', transactionDate: moment() },
-                                           account: action.account
-                                       };
-                                   }
-
-                                   if (action.type === 'REGISTERPAYMENT_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           payment: {...emptyPerformedTransaction},
-                                           account: action.account
-                                       };
-                                   }
-
-                                   if (action.type === 'RECENTJOBS_RECEIVE' || action.type === 'DELETE_JOBS_RECEIVE' || action.type === 'UPDATE_JOB_RECEIVE') {
-                                       action.jobs.map((job) => { job.delete=false; return job; });
-
-                                       return {
-                                           ...state,
-                                           jobs: action.jobs
-                                       };
-                                   }
-
-                                   if (action.type === 'RECENTPAYMENTS_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           payments: action.payments
-                                       };
-                                   }
-
-                                   if (action.type === 'JOBTYPELIST_RECEIVE') {
-                                       if (!action.jobtypes.find((job) => job.id === -1)) {
-                                           action.jobtypes.unshift(emptyTransactionType);
-                                       }
-
-                                       return {
-                                           ...state,
-                                           jobtypes: action.jobtypes,
-                                           jobtypesMap: new Map(action.jobtypes.map(i => [i.transactionTypeName, i])),
-                                       };
-                                   }
-
-                                   if (action.type === 'PAYMENTTYPELIST_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           paymenttypes: action.paymenttypes
-                                       };
-                                   }
-
-                                   if (action.type === 'ACCOUNTS_RECEIVE') {
-                                       if (!action.accounts.find((account) => account.accountId === -1)) {
-                                           action.accounts.unshift(emptyAccount);
-                                       }
-
-                                       return {
-                                           ...state,
-                                           accounts: action.accounts,
-                                           accountsMap: new Map(action.accounts.map(i => [i.fullName, i])),
-                                       };
-                                   }
-
-                                   if (action.type === 'PAYMENTTYPES_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           paymenttype: action.paymenttype,
-                                           paymenttypes: action.paymenttypes,
-                                       };
-                                   }
-
-                                   if (action.type === 'MODIFY_JOBTYPE_RECEIVE' || action.type === 'CREATE_JOBTYPE_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           jobtypes: action.jobtypes,
-                                           transactiontype: {...emptyTransactionType},
-                                       };
-                                   }
-
-                                   if (action.type === 'MODIFY_PAYMENTTYPE_RECEIVE' || action.type === 'CREATE_PAYMENTTYPE_RECEIVE') {
-                                       return {
-                                           ...state,
-                                           paymenttypes: action.paymenttypes,
-                                           transactiontype: {...emptyTransactionType},
-                                       };
-                                   }
-
-                                   if (action.type === 'USERS_RECEIVE') {
-                                       const users = addFullnameToUsers(action.users);
-                                       const usernames = users.map(u => u.username);
-
-                                       if (!users.find((user) => user.userid === -1)) {
-                                           users.unshift(emptyUser);
-                                       }
-
-                                       return {
-                                           ...state,
-                                           users: users,
-                                           usernames: usernames,
-                                       };
-                                   }
-
-                                   if (action.type === 'MODIFY_USER_RECEIVE' || action.type === 'CREATE_USER_RECEIVE' || action.type === 'MODIFY_USER_PASSWORD_RECEIVE') {
-                                       const users = addFullnameToUsers(action.users);
-
-                                       if (!users.find((user) => user.userid === -1)) {
-                                           users.unshift(emptyUser);
-                                       }
-
-                                       return {
-                                           ...state,
-                                           users: users,
-                                           user: {...emptyUser},
-                                           passwords: {...emptyPasswords},
-                                       };
-                                   }
-
-                                   if (action.type === 'CLEAR_USER_AND_PASSWORD') {
-                                       return {
-                                           ...state,
-                                           user: {...emptyUser},
-                                           passwords: {...emptyPasswords},
-                                       };
-                                   }
-
-                                   if (action.type === 'RECEIVED_NOTIFICATION') {
-                                       return {
-                                           notificationMessage: action.notifications[0],
-                                           ...state,
-                                       };
-                                   }
-
-                                   return { ...state };
-                               };
+export default ukelonnReducer;

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import {
+    UPDATE,
+    LOGIN_REQUEST,
+} from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
 let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
@@ -63,8 +67,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFieldChange: (changedField) => dispatch({ type: 'UPDATE', data: changedField }),
-        onLogin: (username, password) => dispatch({ type: 'LOGIN_REQUEST', username, password }),
+        onFieldChange: (changedField) => dispatch(UPDATE(changedField)),
+        onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
     };
 };
 

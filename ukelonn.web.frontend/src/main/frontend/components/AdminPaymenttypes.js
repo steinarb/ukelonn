@@ -2,19 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+    LOGOUT_REQUEST,
+} from '../actiontypes';
 
 class AdminPaymenttypes extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {...props};
-    }
-
-    componentWillReceiveProps(props) {
-        this.setState({...props});
-    }
-
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, onLogout } = this.state;
+        let { haveReceivedResponseFromLogin, loginResponse, onLogout } = this.props;
 
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
@@ -63,7 +57,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: 'LOGOUT_REQUEST' }),
+        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 
