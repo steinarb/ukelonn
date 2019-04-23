@@ -53,4 +53,9 @@
         <feature>ukelonn-db-postgresql</feature>
         <feature>ukelonn</feature>
     </feature>
+    <feature name="user-admin-with-ukelonn-postgresql-and-adapter">
+        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-db-authservice-db-adapter</feature>
+        <feature>authservice-user-admin</feature>
+    </feature>
 </features>
