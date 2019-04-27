@@ -47,4 +47,15 @@
         <feature>authservice-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
+    <feature name="ukelonn-with-postgresql-and-provided-authservice" description="Ukelonn webapp without authservice" version="${project.version}">
+        <feature>ukelonn-backend</feature>
+        <feature>authservice-users</feature>
+        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn</feature>
+    </feature>
+    <feature name="user-admin-with-ukelonn-postgresql-and-adapter">
+        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-db-authservice-db-adapter</feature>
+        <feature>authservice-user-admin</feature>
+    </feature>
 </features>
