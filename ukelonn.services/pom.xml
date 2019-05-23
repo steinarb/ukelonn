@@ -54,6 +54,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
