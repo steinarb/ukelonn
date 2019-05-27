@@ -20,9 +20,7 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.authservicedbadapter/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.postgresql/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.authservice/authservice.web.security.dbrealm/${authservice.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.authservice/authservice.web.security.memorysession/${authservice.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.authservice/authservice.users/${authservice.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.authservice/authservice/${authservice.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.frontend/${project.version}/xml/features</repository>
@@ -32,6 +30,7 @@
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>authservice-users</feature>
+        <feature>authservice-web-security</feature>
         <feature>ukelonn-db-derby-test</feature>
         <feature>ukelonn-db-authservice-db-adapter</feature>
         <feature>authservice-web-security-memorysession</feature>
@@ -46,5 +45,16 @@
         <feature>authservice-web-security-memorysession</feature>
         <feature>authservice-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
+    </feature>
+    <feature name="ukelonn-with-postgresql-and-provided-authservice" description="Ukelonn webapp without authservice" version="${project.version}">
+        <feature>ukelonn-backend</feature>
+        <feature>authservice-users</feature>
+        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn</feature>
+    </feature>
+    <feature name="user-admin-with-ukelonn-postgresql-and-adapter">
+        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-db-authservice-db-adapter</feature>
+        <feature>authservice-user-admin</feature>
     </feature>
 </features>
