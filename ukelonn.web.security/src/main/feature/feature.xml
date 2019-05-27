@@ -16,5 +16,6 @@
     <feature name="ukelonn-web-security">
         <feature>pax-http-whiteboard</feature>
         <feature>scr</feature>
+        <feature>commons-beanutils</feature>
     </feature>
 </features>
