@@ -65,7 +65,7 @@ Jeg har også plan om å lage en branch med en versjon som bruker [[http://spark
 Det er mulig å teste programvaren uten å sjekke ut og bygge kode.  I denne testen kjører man mot en derby-database som settes opp med dummy-data.
 
 Framgangsmåten er som følger:
- 1. Følge Apache Karaf quick start guide (NB! last ned og bruk karaf 4.1.7, ikke karaf 4.2.x) https://karaf.apache.org/manual/latest/quick-start.html
+ 1. Følge Apache Karaf quick start guide https://karaf.apache.org/manual/latest/quick-start.html
  2. Fra kommandolinja til karaf (aka. "karaf console") legg til et maven-repo som inneholder ukelonn bygd fra travis-ci
     #+BEGIN_EXAMPLE
       config:edit org.ops4j.pax.url.mvn
@@ -146,7 +146,7 @@ Dette trengs for å bygge og kjøre programvaren
       cd ukelonn
       mvn clean install
     #+END_EXAMPLE
- 4. Følge Apache Karaf quick start guide (NB! last ned og bruk karaf 4.1.7, ikke karaf 4.2.x) https://karaf.apache.org/manual/latest/quick-start.html
+ 4. Følge Apache Karaf quick start guide https://karaf.apache.org/manual/latest/quick-start.html
  5. Installer applikasjonen med følgende kommandoer fra "karaf console":
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
@@ -220,13 +220,13 @@ Framgangsmåte:
       cd ~/git/ukelonn
       mvn clean install
     #+END_EXAMPLE
- 2. [[http://karaf.apache.org/download.html][Last ned Karaf 4.1.7]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja (karaf vil da kjøre som din egen bruker som stemmer med PostgreSQL-oppsettet i starten av dette avsnittet):
+ 2. [[http://karaf.apache.org/download.html][Last ned Karaf]], pakk ut den nedlastede distribusjonen og start karaf fra kommandlinja (karaf vil da kjøre som din egen bruker som stemmer med PostgreSQL-oppsettet i starten av dette avsnittet):
     #+BEGIN_EXAMPLE
       cd /tmp
-      wget http://www.apache.org/dyn/closer.lua/karaf/4.1.7/apache-karaf-4.1.7.tar.gz
+      wget http://www.apache.org/dyn/closer.lua/karaf/4.2.5/apache-karaf-4.2.5.tar.gz
       cd ~
-      tar xvfz /tmp/apache-karaf-4.1.7.tar.gz
-      cd apache-karaf-4.1.7
+      tar xvfz /tmp/apache-karaf-4.2.5.tar.gz
+      cd apache-karaf-4.2.5
       bin/karaf
     #+END_EXAMPLE
  3. Gjør ukelonn-webapplikasjonen tilgjengelig for karaf, som "karaf features", hentet fra maven:
