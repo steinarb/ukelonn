@@ -186,7 +186,6 @@
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                     <includeTransitiveDependency>true</includeTransitiveDependency>
                 </configuration>
             </plugin>

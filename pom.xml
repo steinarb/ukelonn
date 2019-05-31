@@ -421,6 +421,7 @@
                         <includeTransitiveDependency>false</includeTransitiveDependency>
                         <aggregateFeatures>false</aggregateFeatures>
                         <includeProjectArtifact>true</includeProjectArtifact>
+                        <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                     </configuration>
                     <executions>
                         <execution>
