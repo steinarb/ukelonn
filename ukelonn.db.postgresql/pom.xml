@@ -108,34 +108,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <supportedProjectTypes>
-                        <supportedProjectType>jar</supportedProjectType>
-                        <supportedProjectType>bundle</supportedProjectType>
-                        <supportedProjectType>war</supportedProjectType>
-                    </supportedProjectTypes>
-                    <instructions>
-                        <Bundle-SymbolicName>no.priv.bang.ukelonn.db.postgresql</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>!*</Export-Package>
-                        <Provide-Capability>osgi.service;effective:=active;objectClass=no.priv.bang.ukelonn.UkelonnDatabase</Provide-Capability>
-                        <_removeheaders>
-                            Include-Resource,
-                            Private-Package,
-                            Embed-Dependency,
-                            Embed-Transitive
-                        </_removeheaders>
-                    </instructions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle</id>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -152,9 +124,6 @@
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
-                <configuration>
-                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
-                </configuration>
             </plugin>
         </plugins>
     </build>
