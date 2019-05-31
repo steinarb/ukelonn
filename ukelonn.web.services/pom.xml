@@ -181,42 +181,11 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <supportedProjectTypes>
-                        <supportedProjectType>jar</supportedProjectType>
-                        <supportedProjectType>bundle</supportedProjectType>
-                        <supportedProjectType>war</supportedProjectType>
-                    </supportedProjectTypes>
-                    <instructions>
-                        <Bundle-SymbolicName>${Bundle-SymbolicName}</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>
-                        <Karaf-Commands>*</Karaf-Commands>
-                        <Import-Package>*</Import-Package>
-                        <Export-Package>!*</Export-Package>
-                        <Include-Resource>/=target/classes/</Include-Resource>
-                        <_removeheaders>
-                            Include-Resource,
-                            Private-Package,
-                            Embed-Dependency,
-                            Embed-Transitive
-                        </_removeheaders>
-                    </instructions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle</id>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <configuration>
-                    <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                     <includeTransitiveDependency>true</includeTransitiveDependency>
                 </configuration>
             </plugin>
