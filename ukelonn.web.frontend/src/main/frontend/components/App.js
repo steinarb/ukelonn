@@ -23,7 +23,6 @@ import AdminUsersModify from "./AdminUsersModify";
 import AdminUsersCreate from "./AdminUsersCreate";
 import AdminUsersChangePassword from "./AdminUsersChangePassword";
 import Bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
-import 'open-iconic/font/css/open-iconic-bootstrap.css';
 import '../ukelonn.css';
 
 
