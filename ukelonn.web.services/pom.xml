@@ -146,14 +146,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.karaf</groupId>
+            <artifactId>jersey-karaf-feature</artifactId>
+            <version>${jersey-feature.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
