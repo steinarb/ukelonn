@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "dependencies": {
-        "axios": "0.18.0",
+        "axios": "^0.18.1",
         "connected-react-router": "^4.3.0",
         "delay": "4.0.1",
         "moment": "2.22.2",
