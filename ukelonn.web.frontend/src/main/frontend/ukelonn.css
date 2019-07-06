@@ -1,21 +1,6 @@
-.graybox {
-    background-color:#ddd;
-}
-
-.alert {
-    padding: 20px;
-    background-color: #f44336; /* Red */
-    color: white;
-    margin-bottom: 15px;
-}
-
-.hline-bottom {
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ddd; /* whichever color you prefer */
-}
-
-.right-align {
-    float: right;
+.left-align-cell {
+    display: flex;
+    justify-content: flex-start;
 }
 
 .right-align-cell {
@@ -23,25 +8,7 @@
     justify-content: flex-end;
 }
 
-.material-icons {
-}
-
-.mdl-data-table tbody tr, .mdl-data-table tbody td {
-    height: auto;
-}
-
-.mdl-data-table tbody td {
-    padding-top: 1px;
-    padding-bottom: 1px;
-}
-
-.mdl-textfield {
-    padding: 0
-}
-
-.transaction-table {
-    width: 100%;
-}
+.table-fixed { table-layout: fixed }
 
 .transaction-table-col {
     max-width: 0;
@@ -57,6 +24,8 @@
 .transaction-table-col3b { width: 4em }
 .transaction-table-col4 { width: 2em }
 
-.stretch-to-fill {
-    width: 100%;
+.hide-overflow { overflow-x: hidden; }
+
+.table-condensed {
+    font-size: 11px;
 }

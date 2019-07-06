@@ -33,73 +33,61 @@ class AdminUsersModify extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
-                        <Link to="/ukelonn/admin/users" className="mdl-navigation__link">
-                            <i className="material-icons" >chevron_left</i>
-                            &nbsp;
-                            Administer brukere
-                        </Link>
-                        <span className="mdl-layout-title">Endre brukere</span>
+            <div>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer brukere
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Endre brukere</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <form onSubmit={ e => { e.preventDefault(); }}>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="users">Velg bruker</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Users id="users" className="stretch-to-fill" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="users" className="col-form-label col-5">Velg bruker</label>
+                            <div className="col-7">
+                                <Users id="users" className="form-control" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="username">Brukernavn</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="username" className='mdl-textfield__input stretch-to-fill' type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
+                        <div className="form-group row">
+                            <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
+                            <div className="col-7">
+                                <input id="username" className="form-control" type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="email">Epostadresse</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="email" className='mdl-textfield__input stretch-to-fill' type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
+                        <div className="form-group row">
+                            <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
+                            <div className="col-7">
+                                <input id="email" className="form-control" type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="firstname">Fornavn</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="firstname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
+                        <div className="form-group row">
+                            <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
+                            <div className="col-7">
+                                <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="lastname">Etternavn</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="lastname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
+                        <div className="form-group row">
+                            <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
+                            <div className="col-7">
+                                <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
-                                &nbsp;
-                            </div>
-                            <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--4-col-tablet mdl-cell--4-col-desktop">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
                             </div>
                         </div>
-                    </form>
-                </main>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                    </div>
+                    <br/>
+                </form>
+                <br/>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
                 <br/>
                 <a href="../../../..">Tilbake til topp</a>
             </div>

@@ -40,95 +40,74 @@ class AdminUsersCreate extends Component {
         const usernameEmpty = !user.username;
         const usernameExists = usernames.indexOf(user.username) > -1;
         const emailIsNotValid = user.email && !isEmail(user.email);
-        const usernameInputClass = 'mdl-textfield mdl-js-textfield' + (usernameEmpty || usernameExists ? ' is-invalid is-dirty' : '');
-        const emailInputClass = 'mdl-textfield mdl-js-textfield' + (emailIsNotValid ? ' is-invalid is-dirty' : '');
-        const passwordInputClass = 'mdl-textfield mdl-js-textfield  stretch-to-fill' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
-
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+        const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
+        const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
+        const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
-                        <Link to="/ukelonn/admin/users" className="mdl-navigation__link">
-                            <i className="material-icons" >chevron_left</i>
-                            &nbsp;
-                            Administer brukere
-                        </Link>
-                        <span className="mdl-layout-title">Legg til ny bruker</span>
+            <div>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer brukere
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Legg til ny bruker</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <form onSubmit={ e => { e.preventDefault(); }}>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="username">Brukernavn</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <div className={usernameInputClass}>
-                                    <input id="username" className='mdl-textfield__input stretch-to-fill' type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
-                                    { usernameEmpty && <span className='mdl-textfield__error'>Brukernavn kan ikke være tomt</span> }
-                                    { usernameExists && <span className='mdl-textfield__error'>Brukernavnet finnes fra før</span> }
-                                </div>
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
+                            <div className="col-7">
+                                <input id="username" className={usernameInputClass} type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                                { usernameEmpty && <span className="invalid-feedback d-block">Brukernavn kan ikke være tomt</span> }
+                                { usernameExists && <span className="invalid-feedback d-block">Brukernavnet finnes fra før</span> }
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="email">Epostadresse</label>
-                            </div>
-                            <div className='mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop'>
-                                <div className={emailInputClass}>
-                                    <input id="email" className='mdl-textfield__input stretch-to-fill' type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
-                                    { emailIsNotValid && <span className='mdl-textfield__error'>Ikke en gyldig epostadresse</span> }
-                                </div>
+                        <div className="form-group row">
+                            <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
+                            <div className="col-7">
+                                <input id="email" className={emailInputClass} type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                                { emailIsNotValid && <span className="invalid-feedback d-block">Ikke en gyldig epostadresse</span> }
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="firstname">Fornavn</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="firstname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
+                        <div className="form-group row">
+                            <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
+                            <div className="col-7">
+                                <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="lastname">Etternavn</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="lastname" className='mdl-textfield__input stretch-to-fill' type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
+                        <div className="form-group row">
+                            <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
+                            <div className="col-7">
+                                <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="password1">Passord:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password1" className='mdl-textfield__password stretch-to-fill' type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
+                        <div className="form-group row">
+                            <label htmlFor="password1" className="col-form-label col-5">Passord:</label>
+                            <div className="col-7">
+                                <input id="password1" className={passwordGroupClass} type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="password2">Gjenta passord:</label>
-                            </div>
-                            <div className='mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop'>
-                                <div className={passwordInputClass}>
-                                    <input id="password2" type='password' className='mdl-textfield__password stretch-to-fill' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                                    { passwordsNotIdentical && <span className='mdl-textfield__error is-invalid'>Passordene er ikke identiske</span> }
-                                </div>
+                        <div className="form-group row">
+                            <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
+                            <div className="col-7">
+                                <input id="password2" className={passwordGroupClass} type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                { passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
-                                &nbsp;
-                            </div>
-                            <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--4-col-tablet mdl-cell--4-col-desktop">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
                             </div>
                         </div>
-                    </form>
-                </main>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                    </div>
+                </form>
+                <br/>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
                 <br/>
                 <a href="../../../..">Tilbake til topp</a>
             </div>

@@ -35,69 +35,70 @@ class User extends Component {
         const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
 
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
+            <div>
                 <Notification notificationMessage={notificationMessage}/>
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row">
-                        <span className="mdl-layout-title">{title}</span>
-                        <div className="mdl-layout-spacer"></div>
+                <header>
+                    <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
+                        <h1 id="logo">{title}</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <div className="mdl-grid hline-bottom">
-                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                            <label htmlFor="jobtype">Til gode:</label>
-                        </div>
-                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            { account.balance }
+                <div className="container-fluid">
+                    <div className="container">
+                        <div className="row border rounded mb-3">
+                            <div className="col">
+                                <label>Til gode:</label>
+                            </div>
+                            <div className="col">
+                                { account.balance }
+                            </div>
                         </div>
                     </div>
                     <form onSubmit={ e => { e.preventDefault(); }}>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="jobtype">Velg jobb</label>
+                        <div className="container">
+                            <div className="form-group row">
+                                <label htmlFor="jobtype" className="col-form-label col-5">Velg jobb</label>
+                                <div className="col-7">
+                                    <Jobtypes id="jobtype" className="form-control" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                                </div>
                             </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Jobtypes id="jobtype" className="stretch-to-fill" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            <div className="form-group row">
+                                <label htmlFor="amount" className="col-form-label col-5">Beløp</label>
+                                <div className="col-7">
+                                    <input id="amount" className="form-control" type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
+                                </div>
                             </div>
-                        </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="amount">Beløp</label>
+                            <div className="form-group row">
+                                <label htmlFor="date" className="col-form-label col-5">Dato</label>
+                                <div className="col-7">
+                                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
+                                </div>
                             </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="amount" className='mdl-textfield__input stretch-to-fill' type="text" value={performedjob.transactionAmount} readOnly="true" /><br/>
-                            </div>
-                        </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="date">Dato</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
-                            </div>
-                        </div>
-                        <div className="mdl-grid mdl-grid--no-spacing hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--6-col-tablet mdl-cell--10-col-desktop">
-                                &nbsp;
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
+                            <div className="form-group row">
+                                <div className="col-5"/>
+                                <div className="col-7">
+                                    <button className="btn btn-primary" onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
+                                </div>
                             </div>
                         </div>
                     </form>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to={performedjobs}>
-                        Siste jobber
-                        <i className="material-icons">chevron_right</i>
-                    </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to={performedpayments}>
-                        Siste utbetalinger
-                        <i className="material-icons">chevron_right</i>
-                    </Link>
-                </main>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../..">Tilbake til topp</a>
+                    <div className="container">
+                        <Link className="btn btn-block btn-primary right-align-cell" to={performedjobs}>
+                            Utforte jobber
+                            &nbsp;
+                            <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                        </Link>
+                        <Link className="btn btn-block btn-primary right-align-cell" to={performedpayments}>
+                            Siste utbetalinger til bruker
+                            &nbsp;
+                            <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                        </Link>
+                    </div>
+                    <br/>
+                    <br/>
+                    <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+                    <br/>
+                    <a href="../..">Tilbake til topp</a>
+                </div>
             </div>
         );
     }

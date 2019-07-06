@@ -17,42 +17,37 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
     }
 
     return (
-        <div className="Login mdl-layout mdl-layout--fixed-header">
-            <header className="mdl-layout__header">
-                <div className="mdl-layout__header-row">
-                    <span className="mdl-layout-title">Ukelønn login</span>
-                    <div className="mdl-layout-spacer"></div>
+        <div className="Login">
+            <header>
+                <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
+                    <h1>Ukelønn login</h1>
                 </div>
             </header>
-            <main className="mdl-layout__content">
-                <form  onSubmit={ e => { e.preventDefault(); }}>
-                    <div className="mdl-grid graybox">
-                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                            <label htmlFor="username">Brukernavn:</label>
-                        </div>
-                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            <input type='text' name='username' className='stretch-to-fill' onChange={(event) => onFieldChange({ username: event.target.value })}></input>
+            <div className="container">
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="form-group row">
+                        <label htmlFor="username" className="col-form-label col-3 mr-2">Brukernavn:</label>
+                        <div className="col-8">
+                            <input id="username" className="form-control" type='text' name='username' onChange={(event) => onFieldChange({ username: event.target.value })}></input>
                         </div>
                     </div>
-                    <div className="mdl-grid graybox">
-                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                            <label htmlFor="password">Passord:</label>
-                        </div>
-                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            <input type='password' name='password' className='stretch-to-fill' onChange={(event) => onFieldChange({ password: event.target.value })}/>
+                    <div className="form-group row">
+                        <label htmlFor="password" className="col-form-label col-3 mr-2">Passord:</label>
+                        <div className="col-8">
+                            <input id="password" className="form-control" type='password' name='password' onChange={(event) => onFieldChange({ password: event.target.value })}/>
                         </div>
                     </div>
-                    <div className="mdl-grid">
-                        <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
-                            &nbsp;
-                        </div>
-                        <div className="mdl-cell mdl-cell--4-col">
-                            <button className="mdl-button mdl-js-button mdl-button--raised stretch-to-fill" onClick={() => onLogin(username, password)}>Login</button>
+                    <div className="form-group row">
+                        <div className="offset-xs-3 col-xs-9">
+                            <button className="btn btn-primary" onClick={() => onLogin(username, password)}>Login</button>
                         </div>
                     </div>
                 </form>
-                <LoginErrorMessage loginResponse={loginResponse} />
-            </main>
+                <div className="row">
+                    <LoginErrorMessage loginResponse={loginResponse} />
+                </div>
+            </div>
+
         </div>
     );
 };

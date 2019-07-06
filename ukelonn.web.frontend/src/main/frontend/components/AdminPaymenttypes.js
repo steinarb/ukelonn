@@ -14,33 +14,32 @@ class AdminPaymenttypes extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
-                        <Link to="/ukelonn/admin" className="mdl-navigation__link">
-                            <i className="material-icons" >chevron_left</i>
-                            &nbsp;
-                            Registrer betaling
-                        </Link>
-                        <span className="mdl-layout-title">Administrere utbetalingstyper</span>
+            <div>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Register betaling
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Administrer betalingstyper</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/paymenttypes/modify">
+                <div className="container">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes/modify">
                         Endre utbetalingstyper
-                        <i className="material-icons">chevron_right</i>
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/paymenttypes/create">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes/create">
                         Lag ny utbetalingstype
-                        <i className="material-icons">chevron_right</i>
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                </main>
+                </div>
                 <br/>
-                <br/>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
                 <br/>
                 <a href="../../..">Tilbake til topp</a>
             </div>

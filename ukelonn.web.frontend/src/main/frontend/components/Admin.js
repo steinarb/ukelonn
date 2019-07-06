@@ -46,78 +46,75 @@ class Admin extends Component {
         const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
 
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row">
-                        <span className="mdl-layout-title">Registrer betaling</span>
-                        <div className="mdl-layout-spacer"></div>
+            <div>
+                <header>
+                    <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
+                        <h1>Registrer betaling</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <form onSubmit={ e => { e.preventDefault(); }}>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Accounts id="account-selector" className="stretch-to-fill" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="account-selector" className="col-form-label col-5">Velg hvem det skal betales til:</label>
+                            <div className="col-7">
+                                <Accounts id="account-selector" className="form-control" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="account-balance">Til gode:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="account-balance" className='mdl-textfield__input stretch-to-fill' type="text" value={account.balance} readOnly="true" />
+                        <div className="form-group row">
+                            <label htmlFor="account-balance" className="col-form-label col-5">Til gode:</label>
+                            <div className="col-7">
+                                <input id="account-balance" className="form-control" type="text" value={account.balance} readOnly="true" />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Paymenttypes id="paymenttype-selector" className="stretch-to-fill" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                        <div className="form-group row">
+                            <label htmlFor="paymenttype-selector" className="col-form-label col-5">Type av utbetaling:</label>
+                            <div className="col-7">
+                                <Paymenttypes id="paymenttype-selector" className="form-control" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="amount">Beløp:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Amount id="amount" className="stretch-to-fill" payment={payment} onAmountFieldChange={onAmountFieldChange} />
+                        <div className="form-group row">
+                            <label htmlFor="amount" className="col-form-label col-5">Beløp:</label>
+                            <div className="col-7">
+                                <Amount id="amount" className="form-control" payment={payment} onAmountFieldChange={onAmountFieldChange} />
                             </div>
                         </div>
-                        <div className="mdl-grid mdl-grid--no-spacing hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--6-col-tablet mdl-cell--10-col-desktop">
-                                &nbsp;
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
+                        <div className="form-group row">
+                            <div className="col-5" />
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
                             </div>
                         </div>
-                    </form>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to={performedjobs}>
-                        Siste jobber for bruker
-                        <i className="material-icons">chevron_right</i>
+                    </div>
+                </form>
+                <div className="container">
+                    <Link className="btn btn-block btn-primary right-align-cell" to={performedjobs}>
+                        Utforte jobber
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to={performedpayments}>
+                    <Link className="btn btn-block btn-primary right-align-cell" to={performedpayments}>
                         Siste utbetalinger til bruker
-                        <i className="material-icons">chevron_right</i>
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/jobtypes">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes">
                         Administrere jobber og jobbtyper
-                        <i className="material-icons">chevron_right</i>
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/paymenttypes">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes">
                         Administrere utbetalingstyper
-                        <i className="material-icons">chevron_right</i>
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="mdl-button mdl-js-button mdl-button--raised mdl-navigation__link right-align-cell" to="/ukelonn/admin/users">
+                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users">
                         Administrere brukere
-                        <i className="material-icons">chevron_right</i>
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                </main>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                </div>
+                <br/>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
                 <br/>
                 <a href="../..">Tilbake til topp</a>
             </div>

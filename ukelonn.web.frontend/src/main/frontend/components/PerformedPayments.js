@@ -31,42 +31,39 @@ class PerformedPayments extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
-                        <Link to="/ukelonn/" className="mdl-navigation__link">
-                            <i className="material-icons" >chevron_left</i>
-                            &nbsp;
-                            {parentTitle}</Link>
-                        <span className="mdl-layout-title">Siste utbetalinger</span>
+            <div>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {parentTitle}
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Utbetalinger til {account.firstName}</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <table className="mdl-data-table mdl-js-data-table transaction-table">
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table">
                         <thead>
                             <tr>
-                                <td className="mdl-data-table__cell--non-numeric transaction-table-col transaction-table-col1">Dato</td>
-                                <td className="mdl-data-table__cell--non-numeric transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Utbetalinger</td>
-                                <td className="transaction-table-col transaction-table-col3b">Beløp</td>
+                                <th className="transaction-table-col transaction-table-col1">Dato</th>
+                                <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Utbetalinger</th>
+                                <th className="transaction-table-col transaction-table-col3b">Beløp</th>
                             </tr>
                         </thead>
                         <tbody>
                             {payments.map((payment) =>
-                                <tr key={payment.id}>
-                                     <td className="mdl-data-table__cell--non-numeric transaction-table-col">{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
-                                     <td className="mdl-data-table__cell--non-numeric transaction-table-col transaction-table-col-hide-overflow">{payment.name}</td>
+                                 <tr key={payment.id}>
+                                     <td className="transaction-table-col">{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
+                                     <td className="transaction-table-col">{payment.name}</td>
                                      <td className="transaction-table-col">{payment.transactionAmount}</td>
-                                </tr>
+                                 </tr>
                             )}
                         </tbody>
                     </table>
-                </main>
-                <br/>
-                <br/>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                </div>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
                 <br/>
                 <a href="../..">Tilbake til topp</a>
             </div>

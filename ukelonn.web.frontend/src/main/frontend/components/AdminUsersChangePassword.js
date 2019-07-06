@@ -35,62 +35,51 @@ class AdminUsersChangePassword extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-
-        const passwordInputClass = 'mdl-textfield mdl-js-textfield stretch-to-fill' + (passwordsNotIdentical ? ' is-invalid is-dirty' : '');
+        const passwordInputClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
         return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
-                        <Link to="/ukelonn/admin/users" className="mdl-navigation__link">
-                            <i className="material-icons" >chevron_left</i>
-                            &nbsp;
-                            Administer brukere
-                        </Link>
-                        <span className="mdl-layout-title">Bytt passord på bruker</span>
+            <div>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Administer brukere
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Bytt passord på bruker</h1>
                     </div>
                 </header>
-                <main className="mdl-layout__content">
-                    <form onSubmit={ e => { e.preventDefault(); }}>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="users">Velg bruker</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Users id="users" className="stretch-to-fill" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="container">
+                        <div className="form-group row">
+                            <label htmlFor="users" className="col-form-label col-5">Velg bruker</label>
+                            <div className="col-7">
+                                <Users id="users" className="form-control" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="password1">Passord:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="password1" className="stretch-to-fill" type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
+                        <div className="form-group row">
+                            <label htmlFor="password1" className="col-form-label col-5">Passord:</label>
+                            <div className="col-7">
+                                <input id="password1" className="form-control" type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="password2">Gjenta passord:</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <div className={passwordInputClass}>
-                                    <input id="password2" type='password' className='mdl-textfield__password stretch-to-fill' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                                    { passwordsNotIdentical && <span className='mdl-textfield__error is-invalid'>Passordene er ikke identiske</span> }
-                                </div>
+                        <div className="form-group row">
+                            <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
+                            <div className="col-7">
+                                <input id="password2" className={passwordInputClass} type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
+                                { passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
                             </div>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
-                                &nbsp;
-                            </div>
-                            <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--4-col-tablet mdl-cell--4-col-desktop">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
+                        <div className="form-group row">
+                            <div className="col-5"/>
+                            <div className="col-7">
+                                <button className="btn btn-primary" onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
                             </div>
                         </div>
-                    </form>
-                </main>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+                    </div>
+                </form>
+                <br/>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
                 <br/>
                 <a href="../../../..">Tilbake til topp</a>
             </div>

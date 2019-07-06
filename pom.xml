@@ -60,6 +60,7 @@
         <jackson.version>2.9.9</jackson.version>
         <jersey-feature.version>1.1.0</jersey-feature.version>
         <jersey.version>2.27</jersey.version>
+        <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
             **/UkelonnDatabaseProvider.java
@@ -324,6 +325,11 @@
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>open-iconic</artifactId>
+                <version>${open-iconic.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
