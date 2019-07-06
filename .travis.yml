@@ -5,7 +5,7 @@ addons:
         token: $SONAR_TOKEN
 script:
     - travis_wait mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
-    - travis_wait mvn -B cobertura:cobertura coveralls:report
+    - mvn -B cobertura:cobertura coveralls:report
 
 deploy:
     provider: script
