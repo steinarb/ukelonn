@@ -47,6 +47,7 @@ class Admin extends Component {
 
         return (
             <div>
+                <a className="btn btn-block btn-primary left-align-cell" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Tilbake til topp</a>
                 <header>
                     <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
                         <h1>Registrer betaling</h1>
@@ -115,8 +116,6 @@ class Admin extends Component {
                 </div>
                 <br/>
                 <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../..">Tilbake til topp</a>
             </div>
         );
     };
