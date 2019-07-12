@@ -24,7 +24,7 @@ class Admin extends Component {
     render() {
         let {
             loginResponse,
-            account,
+            account = {},
             payment,
             paymenttype,
             amount,
@@ -42,8 +42,10 @@ class Admin extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
+        const username = account.username;
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username });
+        const statistics = '/ukelonn/statistics?' + stringify({ username });
 
         return (
             <div>
@@ -65,6 +67,7 @@ class Admin extends Component {
                 <br/>
                 <Link to={performedjobs}>Utforte jobber</Link><br/>
                 <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
+                <Link to={statistics}>Statistikker</Link><br/>
                 <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
                 <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
                 <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>

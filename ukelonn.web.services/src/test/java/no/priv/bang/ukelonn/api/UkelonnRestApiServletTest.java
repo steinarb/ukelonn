@@ -43,7 +43,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -59,6 +61,7 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
+import no.priv.bang.ukelonn.beans.SumYear;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
@@ -1860,6 +1863,39 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
+    public void testStatisticsEarningsSumOverYear() throws Exception {
+        // Set up REST API servlet with mocked services
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        List<SumYear> earningsSumOverYear = Arrays.asList(new SumYear(1250.0, 2016), new SumYear(2345.0, 2017), new SumYear(5467.0, 2018), new SumYear(2450.0, 2019));
+        when(ukelonn.earningsSumOverYear(eq("jad"))).thenReturn(earningsSumOverYear);
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUserManagement(useradmin);
+        servlet.setUkelonnService(ukelonn);
+        servlet.activate();
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildGetUrl("/statistics/earnings/sumoveryear/jad");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+
+        List<SumYear> statistics = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
+
+        // Verify that the number of users hasn't changed
+        assertEquals(4, statistics.size());
+    }
+
+    @Test
     public void testNotifications() throws Exception {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1922,6 +1958,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));
         when(config.getInitParameter(eq(ServerProperties.PROVIDER_PACKAGES))).thenReturn("no.priv.bang.ukelonn.api.resources");
         ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getContextPath()).thenReturn("/ukelonn");
         when(config.getServletContext()).thenReturn(servletContext);
         when(servletContext.getAttributeNames()).thenReturn(Collections.emptyEnumeration());
         return config;
@@ -1929,6 +1966,26 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
         return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
+    }
+
+    private MockHttpServletRequest buildGetUrl(String localpath) {
+        MockHttpServletRequest request = buildGetRootUrl();
+        request.setRequestURL("http://localhost:8181/ukelonn/api" + localpath);
+        request.setRequestURI("/ukelonn/api" + localpath);
+        return request;
+    }
+
+    private MockHttpServletRequest buildGetRootUrl() {
+        MockHttpSession session = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setProtocol("HTTP/1.1");
+        request.setMethod("GET");
+        request.setRequestURL("http://localhost:8181/ukelonn/api/");
+        request.setRequestURI("/ukelonn/api/");
+        request.setContextPath("/ukelonn");
+        request.setServletPath("/api");
+        request.setSession(session);
+        return request;
     }
 
 }

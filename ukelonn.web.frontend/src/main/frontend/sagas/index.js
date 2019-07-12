@@ -1,7 +1,7 @@
 import { fork } from "redux-saga/effects";
 import { requestInitialLoginStateSaga, requestLoginSaga } from './loginSaga';
 import { requestLogoutSaga } from './logoutSaga';
-import { requestAccountSaga } from './accountSaga';
+import accountSaga from './accountSaga';
 import { requestJobtypeListSaga } from './jobtypelistSaga';
 import { requestPaymenttypeListSaga } from './paymenttypelistSaga';
 import { requestRegisterJobSaga } from './registerjobSaga';
@@ -21,14 +21,15 @@ import { requestModifyUserSaga } from './modifyuserSaga';
 import { requestCreateUserSaga } from './createuserSaga';
 import { requestChangePasswordSaga } from './modifyuserpasswordSaga';
 import { startNotificationListening } from './notificationSaga';
-
+import earningsSumOverYearSaga from './earningsSumOverYearSaga';
+import earningsSumOverMonthSaga from './earningsSumOverMonthSaga';
 
 export function* rootSaga() {
     yield [
         fork(requestInitialLoginStateSaga),
         fork(requestLoginSaga),
         fork(requestLogoutSaga),
-        fork(requestAccountSaga),
+        fork(accountSaga),
         fork(requestJobtypeListSaga),
         fork(requestPaymenttypeListSaga),
         fork(requestRegisterJobSaga),
@@ -48,5 +49,7 @@ export function* rootSaga() {
         fork(requestCreateUserSaga),
         fork(requestChangePasswordSaga),
         fork(startNotificationListening),
+        fork(earningsSumOverYearSaga),
+        fork(earningsSumOverMonthSaga),
     ];
 };

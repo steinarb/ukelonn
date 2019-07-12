@@ -24,6 +24,8 @@ import usernamesReducer from './usernamesReducer';
 import userReducer from './userReducer';
 import passwordsReducer from './passwordsReducer';
 import passwordsNotIdenticalReducer from './passwordsNotIdenticalReducer';
+import earningsSumOverYearReducer from './earningsSumOverYearReducer';
+import earningsSumOverMonthReducer from './earningsSumOverMonthReducer';
 
 const ukelonnReducer = combineReducers({
     username: usernameReducer,
@@ -51,6 +53,8 @@ const ukelonnReducer = combineReducers({
     user: userReducer,
     passwords: passwordsReducer,
     passwordsNotIdentical: passwordsNotIdenticalReducer,
+    earningsSumOverYear: earningsSumOverYearReducer,
+    earningsSumOverMonth: earningsSumOverMonthReducer,
 });
 
 export default ukelonnReducer;

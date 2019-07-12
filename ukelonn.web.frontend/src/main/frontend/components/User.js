@@ -25,20 +25,24 @@ class User extends Component {
     }
 
     render() {
-        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
+        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, earningsSumOverYear, earningsSumOverMonth, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
         if (loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
 
         const title = 'Ukelønn for ' + account.firstName;
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
+        const username = account.username;
+        const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+        const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+        const statistics = '/ukelonn/statistics?' + stringify({ username });
+        const earningsStatisticsMessage = createEarningsStatisticsMessage(earningsSumOverYear, earningsSumOverMonth);
 
         return (
             <div>
                 <Notification notificationMessage={notificationMessage}/>
                 <h1>{title}</h1>
                 <div>Til gode: { account.balance }</div><br/>
+                <div>{earningsStatisticsMessage}</div><br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobb</label>
                     <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
@@ -55,6 +59,7 @@ class User extends Component {
                 <br/>
                 <Link to={performedjobs}>Utforte jobber</Link><br/>
                 <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
+                <Link to={statistics}>Statistikker</Link><br/>
                 <br/>
                 <button onClick={() => onLogout()}>Logout</button>
                 <br/>
@@ -79,6 +84,8 @@ const mapStateToProps = state => {
         jobtypesMap: state.jobtypesMap,
         performedjob: state.performedjob,
         notificationMessage: state.notificationMessage,
+        earningsSumOverYear: state.earningsSumOverYear,
+        earningsSumOverMonth: state.earningsSumOverMonth,
     };
 };
 
@@ -118,3 +125,43 @@ const mapDispatchToProps = dispatch => {
 User = connect(mapStateToProps, mapDispatchToProps)(User);
 
 export default User;
+
+function createEarningsStatisticsMessage(earningsSumOverYear, earningsSumOverMonth) {
+    if (!(earningsSumOverYear.length || earningsSumOverMonth.length)) {
+        return '';
+    }
+
+    const yearMessage = messageForEarningsCurrentAndPreviousYear(earningsSumOverYear);
+    const monthMessage = messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth);
+    return (<div>{yearMessage}{monthMessage}</div>);
+}
+
+function messageForEarningsCurrentAndPreviousYear(earningsSumOverYear) {
+    let message = '';
+    if (earningsSumOverYear.length) {
+        const totalEarningsThisYear = earningsSumOverYear[earningsSumOverYear.length - 1].sum;
+        message = 'Totalt beløp tjent i år: ' + totalEarningsThisYear;
+        if (earningsSumOverYear.length > 1) {
+            const previousYear = earningsSumOverYear[earningsSumOverYear.length - 2];
+            message = message.concat(' (mot ', previousYear.sum, ' tjent i hele ', previousYear.year, ')');
+        }
+    }
+
+    return (<div>{message}</div>);
+}
+
+function messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth) {
+    let message = '';
+    if (earningsSumOverMonth.length) {
+        const totalEarningsThisMonth = earningsSumOverMonth[earningsSumOverMonth.length - 1].sum;
+        message = message.concat('Totalt beløp tjent denne måneden: ', totalEarningsThisMonth);
+        if (earningsSumOverMonth.length > 1) {
+            // The previous month may not actually be the previous month if the kids have been lazy
+            // but we do care about that level of detail here (or at least: I don't...)
+            const previousMonth = earningsSumOverMonth[earningsSumOverMonth.length - 2];
+            message = message.concat(' (mot ', previousMonth.sum, ' tjent i hele forrige måned)');
+        }
+    }
+
+    return (<div>{message}</div>);
+}

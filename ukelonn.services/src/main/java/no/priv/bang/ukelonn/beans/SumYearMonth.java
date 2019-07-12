@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn;
+package no.priv.bang.ukelonn.beans;
 
-import no.priv.bang.osgiservice.database.DatabaseService;
+public class SumYearMonth extends SumYear {
 
-public interface UkelonnDatabase extends DatabaseService {
+    private int month;
 
-    String getName();
+    public SumYearMonth(double sum, int year, int month) {
+        super(sum, year);
+        this.month = month;
+    }
 
-    void forceReleaseLocks();
+    // No-args constructor required by jackson
+    public SumYearMonth() {
+        super();
+        month = -1;
+    }
 
-    String sumOverYearQuery();
-
-    String sumOverMonthQuery();
+    public int getMonth() {
+        return month;
+    }
 
 }
