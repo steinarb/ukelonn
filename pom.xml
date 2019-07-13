@@ -454,6 +454,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <show>private</show>
+                    <source>8</source>
                 </configuration>
                 <executions>
                     <execution>
