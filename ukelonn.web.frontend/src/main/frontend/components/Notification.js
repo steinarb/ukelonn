@@ -1,4 +1,4 @@
-import { spawnNotification } from "./spawnnotification.js";
+import { spawnNotification } from './spawnnotification.js';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
@@ -11,7 +11,7 @@ var Notification = ({notificationMessage, onNullNotification}) => {
             spawnNotification(notificationMessage);
             onNullNotification();
         } else {
-            console.log("Notification not supported by browser");
+            console.log('Notification not supported by browser');
         }
     }
 

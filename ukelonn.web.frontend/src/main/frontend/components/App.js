@@ -4,27 +4,27 @@ import { Switch, Route, BrowserRouter as Router, NavLink } from 'react-router-do
 import {
     INITIAL_LOGIN_STATE_REQUEST,
 } from '../actiontypes';
-import Home from "./Home";
-import Login from "./Login";
-import User from "./User";
-import PerformedJobs from "./PerformedJobs";
-import PerformedPayments from "./PerformedPayments";
+import Home from './Home';
+import Login from './Login';
+import User from './User';
+import PerformedJobs from './PerformedJobs';
+import PerformedPayments from './PerformedPayments';
 import Statistics from './Statistics';
 import StatisticsEarningsSumOverYear from './StatisticsEarningsSumOverYear';
 import StatisticsEarningsSumOverMonth from './StatisticsEarningsSumOverMonth';
-import Admin from "./Admin";
-import AdminJobtypes from "./AdminJobtypes";
-import AdminJobtypesModify from "./AdminJobtypesModify";
-import AdminJobtypesCreate from "./AdminJobtypesCreate";
-import AdminJobsDelete from "./AdminJobsDelete";
-import AdminJobsEdit from "./AdminJobsEdit";
-import AdminPaymenttypes from "./AdminPaymenttypes";
-import AdminPaymenttypesModify from "./AdminPaymenttypesModify";
-import AdminPaymenttypesCreate from "./AdminPaymenttypesCreate";
-import AdminUsers from "./AdminUsers";
-import AdminUsersModify from "./AdminUsersModify";
-import AdminUsersCreate from "./AdminUsersCreate";
-import AdminUsersChangePassword from "./AdminUsersChangePassword";
+import Admin from './Admin';
+import AdminJobtypes from './AdminJobtypes';
+import AdminJobtypesModify from './AdminJobtypesModify';
+import AdminJobtypesCreate from './AdminJobtypesCreate';
+import AdminJobsDelete from './AdminJobsDelete';
+import AdminJobsEdit from './AdminJobsEdit';
+import AdminPaymenttypes from './AdminPaymenttypes';
+import AdminPaymenttypesModify from './AdminPaymenttypesModify';
+import AdminPaymenttypesCreate from './AdminPaymenttypesCreate';
+import AdminUsers from './AdminUsers';
+import AdminUsersModify from './AdminUsersModify';
+import AdminUsersCreate from './AdminUsersCreate';
+import AdminUsersChangePassword from './AdminUsersChangePassword';
 
 
 class App extends Component {

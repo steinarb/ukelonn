@@ -15,12 +15,12 @@ class PerformedJobs extends Component {
     componentDidMount() {
         let { account } = this.props;
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
+        const accountId = account.firstName === 'Ukjent' ? queryParams.accountId : account.accountId;
         this.props.onJobs(accountId);
-        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : "Register betaling";
+        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : 'Register betaling';
         this.props.onParentTitle(parentTitle);
 
-        if (account.firstName === "Ukjent" && queryParams.username) {
+        if (account.firstName === 'Ukjent' && queryParams.username) {
             this.props.onAccount(queryParams.username);
         }
     }

@@ -1,5 +1,5 @@
-import { takeLatest, call, put, fork } from "redux-saga/effects";
-import axios from "axios";
+import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import axios from 'axios';
 import {
     MODIFY_JOBTYPE_REQUEST,
     MODIFY_JOBTYPE_RECEIVE,

@@ -15,12 +15,12 @@ class PerformedPayments extends Component {
     componentDidMount() {
         let { account } = this.props;
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
+        const accountId = account.firstName === 'Ukjent' ? queryParams.accountId : account.accountId;
         this.props.onPayments(accountId);
-        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : "Register betaling";
+        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : 'Register betaling';
         this.props.onParentTitle(parentTitle);
 
-        if (account.firstName === "Ukjent" && queryParams.username) {
+        if (account.firstName === 'Ukjent' && queryParams.username) {
             this.props.onAccount(queryParams.username);
         }
     }
@@ -47,7 +47,7 @@ class PerformedPayments extends Component {
                     <tbody>
                         {payments.map((payment) =>
                             <tr key={payment.id}>
-                                <td>{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
+                                <td>{moment(payment.transactionTime).format('YYYY-MM-DD')}</td>
                                 <td>{payment.name}</td>
                                 <td>{payment.transactionAmount}</td>
                             </tr>

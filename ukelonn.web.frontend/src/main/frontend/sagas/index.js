@@ -1,4 +1,4 @@
-import { fork } from "redux-saga/effects";
+import { fork } from 'redux-saga/effects';
 import { requestInitialLoginStateSaga, requestLoginSaga } from './loginSaga';
 import { requestLogoutSaga } from './logoutSaga';
 import accountSaga from './accountSaga';
