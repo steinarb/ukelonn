@@ -26,10 +26,13 @@ class PerformedJobs extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, jobs, onLogout } = this.props;
+        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, onLogout } = this.props;
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
+
+        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
+        const { parentTitle } = queryParams;
 
         return (
             <div>

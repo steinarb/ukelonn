@@ -42,9 +42,11 @@ class Admin extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        const parentTitle = 'Tilbake til ukelonn admin';
+        const accountId = account.accountId;
         const username = account.username;
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username });
+        const performedjobs = "/ukelonn/performedjobs?" + stringify({ parentTitle, accountId, username });
+        const performedpayments = "/ukelonn/performedpayments?" + stringify({ parentTitle, accountId, username });
         const statistics = '/ukelonn/statistics?' + stringify({ username });
 
         return (

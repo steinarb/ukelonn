@@ -26,10 +26,13 @@ class PerformedPayments extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, payments, onLogout } = this.props;
+        let { haveReceivedResponseFromLogin, loginResponse, account, payments, onLogout } = this.props;
         if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
             return <Redirect to="/ukelonn/login" />;
         }
+
+        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
+        const { parentTitle } = queryParams;
 
         return (
             <div>
