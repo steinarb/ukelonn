@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNTS_REQUEST,
@@ -22,8 +23,11 @@ class Admin extends Component {
     }
 
     render() {
+        if (userIsNotLoggedIn(this.props)) {
+            return <Redirect to="/ukelonn/login" />;
+        }
+
         let {
-            loginResponse,
             account = {},
             payment,
             paymenttype,
@@ -37,10 +41,6 @@ class Admin extends Component {
             onAmountFieldChange,
             onRegisterPayment,
             onLogout } = this.props;
-
-        if (loginResponse.roles.length === 0) {
-            return <Redirect to="/ukelonn/login" />;
-        }
 
         const parentTitle = 'Tilbake til ukelonn admin';
         const accountId = account.accountId;

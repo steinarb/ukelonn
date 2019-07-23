@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import moment from 'moment';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNT_REQUEST,
@@ -26,11 +27,11 @@ class PerformedPayments extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, payments, onLogout } = this.props;
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        let { account, payments, onLogout } = this.props;
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
         const { parentTitle } = queryParams;
 

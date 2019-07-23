@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import { findUsernameFromAccountOrQueryParameter } from '../common/account';
-import { userIsLoggedIn } from '../common/login';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     ACCOUNT_REQUEST,
     LOGOUT_REQUEST,
@@ -17,7 +17,7 @@ class StatisticsEarningsSumOverYear extends Component {
     }
 
     render() {
-        if (userIsLoggedIn(this.props)) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 

@@ -6,6 +6,7 @@ import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNT_REQUEST,
@@ -25,11 +26,11 @@ class User extends Component {
     }
 
     render() {
-        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, earningsSumOverYear, earningsSumOverMonth, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
-        if (loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        let { account, jobtypes, jobtypesMap, performedjob, notificationMessage, earningsSumOverYear, earningsSumOverMonth, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
         const title = 'Ukelønn for ' + account.firstName;
         const username = account.username;
         const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
