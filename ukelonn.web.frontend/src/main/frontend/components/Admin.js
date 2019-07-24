@@ -45,9 +45,10 @@ class Admin extends Component {
         const parentTitle = 'Tilbake til ukelonn admin';
         const accountId = account.accountId;
         const username = account.username;
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ parentTitle, accountId, username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ parentTitle, accountId, username });
-        const statistics = '/ukelonn/statistics?' + stringify({ username });
+        const noUser = !username;
+        const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
+        const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
+        const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
 
         return (
             <div>
@@ -64,7 +65,7 @@ class Admin extends Component {
                     <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
                     <br/>
                     <br/>
-                    <button onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
+                    <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
                 </form>
                 <br/>
                 <Link to={performedjobs}>Utforte jobber</Link><br/>

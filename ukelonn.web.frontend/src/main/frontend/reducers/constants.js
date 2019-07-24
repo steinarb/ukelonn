@@ -36,6 +36,9 @@ export const emptyPasswords = {
 
 export const emptyAccount = {
     accountId: -1,
+    username: '',
+    firstName: '',
+    lastName: '',
     fullName: '',
     balance: 0.0,
 };
