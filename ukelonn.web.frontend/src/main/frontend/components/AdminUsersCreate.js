@@ -36,10 +36,6 @@ class AdminUsersCreate extends Component {
             onLogout,
         } = this.props;
 
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
         const usernameEmpty = !user.username;
         const usernameExists = usernames.indexOf(user.username) > -1;
         const emailIsNotValid = user.email && !isEmail(user.email);
