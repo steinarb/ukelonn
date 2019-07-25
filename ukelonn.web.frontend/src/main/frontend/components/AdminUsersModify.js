@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     USERS_REQUEST,
     UPDATE,
@@ -17,9 +18,11 @@ class AdminUsersModify extends Component {
     }
 
     render() {
+        if (userIsNotLoggedIn(this.props)) {
+            return <Redirect to="/ukelonn/login" />;
+        }
+
         let {
-            haveReceivedResponseFromLogin,
-            loginResponse,
             users,
             usersMap,
             user,
@@ -28,10 +31,6 @@ class AdminUsersModify extends Component {
             onSaveUpdatedUser,
             onLogout,
         } = this.props;
-
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
-            return <Redirect to="/ukelonn/login" />;
-        }
 
         return (
             <div>

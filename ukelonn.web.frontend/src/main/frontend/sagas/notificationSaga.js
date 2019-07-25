@@ -1,6 +1,6 @@
-import { takeLatest, call, put, fork } from "redux-saga/effects";
-import axios from "axios";
-import delay from "delay";
+import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import axios from 'axios';
+import delay from 'delay';
 import {
     START_NOTIFICATION_LISTENING,
     RECEIVED_NOTIFICATION,
@@ -21,11 +21,11 @@ function* pollNotification(action) {
     try {
         while (loop) {
             const response = yield call(() => axios({ url: notificationsRestEndpoint }));
-            if (response.headers["content-type"] === "application/json" && response.data.length > 0) {
+            if (response.headers['content-type'] === 'application/json' && response.data.length > 0) {
                 yield put(RECEIVED_NOTIFICATION(response.data));
             }
 
-            if (response.headers["content-type"] === "text/html") { // Happens in redirect to login page after logout
+            if (response.headers['content-type'] === 'text/html') { // Happens in redirect to login page after logout
                 loop = false;
             }
 
