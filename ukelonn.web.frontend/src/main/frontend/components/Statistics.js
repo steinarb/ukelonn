@@ -22,15 +22,30 @@ class Statistics extends Component {
 
         return (
             <div>
-                <h1>Jobbstatistikk</h1>
+                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    Tilbake
+                </Link>
+                <header>
+                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                        <h1>Jobbstatistikk</h1>
+                    </div>
+                </header>
+                <div className="container">
+                    <Link className="btn btn-block btn-primary right-align-cell" to={sumoveryear}>
+                        Sum av beløp tjent pr. år
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to={sumovermonth}>
+                        Sum av beløp tjent pr. år og måned
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
+                </div>
                 <br/>
-                <Link to="/ukelonn/">Tilbake</Link><br/>
-                <Link to={sumoveryear}>Sum av beløp tjent pr. år</Link><br/>
-                <Link to={sumovermonth}>Sum av beløp tjent pr. år og måned</Link><br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../..">Tilbake til topp</a>
+                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
             </div>
         );
     };
