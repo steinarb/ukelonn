@@ -79,6 +79,7 @@ const emptyJob = {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
         jobtypes: state.jobtypes,

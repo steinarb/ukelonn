@@ -91,6 +91,7 @@ const emptyAccount = {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         firstTimeAfterLogin: state.firstTimeAfterLogin,
         account: state.account,
