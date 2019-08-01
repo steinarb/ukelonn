@@ -99,7 +99,13 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.karaf</groupId>
+            <artifactId>postgresql-jdbc-karaf</artifactId>
+            <version>${postgresql.feature.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
     </dependencies>
 
