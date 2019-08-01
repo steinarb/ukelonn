@@ -57,6 +57,7 @@
         <dependency.pax.web.version>6.0.3</dependency.pax.web.version>
         <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
         <dependency.pax.jdbc.version>1.0.1</dependency.pax.jdbc.version>
+        <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
         <dependency.shiro.version>1.4.1</dependency.shiro.version>
         <jackson.version>2.9.9</jackson.version>
         <jersey-feature.version>1.1.0</jersey-feature.version>
@@ -249,6 +250,12 @@
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc-derby</artifactId>
                 <version>${dependency.pax.jdbc.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.bundles</groupId>
+                <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
+                <version>1_3</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
