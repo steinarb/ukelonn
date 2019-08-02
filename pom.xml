@@ -60,8 +60,9 @@
         <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
         <dependency.shiro.version>1.4.1</dependency.shiro.version>
         <jackson.version>2.9.9</jackson.version>
-        <jersey-feature.version>1.1.0</jersey-feature.version>
-        <jersey.version>2.27</jersey.version>
+        <jackson.databind.version>2.9.9.2</jackson.databind.version>
+        <jersey-feature.version>1.2.0</jersey-feature.version>
+        <jersey.version>2.28</jersey.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
             **/UkelonnDatabaseProvider.java
@@ -291,7 +292,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson.databind.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
