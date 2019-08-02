@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNTS_REQUEST,
@@ -22,9 +23,12 @@ class Admin extends Component {
     }
 
     render() {
+        if (userIsNotLoggedIn(this.props)) {
+            return <Redirect to="/ukelonn/login" />;
+        }
+
         let {
-            loginResponse,
-            account,
+            account = {},
             payment,
             paymenttype,
             amount,
@@ -38,12 +42,13 @@ class Admin extends Component {
             onRegisterPayment,
             onLogout } = this.props;
 
-        if (loginResponse.roles.length === 0) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
+        const parentTitle = 'Tilbake til ukelonn admin';
+        const accountId = account.accountId;
+        const username = account.username;
+        const noUser = !username;
+        const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
+        const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
+        const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
 
         return (
             <div>
@@ -98,6 +103,11 @@ class Admin extends Component {
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
+                    <Link className="btn btn-block btn-primary right-align-cell" to={statistics}>
+                        Statistikk
+                        &nbsp;
+                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                    </Link>
                     <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes">
                         Administrere jobber og jobbtyper
                         &nbsp;
@@ -129,6 +139,7 @@ const emptyAccount = {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         firstTimeAfterLogin: state.firstTimeAfterLogin,
         account: state.account,

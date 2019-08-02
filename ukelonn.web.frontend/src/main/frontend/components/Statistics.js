@@ -2,58 +2,50 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { stringify } from 'qs';
+import { findUsernameFromAccountOrQueryParameter } from '../common/account';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
 
-class AdminJobtypes extends Component {
+class Statistics extends Component {
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
         let { onLogout } = this.props;
+        const username = findUsernameFromAccountOrQueryParameter(this.props);
+        const sumoveryear = '/ukelonn/statistics/earnings/sumoveryear?' + stringify({ username });
+        const sumovermonth = '/ukelonn/statistics/earnings/sumovermonth?' + stringify({ username });
 
         return (
             <div>
                 <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
-                    Register betaling
+                    Tilbake
                 </Link>
                 <header>
                     <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                        <h1>Administrer jobber og jobbtyper</h1>
+                        <h1>Jobbstatistikk</h1>
                     </div>
                 </header>
                 <div className="container">
-                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/modify">
-                        Endre jobbtyper
+                    <Link className="btn btn-block btn-primary right-align-cell" to={sumoveryear}>
+                        Sum av beløp tjent pr. år
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/create">
-                        Lag ny jobbtype
-                        &nbsp;
-                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
-                    </Link>
-                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobs/delete">
-                        Slett jobber
-                        &nbsp;
-                        <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
-                    </Link>
-                    <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobs/edit">
-                        Endre jobber
+                    <Link className="btn btn-block btn-primary right-align-cell" to={sumovermonth}>
+                        Sum av beløp tjent pr. år og måned
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
                 </div>
                 <br/>
-                <br/>
                 <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../..">Tilbake til topp</a>
             </div>
         );
     };
@@ -72,6 +64,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-AdminJobtypes = connect(mapStateToProps, mapDispatchToProps)(AdminJobtypes);
+Statistics = connect(mapStateToProps, mapDispatchToProps)(Statistics);
 
-export default AdminJobtypes;
+export default Statistics;

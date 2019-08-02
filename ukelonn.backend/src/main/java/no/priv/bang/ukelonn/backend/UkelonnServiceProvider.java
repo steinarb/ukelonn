@@ -43,6 +43,8 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
+import no.priv.bang.ukelonn.beans.SumYear;
+import no.priv.bang.ukelonn.beans.SumYearMonth;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
@@ -398,6 +400,49 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Override
+    public List<SumYear> earningsSumOverYear(String username) {
+        List<SumYear> statistics = new ArrayList<>();
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(database.sumOverYearQuery())) {
+                statement.setString(1, username);
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        double sum = resultSet.getDouble(1);
+                        int year = resultSet.getInt(2);
+                        statistics.add(new SumYear(sum, year));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logWarning(String.format("Failed to get sum of earnings per year for account \"%s\" from the database", username), e);
+        }
+
+        return statistics;
+    }
+
+    @Override
+    public List<SumYearMonth> earningsSumOverMonth(String username) {
+        List<SumYearMonth> statistics = new ArrayList<>();
+        try(Connection connection = database.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(database.sumOverMonthQuery())) {
+                statement.setString(1, username);
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        double sum = resultSet.getDouble(1);
+                        int year = resultSet.getInt(2);
+                        int month = resultSet.getInt(3);
+                        statistics.add(new SumYearMonth(sum, year, month));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logWarning(String.format("Failed to get sum of earnings per month for account \"%s\" from the database", username), e);
+        }
+
+        return statistics;
+    }
+
+    @Override
     public List<Notification> notificationsTo(String username) {
         ConcurrentLinkedQueue<Notification> notifications = getNotificationQueueForUser(username);
         Notification notification = notifications.poll();
@@ -470,6 +515,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     private void logError(String message, Exception e) {
         logservice.log(LogService.LOG_ERROR, message, e);
+    }
+
+    private void logWarning(String message, Exception e) {
+        logservice.log(LogService.LOG_WARNING, message, e);
     }
 
     /**

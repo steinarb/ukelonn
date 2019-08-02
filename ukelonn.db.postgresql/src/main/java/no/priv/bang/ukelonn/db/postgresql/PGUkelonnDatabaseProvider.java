@@ -184,4 +184,14 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         }
     }
 
+    @Override
+    public String sumOverYearQuery() {
+        return "select sum(t.transaction_amount), extract(year from t.transaction_time) as year from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work and a.username=? group by extract(year from t.transaction_time) order by extract(year from t.transaction_time)";
+    }
+
+    @Override
+    public String sumOverMonthQuery() {
+        return "select sum(t.transaction_amount), extract(year from t.transaction_time) as year, extract(month from t.transaction_time) as month from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work and a.username=? group by extract(year from t.transaction_time), extract(month from t.transaction_time) order by extract(year from t.transaction_time), extract(month from t.transaction_time)";
+    }
+
 }

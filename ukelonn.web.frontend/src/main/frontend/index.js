@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from "./components/App";
+import App from './components/App';
 import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
@@ -25,7 +25,7 @@ const store = createStore(ukelonnReducer,
                          );
 sagaMiddleware.run(rootSaga);
 
-if (typeof Notification !== "undefined") {
+if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {
         store.dispatch(UPDATE({ notificationAvailable: true }));
         console.log(result);

@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
 
 class AdminUsers extends Component {
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, onLogout } = this.props;
-
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
+
+        let { onLogout } = this.props;
 
         return (
             <div>
