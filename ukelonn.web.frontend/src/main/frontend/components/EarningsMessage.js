@@ -12,7 +12,7 @@ class EarningsMessage extends Component {
 
         const yearMessage = messageForEarningsCurrentAndPreviousYear(earningsSumOverYear);
         const monthMessage = messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth);
-        return (<div>{yearMessage}{monthMessage}</div>);
+        return (<div className="alert alert-info" role="alert">{yearMessage}{monthMessage}</div>);
     }
 }
 
