@@ -178,7 +178,7 @@ function createEarningsStatisticsMessage(earningsSumOverYear, earningsSumOverMon
 
     const yearMessage = messageForEarningsCurrentAndPreviousYear(earningsSumOverYear);
     const monthMessage = messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth);
-    return (<div>{yearMessage}{monthMessage}</div>);
+    return (<div className="alert alert-info" role="alert">{yearMessage}{monthMessage}</div>);
 }
 
 function messageForEarningsCurrentAndPreviousYear(earningsSumOverYear) {
