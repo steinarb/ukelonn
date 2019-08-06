@@ -6,6 +6,7 @@ import { stringify } from 'qs';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
     ACCOUNTS_REQUEST,
     PAYMENTTYPES_REQUEST,
     UPDATE,
@@ -14,6 +15,7 @@ import {
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
+import EarningsMessage from './EarningsMessage';
 
 class Admin extends Component {
     componentDidMount() {
@@ -65,6 +67,9 @@ class Admin extends Component {
                             <div className="col-7">
                                 <Accounts id="account-selector" className="form-control" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
                             </div>
+                        </div>
+                        <div className="row">
+                            <EarningsMessage />
                         </div>
                         <div className="form-group row">
                             <label htmlFor="account-balance" className="col-form-label col-5">Til gode:</label>
@@ -172,6 +177,7 @@ const mapDispatchToProps = dispatch => {
         onPaymenttypeList: () => dispatch(PAYMENTTYPES_REQUEST()),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
+            const username = account.username;
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
             let changedField = {
                 account,
@@ -182,6 +188,7 @@ const mapDispatchToProps = dispatch => {
                 },
             };
             dispatch(UPDATE(changedField));
+            dispatch(ACCOUNT_REQUEST(username))
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);

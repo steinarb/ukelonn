@@ -33,7 +33,6 @@
         <module>ukelonn.db.derbytest</module>
         <module>ukelonn.db.postgresql</module>
         <module>ukelonn.db.authservicedbadapter</module>
-        <module>ukelonn.tests</module>
         <module>karaf</module>
     </modules>
 
