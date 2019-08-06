@@ -6,6 +6,7 @@ import { stringify } from 'qs';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
     ACCOUNTS_REQUEST,
     PAYMENTTYPES_REQUEST,
     UPDATE,
@@ -14,6 +15,7 @@ import {
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
+import EarningsMessage from './EarningsMessage';
 
 class Admin extends Component {
     componentDidMount() {
@@ -57,6 +59,7 @@ class Admin extends Component {
                     <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
                     <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
                     <br/>
+                    <EarningsMessage /><br/>
                     <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly="true" /><br/>
                     <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
                     <Paymenttypes id="paymenttype-selector" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
@@ -124,6 +127,7 @@ const mapDispatchToProps = dispatch => {
         onPaymenttypeList: () => dispatch(PAYMENTTYPES_REQUEST()),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
+            const username = account.username;
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
             let changedField = {
                 account,
@@ -134,6 +138,7 @@ const mapDispatchToProps = dispatch => {
                 },
             };
             dispatch(UPDATE(changedField));
+            dispatch(ACCOUNT_REQUEST(username))
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);
