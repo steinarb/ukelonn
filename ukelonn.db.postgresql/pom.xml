@@ -101,9 +101,9 @@
             <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.karaf</groupId>
-            <artifactId>postgresql-jdbc-karaf</artifactId>
-            <version>${postgresql.feature.version}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
