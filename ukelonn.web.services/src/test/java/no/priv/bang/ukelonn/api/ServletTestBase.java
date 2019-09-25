@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -106,6 +107,18 @@ public class ServletTestBase {
             @Override
             public int read() throws IOException {
                 return inputStream.read();
+            }
+
+            public boolean isFinished() {
+                return false;
+            }
+
+            public boolean isReady() {
+                return true;
+            }
+
+            public void setReadListener(ReadListener readListener) {
+                // Does nothing
             }
         };
     }
