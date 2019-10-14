@@ -122,7 +122,6 @@
             <artifactId>derby</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <testResources>
             <testResource>
