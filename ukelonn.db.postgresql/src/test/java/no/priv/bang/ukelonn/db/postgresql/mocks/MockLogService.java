@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2018 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package no.priv.bang.ukelonn.db.postgresql.mocks;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 
+@SuppressWarnings("rawtypes")
 public class MockLogService implements LogService {
     final String[] errorLevel = {"", "[ERROR] ", "[WARNING] ", "[INFO] ", "[DEBUG] "};
     int logmessagecount = 0;
@@ -37,13 +38,11 @@ public class MockLogService implements LogService {
         ++logmessagecount;
     }
 
-    @SuppressWarnings("rawtypes")
     public void log(ServiceReference sr, int level, String message) {
         // TODO Auto-generated method stub
 
     }
 
-    @SuppressWarnings("rawtypes")
     public void log(ServiceReference sr, int level, String message, Throwable exception) {
         // TODO Auto-generated method stub
 

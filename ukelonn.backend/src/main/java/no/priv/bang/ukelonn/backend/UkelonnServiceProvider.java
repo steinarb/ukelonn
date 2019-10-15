@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,7 +224,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         if (!idsOfJobsToDelete.isEmpty()) {
             String deleteQuery = "delete from transactions where transaction_id in (select transaction_id from transactions inner join transaction_types on transactions.transaction_type_id=transaction_types.transaction_type_id where transaction_id in (" + joinIds(idsOfJobsToDelete) + ") and transaction_types.transaction_is_work=? and account_id=?)";
             try(Connection connection = database.getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+                try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) { // NOSONAR This string manipulation is OK and the only way to do it
                     addParametersToDeleteJobsStatement(accountId, statement);
                     statement.executeUpdate();
                 }
