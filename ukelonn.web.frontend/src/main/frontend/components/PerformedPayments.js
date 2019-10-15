@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import moment from 'moment';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNT_REQUEST,
@@ -15,23 +16,25 @@ class PerformedPayments extends Component {
     componentDidMount() {
         let { account } = this.props;
         let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const accountId = account.firstName === "Ukjent" ? queryParams.accountId : account.accountId;
+        const accountId = account.firstName === 'Ukjent' ? queryParams.accountId : account.accountId;
         this.props.onPayments(accountId);
-        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : "Register betaling";
+        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : 'Register betaling';
         this.props.onParentTitle(parentTitle);
 
-        if (account.firstName === "Ukjent" && queryParams.username) {
+        if (account.firstName === 'Ukjent' && queryParams.username) {
             this.props.onAccount(queryParams.username);
         }
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, parentTitle, account, payments, onLogout } = this.props;
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+        let { account, payments, onLogout } = this.props;
+        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
+        const { parentTitle } = queryParams;
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">

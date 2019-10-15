@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     JOBTYPELIST_REQUEST,
@@ -17,13 +18,11 @@ class AdminJobtypesModify extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
-
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+        let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">

@@ -1,5 +1,5 @@
-import { takeLatest, call, put, fork } from "redux-saga/effects";
-import axios from "axios";
+import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import axios from 'axios';
 import {
     LOGOUT_REQUEST,
     LOGOUT_RECEIVE,

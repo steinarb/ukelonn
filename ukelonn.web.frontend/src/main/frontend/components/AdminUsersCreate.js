@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { isEmail } from 'validator';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORD,
     USERS_REQUEST,
@@ -20,9 +21,11 @@ class AdminUsersCreate extends Component {
     }
 
     render() {
+        if (userIsNotLoggedIn(this.props)) {
+            return <Redirect to="/ukelonn/login" />;
+        }
+
         let {
-            haveReceivedResponseFromLogin,
-            loginResponse,
             usernames,
             user,
             passwords,
@@ -32,10 +35,6 @@ class AdminUsersCreate extends Component {
             onSaveCreatedUser,
             onLogout,
         } = this.props;
-
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
-            return <Redirect to="/ukelonn/login" />;
-        }
 
         const usernameEmpty = !user.username;
         const usernameExists = usernames.indexOf(user.username) > -1;

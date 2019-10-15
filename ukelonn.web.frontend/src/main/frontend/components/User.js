@@ -6,6 +6,7 @@ import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNT_REQUEST,
@@ -16,6 +17,7 @@ import {
 } from '../actiontypes';
 import Jobtypes from './Jobtypes';
 import Notification from './Notification';
+import EarningsMessage from './EarningsMessage';
 
 class User extends Component {
     componentDidMount() {
@@ -25,14 +27,16 @@ class User extends Component {
     }
 
     render() {
-        let { loginResponse, account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
-        if (loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
+        let { account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
         const title = 'Ukelønn for ' + account.firstName;
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username, parentTitle: title });
+        const username = account.username;
+        const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+        const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+        const statistics = '/ukelonn/statistics?' + stringify({ username });
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
@@ -112,6 +116,7 @@ const emptyJob = {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
         jobtypes: state.jobtypes,

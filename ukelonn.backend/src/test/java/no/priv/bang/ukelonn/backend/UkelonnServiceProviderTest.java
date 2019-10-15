@@ -46,6 +46,8 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
+import no.priv.bang.ukelonn.beans.SumYear;
+import no.priv.bang.ukelonn.beans.SumYearMonth;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
@@ -1045,6 +1047,77 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         String resource = ukelonn.getResourceAsString("finnesikke");
         assertNull(resource);
+    }
+
+    @Test
+    public void testEarningsSumOverYear() {
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
+        assertThat(statistics.size()).isGreaterThan(0);
+        SumYear firstYear = statistics.get(0);
+        assertEquals(1250.0, firstYear.getSum(), 0.0);
+        assertEquals(2016, firstYear.getYear());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testEarningsSumOverYearWhenSqlExceptionIsThrown() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeQuery()).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Try update the payment type in the database, which should cause an exception
+        List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
+        assertEquals(0, statistics.size()); // No exception was thrown but result is empty
+
+        // Verify that the error has been logged
+        assertEquals(1, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get sum of earnings per year for account");
+    }
+
+    @Test
+    public void testEarningsSumOverMonth() {
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
+        assertThat(statistics.size()).isGreaterThan(0);
+        SumYearMonth firstYear = statistics.get(0);
+        assertEquals(125.0, firstYear.getSum(), 0.0);
+        assertEquals(2016, firstYear.getYear());
+        assertEquals(7, firstYear.getMonth());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testEarningsSumOverMonthWhenSqlExceptionIsThrown() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+
+        // Create a mock database that throws exceptions and inject it
+        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        Connection connection = mock(Connection.class);
+        when(database.getConnection()).thenReturn(connection);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeQuery()).thenThrow(SQLException.class);
+        ukelonn.setUkelonnDatabase(database);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+
+        // Try update the payment type in the database, which should cause an exception
+        List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
+        assertEquals(0, statistics.size()); // No exception was thrown but result is empty
+
+        // Verify that the error has been logged
+        assertEquals(1, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get sum of earnings per month for account");
     }
 
 }

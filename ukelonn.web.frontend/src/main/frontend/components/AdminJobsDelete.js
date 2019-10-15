@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     RECENTJOBS_REQUEST,
@@ -22,13 +23,12 @@ class AdminJobsDelete extends Component {
     }
 
     render() {
-        let { haveReceivedResponseFromLogin, loginResponse, account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.props;
-
-        if (haveReceivedResponseFromLogin && loginResponse.roles.length === 0) {
+        if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
         }
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+        let { account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.props;
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">

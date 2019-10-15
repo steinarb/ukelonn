@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
+import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
+    ACCOUNT_REQUEST,
     ACCOUNTS_REQUEST,
     PAYMENTTYPES_REQUEST,
     UPDATE,
@@ -13,6 +15,7 @@ import {
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
+import EarningsMessage from './EarningsMessage';
 
 class Admin extends Component {
     componentDidMount() {
@@ -22,9 +25,12 @@ class Admin extends Component {
     }
 
     render() {
+        if (userIsNotLoggedIn(this.props)) {
+            return <Redirect to="/ukelonn/login" />;
+        }
+
         let {
-            loginResponse,
-            account,
+            account = {},
             payment,
             paymenttype,
             amount,
@@ -38,12 +44,13 @@ class Admin extends Component {
             onRegisterPayment,
             onLogout } = this.props;
 
-        if (loginResponse.roles.length === 0) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
-        const performedjobs = "/ukelonn/performedjobs?" + stringify({ accountId: account.accountId, username: account.username });
-        const performedpayments = "/ukelonn/performedpayments?" + stringify({ accountId: account.accountId, username: account.username });
+        const parentTitle = 'Tilbake til ukelonn admin';
+        const accountId = account.accountId;
+        const username = account.username;
+        const noUser = !username;
+        const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
+        const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
+        const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
 
         return (
             <div className="mdl-layout mdl-layout--fixed-header">
@@ -133,6 +140,7 @@ const emptyAccount = {
 
 const mapStateToProps = state => {
     return {
+        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         firstTimeAfterLogin: state.firstTimeAfterLogin,
         account: state.account,
@@ -165,6 +173,7 @@ const mapDispatchToProps = dispatch => {
         onPaymenttypeList: () => dispatch(PAYMENTTYPES_REQUEST()),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
+            const username = account.username;
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
             let changedField = {
                 account,
@@ -175,6 +184,7 @@ const mapDispatchToProps = dispatch => {
                 },
             };
             dispatch(UPDATE(changedField));
+            dispatch(ACCOUNT_REQUEST(username))
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);

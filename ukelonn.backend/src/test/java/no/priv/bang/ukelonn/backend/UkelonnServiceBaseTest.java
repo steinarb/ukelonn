@@ -25,6 +25,8 @@ import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
+import no.priv.bang.ukelonn.beans.SumYear;
+import no.priv.bang.ukelonn.beans.SumYearMonth;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
@@ -118,6 +120,18 @@ public class UkelonnServiceBaseTest {
 
                 @Override
                 public Account addAccount(User user) {
+                    return null;
+                }
+
+                @Override
+                public List<SumYear> earningsSumOverYear(String username) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<SumYearMonth> earningsSumOverMonth(String username) {
+                    // TODO Auto-generated method stub
                     return null;
                 }
             };

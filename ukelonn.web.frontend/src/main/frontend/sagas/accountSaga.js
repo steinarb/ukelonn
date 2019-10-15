@@ -1,17 +1,16 @@
-import { takeLatest, call, put, fork } from "redux-saga/effects";
-import axios from "axios";
+import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import axios from 'axios';
 import {
     ACCOUNT_REQUEST,
     ACCOUNT_RECEIVE,
     ACCOUNT_FAILURE,
+    EARNINGS_SUM_OVER_YEAR_REQUEST,
+    EARNINGS_SUM_OVER_YEAR_RECEIVE,
+    EARNINGS_SUM_OVER_MONTH_REQUEST,
+    EARNINGS_SUM_OVER_MONTH_RECEIVE,
 } from '../actiontypes';
 import { emptyAccount } from './constants';
 
-
-// watcher saga
-export function* requestAccountSaga() {
-    yield takeLatest(ACCOUNT_REQUEST, receiveAccountSaga);
-}
 
 function doAccount(username) {
     return axios.get('/ukelonn/api/account/' + username );
@@ -19,11 +18,25 @@ function doAccount(username) {
 
 // worker saga
 function* receiveAccountSaga(action) {
-    try {
-        const response = yield call(doAccount, action.payload);
-        const account = (response.headers['content-type'] === 'application/json') ? response.data : emptyAccount;
-        yield put(ACCOUNT_RECEIVE(account));
-    } catch (error) {
-        yield put(ACCOUNT_FAILURE(error));
+    if (action.payload) {
+        try {
+            const response = yield call(doAccount, action.payload);
+            const account = (response.headers['content-type'] === 'application/json') ? response.data : emptyAccount;
+            const username = account.username;
+            yield put(ACCOUNT_RECEIVE(account));
+            yield put(EARNINGS_SUM_OVER_YEAR_REQUEST(username));
+            yield put(EARNINGS_SUM_OVER_MONTH_REQUEST(username));
+        } catch (error) {
+            yield put(ACCOUNT_FAILURE(error));
+        }
+    } else {
+        yield put(ACCOUNT_RECEIVE(emptyAccount));
+        yield put(EARNINGS_SUM_OVER_YEAR_RECEIVE([]));
+        yield put(EARNINGS_SUM_OVER_MONTH_RECEIVE([]));
     }
+}
+
+// watcher saga
+export default function* accountSaga() {
+    yield takeLatest(ACCOUNT_REQUEST, receiveAccountSaga);
 }
