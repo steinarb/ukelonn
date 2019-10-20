@@ -9,7 +9,7 @@ import {
     MODIFY_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
-import Paymenttypes from './Paymenttypes';
+import PaymenttypesBox from './PaymenttypesBox';
 import Amount from './Amount';
 
 class AdminPaymenttypesModify extends Component {
@@ -34,7 +34,7 @@ class AdminPaymenttypesModify extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="paymenttype">Velg betalingstype</label>
-                    <Paymenttypes id="paymenttype" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                    <PaymenttypesBox id="paymenttype" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Endre navn på betalingstype</label>
                     <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
