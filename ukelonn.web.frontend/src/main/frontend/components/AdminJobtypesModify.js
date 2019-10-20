@@ -9,7 +9,7 @@ import {
     UPDATE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
-import Jobtypes from './Jobtypes';
+import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
 class AdminJobtypesModify extends Component {
@@ -32,7 +32,7 @@ class AdminJobtypesModify extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobbtype</label>
-                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
+                    <JobtypesBox id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Endre navn på jobbtype</label>
                     <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
