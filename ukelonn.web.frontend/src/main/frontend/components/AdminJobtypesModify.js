@@ -9,7 +9,7 @@ import {
     UPDATE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
-import Jobtypes from './Jobtypes';
+import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
 class AdminJobtypesModify extends Component {
@@ -41,7 +41,7 @@ class AdminJobtypesModify extends Component {
                         <div className="form-group row">
                             <label htmlFor="jobtype" className="col-form-label col-5">Velg jobbtype</label>
                             <div className="col-7">
-                                <Jobtypes id="jobtype" className="form-control" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
+                                <JobtypesBox id="jobtype" className="form-control" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
                             </div>
                         </div>
                         <div className="form-group row">

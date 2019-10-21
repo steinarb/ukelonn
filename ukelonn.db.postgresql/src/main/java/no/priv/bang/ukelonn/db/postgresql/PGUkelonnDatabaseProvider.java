@@ -52,7 +52,7 @@ public class PGUkelonnDatabaseProvider implements UkelonnDatabase {
         this.logService = logService;
     }
 
-    @Reference
+    @Reference(target="(osgi.jdbc.driver.name=PostgreSQL JDBC Driver)")
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
     }
