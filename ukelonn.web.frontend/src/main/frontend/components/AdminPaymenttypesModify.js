@@ -9,7 +9,7 @@ import {
     MODIFY_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
-import Paymenttypes from './Paymenttypes';
+import PaymenttypesBox from './PaymenttypesBox';
 import Amount from './Amount';
 
 class AdminPaymenttypesModify extends Component {
@@ -45,7 +45,7 @@ class AdminPaymenttypesModify extends Component {
                         <div className="form-group row">
                             <label htmlFor="paymenttype" className="col-form-label col-5">Velg betalingstype</label>
                             <div className="col-7">
-                                <Paymenttypes id="paymenttype" className="form-control" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                                <PaymenttypesBox id="paymenttype" className="form-control" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                             </div>
                         </div>
                         <div className="form-group row">
