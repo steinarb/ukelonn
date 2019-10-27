@@ -123,7 +123,7 @@ public class PGUkelonnDatabaseProviderTest {
     @Test
     public void testCreateDatabaseConnectionPropertiesDefaultValues() {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        Properties connectionProperties = provider.createDatabaseConnectionProperties(Collections.emptyMap());
+        Properties connectionProperties = provider.createDatabaseConnectionPropertiesFromOsgiConfig(Collections.emptyMap());
         assertEquals(1, connectionProperties.size());
     }
 
@@ -134,7 +134,7 @@ public class PGUkelonnDatabaseProviderTest {
         config.put(UkelonnDatabaseConstants.UKELONN_JDBC_USER, "karaf");
         config.put(UkelonnDatabaseConstants.UKELONN_JDBC_PASSWORD, "karaf");
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        Properties connectionProperties = provider.createDatabaseConnectionProperties(config);
+        Properties connectionProperties = provider.createDatabaseConnectionPropertiesFromOsgiConfig(config);
         assertEquals(3, connectionProperties.size());
     }
 

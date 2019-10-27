@@ -16,7 +16,6 @@
 package no.priv.bang.ukelonn.db.postgresql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -35,8 +34,6 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import no.priv.bang.osgiservice.database.DatabaseServiceBase;
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.UkelonnException;
-
 import static no.priv.bang.ukelonn.UkelonnDatabaseConstants.*;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
@@ -77,7 +74,7 @@ public class PGUkelonnDatabaseProvider extends DatabaseServiceBase implements Uk
     }
 
     void createDatasource(Map<String, Object> config) {
-        Properties properties = createDatabaseConnectionProperties(config);
+        Properties properties = createDatabaseConnectionPropertiesFromOsgiConfig(config);
 
         try {
             datasource = dataSourceFactory.createDataSource(properties);
@@ -86,7 +83,7 @@ public class PGUkelonnDatabaseProvider extends DatabaseServiceBase implements Uk
         }
     }
 
-    Properties createDatabaseConnectionProperties(Map<String, Object> config) {
+    Properties createDatabaseConnectionPropertiesFromOsgiConfig(Map<String, Object> config) {
         String jdbcUrl = (String) config.getOrDefault(UKELONN_JDBC_URL, "jdbc:postgresql:///ukelonn");
         String jdbcUser = (String) config.get(UKELONN_JDBC_USER);
         String jdbcPassword = (String) config.get(UKELONN_JDBC_PASSWORD);
