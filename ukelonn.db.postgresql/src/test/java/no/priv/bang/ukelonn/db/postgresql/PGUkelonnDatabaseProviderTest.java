@@ -42,8 +42,8 @@ import org.postgresql.osgi.PGDataSourceFactory;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.exception.LiquibaseException;
+import no.priv.bang.osgiservice.database.DatabaseServiceException;
 import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
-import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.db.postgresql.mocks.MockLogService;
 
@@ -228,7 +228,7 @@ public class PGUkelonnDatabaseProviderTest {
         assertEquals(0, logservice.getLogmessagecount());
     }
 
-    @Test(expected=UkelonnException.class)
+    @Test(expected=DatabaseServiceException.class)
     public void testPrepareStatementFailed() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();

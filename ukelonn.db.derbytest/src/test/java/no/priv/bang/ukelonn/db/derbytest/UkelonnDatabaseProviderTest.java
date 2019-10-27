@@ -55,7 +55,7 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnException;
+import no.priv.bang.osgiservice.database.DatabaseServiceException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 public class UkelonnDatabaseProviderTest {
@@ -176,7 +176,7 @@ public class UkelonnDatabaseProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test(expected=DatabaseServiceException.class)
     public void testFailToCreateDatabaseConnection() throws SQLException {
         UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
         provider.setLogService(new MockLogService());
