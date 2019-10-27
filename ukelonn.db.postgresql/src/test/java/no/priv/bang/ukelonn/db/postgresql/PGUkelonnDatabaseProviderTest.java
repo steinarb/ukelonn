@@ -42,8 +42,8 @@ import org.postgresql.osgi.PGDataSourceFactory;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.exception.LiquibaseException;
+import no.priv.bang.osgiservice.database.DatabaseServiceException;
 import no.priv.bang.ukelonn.UkelonnDatabaseConstants;
-import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import no.priv.bang.ukelonn.db.postgresql.mocks.MockLogService;
 
@@ -123,7 +123,7 @@ public class PGUkelonnDatabaseProviderTest {
     @Test
     public void testCreateDatabaseConnectionPropertiesDefaultValues() {
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        Properties connectionProperties = provider.createDatabaseConnectionProperties(Collections.emptyMap());
+        Properties connectionProperties = provider.createDatabaseConnectionPropertiesFromOsgiConfig(Collections.emptyMap());
         assertEquals(1, connectionProperties.size());
     }
 
@@ -134,7 +134,7 @@ public class PGUkelonnDatabaseProviderTest {
         config.put(UkelonnDatabaseConstants.UKELONN_JDBC_USER, "karaf");
         config.put(UkelonnDatabaseConstants.UKELONN_JDBC_PASSWORD, "karaf");
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();
-        Properties connectionProperties = provider.createDatabaseConnectionProperties(config);
+        Properties connectionProperties = provider.createDatabaseConnectionPropertiesFromOsgiConfig(config);
         assertEquals(3, connectionProperties.size());
     }
 
@@ -228,7 +228,7 @@ public class PGUkelonnDatabaseProviderTest {
         assertEquals(0, logservice.getLogmessagecount());
     }
 
-    @Test(expected=UkelonnException.class)
+    @Test(expected=DatabaseServiceException.class)
     public void testPrepareStatementFailed() throws SQLException {
         // Create the object under test
         PGUkelonnDatabaseProvider provider = new PGUkelonnDatabaseProvider();

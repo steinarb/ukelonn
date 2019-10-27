@@ -40,12 +40,12 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.osgiservice.database.DatabaseServiceBase;
 import no.priv.bang.ukelonn.UkelonnDatabase;
-import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(service=UkelonnDatabase.class, immediate=true)
-public class UkelonnDatabaseProvider implements UkelonnDatabase {
+public class UkelonnDatabaseProvider extends DatabaseServiceBase implements UkelonnDatabase {
     private LogService logService;
     private DataSourceFactory dataSourceFactory;
     private DataSource datasource;
@@ -176,15 +176,6 @@ public class UkelonnDatabaseProvider implements UkelonnDatabase {
     @Override
     public DataSource getDatasource() {
         return datasource;
-    }
-
-    @Override
-    public Connection getConnection() throws SQLException {
-        if (datasource == null) {
-            throw new UkelonnException("Couldn't create connection to Ukelonn Derby test database because the Derby datasource was null");
-        }
-
-        return datasource.getConnection();
     }
 
     @Override
