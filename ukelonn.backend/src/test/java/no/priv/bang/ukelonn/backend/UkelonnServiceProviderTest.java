@@ -52,7 +52,6 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
-import no.priv.bang.ukelonn.db.authservicedbadapter.UkelonnDatabaseToAuthserviceDatabaseAdapter;
 
 public class UkelonnServiceProviderTest {
 
@@ -215,10 +214,7 @@ public class UkelonnServiceProviderTest {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
         usermanagement.setLogservice(ukelonn.getLogservice());
-        UkelonnDatabaseToAuthserviceDatabaseAdapter adapter = new UkelonnDatabaseToAuthserviceDatabaseAdapter();
-        adapter.setUkelonnDatabase(ukelonn.getDatabase());
-        adapter.activate();
-        usermanagement.setDatabase(adapter);
+        usermanagement.setDataSource(ukelonn.getDatabase().getDatasource());
         ukelonn.setUserAdmin(usermanagement);
 
         // Create a user object
@@ -247,10 +243,7 @@ public class UkelonnServiceProviderTest {
     public void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
-        UkelonnDatabaseToAuthserviceDatabaseAdapter adapter = new UkelonnDatabaseToAuthserviceDatabaseAdapter();
-        adapter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
-        adapter.activate();
-        usermanagement.setDatabase(adapter);
+        usermanagement.setDataSource(getUkelonnServiceSingleton().getDatabase().getDatasource());
         usermanagement.setLogservice(getUkelonnServiceSingleton().getLogservice());
         // Create a mock database that throws exceptions and inject it
         UkelonnDatabase database = mock(UkelonnDatabase.class);

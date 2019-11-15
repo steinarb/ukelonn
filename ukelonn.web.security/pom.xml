@@ -43,12 +43,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>ukelonn.db.authservicedbadapter</artifactId>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.authservice</groupId>
             <artifactId>authservice.definitions</artifactId>
             <scope>test</scope>

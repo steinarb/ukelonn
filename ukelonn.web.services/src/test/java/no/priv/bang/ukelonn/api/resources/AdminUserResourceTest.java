@@ -31,12 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sql.DataSource;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.Test;
 
-import no.priv.bang.authservice.definitions.AuthserviceDatabaseService;
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.User;
@@ -92,14 +92,14 @@ public class AdminUserResourceTest {
         resource.logservice = logservice;
         useradmin.setLogservice(logservice);
 
-        // Create a mock database that throws exceptions and inject it
-        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
+        // Create a mock datasource that throws exceptions and inject the datasource
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
-        useradmin.setDatabase(database);
+        useradmin.setDataSource(datasource);
 
         // Create a user bean
         User user = new User();
@@ -158,9 +158,9 @@ public class AdminUserResourceTest {
 
         // Inject OSGi services into the resource
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
-        AuthserviceDatabaseService authservicebase = mock(AuthserviceDatabaseService.class);
-        when(authservicebase.getConnection()).thenThrow(SQLException.class);
-        useradmin.setDatabase(authservicebase);
+        DataSource authservicedatasource = mock(DataSource.class);
+        when(authservicedatasource.getConnection()).thenThrow(SQLException.class);
+        useradmin.setDataSource(authservicedatasource);
         resource.useradmin = useradmin;
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
@@ -197,13 +197,13 @@ public class AdminUserResourceTest {
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
-        useradmin.setDatabase(database);
+        useradmin.setDataSource(datasource);
 
         // Create a logservice and inject it
         MockLogService logservice = new MockLogService();
@@ -236,14 +236,14 @@ public class AdminUserResourceTest {
 
         // Inject OSGi services into the resource
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
-        AuthserviceDatabaseService authservicedatabase = mock(AuthserviceDatabaseService.class);
+        DataSource authservicedatasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
         PreparedStatement statement = mock(PreparedStatement.class);
         ResultSet results = mock(ResultSet.class);
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
-        when(authservicedatabase.getConnection()).thenReturn(connection);
-        useradmin.setDatabase(authservicedatabase);
+        when(authservicedatasource.getConnection()).thenReturn(connection);
+        useradmin.setDataSource(authservicedatasource);
         resource.useradmin = useradmin;
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
@@ -363,13 +363,13 @@ public class AdminUserResourceTest {
         useradmin.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
-        AuthserviceDatabaseService database = mock(AuthserviceDatabaseService.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
-        useradmin.setDatabase(database);
+        useradmin.setDataSource(datasource);
 
         // Create a user object with a valid username
         User user = new User(0, "validusername", null, null, null);
