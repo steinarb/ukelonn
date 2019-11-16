@@ -23,8 +23,4 @@ public interface UkelonnDatabase extends DatabaseService {
 
     void forceReleaseLocks();
 
-    String sumOverYearQuery();
-
-    String sumOverMonthQuery();
-
 }

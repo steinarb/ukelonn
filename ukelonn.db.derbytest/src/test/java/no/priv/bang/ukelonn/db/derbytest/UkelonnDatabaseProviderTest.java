@@ -104,7 +104,7 @@ public class UkelonnDatabaseProviderTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
-        assertEquals(45, ranChangeSets.size());
+        assertEquals(47, ranChangeSets.size());
     }
 
     @Test

@@ -403,7 +403,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<SumYear> earningsSumOverYear(String username) {
         List<SumYear> statistics = new ArrayList<>();
         try(Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(database.sumOverYearQuery())) {
+            try(PreparedStatement statement = connection.prepareStatement("select aggregate_amount, aggregate_year from sum_over_year_view where username=?")) {
                 statement.setString(1, username);
                 try(ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
@@ -424,7 +424,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<SumYearMonth> earningsSumOverMonth(String username) {
         List<SumYearMonth> statistics = new ArrayList<>();
         try(Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(database.sumOverMonthQuery())) {
+            try(PreparedStatement statement = connection.prepareStatement("select aggregate_amount, aggregate_year, aggregate_month from sum_over_year_and_month_view where username=?")) {
                 statement.setString(1, username);
                 try(ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {

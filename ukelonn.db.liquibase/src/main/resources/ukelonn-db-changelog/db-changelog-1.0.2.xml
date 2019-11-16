@@ -50,4 +50,56 @@
         <dropTable tableName="ukelonn_users" />
     </changeSet>
 
+    <changeSet author="sb" id="sum-over-year-view-derby">
+        <preConditions onFail="CONTINUE" >
+            <and>
+                <not>
+                    <viewExists viewName="sum_over_year_view" />
+                </not>
+                <dbms type="derby" />
+            </and>
+        </preConditions>
+
+        <createView viewName="sum_over_year_view" fullDefinition="false" >select sum(t.transaction_amount) as aggregate_amount, YEAR(t.transaction_time) as aggregate_year, a.username as username from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work group by YEAR(t.transaction_time), a.username order by YEAR(t.transaction_time)</createView>
+    </changeSet>
+
+    <changeSet author="sb" id="sum-over-year-view-postgresql">
+        <preConditions onFail="CONTINUE" >
+            <and>
+                <not>
+                    <viewExists viewName="sum_over_year_view" />
+                </not>
+                <dbms type="postgresql" />
+            </and>
+        </preConditions>
+
+        <createView viewName="sum_over_year_view" fullDefinition="false">select sum(t.transaction_amount) as aggregate_amount, extract(year from t.transaction_time) as aggregate_year, a.username as username from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work group by extract(year from t.transaction_time), a.username order by extract(year from t.transaction_time)</createView>
+    </changeSet>
+
+    <changeSet author="sb" id="sum-over-year-and-month-view-derby">
+        <preConditions onFail="CONTINUE" >
+            <and>
+                <not>
+                    <viewExists viewName="sum_over_year_and_month_view" />
+                </not>
+                <dbms type="derby" />
+            </and>
+        </preConditions>
+
+        <createView viewName="sum_over_year_and_month_view" fullDefinition="false" >select sum(t.transaction_amount) as aggregate_amount, YEAR(t.transaction_time) as aggregate_year, MONTH(t.transaction_time) as aggregate_month, a.username as username from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work group by YEAR(t.transaction_time), MONTH(t.transaction_time), a.username order by YEAR(t.transaction_time), MONTH(t.transaction_time)</createView>
+    </changeSet>
+
+    <changeSet author="sb" id="sum-over-year-and-month-view-postgresql">
+        <preConditions onFail="CONTINUE" >
+            <and>
+                <not>
+                    <viewExists viewName="sum_over_year_and_month_view" />
+                </not>
+                <dbms type="postgresql" />
+            </and>
+        </preConditions>
+
+        <createView viewName="sum_over_year_and_month_view" fullDefinition="false">select sum(t.transaction_amount) as aggregate_amount, extract(year from t.transaction_time) as aggregate_year, extract(month from t.transaction_time) as aggregate_month, a.username as username from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work group by extract(year from t.transaction_time), extract(month from t.transaction_time), a.username order by extract(year from t.transaction_time), extract(month from t.transaction_time)</createView>
+    </changeSet>
+
 </databaseChangeLog>
