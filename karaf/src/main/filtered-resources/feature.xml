@@ -36,7 +36,7 @@
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
-        <feature>authservice-users</feature>
+        <feature>authservice-with-productiondb-dbrealm-and-session</feature>
         <feature>ukelonn-db-postgresql</feature>
         <feature>authservice-web-security-memorysession</feature>
         <feature>authservice-web-security-dbrealm</feature>
