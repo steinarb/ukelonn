@@ -30,8 +30,6 @@
         <feature>ukelonn-backend</feature>
         <feature>authservice-with-testdb-dbrealm-and-session</feature>
         <feature prerequisite="true">ukelonn-db-derby-test</feature>
-        <feature>authservice-web-security-memorysession</feature>
-        <feature>authservice-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
