@@ -332,9 +332,13 @@ Framgangsmåte:
        #+END_EXAMPLE
  2. Fra karaf-konsollet, gi følgende kommandoer:
     #+BEGIN_EXAMPLE
-      config:edit no.priv.bang.ukelonn.db.postgresql.PGUkelonnDatabaseProvider
-      config:property-set ukelonn.db.jdbc.url "jdbc:postgresql://lorenzo.hjemme.lan/ukelonn"
-      config:property-set ukelonn.db.jdbc.user "karaf"
-      config:property-set ukelonn.db.jdbc.password "karaf"
+      config:edit org.ops4j.datasource-ukelonn-production
+      config:property-set osgi.jdbc.driver.name "PostgreSQL JDBC Driver"
+      config:property-set dataSourceName "jdbc/ukelonn"
+      config:property-set ops4j.preHook "ukelonndb"
+      config:property-set org.apache.karaf.features.configKey "org.ops4j.datasource-ukelonn-production"
+      config:property-set url "jdbc:postgresql://lorenzo.hjemme.lan/ukelonn"
+      config:property-set user "karaf"
+      config:property-set password "karaf"
       config:update
     #+END_EXAMPLE

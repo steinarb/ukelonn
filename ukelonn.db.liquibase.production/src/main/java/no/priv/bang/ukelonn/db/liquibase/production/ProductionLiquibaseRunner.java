@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.db.postgresql;
+package no.priv.bang.ukelonn.db.liquibase.production;
 
 import java.sql.Connection;
-import java.util.Map;
-import java.util.Properties;
-
+import java.sql.SQLException;
 import javax.sql.DataSource;
+
+import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
 import liquibase.Liquibase;
@@ -32,104 +31,51 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
-import no.priv.bang.osgiservice.database.DatabaseServiceBase;
-import no.priv.bang.ukelonn.UkelonnDatabase;
-import static no.priv.bang.ukelonn.UkelonnDatabaseConstants.*;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
-@Component(service=UkelonnDatabase.class, immediate=true)
-public class PGUkelonnDatabaseProvider extends DatabaseServiceBase implements UkelonnDatabase {
+@Component(immediate=true, property = "name=ukelonndb")
+public class ProductionLiquibaseRunner implements PreHook {
     private LogService logService;
-    private DataSourceFactory dataSourceFactory;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
-    private DataSource datasource;
 
     @Reference
     public void setLogService(LogService logService) {
         this.logService = logService;
     }
 
-    @Reference(target="(osgi.jdbc.driver.name=PostgreSQL JDBC Driver)")
-    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-        this.dataSourceFactory = dataSourceFactory;
+    @Activate
+    public void activate() {
+        // Called when the DS component is activated
     }
 
-    @Activate
-    public void activate(Map<String, Object> config) {
-        createDatasource(config);
-        try(Connection connect = getConnection()) {
+    @Override
+    public void prepare(DataSource datasource) throws SQLException {
+        try(Connection connect = datasource.getConnection()) {
             UkelonnLiquibase liquibase = createUkelonnLiquibase();
             try {
                 liquibase.createInitialSchema(connect);
-                insertInitialDataInDatabase();
+                insertInitialDataInDatabase(datasource);
                 liquibase.updateSchema(connect);
             } finally {
                 // Liquibase sets autocommit to false
                 connect.setAutoCommit(true);
             }
         } catch (Exception e) {
-            logError("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
+            logService.log(LogService.LOG_ERROR, "Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
         }
     }
 
-    void createDatasource(Map<String, Object> config) {
-        Properties properties = createDatabaseConnectionPropertiesFromOsgiConfig(config);
-
-        try {
-            datasource = dataSourceFactory.createDataSource(properties);
-        } catch (Exception e) {
-            logError("PostgreSQL database service failed to create connection to local DB server", e);
-        }
-    }
-
-    Properties createDatabaseConnectionPropertiesFromOsgiConfig(Map<String, Object> config) {
-        String jdbcUrl = (String) config.getOrDefault(UKELONN_JDBC_URL, "jdbc:postgresql:///ukelonn");
-        String jdbcUser = (String) config.get(UKELONN_JDBC_USER);
-        String jdbcPassword = (String) config.get(UKELONN_JDBC_PASSWORD);
-        Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, jdbcUrl);
-        if (jdbcUser != null) {
-            properties.setProperty(DataSourceFactory.JDBC_USER, jdbcUser);
-        }
-
-        if (jdbcPassword != null) {
-            properties.setProperty(DataSourceFactory.JDBC_PASSWORD, jdbcPassword);
-        }
-
-        return properties;
-    }
-
-    boolean insertInitialDataInDatabase() {
-        try(Connection connect = getConnection()) {
+    boolean insertInitialDataInDatabase(DataSource datasource) {
+        try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             Liquibase liquibase = createLiquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
             return true;
         } catch (Exception e) {
-            logError("Failed to fill PostgreSQL database with initial data.", e);
+            logService.log(LogService.LOG_ERROR, "Failed to fill ukelonn PostgreSQL database with initial data.", e);
             return false;
-        }
-    }
-
-    @Override
-    public String getName() {
-        return "Ukelonn PostgreSQL database";
-    }
-
-    @Override
-    public DataSource getDatasource() {
-        return datasource;
-    }
-
-    @Override
-    public void forceReleaseLocks() {
-        UkelonnLiquibase liquibase = createUkelonnLiquibase();
-        try(Connection connect = getConnection()) {
-            liquibase.forceReleaseLocks(connect);
-        } catch (Exception e) {
-            logError("Failed to force release Liquibase changelog lock on PostgreSQL database", e);
         }
     }
 
@@ -165,12 +111,6 @@ public class PGUkelonnDatabaseProvider extends DatabaseServiceBase implements Uk
 
     void setLiquibaseFactory(LiquibaseFactory liquibaseFactory) {
         this.liquibaseFactory = liquibaseFactory;
-    }
-
-    private void logError(String message, Exception exception) {
-        if (logService != null) {
-            logService.log(LogService.LOG_ERROR, message, exception);
-        }
     }
 
 }

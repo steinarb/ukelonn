@@ -1,4 +1,4 @@
-package no.priv.bang.ukelonn.db.postgresql;
+package no.priv.bang.ukelonn.db.liquibase.production;
 
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;

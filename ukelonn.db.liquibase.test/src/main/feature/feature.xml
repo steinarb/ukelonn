@@ -13,7 +13,7 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <feature name="ukelonn-db-derby-test">
+    <feature name="ukelonn-db-liquibase-test">
         <feature>scr</feature>
         <feature>pax-jdbc-derby</feature>
     </feature>

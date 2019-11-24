@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.db.derbytest;
+package no.priv.bang.ukelonn.db.liquibase.test;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
 import liquibase.Liquibase;
@@ -40,15 +41,11 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import no.priv.bang.osgiservice.database.DatabaseServiceBase;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
-@Component(service=UkelonnDatabase.class, immediate=true)
-public class UkelonnDatabaseProvider extends DatabaseServiceBase implements UkelonnDatabase {
+@Component(immediate=true, property = "name=ukelonndb")
+public class TestLiquibaseRunner implements PreHook {
     private LogService logService;
-    private DataSourceFactory dataSourceFactory;
-    private DataSource datasource;
     private boolean initialChangelog = false;
 
     @Reference
@@ -56,62 +53,30 @@ public class UkelonnDatabaseProvider extends DatabaseServiceBase implements Ukel
         this.logService = logService;
     }
 
-    @Reference(target="(osgi.jdbc.driver.name=derby)")
-    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-        this.dataSourceFactory = dataSourceFactory;
-    }
-
     @Activate
     public void activate() {
-        createDatasource();
+        // Called when component is activated
+    }
+
+    @Override
+    public void prepare(DataSource datasource) throws SQLException {
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        try(Connection connect = getConnection()) {
+        try(Connection connect = datasource.getConnection()) {
             try {
                 liquibase.createInitialSchema(connect);
-                insertMockData();
+                insertMockData(datasource);
                 liquibase.updateSchema(connect);
             } finally {
                 // Liquibase sets Connection.autoCommit to false, set it back to true
                 connect.setAutoCommit(true);
             }
         } catch (Exception e) {
-            logError("Failed to create derby test database schema", e);
+            logService.log(LogService.LOG_ERROR, "Failed to create derby test database schema", e);
         }
     }
 
-    void createDatasource() {
-        Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
-        try {
-            datasource = dataSourceFactory.createDataSource(properties);
-        } catch (Exception e) {
-            logError("Derby mock database failed to create datasource", e);
-        }
-    }
-
-    /**
-     * Package private method to let the unit test determine if the Liquibase changesets have
-     * been run.
-     *
-     * @return A list of all changesets run by liqubase in the derby database
-     * @throws DatabaseException
-     * @throws SQLException
-     */
-    List<RanChangeSet> getChangeLogHistory() throws DatabaseException, SQLException {
-        try(Connection connect = getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try {
-                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
-                StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
-                return logHistoryService.getRanChangeSets();
-            } finally {
-                databaseConnection.close();
-            }
-        }
-    }
-
-    public boolean insertMockData() {
-        try(Connection connect = getConnection()) {
+    public boolean insertMockData(DataSource datasource) {
+        try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             if (hasTable(connect, "user_roles")) {
@@ -126,7 +91,7 @@ public class UkelonnDatabaseProvider extends DatabaseServiceBase implements Ukel
             }
             return true;
         } catch (Exception e) {
-            logError("Failed to fill derby test database with data.", e);
+            logService.log(LogService.LOG_ERROR, "Failed to fill derby test database with data.", e);
             return false;
         }
     }
@@ -143,8 +108,8 @@ public class UkelonnDatabaseProvider extends DatabaseServiceBase implements Ukel
         return false;
     }
 
-    public boolean rollbackMockData() {
-        try(Connection connect = getConnection()) {
+    public boolean rollbackMockData(DataSource datasource) {
+        try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
             if (initialChangelog) {
@@ -163,35 +128,34 @@ public class UkelonnDatabaseProvider extends DatabaseServiceBase implements Ukel
             }
             return true;
         } catch (Exception e) {
-            logError("Failed to roll back mock data from derby test database.", e);
+            logService.log(LogService.LOG_ERROR, "Failed to roll back mock data from derby test database.", e);
             return false;
         }
     }
 
-    @Override
-    public String getName() {
-        return "Ukelonn Derby test database";
-    }
-
-    @Override
-    public DataSource getDatasource() {
-        return datasource;
-    }
-
-    @Override
-    public void forceReleaseLocks() {
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        try(Connection connect = getConnection()) {
-            liquibase.forceReleaseLocks(connect);
-        } catch (Exception e) {
-            logError("Failed to force release Liquibase changelog lock on derby database", e);
+    /**
+     * Package private method to let the unit test determine if the Liquibase changesets have
+     * been run.
+     *
+     * @return A list of all changesets run by liqubase in the derby database
+     * @throws DatabaseException
+     * @throws SQLException
+     */
+    List<RanChangeSet> getChangeLogHistory(DataSource datasource) throws DatabaseException, SQLException {
+        try(Connection connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try {
+                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
+                StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
+                return logHistoryService.getRanChangeSets();
+            } catch (Exception e) {
+                logService.log(LogService.LOG_ERROR, "Failed to create derby test database schema", e);
+            } finally {
+                databaseConnection.close();
+            }
         }
-    }
 
-    private void logError(String message, Exception exception) {
-        if (logService != null) {
-            logService.log(LogService.LOG_ERROR, message, exception);
-        }
+        return Collections.emptyList();
     }
 
 }

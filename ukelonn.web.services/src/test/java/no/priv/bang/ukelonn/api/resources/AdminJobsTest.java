@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
@@ -108,13 +108,13 @@ public class AdminJobsTest {
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that will fail during query setup
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
         when(connection.prepareStatement(anyString())).thenReturn(statement);
-        ukelonn.setUkelonnDatabase(database);
+        ukelonn.setDataSource(datasource);
 
         // Create the jersey resource that is to be tested
         AdminJobs resource = new AdminJobs();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.db.derbytest;
+package no.priv.bang.ukelonn.db.liquibase.test;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.reflection.Whitebox.*;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,8 +28,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.sql.DataSource;
-import javax.sql.PooledConnection;
-
 import org.apache.derby.jdbc.ClientConnectionPoolDataSource;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -55,40 +51,21 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.osgiservice.database.DatabaseServiceException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
-public class UkelonnDatabaseProviderTest {
+public class TestLiquibaseRunnerTest {
 
     @Test
-    public void testGetName() {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-
-        String databaseName = provider.getName();
-        assertEquals("Ukelonn Derby test database", databaseName);
-    }
-
-    @Test
-    public void testThatActivatorCreatesDatabase() throws SQLException, DatabaseException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
+    public void testPrepareDatabase() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory);
-        provider.activate(); // Create the database
-
-        // test getting the datasource
-        DataSource datasource = provider.getDatasource();
-        assertNotNull(datasource);
-
-        try(Connection connect = provider.getConnection()) {
-            assertNotNull(connect);
-        }
-
-        // Successful force release liquibase lock
-        provider.forceReleaseLocks();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate(); // Create the database
 
         // Test the database by making a query using a view
-        try(Connection connection = provider.getConnection()) {
+        try(Connection connection = datasource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?");
             statement.setString(1, "jad");
             ResultSet onAccount = statement.executeQuery();
@@ -103,20 +80,22 @@ public class UkelonnDatabaseProviderTest {
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        List<RanChangeSet> ranChangeSets = provider.getChangeLogHistory();
+        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
         assertEquals(47, ranChangeSets.size());
     }
 
     @Test
     public void testInsert() throws SQLException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory);
-        provider.activate(); // Create the database
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate();
+        runner.prepare(datasource); // Create the database
 
         // Verify that the user isn't present
-        try(Connection connection = provider.getConnection()) {
+        try(Connection connection = datasource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("select * from users where username=?");
             statement.setString(1, "jjd");
             ResultSet userJjdBeforeInsert = statement.executeQuery();
@@ -146,106 +125,73 @@ public class UkelonnDatabaseProviderTest {
 
     @Test(expected=SQLSyntaxErrorException.class)
     public void testBadSql() throws Exception {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory);
-        provider.activate(); // Create the database
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate();
+        runner.prepare(datasource); // Create the database
 
         // A bad select returns a null instead of a prepared statement
-        try(Connection connection = provider.getConnection()) {
+        try(Connection connection = datasource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("zelect * from uzers");
             assertNull(statement);
-        }
-    }
-
-    @Test
-    public void testFailToCreateDataSource() throws SQLException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        MockLogService logservice = new MockLogService();
-        provider.setLogService(logservice);
-
-        // Verify precondition (nothing logged)
-        assertEquals(0, logservice.getLogmessages().size());
-
-        // Run method under test
-        provider.createDatasource();
-
-        // Verify that an error message has been logged
-        assertEquals(1, logservice.getLogmessages().size());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected=DatabaseServiceException.class)
-    public void testFailToCreateDatabaseConnection() throws SQLException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        DataSourceFactory dataSourceFactory = mock(DataSourceFactory.class);
-        when(dataSourceFactory.createConnectionPoolDataSource(any(Properties.class))).thenThrow(SQLException.class);
-        provider.setDataSourceFactory(dataSourceFactory); // Test what happens with failing datasource injection
-        provider.activate(); // Create the database
-
-        try(Connection connection = provider.getConnection()) {
-            assertNull(connection);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFailToInsertMockData() throws SQLException {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        DataSourceFactory dataSourceFactory = mock(DataSourceFactory.class);
-        PooledConnection pooledconnection = mock(PooledConnection.class);
-        when(pooledconnection.getConnection()).thenThrow(SQLException.class);
-        when(dataSourceFactory.createConnectionPoolDataSource(any(Properties.class))).thenThrow(SQLException.class);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
 
-        // Bypass injection to skip schema creation and be able to test
-        // database failure on data insertion
-        setInternalState(provider, "dataSourceFactory", dataSourceFactory);
-
-        boolean result = provider.insertMockData();
+        boolean result = runner.insertMockData(datasource);
         assertFalse(result);
     }
 
     @Test
     public void testRollbackMockData() throws Exception {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        provider.setDataSourceFactory(dataSourceFactory);
-        provider.activate(); // Create the database
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate();
+        runner.prepare(datasource); // Create the database
 
         // Check that database has the mock data in place
         SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
-        int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(provider, "transaction_types");
+        int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
         expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isGreaterThan(0);
-        int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(provider, "users");
+        int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
         expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isGreaterThan(0);
-        int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(provider, "accounts");
+        int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
         expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isGreaterThan(0);
-        int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(provider, "transactions");
+        int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
         expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isGreaterThan(0);
         expectedStatusBeforeRollback.assertAll();
 
-        int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(provider, "databasechangelog");
+        int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
 
         // Do the rollback
-        boolean rollbackSuccessful = provider.rollbackMockData();
+        boolean rollbackSuccessful = runner.rollbackMockData(datasource);
         assertTrue(rollbackSuccessful);
 
-        int sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(provider, "databasechangelog");
+        int sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
         assertThat(sizeOfDbchangelogAfterRollback).isLessThan(sizeOfDbchangelogBeforeRollback);
 
         // Verify that the database tables are empty
         SoftAssertions expectedStatusAfterRollback = new SoftAssertions();
-        int numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(provider, "transaction_types");
+        int numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
         expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).isEqualTo(0);
-        int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(provider, "users");
+        int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(datasource, "users");
         expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).isEqualTo(0);
-        int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(provider, "accounts");
+        int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(datasource, "accounts");
         expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
-        int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(provider, "transactions");
+        int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
         expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).isEqualTo(0);
         expectedStatusAfterRollback.assertAll();
     }
@@ -253,31 +199,14 @@ public class UkelonnDatabaseProviderTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFailToRollbackMockData() throws Exception {
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(new MockLogService());
-        DataSourceFactory dataSourceFactory = mock(DataSourceFactory.class);
-        PooledConnection pooledconnection = mock(PooledConnection.class);
-        when(pooledconnection.getConnection()).thenThrow(SQLException.class);
-        when(dataSourceFactory.createConnectionPoolDataSource(any(Properties.class))).thenThrow(SQLException.class);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate();
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
 
-        boolean rollbackSuccessful = provider.rollbackMockData();
+        boolean rollbackSuccessful = runner.rollbackMockData(datasource);
         assertFalse(rollbackSuccessful);
-    }
-
-    @Test
-    public void testFailToForceLock() {
-        MockLogService logservice = new MockLogService();
-        UkelonnDatabaseProvider provider = new UkelonnDatabaseProvider();
-        provider.setLogService(logservice);
-
-        // Check precondition that nothing has been logged
-        assertEquals(0, logservice.getLogmessages().size());
-
-        // Run the method under test
-        provider.forceReleaseLocks();
-
-        // Check that an error message has been logged
-        assertEquals(1, logservice.getLogmessages().size());
     }
 
     /**
@@ -350,6 +279,12 @@ public class UkelonnDatabaseProviderTest {
         liquibase.updateSchema(connect);
     }
 
+    private Properties createDerbyMemoryCredentials() {
+        Properties properties = new Properties();
+        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
+        return properties;
+    }
+
     private CredentialsMatcher createSha256HashMatcher(int iterations) {
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
         credentialsMatcher.setHashIterations(iterations);
@@ -363,9 +298,9 @@ public class UkelonnDatabaseProviderTest {
         return authenticationInfo;
     }
 
-    private int findTheNumberOfRowsInTable(UkelonnDatabaseProvider provider, String tableName) throws Exception {
+    private int findTheNumberOfRowsInTable(DataSource datasource, String tableName) throws Exception {
         String selectAllRowsStatement = String.format("select * from %s", tableName);
-        try(Connection connection = provider.getConnection()) {
+        try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
                 ResultSet userResults = selectAllRowsInTable.executeQuery();
                 int numberOfUsers = countResults(userResults);
