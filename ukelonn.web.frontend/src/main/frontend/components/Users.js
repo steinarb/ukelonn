@@ -7,6 +7,6 @@ function Users(props) {
           {users.map((val) => <option key={val.userid}>{val.fullname}</option>)}
         </select>
     );
-};
+}
 
 export default Users;

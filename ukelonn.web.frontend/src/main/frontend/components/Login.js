@@ -7,7 +7,8 @@ import {
 } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
-let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
+function Login(props) {
+    const { username, password, loginResponse, onFieldChange, onLogin } = props;
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return (<Redirect to="/ukelonn/admin" />);
@@ -29,23 +30,21 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
             <LoginErrorMessage loginResponse={loginResponse} />
         </div>
     );
-};
+}
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         username: state.username,
         password: state.password,
         loginResponse: state.loginResponse
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onFieldChange: (changedField) => dispatch(UPDATE(changedField)),
         onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
     };
-};
+}
 
-Login = connect(mapStateToProps, mapDispatchToProps)(Login);
-
-export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
-let Home = ({loginResponse}) => {
+function Home(props) {
+    const { loginResponse } = props;
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return <Redirect to="/ukelonn/admin" />;
@@ -24,6 +25,4 @@ const mapStateToProps = state => {
     };
 };
 
-Home = connect(mapStateToProps)(Home);
-
-export default Home;
+export default connect(mapStateToProps)(Home);
