@@ -30,8 +30,8 @@
         <module>ukelonn.web.frontend</module>
         <module>ukelonn.testutils</module>
         <module>ukelonn.db.liquibase</module>
-        <module>ukelonn.db.derbytest</module>
-        <module>ukelonn.db.postgresql</module>
+        <module>ukelonn.db.liquibase.test</module>
+        <module>ukelonn.db.liquibase.production</module>
         <module>karaf</module>
     </modules>
 
@@ -52,7 +52,7 @@
         <dependency.osgi.jdbc.version>1.0.0</dependency.osgi.jdbc.version>
         <dependency.pax.web.version>6.0.3</dependency.pax.web.version>
         <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
-        <dependency.pax.jdbc.version>1.0.1</dependency.pax.jdbc.version>
+        <dependency.pax.jdbc.version>1.4.3</dependency.pax.jdbc.version>
         <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
         <dependency.shiro.version>1.4.1</dependency.shiro.version>
         <jackson.version>2.9.10</jackson.version>
@@ -159,12 +159,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>no.priv.bang.osgiservice</groupId>
-                <artifactId>osgiservice.database</artifactId>
-                <version>${osgi-service.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.ops4j.pax.web</groupId>
                 <artifactId>pax-web-api</artifactId>
                 <version>${dependency.pax.web.version}</version>
@@ -241,6 +235,18 @@
             <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc</artifactId>
+                <version>${dependency.pax.jdbc.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.jdbc</groupId>
+                <artifactId>pax-jdbc-config</artifactId>
+                <version>${dependency.pax.jdbc.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.jdbc</groupId>
+                <artifactId>pax-jdbc-pool-common</artifactId>
                 <version>${dependency.pax.jdbc.version}</version>
                 <scope>provided</scope>
             </dependency>

@@ -28,12 +28,12 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 public class CommonServiceMethodsTest {
     @Before
-    public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void setup() throws Exception {
         releaseFakeOsgiServices();
     }
 
     @AfterClass
-    static public void completeCleanup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    static public void completeCleanup() throws Exception {
         releaseFakeOsgiServices();
     }
 
@@ -44,7 +44,7 @@ public class CommonServiceMethodsTest {
     }
 
     @Test
-    public void testConnectionCheck() {
+    public void testConnectionCheck() throws Exception {
         setupFakeOsgiServices();
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         UkelonnService service = CommonServiceMethods.connectionCheck(getClass(), provider);
@@ -52,7 +52,7 @@ public class CommonServiceMethodsTest {
     }
 
     @Test
-    public void testLogError() {
+    public void testLogError() throws Exception {
         // First log when there are no services available
         MockLogService logservice = new MockLogService();
         CommonServiceMethods.logError(getClass(), null, "This is an error");
@@ -72,7 +72,7 @@ public class CommonServiceMethodsTest {
     }
 
     @Test
-    public void testLogErrorWithException() {
+    public void testLogErrorWithException() throws Exception {
         // First log when there are no services available
         Exception exception = new Exception("This is a fake exception");
         MockLogService logservice = new MockLogService();

@@ -17,6 +17,8 @@ package no.priv.bang.ukelonn;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
@@ -43,7 +45,7 @@ public interface UkelonnService {
 
     String getMessage();
 
-    UkelonnDatabase getDatabase();
+    DataSource getDataSource();
 
     LogService getLogservice();
 

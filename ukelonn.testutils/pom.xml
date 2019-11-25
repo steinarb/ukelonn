@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
+            <artifactId>ukelonn.db.liquibase.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -76,10 +76,6 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.jdbc</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>

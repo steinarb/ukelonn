@@ -15,9 +15,10 @@
  */
 package no.priv.bang.ukelonn.backend;
 
+import javax.sql.DataSource;
+
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 
 public abstract class UkelonnServiceBase implements UkelonnService {
@@ -26,7 +27,7 @@ public abstract class UkelonnServiceBase implements UkelonnService {
         return "Hello world!";
     }
 
-    public UkelonnDatabase getDatabase() {
+    public DataSource getDataSource() {
         return null;
     }
 

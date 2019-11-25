@@ -29,12 +29,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
@@ -83,13 +83,13 @@ public class AdminPaymenttypeTest {
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setUkelonnDatabase(database);
+        ukelonn.setDataSource(datasource);
 
         // Create a non-existing payment type
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
@@ -142,13 +142,13 @@ public class AdminPaymenttypeTest {
         resource.logservice = logservice;
 
         // Create a mock database that throws exceptions and inject it
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setUkelonnDatabase(database);
+        ukelonn.setDataSource(datasource);
 
         // Create new payment type
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
