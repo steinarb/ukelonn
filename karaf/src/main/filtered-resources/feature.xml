@@ -16,28 +16,54 @@
     <repository>mvn:no.priv.bang.karaf/liquibase-core-karaf/${liquibase.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.derbytest/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.postgresql/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.test/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.production/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.authservice/authservice/${authservice.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.frontend/${project.version}/xml/features</repository>
+    <feature name="ukelonn-db-test" version="${project.version}">
+        <config name="org.ops4j.datasource-ukelonn-test">
+            osgi.jdbc.driver.name=derby
+            dataSourceName=jdbc/ukelonn
+            url=jdbc:derby:memory:ukelonn;create=true
+            ops4j.preHook=ukelonndb
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/ukelonn
+        </capability>
+        <feature>ukelonn-db-liquibase-test</feature>
+        <feature>pax-jdbc-config</feature>
+    </feature>
+    <feature name="ukelonn-db-production" version="${project.version}">
+        <config name="org.ops4j.datasource-ukelonn-production">
+            osgi.jdbc.driver.name=PostgreSQL JDBC Driver
+            dataSourceName=jdbc/ukelonn
+            url=jdbc:postgresql:///ukelonn
+            user=karaf
+            password=karaf
+            ops4j.preHook=ukelonndb
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/ukelonn
+        </capability>
+        <feature>ukelonn-db-liquibase-production</feature>
+        <feature>pax-jdbc-config</feature>
+    </feature>
     <feature name="ukelonn" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-web-frontend</feature>
     </feature>
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>authservice-with-testdb-dbrealm-and-session</feature>
-        <feature>ukelonn-db-derby-test</feature>
-        <feature>authservice-web-security-memorysession</feature>
-        <feature>authservice-web-security-dbrealm</feature>
+        <feature prerequisite="true">ukelonn-db-test</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>authservice-with-productiondb-dbrealm-and-session</feature>
-        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-db-production</feature>
         <feature>authservice-web-security-memorysession</feature>
         <feature>authservice-web-security-dbrealm</feature>
         <feature>ukelonn</feature>
@@ -45,7 +71,7 @@
     <feature name="ukelonn-with-postgresql-and-provided-authservice" description="Ukelonn webapp without authservice" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>authservice-users</feature>
-        <feature>ukelonn-db-postgresql</feature>
+        <feature>ukelonn-db-liquibase-production</feature>
         <feature>ukelonn</feature>
     </feature>
 </features>

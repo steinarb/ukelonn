@@ -137,7 +137,7 @@ public class UkelonnServiceBaseTest {
             };
 
         assertEquals("Hello world!", ukelonn.getMessage());
-        assertNull(ukelonn.getDatabase());
+        assertNull(ukelonn.getDataSource());
         assertNull(ukelonn.getLogservice());
     }
 

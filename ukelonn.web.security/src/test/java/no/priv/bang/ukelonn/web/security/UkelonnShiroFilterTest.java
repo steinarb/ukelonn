@@ -16,7 +16,7 @@ import no.priv.bang.authservice.web.security.memorysession.MemorySession;
 public class UkelonnShiroFilterTest {
 
     @BeforeClass
-    public static void setupClass() {
+    public static void setupClass() throws Exception {
         setupFakeOsgiServices();
     }
 
@@ -31,7 +31,7 @@ public class UkelonnShiroFilterTest {
         AuthserviceDbRealm realm = new AuthserviceDbRealm();
         MemorySession session = new MemorySession();
         session.activate();
-        realm.setDataSource(getUkelonnServiceSingleton().getDatabase().getDatasource());
+        realm.setDataSource(getUkelonnServiceSingleton().getDataSource());
         realm.activate();
         shirofilter.setSession(session);
         shirofilter.setRealm(realm);

@@ -29,12 +29,12 @@
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
+            <artifactId>ukelonn.db.liquibase.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.postgresql</artifactId>
+            <artifactId>ukelonn.db.liquibase.production</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

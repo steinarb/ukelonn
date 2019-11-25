@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 
@@ -42,7 +43,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.junit.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
@@ -280,13 +280,13 @@ public class JobResourceTest extends ServletTestBase {
     public void testUpdateJobGetSQLException() throws Exception {
         // Create an ukelonn service with a mock database that throws exception
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        UkelonnDatabase database = mock(UkelonnDatabase.class);
+        DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
-        when(database.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection);
         PreparedStatement statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
-        ukelonn.setUkelonnDatabase(database);
+        ukelonn.setDataSource(datasource);
 
         // Create a resource and inject OSGi services
         JobResource resource = new JobResource();
