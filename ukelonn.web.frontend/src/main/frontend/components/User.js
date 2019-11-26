@@ -122,7 +122,7 @@ const emptyJob = {
     transactionAmount: 0.0
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -132,9 +132,9 @@ const mapStateToProps = state => {
         performedjob: state.performedjob,
         notificationMessage: state.notificationMessage,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
@@ -165,7 +165,7 @@ const mapDispatchToProps = dispatch => {
         },
         onRegisterJob: (performedjob) => dispatch(REGISTERJOB_REQUEST(performedjob)),
     };
-};
+}
 
 User = connect(mapStateToProps, mapDispatchToProps)(User);
 

@@ -74,14 +74,14 @@ const emptyPaymenttype = {
 };
 
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         paymenttypes: state.paymenttypes,
         transactiontype: state.transactiontype,
     };
-};
+}
 
 const mapDispatchToProps = dispatch => {
     return {

@@ -5,7 +5,8 @@ import {
     UPDATE,
 } from '../actiontypes';
 
-var Notification = ({notificationMessage, onNullNotification}) => {
+function Notification(props) {
+    const { notificationMessage, onNullNotification } = props;
     if (notificationMessage) {
         if (Notification) {
             spawnNotification(notificationMessage);
@@ -18,18 +19,16 @@ var Notification = ({notificationMessage, onNullNotification}) => {
     return null;
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         notificationMessage: state.notificationMessage,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onNullNotification: () => dispatch(UPDATE({ notificationMessage: null })),
     };
-};
+}
 
-Notification = connect(mapStateToProps, mapDispatchToProps)(Notification);
-
-export default Notification;
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);

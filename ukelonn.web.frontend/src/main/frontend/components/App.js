@@ -65,11 +65,11 @@ class App extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         initialLoginStateRequest: () => dispatch(INITIAL_LOGIN_STATE_REQUEST())
     };
-};
+}
 
 App = connect(null, mapDispatchToProps)(App);
 

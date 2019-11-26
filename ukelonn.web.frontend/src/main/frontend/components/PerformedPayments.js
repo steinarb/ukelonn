@@ -75,7 +75,7 @@ class PerformedPayments extends Component {
     }
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -83,16 +83,15 @@ const mapStateToProps = state => {
         account: state.account,
         payments: state.payments,
     };
-};
-const mapDispatchToProps = dispatch => {
+}
+
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
         onPayments: (accountId) => dispatch(RECENTPAYMENTS_REQUEST(accountId)),
         onParentTitle: (parentTitle) => dispatch(UPDATE({ parentTitle })),
     };
-};
+}
 
-PerformedPayments = connect(mapStateToProps, mapDispatchToProps)(PerformedPayments);
-
-export default PerformedPayments;
+export default connect(mapStateToProps, mapDispatchToProps)(PerformedPayments);
