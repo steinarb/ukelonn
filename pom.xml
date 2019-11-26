@@ -52,7 +52,7 @@
         <dependency.osgi.jdbc.version>1.0.0</dependency.osgi.jdbc.version>
         <dependency.pax.web.version>6.0.3</dependency.pax.web.version>
         <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
-        <dependency.pax.jdbc.version>1.4.3</dependency.pax.jdbc.version>
+        <dependency.pax.jdbc.version>1.3.1</dependency.pax.jdbc.version>
         <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
         <dependency.shiro.version>1.4.1</dependency.shiro.version>
         <jackson.version>2.9.10</jackson.version>
