@@ -71,7 +71,7 @@ class AdminJobsDelete extends Component {
     }
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -80,8 +80,9 @@ const mapStateToProps = state => {
         accounts: state.accounts,
         accountsMap: state.accountsMap,
     };
-};
-const mapDispatchToProps = dispatch => {
+}
+
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
@@ -104,7 +105,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(DELETE_JOBS_REQUEST({ account, jobsToDelete }));
         },
     };
-};
+}
 
 AdminJobsDelete = connect(mapStateToProps, mapDispatchToProps)(AdminJobsDelete);
 

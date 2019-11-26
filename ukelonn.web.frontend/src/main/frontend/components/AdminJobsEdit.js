@@ -91,7 +91,7 @@ class AdminJobsEdit extends Component {
     }
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -103,7 +103,7 @@ const mapStateToProps = state => {
         jobtypesMap: state.jobtypesMap,
         selectedjob: state.selectedjob,
     };
-};
+}
 
 const emptyJob = {
     accountId: -1,
@@ -113,7 +113,7 @@ const emptyJob = {
     transactionTime: moment(),
 };
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onAccounts: () => dispatch(ACCOUNTS_REQUEST()),
@@ -171,7 +171,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(UPDATE(changedField));
         },
     };
-};
+}
 
 AdminJobsEdit = connect(mapStateToProps, mapDispatchToProps)(AdminJobsEdit);
 

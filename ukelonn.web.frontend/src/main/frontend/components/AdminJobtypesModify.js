@@ -58,7 +58,7 @@ const emptyJobtype = {
 };
 
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -66,9 +66,9 @@ const mapStateToProps = state => {
         jobtypesMap: state.jobtypesMap,
         transactiontype: state.transactiontype,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
@@ -93,7 +93,7 @@ const mapDispatchToProps = dispatch => {
         onSaveUpdatedJobType: (transactiontype) => dispatch(MODIFY_JOBTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 AdminJobtypesModify = connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesModify);
 

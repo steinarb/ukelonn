@@ -62,7 +62,7 @@ class AdminUsersChangePassword extends Component {
     };
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -72,18 +72,18 @@ const mapStateToProps = state => {
         passwords: state.passwords,
         passwordsNotIdentical: state.passwordsNotIdentical,
     };
-};
+}
 
-const checkIfPasswordsAreNotIdentical = (passwords) => {
+function checkIfPasswordsAreNotIdentical(passwords) {
     let { password1, password2 } = passwords;
     if (!password2) {
         return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
     }
 
     return password1 !== password2;
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onUserList: () => dispatch(USERS_REQUEST()),
         onUsersFieldChange: (selectedValue, usersMap) => {
@@ -105,7 +105,7 @@ const mapDispatchToProps = dispatch => {
         onSaveUpdatedPassword: (user, passwords) => dispatch(MODIFY_USER_PASSWORD_REQUEST({ user, passwords })),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 AdminUsersChangePassword = connect(mapStateToProps, mapDispatchToProps)(AdminUsersChangePassword);
 

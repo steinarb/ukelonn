@@ -79,7 +79,7 @@ class AdminUsersCreate extends Component {
     };
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -88,18 +88,18 @@ const mapStateToProps = state => {
         passwordsNotIdentical: state.passwordsNotIdentical,
         usernames: state.usernames,
     };
-};
+}
 
-const checkIfPasswordsAreNotIdentical = (passwords) => {
+function checkIfPasswordsAreNotIdentical(passwords) {
     let { password1, password2 } = passwords;
     if (!password2) {
         return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
     }
 
     return password1 !== password2;
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onClearUserAndPassword: () => {
             dispatch(CLEAR_USER_AND_PASSWORD());
@@ -123,7 +123,7 @@ const mapDispatchToProps = dispatch => {
         onSaveCreatedUser: (user, passwords) => dispatch(CREATE_USER_REQUEST({ user, passwords })),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 AdminUsersCreate = connect(mapStateToProps, mapDispatchToProps)(AdminUsersCreate);
 

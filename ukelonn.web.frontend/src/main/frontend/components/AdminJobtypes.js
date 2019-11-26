@@ -33,18 +33,18 @@ class AdminJobtypes extends Component {
     };
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 AdminJobtypes = connect(mapStateToProps, mapDispatchToProps)(AdminJobtypes);
 

@@ -92,7 +92,7 @@ const emptyAccount = {
     balance: 0.0,
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -105,9 +105,9 @@ const mapStateToProps = state => {
         paymenttypes: state.paymenttypes,
         paymenttypesMap: new Map(state.paymenttypes.map(i => [i.transactionTypeName, i])),
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
@@ -161,7 +161,7 @@ const mapDispatchToProps = dispatch => {
         },
         onRegisterPayment: (payment, paymenttype) => dispatch(REGISTERPAYMENT_REQUEST({ payment, paymenttype })),
     };
-};
+}
 
 Admin = connect(mapStateToProps, mapDispatchToProps)(Admin);
 

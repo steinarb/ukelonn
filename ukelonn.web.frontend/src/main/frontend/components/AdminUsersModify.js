@@ -65,7 +65,7 @@ class AdminUsersModify extends Component {
     };
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -73,9 +73,9 @@ const mapStateToProps = state => {
         usersMap: new Map(state.users.map(i => [i.fullname, i])),
         user: state.user,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onUserList: () => dispatch(USERS_REQUEST()),
         onUsersFieldChange: (selectedValue, usersMap) => {
@@ -94,7 +94,7 @@ const mapDispatchToProps = dispatch => {
         onSaveUpdatedUser: (user) => dispatch(MODIFY_USER_REQUEST(user)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 AdminUsersModify = connect(mapStateToProps, mapDispatchToProps)(AdminUsersModify);
 

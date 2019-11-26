@@ -70,7 +70,7 @@ class PerformedJobs extends Component {
     }
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -78,15 +78,16 @@ const mapStateToProps = state => {
         account: state.account,
         jobs: state.jobs,
     };
-};
-const mapDispatchToProps = dispatch => {
+}
+
+function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
         onJobs: (accountId) => dispatch(RECENTJOBS_REQUEST(accountId)),
         onParentTitle: (parentTitle) => dispatch(UPDATE({ parentTitle })),
     };
-};
+}
 
 PerformedJobs = connect(mapStateToProps, mapDispatchToProps)(PerformedJobs);
 

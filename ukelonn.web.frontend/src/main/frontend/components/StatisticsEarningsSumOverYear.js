@@ -56,21 +56,21 @@ class StatisticsEarningsSumOverYear extends Component {
     };
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
         earningsSumOverYear: state.earningsSumOverYear,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 StatisticsEarningsSumOverYear = connect(mapStateToProps, mapDispatchToProps)(StatisticsEarningsSumOverYear);
 

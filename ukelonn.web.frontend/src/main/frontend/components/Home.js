@@ -19,10 +19,10 @@ function Home(props) {
     );
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         loginResponse: state.loginResponse
     };
-};
+}
 
 export default connect(mapStateToProps)(Home);
