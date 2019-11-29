@@ -66,21 +66,21 @@ class StatisticsEarningsSumOverMonth extends Component {
     };
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
         earningsSumOverMonth: state.earningsSumOverMonth,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 StatisticsEarningsSumOverMonth = connect(mapStateToProps, mapDispatchToProps)(StatisticsEarningsSumOverMonth);
 

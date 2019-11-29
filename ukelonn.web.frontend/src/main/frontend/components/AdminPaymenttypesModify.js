@@ -85,7 +85,7 @@ const emptyPaymenttype = {
 };
 
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     if (!state.paymenttypes.find((payment) => payment.id === -1)) {
         state.paymenttypes.unshift(emptyPaymenttype);
     }
@@ -97,9 +97,9 @@ const mapStateToProps = state => {
         paymenttypesMap: new Map(state.paymenttypes.map(i => [i.transactionTypeName, i])),
         transactiontype: state.transactiontype,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
         onPaymenttypeList: () => dispatch(PAYMENTTYPELIST_REQUEST()),
         onPaymenttypeFieldChange: (selectedValue, paymenttypesMap, account, performedpayment) => {
@@ -124,7 +124,7 @@ const mapDispatchToProps = dispatch => {
         onSaveUpdatedPaymentType: (transactiontype) => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
 AdminPaymenttypesModify = connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesModify);
 

@@ -1,19 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
-class EarningsMessage extends Component {
+function EarningsMessage(props) {
+    const { earningsSumOverYear, earningsSumOverMonth } = props;
 
-    render() {
-        const { earningsSumOverYear, earningsSumOverMonth } = this.props;
-
-        if (!(earningsSumOverYear.length || earningsSumOverMonth.length)) {
-            return '';
-        }
-
-        const yearMessage = messageForEarningsCurrentAndPreviousYear(earningsSumOverYear);
-        const monthMessage = messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth);
-        return (<div className="alert alert-info" role="alert">{yearMessage}{monthMessage}</div>);
+    if (!(earningsSumOverYear.length || earningsSumOverMonth.length)) {
+        return '';
     }
+
+    const yearMessage = messageForEarningsCurrentAndPreviousYear(earningsSumOverYear);
+    const monthMessage = messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth);
+    return (<div className="alert alert-info" role="alert">{yearMessage}{monthMessage}</div>);
 }
 
 function messageForEarningsCurrentAndPreviousYear(earningsSumOverYear) {
@@ -47,15 +44,14 @@ function messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth) {
 }
 
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     const earningsSumOverYear = state.earningsSumOverYear || [];
     const earningsSumOverMonth = state.earningsSumOverMonth || [];
     return {
         earningsSumOverYear,
         earningsSumOverMonth,
     };
-};
+}
 
 
-EarningsMessage = connect(mapStateToProps)(EarningsMessage);
-export default EarningsMessage;
+export default connect(mapStateToProps)(EarningsMessage);
