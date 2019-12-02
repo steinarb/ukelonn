@@ -32,7 +32,7 @@ class User extends Component {
         }
 
         let { account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
-        const title = 'Ukelønn for ' + account.firstName;
+        const title = 'Ukelønn for ' + account.firstName + ', dobbelt julebonus!';
         const username = account.username;
         const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
         const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
