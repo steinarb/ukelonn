@@ -30,5 +30,6 @@
         </capability>
         <feature>ukelonn-db-liquibase-production</feature>
         <feature>pax-jdbc-config</feature>
+        <feature>postgresql</feature>
     </feature>
 </features>
