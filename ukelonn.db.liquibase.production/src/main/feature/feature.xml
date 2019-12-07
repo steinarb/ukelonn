@@ -16,4 +16,20 @@
     <feature name="ukelonn-db-liquibase-production">
         <feature>scr</feature>
     </feature>
+    <feature name="ukelonn-db-production" version="${project.version}">
+        <config name="org.ops4j.datasource-ukelonn-production">
+            osgi.jdbc.driver.name=PostgreSQL JDBC Driver
+            dataSourceName=jdbc/ukelonn
+            url=jdbc:postgresql:///ukelonn
+            user=karaf
+            password=karaf
+            ops4j.preHook=ukelonndb
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/ukelonn
+        </capability>
+        <feature>ukelonn-db-liquibase-production</feature>
+        <feature>pax-jdbc-config</feature>
+        <feature>postgresql</feature>
+    </feature>
 </features>
