@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static no.priv.bang.ukelonn.common.CommonStringMethods.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import no.priv.bang.beans.immutable.Immutable;
+
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class User {
+public class User extends Immutable {
     private int userId;
     private String username;
     private String email;
@@ -84,39 +84,6 @@ public class User {
 
     public String getFullname() {
         return new StringBuilder(getFirstname()).append(" ").append(getLastname()).toString();
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
-        result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
-        result = prime * result + userId;
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null ||
-            getClass() != obj.getClass())
-        {
-            return false;
-        }
-
-        User other = (User) obj;
-        return
-            nullSafeEquals(email, other.email) &&
-            nullSafeEquals(firstname, other.firstname) &&
-            nullSafeEquals(lastname, other.lastname) &&
-            userId == other.userId &&
-            nullSafeEquals(username, other.username);
     }
 
     @Override
