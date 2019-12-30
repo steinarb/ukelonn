@@ -66,13 +66,25 @@ Det er mulig å teste programvaren uten å sjekke ut og bygge kode.  I denne tes
 
 Framgangsmåten er som følger:
  1. Følge Apache Karaf quick start guide https://karaf.apache.org/manual/latest/quick-start.html
- 2. Fra kommandolinja til karaf (aka. "karaf console") legg til et maven-repo som inneholder ukelonn bygd fra travis-ci
-    #+BEGIN_EXAMPLE
-      config:edit org.ops4j.pax.url.mvn
-      config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots"
-      config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
-      config:update
-    #+END_EXAMPLE
+ 2. Fra kommandolinja til karaf gjør noen konfigureringer (konfigurasjonene blir perstert i etc-katalogen til karaf og trengs ikke å gjøres om igjen):
+    1. Legg til et maven-repo som inneholder ukelonn bygd fra travis-ci
+       #+BEGIN_EXAMPLE
+         config:edit org.ops4j.pax.url.mvn
+         config:property-append org.ops4j.pax.url.mvn.repositories ", https://maven.bang.priv.no/repository/@id=ukelonn@snapshots"
+         config:property-set org.ops4j.pax.url.mvn.globalUpdatePolicy always
+         config:update
+       #+END_EXAMPLE
+    2. Endre JDBC-konfig for authservice til å bruke samme derby-database som ukelonn:
+       #+begin_example
+         config:edit org.ops4j.datasource-authservice-test
+         config:property-set osgi.jdbc.driver.name derby
+         config:property-set dataSourceName "jdbc/authservice"
+         config:property-set ops4j.preHook "authservicedb"
+         config:property-set org.apache.karaf.features.configKey "org.ops4j.datasource-authservice-test"
+         config:property-set url "jdbc:derby:memory:ukelonn;create=true"
+         config:update
+       #+end_example
+    3. Stopp karaf og start karaf igjen for at endringen til derby-databasen skal fanges opp
  3. Fortsatt fra kommandolinja til karaf, innstaller ukelonn-appen med følgende kommandoer (applikasjonen ukelonn og alle dens avhengigheter blir dratt med hjelp av maven)
     #+BEGIN_EXAMPLE
       feature:repo-add mvn:no.priv.bang.ukelonn/karaf/LATEST/xml/features
