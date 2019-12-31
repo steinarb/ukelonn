@@ -28,8 +28,9 @@
     </feature>
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
-        <feature>authservice-with-testdb-dbrealm-and-session</feature>
+        <feature>authservice-with-dbrealm-and-session</feature>
         <feature prerequisite="true">ukelonn-db-test</feature>
+        <feature>ukelonn-authservice-db-test</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
