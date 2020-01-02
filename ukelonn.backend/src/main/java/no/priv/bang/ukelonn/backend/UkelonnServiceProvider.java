@@ -60,7 +60,6 @@ import no.priv.bang.ukelonn.beans.User;
  */
 @Component(service=UkelonnService.class, immediate=true)
 public class UkelonnServiceProvider extends UkelonnServiceBase {
-    private static final double XMAS_BONUS_FACTOR = 2;
     private DataSource datasource;
     private UserManagementService useradmin;
     private LogService logservice;
@@ -148,13 +147,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         int accountId = job.getAccount().getAccountId();
         int jobtypeId = job.getTransactionTypeId();
         double jobamount = job.getTransactionAmount();
-        double jobamountWithBonus = jobamount * XMAS_BONUS_FACTOR;
         Date timeofjob = job.getTransactionDate();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
                 statement.setInt(1, accountId);
                 statement.setInt(2, jobtypeId);
-                statement.setDouble(3, jobamountWithBonus);
+                statement.setDouble(3, jobamount);
                 statement.setTimestamp(4, new java.sql.Timestamp(timeofjob.getTime()));
                 statement.executeUpdate();
             }
