@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static no.priv.bang.ukelonn.common.CommonStringMethods.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import no.priv.bang.beans.immutable.Immutable;
+
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Account {
+public class Account extends Immutable { // NOSONAR Immutable handles added fields
     int accountId;
     String username;
     String firstName;
@@ -66,37 +66,6 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + accountId;
-        result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null ||
-            getClass() != obj.getClass())
-        {
-            return false;
-        }
-
-        Account other = (Account) obj;
-        return
-            accountId == other.accountId &&
-            nullSafeEquals(firstName, other.firstName) &&
-            nullSafeEquals(lastName, other.lastName) &&
-            nullSafeEquals(username, other.username);
     }
 
     @Override

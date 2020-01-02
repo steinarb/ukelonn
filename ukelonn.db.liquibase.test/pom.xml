@@ -22,7 +22,7 @@
 
     <artifactId>ukelonn.db.liquibase.test</artifactId>
 
-    <name>Ukelonn webapp test database setuo</name>
+    <name>Ukelonn webapp test database setup</name>
 
     <properties>
         <Bundle-SymbolicName>no.priv.bang.ukelonn.db.liquibase.test</Bundle-SymbolicName>
