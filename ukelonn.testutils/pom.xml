@@ -91,6 +91,10 @@
             <artifactId>service-mocks</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

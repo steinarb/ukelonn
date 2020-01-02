@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.test.db">
 
-    <!-- Copyright 2016-2018 Steinar Bang                                                -->
+    <!-- Copyright 2016-2019 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -28,6 +28,20 @@
             osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/ukelonn
         </capability>
         <feature>ukelonn-db-liquibase-test</feature>
+        <feature>pax-jdbc-config</feature>
+    </feature>
+    <feature name="ukelonn-authservice-db-test" version="${project.version}">
+        <config name="org.ops4j.datasource-ukelonn-authservice-test">
+            osgi.jdbc.driver.name=derby
+            dataSourceName=jdbc/authservice
+            url=jdbc:derby:memory:ukelonn;create=true
+            ops4j.preHook=authservicedb
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/authservice
+        </capability>
+        <feature>authservice-definitions</feature>
+        <feature>authservice-db-liquibase-test</feature>
         <feature>pax-jdbc-config</feature>
     </feature>
 </features>

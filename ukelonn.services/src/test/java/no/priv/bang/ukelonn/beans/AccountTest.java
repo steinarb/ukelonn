@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,14 +59,6 @@ public class AccountTest {
         assertNotEquals(accountWithNullStrings, account);
         assertNotEquals(account, null);
         assertNotEquals(account, "");
-    }
-
-    @Test
-    public void testHashCode() {
-        Account account = new Account(1, "jad", "Jane", "Doe", 1);
-        assertEquals(-2080260639, account.hashCode());
-        Account accountWithNullStrings = new Account(1, null, null, null, 1);
-        assertEquals(953312, accountWithNullStrings.hashCode());
     }
 
     @Test

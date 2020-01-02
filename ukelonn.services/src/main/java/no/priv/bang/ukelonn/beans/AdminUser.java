@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static no.priv.bang.ukelonn.common.CommonStringMethods.*;
+import no.priv.bang.beans.immutable.Immutable;
 
-public class AdminUser {
+public class AdminUser extends Immutable { // NOSONAR Immutable handles added fields
     private String userName;
     private int userId = 0;
     private int administratorId = 0;
@@ -51,39 +51,6 @@ public class AdminUser {
 
     public String getSurname() {
         return surname;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + administratorId;
-        result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
-        result = prime * result + ((surname == null) ? 0 : surname.hashCode());
-        result = prime * result + userId;
-        result = prime * result + ((userName == null) ? 0 : userName.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null ||
-            getClass() != obj.getClass())
-        {
-            return false;
-        }
-
-        AdminUser other = (AdminUser) obj;
-        return
-            administratorId == other.administratorId &&
-            userId == other.userId &&
-            nullSafeEquals(userName, other.userName) &&
-            nullSafeEquals(firstname, other.firstname) &&
-            nullSafeEquals(surname, other.surname);
     }
 
     @Override
