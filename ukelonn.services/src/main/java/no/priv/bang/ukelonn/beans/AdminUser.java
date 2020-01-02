@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.beans;
 
 import no.priv.bang.beans.immutable.Immutable;
 
-public class AdminUser extends Immutable {
+public class AdminUser extends Immutable { // NOSONAR Immutable handles added fields
     private String userName;
     private int userId = 0;
     private int administratorId = 0;

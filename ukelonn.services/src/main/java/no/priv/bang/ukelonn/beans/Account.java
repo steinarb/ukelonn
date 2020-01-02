@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.priv.bang.beans.immutable.Immutable;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Account extends Immutable {
+public class Account extends Immutable { // NOSONAR Immutable handles added fields
     int accountId;
     String username;
     String firstName;

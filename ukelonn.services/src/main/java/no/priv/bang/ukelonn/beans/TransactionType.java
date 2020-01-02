@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.beans;
 
 import no.priv.bang.beans.immutable.Immutable;
 
-public class TransactionType extends Immutable {
+public class TransactionType extends Immutable { // NOSONAR Immutable handles added fields
     private int id;
     private String transactionTypeName;
     private Double transactionAmount;

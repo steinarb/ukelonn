@@ -19,7 +19,7 @@ import java.util.Date;
 
 import no.priv.bang.beans.immutable.Immutable;
 
-public class Transaction extends Immutable {
+public class Transaction extends Immutable { // NOSONAR Immutable handles added fields
     private int id = -1;
     private TransactionType transactionType = null;
     private Date transactionTime = null;
