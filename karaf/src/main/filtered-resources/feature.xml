@@ -17,6 +17,7 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.test/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.as.authservicedb/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.production/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.authservice/authservice/${authservice.version}/xml/features</repository>
@@ -30,7 +31,7 @@
         <feature>ukelonn-backend</feature>
         <feature>authservice-with-dbrealm-and-session</feature>
         <feature prerequisite="true">ukelonn-db-test</feature>
-        <feature>ukelonn-authservice-db-test</feature>
+        <feature>ukelonn-db-as-authservicedb</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">

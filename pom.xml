@@ -31,6 +31,7 @@
         <module>ukelonn.testutils</module>
         <module>ukelonn.db.liquibase</module>
         <module>ukelonn.db.liquibase.test</module>
+        <module>ukelonn.db.as.authservicedb</module>
         <module>ukelonn.db.liquibase.production</module>
         <module>karaf</module>
     </modules>
@@ -56,6 +57,7 @@
         <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
         <dependency.shiro.version>1.4.1</dependency.shiro.version>
         <beans.version>1.0.0</beans.version>
+        <datasourceproxy.version>1.0.0</datasourceproxy.version>
         <jackson.version>2.9.10</jackson.version>
         <jackson.databind.version>2.9.10.1</jackson.databind.version>
         <jersey-feature.version>1.4.0</jersey-feature.version>
@@ -284,6 +286,12 @@
                 <groupId>no.priv.bang.beans</groupId>
                 <artifactId>beans.immutable</artifactId>
                 <version>${beans.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.jdbc</groupId>
+                <artifactId>jdbc.datasourceproxy</artifactId>
+                <version>${datasourceproxy.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
