@@ -30,18 +30,4 @@
         <feature>ukelonn-db-liquibase-test</feature>
         <feature>pax-jdbc-config</feature>
     </feature>
-    <feature name="ukelonn-authservice-db-test" version="${project.version}">
-        <config name="org.ops4j.datasource-ukelonn-authservice-test">
-            osgi.jdbc.driver.name=derby
-            dataSourceName=jdbc/authservice
-            url=jdbc:derby:memory:ukelonn;create=true
-            ops4j.preHook=authservicedb
-        </config>
-        <capability>
-            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/authservice
-        </capability>
-        <feature>authservice-definitions</feature>
-        <feature>authservice-db-liquibase-test</feature>
-        <feature>pax-jdbc-config</feature>
-    </feature>
 </features>

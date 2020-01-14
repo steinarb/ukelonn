@@ -42,11 +42,12 @@ public class UkelonnServletTest {
         servlet.init(servletConfig);
         servlet.setLogService(logservice);
         HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
@@ -58,6 +59,8 @@ public class UkelonnServletTest {
     public void testDoGetAddTrailingSlash() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn");
         when(request.getServletPath()).thenReturn("/frontend-karaf-demo");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -65,7 +68,7 @@ public class UkelonnServletTest {
         UkelonnServlet servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         assertEquals(302, response.getStatus());
     }
@@ -74,6 +77,8 @@ public class UkelonnServletTest {
     public void testDoGetResponseThrowsIOException() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
@@ -85,7 +90,7 @@ public class UkelonnServletTest {
         UkelonnServlet servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         assertEquals(500, response.getStatus());
     }
@@ -95,6 +100,8 @@ public class UkelonnServletTest {
     public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
@@ -104,7 +111,7 @@ public class UkelonnServletTest {
         UkelonnServlet servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         assertEquals(500, response.getStatus());
     }
@@ -113,6 +120,8 @@ public class UkelonnServletTest {
     public void testDoGetResourceNotFound() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/static/nosuchname.png"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/static/nosuchname.png");
         when(request.getPathInfo()).thenReturn("/static/nosuchname.png");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -120,18 +129,9 @@ public class UkelonnServletTest {
         UkelonnServlet servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
-        servlet.doGet(request, response);
+        servlet.service(request, response);
 
         assertEquals(404, response.getErrorCode());
-    }
-
-    @Test
-    public void testGuessContentTypeFromResourceName() {
-        UkelonnServlet servlet = new UkelonnServlet();
-        assertEquals("text/html", servlet.guessContentTypeFromResourceName("/index.html"));
-        assertEquals("application/javascript", servlet.guessContentTypeFromResourceName("/bundle.js"));
-        assertEquals("text/css", servlet.guessContentTypeFromResourceName("/bundle.css"));
-        assertNull(servlet.guessContentTypeFromResourceName("/bundle.nomatch"));
     }
 
 }
