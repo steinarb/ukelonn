@@ -161,6 +161,10 @@
                     <includeTransitiveDependency>true</includeTransitiveDependency>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-services-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 </project>
