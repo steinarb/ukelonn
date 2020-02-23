@@ -34,10 +34,12 @@
         <module>ukelonn.db.as.authservicedb</module>
         <module>ukelonn.db.liquibase.production</module>
         <module>karaf</module>
+        <module>jacoco-coverage-report</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
         <karaf.version>4.2.5</karaf.version>
         <mockrunner.version>2.0.1</mockrunner.version>
