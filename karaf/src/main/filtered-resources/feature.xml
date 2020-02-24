@@ -45,7 +45,7 @@
     <feature name="ukelonn-with-postgresql-and-provided-authservice" description="Ukelonn webapp without authservice" version="${project.version}">
         <feature>ukelonn-backend</feature>
         <feature>authservice-users</feature>
-        <feature>ukelonn-db-liquibase-production</feature>
+        <feature>ukelonn-db-production</feature>
         <feature>ukelonn</feature>
     </feature>
 </features>
