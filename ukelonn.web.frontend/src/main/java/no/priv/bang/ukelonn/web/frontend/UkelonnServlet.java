@@ -62,6 +62,7 @@ public class UkelonnServlet extends FrontendServlet {
             "/admin");
     }
 
+    @Override
     @Reference
     public void setLogService(LogService logservice) {
         super.setLogService(logservice);
