@@ -57,12 +57,11 @@
         <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
         <dependency.pax.jdbc.version>1.3.1</dependency.pax.jdbc.version>
         <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
-        <frontend-servlet.version>1.0.0</frontend-servlet.version>
+        <bang-servlet.version>1.1.1</bang-servlet.version>
         <beans.version>1.0.0</beans.version>
         <datasourceproxy.version>1.0.0</datasourceproxy.version>
         <jackson.version>2.9.10</jackson.version>
         <jackson.databind.version>2.9.10.2</jackson.databind.version>
-        <jersey-feature.version>1.5.0</jersey-feature.version>
         <jersey.version>2.30</jersey.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
@@ -195,7 +194,13 @@
             <dependency>
                 <groupId>no.priv.bang.servlet</groupId>
                 <artifactId>servlet.frontend</artifactId>
-                <version>${frontend-servlet.version}</version>
+                <version>${bang-servlet.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.servlet</groupId>
+                <artifactId>servlet.jersey</artifactId>
+                <version>${bang-servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
