@@ -7,7 +7,7 @@ import createSagaMiddleware from 'redux-saga';
 import {
     UPDATE,
 } from './actiontypes';
-import ukelonnReducer from './reducers';
+import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
@@ -15,7 +15,7 @@ import { routerMiddleware } from 'connected-react-router';
 
 const history = createBrowserHistory();
 const store = configureStore({
-    reducer: ukelonnReducer,
+    reducer: createUkelonnReducer(history),
     middleware: [
         sagaMiddleware,
         routerMiddleware(history),
@@ -35,7 +35,7 @@ if (typeof Notification !== 'undefined') {
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+      <App history={history} />
     </Provider>,
     document.getElementById('root')
 );

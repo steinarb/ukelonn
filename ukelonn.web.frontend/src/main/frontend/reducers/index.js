@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { connectRouter } from 'connected-react-router';
 import usernameReducer from './usernameReducer';
 import passwordReducer from './passwordReducer';
 import firstTimeAfterLoginReducer from './firstTimeAfterLoginReducer';
@@ -27,7 +28,8 @@ import passwordsNotIdenticalReducer from './passwordsNotIdenticalReducer';
 import earningsSumOverYearReducer from './earningsSumOverYearReducer';
 import earningsSumOverMonthReducer from './earningsSumOverMonthReducer';
 
-const ukelonnReducer = combineReducers({
+export default (history) => combineReducers({
+    router: connectRouter(history),
     username: usernameReducer,
     password: passwordReducer,
     firstTimeAfterLogin: firstTimeAfterLoginReducer,
@@ -56,5 +58,3 @@ const ukelonnReducer = combineReducers({
     earningsSumOverYear: earningsSumOverYearReducer,
     earningsSumOverMonth: earningsSumOverMonthReducer,
 });
-
-export default ukelonnReducer;
