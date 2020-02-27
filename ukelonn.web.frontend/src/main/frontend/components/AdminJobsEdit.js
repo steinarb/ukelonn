@@ -75,7 +75,7 @@ class AdminJobsEdit extends Component {
                 <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={selectedjob.transactionType.transactionTypeName} account={account} performedjob={selectedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
                 <br/>
                 <label htmlFor="amount">Beløp</label>
-                <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly="true" />
+                <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
                 <br/>
                 <label htmlFor="date">Dato</label>
                 <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />

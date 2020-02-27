@@ -49,7 +49,7 @@ class User extends Component {
                     <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp</label>
-                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly="true" />
+                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
                     <br/>
                     <label htmlFor="date">Dato</label>
                     <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
