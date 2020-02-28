@@ -1,4 +1,4 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
     PAYMENTTYPELIST_RECEIVE,
     PAYMENTTYPES_RECEIVE,

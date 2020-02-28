@@ -63,7 +63,7 @@ class PerformedJobs extends Component {
                                      <td className="transaction-table-col">{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
                                      <td className="transaction-table-col transaction-table-col-hide-overflow">{job.name}</td>
                                      <td className="transaction-table-col">{job.transactionAmount}</td>
-                                     <td className="transaction-table-col"><input type="checkbox" checked={job.paidOut} readOnly="true"/></td>
+                                     <td className="transaction-table-col"><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
                                  </tr>
                              )}
                         </tbody>

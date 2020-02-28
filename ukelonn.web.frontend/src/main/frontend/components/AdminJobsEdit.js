@@ -96,7 +96,7 @@ class AdminJobsEdit extends Component {
                     <div className="form-group row">
                         <label htmlfor="amount" className="col-form-label col-5">Beløp</label>
                         <div className="col-7">
-                            <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly="true" />
+                            <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">

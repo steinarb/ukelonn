@@ -1,4 +1,4 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
     EARNINGS_SUM_OVER_MONTH_RECEIVE,
 } from '../actiontypes';
