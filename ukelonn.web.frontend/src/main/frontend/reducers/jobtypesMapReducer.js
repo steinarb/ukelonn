@@ -1,4 +1,4 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
     JOBTYPELIST_RECEIVE,
     MODIFY_JOBTYPE_RECEIVE,

@@ -1,28 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { applyMiddleware, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
     UPDATE,
 } from './actiontypes';
-import ukelonnReducer from './reducers';
+import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 
 const history = createBrowserHistory();
-const store = createStore(ukelonnReducer,
-                          composeWithDevTools(
-                              applyMiddleware(
-                                  sagaMiddleware,
-                                  routerMiddleware(history)
-                              )
-                          )
-                         );
+const store = configureStore({
+    reducer: createUkelonnReducer(history),
+    middleware: [
+        sagaMiddleware,
+        routerMiddleware(history),
+    ],
+});
 sagaMiddleware.run(rootSaga);
 
 if (typeof Notification !== 'undefined') {
@@ -37,7 +35,7 @@ if (typeof Notification !== 'undefined') {
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+      <App history={history} />
     </Provider>,
     document.getElementById('root')
 );

@@ -74,7 +74,7 @@ class Admin extends Component {
                         <div className="form-group row">
                             <label htmlFor="account-balance" className="col-form-label col-5">Til gode:</label>
                             <div className="col-7">
-                                <input id="account-balance" className="form-control" type="text" value={account.balance} readOnly="true" />
+                                <input id="account-balance" className="form-control" type="text" value={account.balance} readOnly={true} />
                             </div>
                         </div>
                         <div className="form-group row">

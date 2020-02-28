@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, BrowserRouter as Router, NavLink } from 'react-router-dom';
+import { Switch, Route, NavLink } from 'react-router-dom';
+import { ConnectedRouter as Router } from 'connected-react-router';
 import {
     INITIAL_LOGIN_STATE_REQUEST,
 } from '../actiontypes';
@@ -35,8 +36,9 @@ class App extends Component {
     }
 
     render() {
+        const { history } = this.props;
         return(
-            <Router>
+            <Router history={history}>
                 <Switch>
                     <Route exact path="/ukelonn/" component={Home} />
                     <Route path="/ukelonn/login*" component={Login} />
