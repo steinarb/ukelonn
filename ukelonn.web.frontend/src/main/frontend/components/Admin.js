@@ -138,7 +138,7 @@ function mapDispatchToProps(dispatch) {
                 },
             };
             dispatch(UPDATE(changedField));
-            dispatch(ACCOUNT_REQUEST(username))
+            dispatch(ACCOUNT_REQUEST(username));
         },
         onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
             let paymenttype = paymenttypeMap.get(selectedValue);
