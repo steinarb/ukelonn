@@ -7,25 +7,9 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    ACCOUNT_REQUEST,
-    RECENTPAYMENTS_REQUEST,
-    UPDATE,
 } from '../actiontypes';
 
 class PerformedPayments extends Component {
-    componentDidMount() {
-        let { account } = this.props;
-        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const accountId = account.firstName === 'Ukjent' ? queryParams.accountId : account.accountId;
-        this.props.onPayments(accountId);
-        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : 'Register betaling';
-        this.props.onParentTitle(parentTitle);
-
-        if (account.firstName === 'Ukjent' && queryParams.username) {
-            this.props.onAccount(queryParams.username);
-        }
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -81,9 +65,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
-        onPayments: (accountId) => dispatch(RECENTPAYMENTS_REQUEST(accountId)),
-        onParentTitle: (parentTitle) => dispatch(UPDATE({ parentTitle })),
     };
 }
 

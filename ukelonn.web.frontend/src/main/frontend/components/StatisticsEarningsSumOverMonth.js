@@ -6,16 +6,10 @@ import { stringify } from 'qs';
 import { findUsernameFromAccountOrQueryParameter } from '../common/account';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    ACCOUNT_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 
 class StatisticsEarningsSumOverMonth extends Component {
-    componentDidMount() {
-        const username = findUsernameFromAccountOrQueryParameter(this.props);
-        this.props.onAccount(username);
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -68,7 +62,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

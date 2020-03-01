@@ -1,6 +1,7 @@
 import { fork } from 'redux-saga/effects';
 import { requestInitialLoginStateSaga, requestLoginSaga } from './loginSaga';
 import { requestLogoutSaga } from './logoutSaga';
+import locationSaga from './locationSaga';
 import accountSaga from './accountSaga';
 import { requestJobtypeListSaga } from './jobtypelistSaga';
 import { requestPaymenttypeListSaga } from './paymenttypelistSaga';
@@ -29,6 +30,7 @@ export function* rootSaga() {
         fork(requestInitialLoginStateSaga),
         fork(requestLoginSaga),
         fork(requestLogoutSaga),
+        fork(locationSaga),
         fork(accountSaga),
         fork(requestJobtypeListSaga),
         fork(requestPaymenttypeListSaga),

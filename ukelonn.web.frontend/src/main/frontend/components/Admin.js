@@ -7,8 +7,6 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     ACCOUNT_REQUEST,
-    ACCOUNTS_REQUEST,
-    PAYMENTTYPES_REQUEST,
     UPDATE,
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
@@ -20,8 +18,6 @@ import EarningsMessage from './EarningsMessage';
 class Admin extends Component {
     componentDidMount() {
         this.props.onDeselectAccountInDropdown(this.props.firstTimeAfterLogin);
-        this.props.onAccounts();
-        this.props.onPaymenttypeList();
     }
 
     render() {
@@ -123,8 +119,6 @@ function mapDispatchToProps(dispatch) {
                 }));
             }
         },
-        onAccounts: () => dispatch(ACCOUNTS_REQUEST()),
-        onPaymenttypeList: () => dispatch(PAYMENTTYPES_REQUEST()),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             const username = account.username;

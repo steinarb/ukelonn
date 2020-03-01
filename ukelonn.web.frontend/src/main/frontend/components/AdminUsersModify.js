@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    USERS_REQUEST,
     UPDATE,
     MODIFY_USER_REQUEST,
     LOGOUT_REQUEST,
@@ -13,10 +12,6 @@ import Users from './Users';
 import Amount from './Amount';
 
 class AdminUsersModify extends Component {
-    componentDidMount() {
-        this.props.onUserList();
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -77,7 +72,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUserList: () => dispatch(USERS_REQUEST()),
         onUsersFieldChange: (selectedValue, usersMap) => {
             let user = usersMap.get(selectedValue);
             let changedField = {

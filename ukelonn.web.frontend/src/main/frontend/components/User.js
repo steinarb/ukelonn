@@ -9,9 +9,6 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    ACCOUNT_REQUEST,
-    START_NOTIFICATION_LISTENING,
-    JOBTYPELIST_REQUEST,
     UPDATE,
     REGISTERJOB_REQUEST,
 } from '../actiontypes';
@@ -20,12 +17,6 @@ import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
 
 class User extends Component {
-    componentDidMount() {
-        this.props.onAccount(this.props.loginResponse.username);
-        this.props.onNotifyStart(this.props.loginResponse.username);
-        this.props.onJobtypeList();
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -80,7 +71,6 @@ const emptyJob = {
 function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
         account: state.account,
         jobtypes: state.jobtypes,
         jobtypesMap: state.jobtypesMap,
@@ -92,9 +82,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
-        onNotifyStart: (username) => dispatch(START_NOTIFICATION_LISTENING(username)),
-        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {

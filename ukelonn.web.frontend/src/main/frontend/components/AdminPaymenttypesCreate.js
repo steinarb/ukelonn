@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    PAYMENTTYPELIST_REQUEST,
     UPDATE,
     CREATE_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
@@ -13,10 +12,6 @@ import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 
 class AdminPaymenttypesCreate extends Component {
-    componentDidMount() {
-        this.props.onPaymenttypeList();
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -66,7 +61,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onPaymenttypeList: () => dispatch(PAYMENTTYPELIST_REQUEST()),
         onPaymenttypeFieldChange: (selectedValue, paymenttypesMap, account, performedpayment) => {
             let paymenttype = paymenttypesMap.get(selectedValue);
             let changedField = {

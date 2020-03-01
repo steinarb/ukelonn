@@ -6,7 +6,6 @@ import { isEmail } from 'validator';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORD,
-    USERS_REQUEST,
     UPDATE,
     CREATE_USER_REQUEST,
     LOGOUT_REQUEST,
@@ -17,7 +16,6 @@ import Amount from './Amount';
 class AdminUsersCreate extends Component {
     componentDidMount() {
         this.props.onClearUserAndPassword();
-        this.props.onUserList();
     }
 
     render() {
@@ -104,7 +102,6 @@ function mapDispatchToProps(dispatch) {
         onClearUserAndPassword: () => {
             dispatch(CLEAR_USER_AND_PASSWORD());
         },
-        onUserList: () => dispatch(USERS_REQUEST()),
         onUserFieldChange: (formValue, user) => {
             let changedField = {
                 user: { ...user, ...formValue }

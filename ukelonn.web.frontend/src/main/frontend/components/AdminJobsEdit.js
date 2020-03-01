@@ -7,9 +7,6 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    ACCOUNTS_REQUEST,
-    JOBTYPELIST_REQUEST,
-    RECENTJOBS_REQUEST,
     UPDATE,
     UPDATE_JOB_REQUEST,
 } from '../actiontypes';
@@ -23,12 +20,6 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
 }
 
 class AdminJobsEdit extends Component {
-    componentDidMount() {
-        this.props.onAccounts();
-        this.props.onJobtypeList();
-        this.props.onJobs(this.props.account);
-    }
-
     componentWillReceiveProps(props) {
         reloadJobListWhenAccountHasChanged(this.props.account, props.account, this.props.onJobs);
 
@@ -116,9 +107,6 @@ const emptyJob = {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccounts: () => dispatch(ACCOUNTS_REQUEST()),
-        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
-        onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
         onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
             let account = accountsMap.get(selectedValue);
             let changedField = {

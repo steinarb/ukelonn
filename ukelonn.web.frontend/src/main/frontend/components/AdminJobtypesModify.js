@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    JOBTYPELIST_REQUEST,
     UPDATE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
@@ -13,10 +12,6 @@ import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
 class AdminJobtypesModify extends Component {
-    componentDidMount() {
-        this.props.onJobtypeList();
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -70,7 +65,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
         onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
             let jobtype = jobtypesMap.get(selectedValue);
             let changedField = {
