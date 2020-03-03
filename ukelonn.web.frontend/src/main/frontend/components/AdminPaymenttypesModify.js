@@ -48,18 +48,8 @@ class AdminPaymenttypesModify extends Component {
     };
 };
 
-const emptyPaymenttype = {
-    id: -1,
-    transactionName: '',
-    transactionAmount: 0.0
-};
-
 
 function mapStateToProps(state) {
-    if (!state.paymenttypes.find((payment) => payment.id === -1)) {
-        state.paymenttypes.unshift(emptyPaymenttype);
-    }
-
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
