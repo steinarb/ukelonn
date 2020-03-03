@@ -8,7 +8,6 @@ import {
     PAYMENTTYPES_REQUEST,
     START_NOTIFICATION_LISTENING,
     JOBTYPELIST_REQUEST,
-    PAYMENTTYPELIST_REQUEST,
     RECENTJOBS_REQUEST,
     RECENTPAYMENTS_REQUEST,
     UPDATE,
@@ -70,7 +69,7 @@ function* locationChange(action) {
     }
 
     if (pathname === '/ukelonn/admin/paymenttypes/modify' || pathname === '/ukelonn/admin/paymenttypes/create') {
-        yield put((PAYMENTTYPELIST_REQUEST()));
+        yield put((PAYMENTTYPES_REQUEST()));
     }
 
     if (pathname === '/ukelonn/admin/users/modify' || pathname === '/ukelonn/admin/users/password' || pathname === '/ukelonn/admin/users/create') {

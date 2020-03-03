@@ -4,7 +4,6 @@ import { requestLogoutSaga } from './logoutSaga';
 import locationSaga from './locationSaga';
 import accountSaga from './accountSaga';
 import { requestJobtypeListSaga } from './jobtypelistSaga';
-import { requestPaymenttypeListSaga } from './paymenttypelistSaga';
 import { requestRegisterJobSaga } from './registerjobSaga';
 import { requestRecentJobsSaga } from './recentjobsSaga';
 import { requestRecentPaymentsSaga } from  './recentpaymentsSaga';
@@ -33,7 +32,6 @@ export function* rootSaga() {
         fork(locationSaga),
         fork(accountSaga),
         fork(requestJobtypeListSaga),
-        fork(requestPaymenttypeListSaga),
         fork(requestRegisterJobSaga),
         fork(requestRecentJobsSaga),
         fork(requestRecentPaymentsSaga),
