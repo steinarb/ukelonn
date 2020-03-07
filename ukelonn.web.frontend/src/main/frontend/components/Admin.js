@@ -6,8 +6,9 @@ import { stringify } from 'qs';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    ACCOUNT_REQUEST,
-    UPDATE,
+    UPDATE_FIRSTTIMEAFTERLOGIN,
+    UPDATE_ACCOUNT,
+    UPDATE_PAYMENT,
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import Accounts from './Accounts';
@@ -53,12 +54,12 @@ class Admin extends Component {
                 <h1>Registrer betaling</h1>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
-                    <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} paymenttype={paymenttype} onAccountsFieldChange={onAccountsFieldChange}/>
+                    <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                     <br/>
                     <EarningsMessage /><br/>
                     <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly={true} /><br/>
                     <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
-                    <Paymenttypes id="paymenttype-selector" value={paymenttype.transactionName} paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} account={account} paymenttype={paymenttype} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                    <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp:</label>
                     <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
@@ -108,52 +109,28 @@ function mapDispatchToProps(dispatch) {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
             if (firstTimeAfterLogin) {
-                dispatch(UPDATE({
-                    firstTimeAfterLogin: false,
-                    account: emptyAccount,
-                    payment: {
-                        account: emptyAccount,
-                        transactionAmount: 0.0,
-                        transactionTypeId: -1
-                    }
-                }));
+                dispatch(UPDATE_FIRSTTIMEAFTERLOGIN());
+                dispatch(UPDATE_ACCOUNT(emptyAccount));
+                dispatch(UPDATE_PAYMENT({ account: emptyAccount, transactionAmount: 0.0, transactionTypeId: -1 }));
             }
         },
-        onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
-            let account = accountsMap.get(selectedValue);
-            const username = account.username;
+        onAccountsFieldChange: (selectedValue, accounts) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let account = accounts.find(account => account.accountId === selectedValueInt);
+            dispatch(UPDATE_ACCOUNT(account));
+        },
+        onPaymenttypeFieldChange: (selectedValue, paymenttypes, account) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let paymenttype = paymenttypes.find(pt => pt.id === selectedValueInt);
             let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
-            let changedField = {
-                account,
-                payment: {
-                    transactionTypeId: paymenttype.id,
-                    transactionAmount: amount,
-                    account: account,
-                },
-            };
-            dispatch(UPDATE(changedField));
-            dispatch(ACCOUNT_REQUEST(username));
+            dispatch(UPDATE_PAYMENT({
+                transactionTypeId: paymenttype.id,
+                transactionAmount: amount,
+                account: account,
+            }));
         },
-        onPaymenttypeFieldChange: (selectedValue, paymenttypeMap, account) => {
-            let paymenttype = paymenttypeMap.get(selectedValue);
-            let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
-            let changedField = {
-                paymenttype,
-                payment: {
-                    transactionTypeId: paymenttype.id,
-                    transactionAmount: amount,
-                    account: account,
-                }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onAmountFieldChange: (formValue, payment) => {
-            let changedField = {
-                payment: { ...payment, transactionAmount: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onRegisterPayment: (payment, paymenttype) => dispatch(REGISTERPAYMENT_REQUEST({ payment, paymenttype })),
+        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_PAYMENT({ transactionAmount })),
+        onRegisterPayment: (payment) => dispatch(REGISTERPAYMENT_REQUEST({ ...payment })),
     };
 }
 

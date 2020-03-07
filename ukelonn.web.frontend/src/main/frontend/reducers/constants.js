@@ -1,7 +1,8 @@
 import moment from 'moment';
 
+export const bankAccount = 4;
+
 export const emptyPerformedTransaction = {
-    account: { id: -1 },
     transactionTypeId: -1,
     transactionAmount: 0.0
 };

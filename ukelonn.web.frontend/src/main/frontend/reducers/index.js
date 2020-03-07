@@ -6,7 +6,6 @@ import firstTimeAfterLoginReducer from './firstTimeAfterLoginReducer';
 import notificationAvailableReducer from './notificationAvailableReducer';
 import notificationMessageReducer from './notificationMessageReducer';
 import accountReducer from './accountReducer';
-import paymenttypeReducer from './paymenttypeReducer';
 import paymentReducer from './paymentReducer';
 import jobsReducer from './jobsReducer';
 import paymentsReducer from './paymentsReducer';
@@ -24,7 +23,6 @@ import usersReducer from './usersReducer';
 import usernamesReducer from './usernamesReducer';
 import userReducer from './userReducer';
 import passwordsReducer from './passwordsReducer';
-import passwordsNotIdenticalReducer from './passwordsNotIdenticalReducer';
 import earningsSumOverYearReducer from './earningsSumOverYearReducer';
 import earningsSumOverMonthReducer from './earningsSumOverMonthReducer';
 
@@ -36,7 +34,6 @@ export default (history) => combineReducers({
     notificationAvailable: notificationAvailableReducer,
     notificationMessage: notificationMessageReducer,
     account: accountReducer,
-    paymenttype: paymenttypeReducer,
     payment: paymentReducer,
     jobs: jobsReducer,
     payments: paymentsReducer,
@@ -54,7 +51,6 @@ export default (history) => combineReducers({
     usernames: usernamesReducer,
     user: userReducer,
     passwords: passwordsReducer,
-    passwordsNotIdentical: passwordsNotIdenticalReducer,
     earningsSumOverYear: earningsSumOverYearReducer,
     earningsSumOverMonth: earningsSumOverMonthReducer,
 });

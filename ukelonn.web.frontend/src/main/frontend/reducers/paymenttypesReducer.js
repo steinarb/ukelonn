@@ -13,8 +13,8 @@ const emptyPaymenttype = {
 
 const paymenttypesReducer = createReducer([], {
     [PAYMENTTYPES_RECEIVE]: (state, action) => addEmptyPaymenttypeToReceivedList(state, action),
-    [MODIFY_PAYMENTTYPE_RECEIVE]: (state, action) => action.payload,
-    [CREATE_PAYMENTTYPE_RECEIVE]: (state, action) => action.paymenttypes,
+    [MODIFY_PAYMENTTYPE_RECEIVE]: (state, action) => addEmptyPaymenttypeToReceivedList(state, action),
+    [CREATE_PAYMENTTYPE_RECEIVE]: (state, action) => addEmptyPaymenttypeToReceivedList(state, action),
 });
 
 export default paymenttypesReducer;

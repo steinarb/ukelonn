@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     USERS_REQUEST,
-    UPDATE,
+    UPDATE_USER,
+    UPDATE_PASSWORDS,
     MODIFY_USER_PASSWORD_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
@@ -27,9 +28,9 @@ class AdminUsersChangePassword extends Component {
             usersMap,
             user,
             passwords,
-            passwordsNotIdentical,
             onUsersFieldChange,
-            onPasswordsFieldChange,
+            onPassword1Change,
+            onPassword2Change,
             onSaveUpdatedPassword,
             onLogout,
         } = this.props;
@@ -42,14 +43,14 @@ class AdminUsersChangePassword extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                    <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                     <br/>
                     <label htmlFor="password1">Passord:</label>
-                    <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
+                    <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                     <br/>
                     <label htmlFor="password2">Gjenta passord:</label>
-                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                    { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
+                    { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                     <br/>
                     <button onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
                 </form>
@@ -67,41 +68,21 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         users: state.users,
-        usersMap: new Map(state.users.map(i => [i.fullname, i])),
         user: state.user,
         passwords: state.passwords,
-        passwordsNotIdentical: state.passwordsNotIdentical,
     };
-}
-
-function checkIfPasswordsAreNotIdentical(passwords) {
-    let { password1, password2 } = passwords;
-    if (!password2) {
-        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
-    }
-
-    return password1 !== password2;
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         onUserList: () => dispatch(USERS_REQUEST()),
-        onUsersFieldChange: (selectedValue, usersMap) => {
-            let user = usersMap.get(selectedValue);
-            let changedField = {
-                user: {...user},
-            };
-            dispatch(UPDATE(changedField));
+        onUsersFieldChange: (selectedValue, users) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let user = users.find(u => u.userid === selectedValueInt);
+            dispatch(UPDATE_USER({ ...user }));
         },
-        onPasswordsFieldChange: (formValue, passwordsFromState) => {
-            const passwords = { ...passwordsFromState, ...formValue };
-            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
-            let changedField = {
-                passwords,
-                passwordsNotIdentical,
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onPassword1Change: (password1) => dispatch(UPDATE_PASSWORDS({ password1 })),
+        onPassword2Change: (password2) => dispatch(UPDATE_PASSWORDS({ password2 })),
         onSaveUpdatedPassword: (user, passwords) => dispatch(MODIFY_USER_PASSWORD_REQUEST({ user, passwords })),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

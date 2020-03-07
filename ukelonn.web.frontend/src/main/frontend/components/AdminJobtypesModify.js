@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE,
+    UPDATE_TRANSACTIONTYPE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
 import JobtypesBox from './JobtypesBox';
@@ -27,7 +27,7 @@ class AdminJobtypesModify extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobbtype</label>
-                    <JobtypesBox id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
+                    <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Endre navn på jobbtype</label>
                     <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
@@ -65,25 +65,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
-            let jobtype = jobtypesMap.get(selectedValue);
-            let changedField = {
-                transactiontype: {...jobtype},
-            };
-            dispatch(UPDATE(changedField));
+        onJobtypeFieldChange: (selectedValue, jobtypes) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
+            dispatch(UPDATE_TRANSACTIONTYPE({ ...jobtype }));
         },
-        onNameFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionTypeName: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onAmountFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionAmount: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
+        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
         onSaveUpdatedJobType: (transactiontype) => dispatch(MODIFY_JOBTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

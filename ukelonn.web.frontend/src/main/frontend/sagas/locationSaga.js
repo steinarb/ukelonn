@@ -10,7 +10,6 @@ import {
     JOBTYPELIST_REQUEST,
     RECENTJOBS_REQUEST,
     RECENTPAYMENTS_REQUEST,
-    UPDATE,
 } from '../actiontypes';
 
 function* locationChange(action) {
@@ -29,7 +28,6 @@ function* locationChange(action) {
         const { username, accountId, parentTitle } = queryParams;
         yield put(ACCOUNT_REQUEST(username));
         yield put(RECENTJOBS_REQUEST(accountId));
-        yield put(UPDATE({ parentTitle }));
     }
 
     if (pathname === '/ukelonn/performedpayments') {
@@ -37,7 +35,6 @@ function* locationChange(action) {
         const { username, accountId, parentTitle } = queryParams;
         yield put(ACCOUNT_REQUEST(username));
         yield put(RECENTPAYMENTS_REQUEST(accountId));
-        yield put(UPDATE({ parentTitle }));
     }
 
     if (pathname === '/ukelonn/statistics/earnings/sumoveryear' || pathname === '/ukelonn/statistics/earnings/sumovermonth') {

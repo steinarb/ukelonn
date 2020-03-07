@@ -7,8 +7,11 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE,
+    UPDATE_JOBS,
+    UPDATE_ACCOUNT,
+    UPDATE_SELECTEDJOB,
     UPDATE_JOB_REQUEST,
+    RECENTJOBS_REQUEST,
 } from '../actiontypes';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
@@ -20,12 +23,6 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
 }
 
 class AdminJobsEdit extends Component {
-    componentWillReceiveProps(props) {
-        reloadJobListWhenAccountHasChanged(this.props.account, props.account, this.props.onJobs);
-
-        this.setState({...props});
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -40,7 +37,7 @@ class AdminJobsEdit extends Component {
                 <h1>Endre jobber for {account.firstName}</h1>
 
                 <label htmlFor="account-selector">Velg konto:</label>
-                <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} onAccountsFieldChange={onAccountsFieldChange}/>
+                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                 <br/>
 
                 <table className="table table-bordered">
@@ -53,7 +50,7 @@ class AdminJobsEdit extends Component {
                     </thead>
                     <tbody>
                         {jobs.map((job) =>
-                            <tr onClick={ ()=>onRowClick(account, job) } key={job.id}>
+                            <tr onClick={ ()=>onRowClick(job) } key={job.id}>
                                 <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
                                 <td>{job.name}</td>
                                 <td>{job.transactionAmount}</td>
@@ -63,7 +60,7 @@ class AdminJobsEdit extends Component {
                 </table>
                 <h2>Endre jobb</h2>
                 <label htmlFor="jobtype">Jobbtype</label>
-                <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={selectedjob.transactionType.transactionTypeName} account={account} performedjob={selectedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
                 <br/>
                 <label htmlFor="amount">Beløp</label>
                 <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
@@ -107,47 +104,20 @@ const emptyJob = {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
-            let account = accountsMap.get(selectedValue);
-            let changedField = {
-                account,
-                selectedjob: { ...emptyJob },
-            };
-            dispatch(UPDATE(changedField));
+        onAccountsFieldChange: (selectedValue, accounts) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let account = accounts.find(account => account.accountId === selectedValueInt);
+            dispatch(UPDATE_ACCOUNT(account));
+            dispatch(RECENTJOBS_REQUEST(account.accountId));
         },
-        onRowClick: (account, job) => {
-            const jobtype = job.transactionType;
-            let changedField = {
-                selectedjob: {
-                    ...job,
-                    accountId: account.accountId,
-                    transactionTypeId: jobtype.id,
-                    transactionTime: moment(job.transactionTime),
-                },
-            };
-            dispatch(UPDATE(changedField));
+        onRowClick: (job) => dispatch(UPDATE_SELECTEDJOB({ ...job, transactionTypeId: job.transactionType.id, transactionTime: moment(job.transactionTime) })),
+        onJobtypeFieldChange: (selectedValue, jobtypes) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            const jobtype = jobtypes.find(j => j.id === selectedValueInt);
+            const { id: transactionTypeId, transactionAmount } = jobtype;
+            dispatch(UPDATE_SELECTEDJOB({ transactionTypeId, transactionAmount }));
         },
-        onJobtypeFieldChange: (selectedValue, jobtypesMap, account, selectedjob) => {
-            let jobtype = jobtypesMap.get(selectedValue);
-            let changedField = {
-                selectedjob: {
-                    ...selectedjob,
-                    transactionType: jobtype,
-                    transactionTypeId: jobtype.id,
-                    transactionAmount: jobtype.transactionAmount,
-                }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onDateFieldChange: (selectedValue, selectedjob) => {
-            let changedField = {
-                selectedjob: {
-                    ...selectedjob,
-                    transactionTime: selectedValue,
-                }
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onDateFieldChange: (selectedValue) => dispatch(UPDATE_SELECTEDJOB({ transactionTime: selectedValue })),
         onSaveEditedJob: (selectedjob) => {
             dispatch(UPDATE_JOB_REQUEST({ selectedjob }));
             let changedField = {
@@ -156,7 +126,7 @@ function mapDispatchToProps(dispatch) {
                     transactionType: { transactionTypeName: '' },
                 }
             };
-            dispatch(UPDATE(changedField));
+            dispatch(UPDATE_SELECTEDJOB(changedField));
         },
     };
 }

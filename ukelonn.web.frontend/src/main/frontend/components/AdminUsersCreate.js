@@ -6,7 +6,8 @@ import { isEmail } from 'validator';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORD,
-    UPDATE,
+    UPDATE_USER,
+    UPDATE_PASSWORDS,
     CREATE_USER_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
@@ -28,8 +29,12 @@ class AdminUsersCreate extends Component {
             user,
             passwords,
             passwordsNotIdentical,
-            onUserFieldChange,
-            onPasswordsFieldChange,
+            onUsernameChange,
+            onEmailChange,
+            onFirstnameChange,
+            onLastnameChange,
+            onPassword1Change,
+            onPassword2Change,
             onSaveCreatedUser,
             onLogout,
         } = this.props;
@@ -45,26 +50,26 @@ class AdminUsersCreate extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="username">Brukernavn</label>
-                    <input id="username" type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
+                    <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
                     { usernameEmpty && <span>Brukernavn kan ikke være tomt</span> }
                     { usernameExists && <span>Brukernavnet finnes fra før</span> }
                     <br/>
                     <label htmlFor="email">Epostadresse</label>
-                    <input id="email" type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
+                    <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
                     { user.email && !isEmail(user.email) && <span>Ikke en gyldig epostadresse</span> }
                     <br/>
                     <label htmlFor="firstname">Fornavn</label>
-                    <input id="firstname" type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
+                    <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
                     <br/>
                     <label htmlFor="lastname">Etternavn</label>
-                    <input id="lastname" type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
+                    <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                     <br/>
                     <label htmlFor="password1">Passord:</label>
-                    <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
+                    <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                     <br/>
                     <label htmlFor="password2">Gjenta passord:</label>
-                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)}/>
-                    { passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
+                    { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                     <br/>
                     <button onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
                 </form>
@@ -83,18 +88,8 @@ function mapStateToProps(state) {
         loginResponse: state.loginResponse,
         user: state.user,
         passwords: state.passwords,
-        passwordsNotIdentical: state.passwordsNotIdentical,
         usernames: state.usernames,
     };
-}
-
-function checkIfPasswordsAreNotIdentical(passwords) {
-    let { password1, password2 } = passwords;
-    if (!password2) {
-        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
-    }
-
-    return password1 !== password2;
 }
 
 function mapDispatchToProps(dispatch) {
@@ -102,21 +97,12 @@ function mapDispatchToProps(dispatch) {
         onClearUserAndPassword: () => {
             dispatch(CLEAR_USER_AND_PASSWORD());
         },
-        onUserFieldChange: (formValue, user) => {
-            let changedField = {
-                user: { ...user, ...formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onPasswordsFieldChange: (formValue, passwordsFromState) => {
-            const passwords = { ...passwordsFromState, ...formValue };
-            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
-            let changedField = {
-                passwords,
-                passwordsNotIdentical,
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onUsernameChange: (username) => dispatch(UPDATE_USER({ username })),
+        onEmailChange: (email) => dispatch(UPDATE_USER({ email })),
+        onFirstnameChange: (firstname) => dispatch(UPDATE_USER({ firstname })),
+        onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
+        onPassword1Change: (password1) => dispatch(UPDATE_PASSWORDS({ password1 })),
+        onPassword2Change: (password2) => dispatch(UPDATE_PASSWORDS({ password2 })),
         onSaveCreatedUser: (user, passwords) => dispatch(CREATE_USER_REQUEST({ user, passwords })),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

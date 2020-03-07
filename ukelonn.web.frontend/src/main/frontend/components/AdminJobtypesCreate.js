@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE,
+    UPDATE_TRANSACTIONTYPE,
     CREATE_JOBTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
@@ -17,7 +17,7 @@ class AdminJobtypesCreate extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
+        let { jobtypes, jobtypesMap, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
 
         return (
             <div>
@@ -61,25 +61,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
-            let jobtype = jobtypesMap.get(selectedValue);
-            let changedField = {
-                transactiontype: {...jobtype},
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onNameFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionTypeName: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onAmountFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionAmount: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
+        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
         onSaveUpdatedJobType: (transactiontype) => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

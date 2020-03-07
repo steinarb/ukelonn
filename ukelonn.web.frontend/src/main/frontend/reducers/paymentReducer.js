@@ -1,17 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_ACCOUNT,
+    UPDATE_PAYMENT,
     REGISTERPAYMENT_RECEIVE,
 } from '../actiontypes';
-import { emptyPerformedTransaction } from './constants';
+import { bankAccount, emptyPerformedTransaction } from './constants';
 
 const paymentReducer = createReducer({ ...emptyPerformedTransaction }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const payment = action.payload.payment;
-        if (payment === undefined) { return state; }
-        return { ...state, ...payment };
-    },
+    [UPDATE_ACCOUNT]: (state, action) => ({ ...state, transactionTypeId: bankAccount, transactionAmount: action.payload.balance, account: { ...action.payload } }),
+    [UPDATE_PAYMENT]: (state, action) => ({ ...state, ...action.payload }),
     [REGISTERPAYMENT_RECEIVE]: (state, action) => ({ ...emptyPerformedTransaction }),
 });
 

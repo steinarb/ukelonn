@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE,
+    UPDATE_TRANSACTIONTYPE,
     MODIFY_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
@@ -17,7 +17,7 @@ class AdminPaymenttypesModify extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        let { paymenttypes, paymenttypesMap, transactiontype, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = this.props;
+        let { transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = this.props;
 
         const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
@@ -29,10 +29,10 @@ class AdminPaymenttypesModify extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="paymenttype">Velg betalingstype</label>
-                    <PaymenttypesBox id="paymenttype" paymenttypes={paymenttypes} paymenttypesMap={paymenttypesMap} value={transactiontype.transactionTypeName} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                    <PaymenttypesBox id="paymenttype" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Endre navn på betalingstype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
                     <br/>
                     <label htmlFor="amount">Endre beløp for betalingstype</label>
                     <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
@@ -61,25 +61,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPaymenttypeFieldChange: (selectedValue, paymenttypesMap, account, performedpayment) => {
-            let paymenttype = paymenttypesMap.get(selectedValue);
-            let changedField = {
-                transactiontype: {...paymenttype},
-            };
-            dispatch(UPDATE(changedField));
+        onPaymenttypeFieldChange: (selectedValue, paymenttypes, account, performedpayment) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let paymenttype = paymenttypes.find(pt => selectedValueInt == pt.id);
+            dispatch(UPDATE_TRANSACTIONTYPE({ ...paymenttype }));
         },
-        onNameFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionTypeName: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onAmountFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionAmount: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
+        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
         onSaveUpdatedPaymentType: (transactiontype) => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

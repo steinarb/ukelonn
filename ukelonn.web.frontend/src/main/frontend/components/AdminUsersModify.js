@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE,
+    UPDATE_USER,
     MODIFY_USER_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
@@ -18,11 +18,13 @@ class AdminUsersModify extends Component {
         }
 
         let {
-            users,
-            usersMap,
             user,
+            users,
             onUsersFieldChange,
-            onFieldChange,
+            onUsernameChange,
+            onEmailChange,
+            onFirstnameChange,
+            onLastnameChange,
             onSaveUpdatedUser,
             onLogout,
         } = this.props;
@@ -35,19 +37,19 @@ class AdminUsersModify extends Component {
                 <br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
+                    <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                     <br/>
                     <label htmlFor="username">Brukernavn</label>
-                    <input id="username" type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
+                    <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
                     <br/>
                     <label htmlFor="email">Epostadresse</label>
-                    <input id="email" type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
+                    <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
                     <br/>
                     <label htmlFor="firstname">Fornavn</label>
-                    <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
+                    <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
                     <br/>
                     <label htmlFor="lastname">Etternavn</label>
-                    <input id="lastname" type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
+                    <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                     <br/>
                     <button onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
                 </form>
@@ -62,30 +64,28 @@ class AdminUsersModify extends Component {
 
 function mapStateToProps(state) {
     return {
+        user: state.user,
+        users: state.users,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        users: state.users,
-        usersMap: new Map(state.users.map(i => [i.fullname, i])),
-        user: state.user,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUsersFieldChange: (selectedValue, usersMap) => {
-            let user = usersMap.get(selectedValue);
-            let changedField = {
-                user: {...user},
-            };
-            dispatch(UPDATE(changedField));
+        onUsersFieldChange: (selectedValue, users) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let user = users.find(u => u.userid === selectedValueInt);
+            dispatch(UPDATE_USER({ ...user }));
         },
-        onFieldChange: (formValue, user) => {
-            let changedField = {
-                user: { ...user, ...formValue }
-            };
-            dispatch(UPDATE(changedField));
+        onUsernameChange: (username) => dispatch(UPDATE_USER({ username })),
+        onEmailChange: (email) => dispatch(UPDATE_USER({ email })),
+        onFirstnameChange: (firstname) => dispatch(UPDATE_USER({ firstname })),
+        onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
+        onSaveUpdatedUser: (user) => {
+            const { userid, username, email, firstname, lastname } = user;
+            dispatch(MODIFY_USER_REQUEST({ userid, username, email, firstname, lastname }));
         },
-        onSaveUpdatedUser: (user) => dispatch(MODIFY_USER_REQUEST(user)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

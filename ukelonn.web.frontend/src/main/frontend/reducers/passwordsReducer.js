@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_PASSWORDS,
     MODIFY_USER_RECEIVE,
     CREATE_USER_RECEIVE,
     MODIFY_USER_PASSWORD_RECEIVE,
@@ -9,11 +9,10 @@ import {
 import { emptyPasswords } from './constants';
 
 const passwordsReducer = createReducer({ ...emptyPasswords }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const passwords = action.payload.passwords;
-        if (passwords === undefined) { return state; }
-        return { ...state, ...passwords };
+    [UPDATE_PASSWORDS]: (state, action) => {
+        const updatedState = { ...state, ...action.payload };
+        const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(updatedState);
+        return { ...updatedState, passwordsNotIdentical };
     },
     [MODIFY_USER_RECEIVE]: (state, action) => ({ ...emptyPasswords }),
     [CREATE_USER_RECEIVE]: (state, action) => ({ ...emptyPasswords }),
@@ -22,3 +21,12 @@ const passwordsReducer = createReducer({ ...emptyPasswords }, {
 });
 
 export default passwordsReducer;
+
+function checkIfPasswordsAreNotIdentical(passwords) {
+    let { password1, password2 } = passwords;
+    if (!password2) {
+        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
+    }
+
+    return password1 !== password2;
+}

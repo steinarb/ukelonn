@@ -9,7 +9,7 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE,
+    UPDATE_PERFORMEDJOB,
     REGISTERJOB_REQUEST,
 } from '../actiontypes';
 import Jobtypes from './Jobtypes';
@@ -22,7 +22,7 @@ class User extends Component {
             return <Redirect to="/ukelonn/login" />;
         }
 
-        let { account, jobtypes, jobtypesMap, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
+        let { account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
         const title = 'Ukelønn for ' + account.firstName;
         const username = account.username;
         const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
@@ -37,7 +37,7 @@ class User extends Component {
                 <EarningsMessage /><br/>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <label htmlFor="jobtype">Velg jobb</label>
-                    <Jobtypes id="jobtype" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={performedjob.transactionName} account={account} performedjob={performedjob} onJobtypeFieldChange={onJobtypeFieldChange} />
+                    <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
                     <br/>
                     <label htmlFor="amount">Beløp</label>
                     <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
@@ -71,9 +71,9 @@ const emptyJob = {
 function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
+        loginResponse: state.loginResponse,
         account: state.account,
         jobtypes: state.jobtypes,
-        jobtypesMap: state.jobtypesMap,
         performedjob: state.performedjob,
         notificationMessage: state.notificationMessage,
     };
@@ -82,28 +82,19 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
-            let jobtype = jobtypesMap.get(selectedValue);
-            let changedField = {
-                performedjob: {
-                    ...performedjob,
-                    transactionTypeId: jobtype.id,
-                    transactionName: jobtype.transactionName,
-                    transactionAmount: jobtype.transactionAmount,
-                    account: account,
-                    transactionDate: moment(),
-                }
-            };
-            dispatch(UPDATE(changedField));
+        onJobtypeFieldChange: (selectedValue, jobtypes) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
+            dispatch(UPDATE_PERFORMEDJOB({
+                transactionTypeId: selectedValue,
+                transactionAmount: jobtype.transactionAmount,
+                transactionDate: moment(),
+            }));
         },
-        onDateFieldChange: (selectedValue, performedjob) => {
-            let changedField = {
-                performedjob: {
-                    ...performedjob,
-                    transactionDate: selectedValue,
-                }
-            };
-            dispatch(UPDATE(changedField));
+        onDateFieldChange: (selectedValue) => {
+            dispatch(UPDATE_PERFORMEDJOB({
+                transactionDate: selectedValue,
+            }));
         },
         onRegisterJob: (performedjob) => dispatch(REGISTERJOB_REQUEST(performedjob)),
     };

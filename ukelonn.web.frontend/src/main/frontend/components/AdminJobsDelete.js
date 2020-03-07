@@ -6,7 +6,8 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     RECENTJOBS_REQUEST,
-    UPDATE,
+    UPDATE_JOBS,
+    UPDATE_ACCOUNT,
     DELETE_JOBS_REQUEST,
 } from '../actiontypes';
 import Accounts from './Accounts';
@@ -38,7 +39,7 @@ class AdminJobsDelete extends Component {
                 <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
                    <em>Ikke</em> slett jobber som skal utbetales</p>
                 <label htmlFor="account-selector">Velg konto:</label>
-                <Accounts  id="account-selector" accounts={accounts} accountsMap={accountsMap} account={account} onAccountsFieldChange={onAccountsFieldChange}/>
+                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
 
                 <table className="table table-bordered">
                     <thead>
@@ -78,7 +79,6 @@ function mapStateToProps(state) {
         account: state.account,
         jobs: state.jobs,
         accounts: state.accounts,
-        accountsMap: state.accountsMap,
     };
 }
 
@@ -86,19 +86,15 @@ function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
-        onAccountsFieldChange: (selectedValue, accountsMap, paymenttype) => {
-            let account = accountsMap.get(selectedValue);
-            let changedField = {
-                account,
-            };
-            dispatch(UPDATE(changedField));
+        onAccountsFieldChange: (selectedValue, accounts) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let account = accounts.find(account => account.accountId === selectedValueInt);
+            dispatch(UPDATE_ACCOUNT(account));
+            dispatch(RECENTJOBS_REQUEST(account.accountId));
         },
-        onCheckboxTicked: (deleteChecked, job, jobs) => {
-            job.delete = deleteChecked;
-            let changedField = {
-                jobs: [...jobs],
-            };
-            dispatch(UPDATE(changedField));
+        onCheckboxTicked: (deleteChecked, job, origJobs) => {
+            const jobs = origJobs.map(j => (j.id === job.id) ? { ...job, delete: deleteChecked } : j);
+            dispatch(UPDATE_JOBS(jobs));
         },
         onDeleteMarkedJobs: (account, jobs) => {
             const jobsToDelete = jobs.filter(job => job.delete);

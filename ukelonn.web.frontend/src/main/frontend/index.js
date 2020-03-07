@@ -5,7 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
-    UPDATE,
+    UPDATE_NOTIFICATIONAVAILABLE,
 } from './actiontypes';
 import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
@@ -25,11 +25,11 @@ sagaMiddleware.run(rootSaga);
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {
-        store.dispatch(UPDATE({ notificationAvailable: true }));
+        store.dispatch(UPDATE_NOTIFICATIONAVAILABLE(true));
         console.log(result);
     });
 } else {
-    store.dispatch(UPDATE({ notificationAvailable: false }));
+    store.dispatch(UPDATE_NOTIFICATIONAVAILABLE(false));
 }
 
 

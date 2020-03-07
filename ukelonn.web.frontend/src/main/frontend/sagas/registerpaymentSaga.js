@@ -1,9 +1,11 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put, fork, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     REGISTERPAYMENT_REQUEST,
     REGISTERPAYMENT_RECEIVE,
     REGISTERPAYMENT_FAILURE,
+    EARNINGS_SUM_OVER_YEAR_REQUEST,
+    EARNINGS_SUM_OVER_MONTH_REQUEST,
 } from '../actiontypes';
 import { emptyAccount } from './constants';
 
@@ -27,11 +29,13 @@ function doNotifyPaymentdone(payment, paymenttype) {
 // worker saga
 function* receiveRegisterPaymentSaga(action) {
     try {
-        const payload = action.payload || {};
-        const response = yield call(doRegisterPayment, payload.payment);
-        const account = (response.headers['content-type'] === 'application/json') ? response.data : emptyAccount;
-        doNotifyPaymentdone(payload.payment, payload.paymenttype);
-        yield put(REGISTERPAYMENT_RECEIVE(account));
+        const { transactionTypeId, transactionAmount, account } = action.payload;
+        const response = yield call(doRegisterPayment, { transactionTypeId, transactionAmount, account });
+        const updatedAccount = (response.headers['content-type'] === 'application/json') ? response.data : emptyAccount;
+        const paymenttypes = yield select(state => state.paymenttypes);
+        const paymenttype = paymenttypes.find(pt => pt.id === transactionTypeId);
+        doNotifyPaymentdone(action.payload, paymenttype);
+        yield put(REGISTERPAYMENT_RECEIVE(updatedAccount));
     } catch (error) {
         yield put(REGISTERPAYMENT_FAILURE(error));
     }
