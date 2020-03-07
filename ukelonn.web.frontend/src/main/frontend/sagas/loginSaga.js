@@ -7,6 +7,7 @@ import {
     LOGIN_REQUEST,
     LOGIN_RECEIVE,
     LOGIN_FAILURE,
+    ACCOUNT_REQUEST,
 } from '../actiontypes';
 import { emptyLoginResponse } from './constants';
 
@@ -24,6 +25,10 @@ export function* receiveInitialLoginStateSaga() {
         const response = yield call(doGetLogin);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
         yield put(INITIAL_LOGIN_STATE_RECEIVE(loginResponse));
+        const { roles } = loginResponse;
+        if (roles.indexOf('ukelonnadmin') === -1) {
+            yield put(ACCOUNT_REQUEST(loginResponse.username));
+        }
     } catch (error) {
         yield put(INITIAL_LOGIN_STATE_FAILURE(error));
     }
