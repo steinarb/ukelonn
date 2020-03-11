@@ -11,40 +11,38 @@ import {
 import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
-class AdminJobtypesModify extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+function AdminJobtypesModify(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
-        let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
+    let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
-        return (
-            <div>
-                <h1>Endre jobbtyper</h1>
+    return (
+        <div>
+            <h1>Endre jobbtyper</h1>
+            <br/>
+            <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+            <br/>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="jobtype">Velg jobbtype</label>
+                <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
                 <br/>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+                <label htmlFor="amount">Endre navn på jobbtype</label>
+                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                 <br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="jobtype">Velg jobbtype</label>
-                    <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Endre navn på jobbtype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                    <br/>
-                    <label htmlFor="amount">Endre beløp for jobbtype</label>
-                    <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
-                </form>
+                <label htmlFor="amount">Endre beløp for jobbtype</label>
+                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                <button onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
+            </form>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 const emptyJobtype = {
     id: -1,
@@ -77,6 +75,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminJobtypesModify = connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesModify);
-
-export default AdminJobtypesModify;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesModify);

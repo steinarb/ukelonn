@@ -22,62 +22,60 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
     }
 }
 
-class AdminJobsEdit extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
-        let { account, jobs, accounts, accountsMap, jobtypes, jobtypesMap, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = this.props;
-
-        return (
-            <div>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
-                <br/>
-                <h1>Endre jobber for {account.firstName}</h1>
-
-                <label htmlFor="account-selector">Velg konto:</label>
-                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
-                <br/>
-
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>Dato</td>
-                            <td>Jobber</td>
-                            <td>Beløp</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr onClick={ ()=>onRowClick(job) } key={job.id}>
-                                <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <h2>Endre jobb</h2>
-                <label htmlFor="jobtype">Jobbtype</label>
-                <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
-                <br/>
-                <label htmlFor="amount">Beløp</label>
-                <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
-                <br/>
-                <label htmlFor="date">Dato</label>
-                <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
-                <br/>
-                <button onClick={() => onSaveEditedJob(selectedjob)}>Lagre endret jobb</button>
-                <br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
+function AdminJobsEdit(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
-};
+
+    let { account, jobs, accounts, accountsMap, jobtypes, jobtypesMap, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
+
+    return (
+        <div>
+            <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+            <br/>
+            <h1>Endre jobber for {account.firstName}</h1>
+
+            <label htmlFor="account-selector">Velg konto:</label>
+            <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+            <br/>
+
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>Dato</td>
+                        <td>Jobber</td>
+                        <td>Beløp</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {jobs.map((job) =>
+                        <tr onClick={ ()=>onRowClick(job) } key={job.id}>
+                            <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
+                            <td>{job.name}</td>
+                            <td>{job.transactionAmount}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+            <h2>Endre jobb</h2>
+            <label htmlFor="jobtype">Jobbtype</label>
+            <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+            <br/>
+            <label htmlFor="amount">Beløp</label>
+            <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
+            <br/>
+            <label htmlFor="date">Dato</label>
+            <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
+            <br/>
+            <button onClick={() => onSaveEditedJob(selectedjob)}>Lagre endret jobb</button>
+            <br/>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -131,6 +129,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminJobsEdit = connect(mapStateToProps, mapDispatchToProps)(AdminJobsEdit);
-
-export default AdminJobsEdit;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminJobsEdit);

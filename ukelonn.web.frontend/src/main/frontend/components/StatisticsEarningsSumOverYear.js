@@ -9,46 +9,44 @@ import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
 
-class StatisticsEarningsSumOverYear extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+function StatisticsEarningsSumOverYear(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
-        let { earningsSumOverYear, onLogout } = this.props;
+    let { earningsSumOverYear, onLogout } = props;
 
-        const username = findUsernameFromAccountOrQueryParameter(this.props);
-        const statistics = '/ukelonn/statistics?' + stringify({ username });
+    const username = findUsernameFromAccountOrQueryParameter(props);
+    const statistics = '/ukelonn/statistics?' + stringify({ username });
 
-        return (
-            <div>
-                <h1>Sum av lønn pr år</h1>
-                <br/>
-                <Link to={statistics}>Tilbake til statistikk</Link><br/>
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>År</td>
-                            <td>Totalt tjent</td>
+    return (
+        <div>
+            <h1>Sum av lønn pr år</h1>
+            <br/>
+            <Link to={statistics}>Tilbake til statistikk</Link><br/>
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>År</td>
+                        <td>Totalt tjent</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {earningsSumOverYear.map((sumOverYear) =>
+                        <tr key={sumOverYear.year}>
+                            <td>{sumOverYear.year}</td>
+                            <td>{sumOverYear.sum}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {earningsSumOverYear.map((sumOverYear) =>
-                            <tr key={sumOverYear.year}>
-                                <td>{sumOverYear.year}</td>
-                                <td>{sumOverYear.sum}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                    )}
+                </tbody>
+            </table>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -65,6 +63,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-StatisticsEarningsSumOverYear = connect(mapStateToProps, mapDispatchToProps)(StatisticsEarningsSumOverYear);
-
-export default StatisticsEarningsSumOverYear;
+export default connect(mapStateToProps, mapDispatchToProps)(StatisticsEarningsSumOverYear);

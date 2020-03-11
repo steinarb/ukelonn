@@ -9,48 +9,46 @@ import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
 
-class PerformedPayments extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
-        let { account, payments, onLogout } = this.props;
-        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const { parentTitle } = queryParams;
-
-        return (
-            <div>
-                <Link to="/ukelonn/">{parentTitle}</Link>
-                <br/>
-                <h1>Utførte utbetalinger til {account.firstName}</h1>
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>Dato</td>
-                            <td>Utbetalinger</td>
-                            <td>Beløp</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {payments.map((payment) =>
-                            <tr key={payment.id}>
-                                <td>{moment(payment.transactionTime).format('YYYY-MM-DD')}</td>
-                                <td>{payment.name}</td>
-                                <td>{payment.transactionAmount}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../..">Tilbake til topp</a>
-            </div>
-        );
+function PerformedPayments(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
-};
+
+    let { account, payments, onLogout } = props;
+    let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
+    const { parentTitle } = queryParams;
+
+    return (
+        <div>
+            <Link to="/ukelonn/">{parentTitle}</Link>
+            <br/>
+            <h1>Utførte utbetalinger til {account.firstName}</h1>
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>Dato</td>
+                        <td>Utbetalinger</td>
+                        <td>Beløp</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {payments.map((payment) =>
+                        <tr key={payment.id}>
+                            <td>{moment(payment.transactionTime).format('YYYY-MM-DD')}</td>
+                            <td>{payment.name}</td>
+                            <td>{payment.transactionAmount}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {

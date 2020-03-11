@@ -11,37 +11,35 @@ import {
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 
-class AdminPaymenttypesCreate extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+function AdminPaymenttypesCreate(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
-        let {  transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = this.props;
+    let {  transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
-        return (
-            <div>
-                <h1>Lag ny utbetalingstype</h1>
+    return (
+        <div>
+            <h1>Lag ny utbetalingstype</h1>
+            <br/>
+            <Link to="/ukelonn/admin/paymenttypes">Administer utbetalingstyper</Link>
+            <br/>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="amount">Navn på utbetalingstype</label>
+                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
                 <br/>
-                <Link to="/ukelonn/admin/paymenttypes">Administer utbetalingstyper</Link>
+                <label htmlFor="amount">Beløp for utbetalingstype</label>
+                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="amount">Navn på utbetalingstype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
-                    <br/>
-                    <label htmlFor="amount">Beløp for utbetalingstype</label>
-                    <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lag ny utbetalingstype</button>
-                </form>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lag ny utbetalingstype</button>
+            </form>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 const emptyPaymenttype = {
     id: -1,
@@ -67,6 +65,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-AdminPaymenttypesCreate = connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesCreate);
-
-export default AdminPaymenttypesCreate;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesCreate);

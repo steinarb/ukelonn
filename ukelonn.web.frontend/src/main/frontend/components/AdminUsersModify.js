@@ -11,56 +11,54 @@ import {
 import Users from './Users';
 import Amount from './Amount';
 
-class AdminUsersModify extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+function AdminUsersModify(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
-        let {
-            user,
-            users,
-            onUsersFieldChange,
-            onUsernameChange,
-            onEmailChange,
-            onFirstnameChange,
-            onLastnameChange,
-            onSaveUpdatedUser,
-            onLogout,
-        } = this.props;
+    let {
+        user,
+        users,
+        onUsersFieldChange,
+        onUsernameChange,
+        onEmailChange,
+        onFirstnameChange,
+        onLastnameChange,
+        onSaveUpdatedUser,
+        onLogout,
+    } = props;
 
-        return (
-            <div>
-                <h1>Endre brukere</h1>
+    return (
+        <div>
+            <h1>Endre brukere</h1>
+            <br/>
+            <Link to="/ukelonn/admin/users">Administer brukere</Link>
+            <br/>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="users">Velg bruker</label>
+                <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                 <br/>
-                <Link to="/ukelonn/admin/users">Administer brukere</Link>
+                <label htmlFor="username">Brukernavn</label>
+                <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
                 <br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
-                    <br/>
-                    <label htmlFor="username">Brukernavn</label>
-                    <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
-                    <br/>
-                    <label htmlFor="email">Epostadresse</label>
-                    <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
-                    <br/>
-                    <label htmlFor="firstname">Fornavn</label>
-                    <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
-                    <br/>
-                    <label htmlFor="lastname">Etternavn</label>
-                    <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
-                </form>
+                <label htmlFor="email">Epostadresse</label>
+                <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <label htmlFor="firstname">Fornavn</label>
+                <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
                 <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                <label htmlFor="lastname">Etternavn</label>
+                <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
+                <br/>
+                <button onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
+            </form>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -90,6 +88,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminUsersModify = connect(mapStateToProps, mapDispatchToProps)(AdminUsersModify);
-
-export default AdminUsersModify;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersModify);

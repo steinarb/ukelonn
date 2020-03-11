@@ -18,59 +18,53 @@ function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
     }
 }
 
-class AdminJobsDelete extends Component {
-    componentDidMount() {
-        this.props.onJobs(this.props.account);
+function AdminJobsDelete(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
 
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+    let { account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
 
-        let { account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = this.props;
+    return (
+        <div>
+            <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+            <br/>
+            <h1>Slett feilregisterte jobber for {account.firstName}</h1>
 
-        return (
-            <div>
-                <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
-                <br/>
-                <h1>Slett feilregisterte jobber for {account.firstName}</h1>
+            <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
+               <em>Ikke</em> slett jobber som skal utbetales</p>
+            <label htmlFor="account-selector">Velg konto:</label>
+            <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
 
-                <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
-                   <em>Ikke</em> slett jobber som skal utbetales</p>
-                <label htmlFor="account-selector">Velg konto:</label>
-                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
-
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>Slett</td>
-                            <td>Dato</td>
-                            <td>Jobber</td>
-                            <td>Beløp</td>
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>Slett</td>
+                        <td>Dato</td>
+                        <td>Jobber</td>
+                        <td>Beløp</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {jobs.map((job) =>
+                        <tr key={job.id}>
+                            <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
+                            <td>{job.transactionTime}</td>
+                            <td>{job.name}</td>
+                            <td>{job.transactionAmount}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr key={job.id}>
-                                <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
-                                <td>{job.transactionTime}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <button onClick={() => onDeleteMarkedJobs(account, jobs)}>Slett merkede jobber</button>
-                <br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    }
-};
+                    )}
+                </tbody>
+            </table>
+            <button onClick={() => onDeleteMarkedJobs(account, jobs)}>Slett merkede jobber</button>
+            <br/>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -103,6 +97,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminJobsDelete = connect(mapStateToProps, mapDispatchToProps)(AdminJobsDelete);
-
-export default AdminJobsDelete;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminJobsDelete);

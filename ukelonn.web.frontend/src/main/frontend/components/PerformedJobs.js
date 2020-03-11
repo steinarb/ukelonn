@@ -9,50 +9,48 @@ import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
 
-class PerformedJobs extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
-        let { account, jobs, onLogout } = this.props;
-        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const { parentTitle } = queryParams;
-
-        return (
-            <div>
-                <Link to="/ukelonn/">{parentTitle}</Link>
-                <br/>
-                <h1>Utførte jobber for {account.firstName}</h1>
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>Dato</td>
-                            <td>Jobber</td>
-                            <td>Beløp</td>
-                            <td>Utbetalt</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr key={job.id}>
-                                <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
-                                <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../..">Tilbake til topp</a>
-            </div>
-        );
+function PerformedJobs(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
-};
+
+    let { account, jobs, onLogout } = props;
+    let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
+    const { parentTitle } = queryParams;
+
+    return (
+        <div>
+            <Link to="/ukelonn/">{parentTitle}</Link>
+            <br/>
+            <h1>Utførte jobber for {account.firstName}</h1>
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>Dato</td>
+                        <td>Jobber</td>
+                        <td>Beløp</td>
+                        <td>Utbetalt</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {jobs.map((job) =>
+                        <tr key={job.id}>
+                            <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
+                            <td>{job.name}</td>
+                            <td>{job.transactionAmount}</td>
+                            <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -70,6 +68,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-PerformedJobs = connect(mapStateToProps, mapDispatchToProps)(PerformedJobs);
-
-export default PerformedJobs;
+export default connect(mapStateToProps, mapDispatchToProps)(PerformedJobs);

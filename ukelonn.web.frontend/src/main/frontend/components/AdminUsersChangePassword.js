@@ -13,55 +13,49 @@ import {
 import Users from './Users';
 import Amount from './Amount';
 
-class AdminUsersChangePassword extends Component {
-    componentDidMount() {
-        this.props.onUserList();
+function AdminUsersChangePassword(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
 
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+    let {
+        users,
+        usersMap,
+        user,
+        passwords,
+        onUsersFieldChange,
+        onPassword1Change,
+        onPassword2Change,
+        onSaveUpdatedPassword,
+        onLogout,
+    } = props;
 
-        let {
-            users,
-            usersMap,
-            user,
-            passwords,
-            onUsersFieldChange,
-            onPassword1Change,
-            onPassword2Change,
-            onSaveUpdatedPassword,
-            onLogout,
-        } = this.props;
-
-        return (
-            <div>
-                <h1>Bytt passord på bruker</h1>
+    return (
+        <div>
+            <h1>Bytt passord på bruker</h1>
+            <br/>
+            <Link to="/ukelonn/admin/users">Administer brukere</Link>
+            <br/>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="users">Velg bruker</label>
+                <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                 <br/>
-                <Link to="/ukelonn/admin/users">Administer brukere</Link>
+                <label htmlFor="password1">Passord:</label>
+                <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                 <br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="users">Velg bruker</label>
-                    <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
-                    <br/>
-                    <label htmlFor="password1">Passord:</label>
-                    <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
-                    <br/>
-                    <label htmlFor="password2">Gjenta passord:</label>
-                    <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
-                    { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
-                    <br/>
-                    <button onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
-                </form>
+                <label htmlFor="password2">Gjenta passord:</label>
+                <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
+                { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                <button onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
+            </form>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -88,6 +82,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminUsersChangePassword = connect(mapStateToProps, mapDispatchToProps)(AdminUsersChangePassword);
-
-export default AdminUsersChangePassword;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersChangePassword);

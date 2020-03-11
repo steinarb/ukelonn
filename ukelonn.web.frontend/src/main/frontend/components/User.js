@@ -16,50 +16,48 @@ import Jobtypes from './Jobtypes';
 import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
 
-class User extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
-
-        let { account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = this.props;
-        const title = 'Ukelønn for ' + account.firstName;
-        const username = account.username;
-        const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
-        const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
-        const statistics = '/ukelonn/statistics?' + stringify({ username });
-
-        return (
-            <div>
-                <Notification notificationMessage={notificationMessage}/>
-                <h1>{title}</h1>
-                <div>Til gode: { account.balance }</div><br/>
-                <EarningsMessage /><br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="jobtype">Velg jobb</label>
-                    <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Beløp</label>
-                    <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
-                    <br/>
-                    <label htmlFor="date">Dato</label>
-                    <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
-                    <br/>
-
-                    <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
-                </form>
-                <br/>
-                <Link to={performedjobs}>Utforte jobber</Link><br/>
-                <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
-                <Link to={statistics}>Statistikker</Link><br/>
-                <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../..">Tilbake til topp</a>
-            </div>
-        );
+function User(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
-};
+
+    let { account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = props;
+    const title = 'Ukelønn for ' + account.firstName;
+    const username = account.username;
+    const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+    const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+    const statistics = '/ukelonn/statistics?' + stringify({ username });
+
+    return (
+        <div>
+            <Notification notificationMessage={notificationMessage}/>
+            <h1>{title}</h1>
+            <div>Til gode: { account.balance }</div><br/>
+            <EarningsMessage /><br/>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="jobtype">Velg jobb</label>
+                <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+                <br/>
+                <label htmlFor="amount">Beløp</label>
+                <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
+                <br/>
+                <label htmlFor="date">Dato</label>
+                <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
+                <br/>
+
+                <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
+            </form>
+            <br/>
+            <Link to={performedjobs}>Utforte jobber</Link><br/>
+            <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
+            <Link to={statistics}>Statistikker</Link><br/>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 const emptyJob = {
     account: { accountId: -1 },
@@ -100,6 +98,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-User = connect(mapStateToProps, mapDispatchToProps)(User);
-
-export default User;
+export default connect(mapStateToProps, mapDispatchToProps)(User);

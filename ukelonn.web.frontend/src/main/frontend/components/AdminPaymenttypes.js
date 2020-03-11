@@ -42,6 +42,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminPaymenttypes = connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypes);
-
-export default AdminPaymenttypes;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypes);

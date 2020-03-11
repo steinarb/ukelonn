@@ -11,43 +11,40 @@ import {
 import PaymenttypesBox from './PaymenttypesBox';
 import Amount from './Amount';
 
-class AdminPaymenttypesModify extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+function AdminPaymenttypesModify(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
-        let { transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = this.props;
+    let { transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
-        const reduceHeaderRowPadding = { padding: '0 0 0 0' };
+    const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
-        return (
-            <div>
-                <h1>Endre utbetalingstyper</h1>
+    return (
+        <div>
+            <h1>Endre utbetalingstyper</h1>
+            <br/>
+            <Link to="/ukelonn/admin/paymenttypes">Administer utbetalingstyper</Link>
+            <br/>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="paymenttype">Velg betalingstype</label>
+                <PaymenttypesBox id="paymenttype" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                 <br/>
-                <Link to="/ukelonn/admin/paymenttypes">Administer utbetalingstyper</Link>
+                <label htmlFor="amount">Endre navn på betalingstype</label>
+                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
                 <br/>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="paymenttype">Velg betalingstype</label>
-                    <PaymenttypesBox id="paymenttype" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Endre navn på betalingstype</label>
-                    <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
-                    <br/>
-                    <label htmlFor="amount">Endre beløp for betalingstype</label>
-                    <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lagre endringer i betalingstype</button>
-                </form>
+                <label htmlFor="amount">Endre beløp for betalingstype</label>
+                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
-
+                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lagre endringer i betalingstype</button>
+            </form>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../../../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -73,6 +70,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-AdminPaymenttypesModify = connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesModify);
-
-export default AdminPaymenttypesModify;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesModify);
