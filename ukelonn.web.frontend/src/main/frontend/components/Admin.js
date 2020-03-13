@@ -18,10 +18,6 @@ import Amount from './Amount';
 import EarningsMessage from './EarningsMessage';
 
 class Admin extends Component {
-    componentDidMount() {
-        this.props.onDeselectAccountInDropdown(this.props.firstTimeAfterLogin);
-    }
-
     render() {
         if (userIsNotLoggedIn(this.props)) {
             return <Redirect to="/ukelonn/login" />;
@@ -88,7 +84,6 @@ function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        firstTimeAfterLogin: state.firstTimeAfterLogin,
         account: state.account,
         payment: state.payment,
         paymenttype: state.paymenttype,
@@ -102,13 +97,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onDeselectAccountInDropdown: (firstTimeAfterLogin) => {
-            if (firstTimeAfterLogin) {
-                dispatch(UPDATE_FIRSTTIMEAFTERLOGIN());
-                dispatch(UPDATE_ACCOUNT(emptyAccount));
-                dispatch(UPDATE_PAYMENT({ account: emptyAccount, transactionAmount: 0.0, transactionTypeId: -1 }));
-            }
-        },
         onAccountsFieldChange: (selectedValue, accounts) => {
             const selectedValueInt = parseInt(selectedValue, 10);
             let account = accounts.find(account => account.accountId === selectedValueInt);

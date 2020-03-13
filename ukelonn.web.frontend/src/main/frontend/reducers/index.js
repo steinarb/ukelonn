@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import usernameReducer from './usernameReducer';
 import passwordReducer from './passwordReducer';
-import firstTimeAfterLoginReducer from './firstTimeAfterLoginReducer';
 import notificationAvailableReducer from './notificationAvailableReducer';
 import notificationMessageReducer from './notificationMessageReducer';
 import accountReducer from './accountReducer';
@@ -30,7 +29,6 @@ export default (history) => combineReducers({
     router: connectRouter(history),
     username: usernameReducer,
     password: passwordReducer,
-    firstTimeAfterLogin: firstTimeAfterLoginReducer,
     notificationAvailable: notificationAvailableReducer,
     notificationMessage: notificationMessageReducer,
     account: accountReducer,
