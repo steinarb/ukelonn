@@ -9,7 +9,7 @@ import {
     EARNINGS_SUM_OVER_MONTH_REQUEST,
     EARNINGS_SUM_OVER_MONTH_RECEIVE,
 } from '../actiontypes';
-import { emptyAccount } from './constants';
+import { emptyAccount } from '../constants';
 
 
 function doAccount(username) {

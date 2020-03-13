@@ -11,6 +11,7 @@ import {
     UPDATE_PAYMENT,
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
+import { emptyAccount } from '../constants';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -81,12 +82,6 @@ class Admin extends Component {
             </div>
         );
     };
-};
-
-const emptyAccount = {
-    accountId: -1,
-    fullName: '',
-    balance: 0.0,
 };
 
 function mapStateToProps(state) {
