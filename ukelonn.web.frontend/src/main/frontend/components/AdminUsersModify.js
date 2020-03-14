@@ -4,127 +4,115 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    USERS_REQUEST,
-    UPDATE,
+    UPDATE_USER,
     MODIFY_USER_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Users from './Users';
 import Amount from './Amount';
 
-class AdminUsersModify extends Component {
-    componentDidMount() {
-        this.props.onUserList();
+function AdminUsersModify(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
 
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+    let {
+        user,
+        users,
+        onUsersFieldChange,
+        onUsernameChange,
+        onEmailChange,
+        onFirstnameChange,
+        onLastnameChange,
+        onSaveUpdatedUser,
+        onLogout,
+    } = props;
 
-        let {
-            users,
-            usersMap,
-            user,
-            onUsersFieldChange,
-            onFieldChange,
-            onSaveUpdatedUser,
-            onLogout,
-        } = this.props;
-
-        return (
-            <div>
-                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
-                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                    &nbsp;
-                    Administer brukere
-                </Link>
-                <header>
-                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                        <h1>Endre brukere</h1>
-                    </div>
-                </header>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div className="container">
-                        <div className="form-group row">
-                            <label htmlFor="users" className="col-form-label col-5">Velg bruker</label>
-                            <div className="col-7">
-                                <Users id="users" className="form-control" users={users} usersMap={usersMap} value={user.fullname} onUsersFieldChange={onUsersFieldChange} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
-                            <div className="col-7">
-                                <input id="username" className="form-control" type="text" value={user.username} onChange={(event) => onFieldChange({username: event.target.value}, user)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
-                            <div className="col-7">
-                                <input id="email" className="form-control" type="text" value={user.email} onChange={(event) => onFieldChange({email: event.target.value}, user)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
-                            <div className="col-7">
-                                <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onFieldChange({firstname: event.target.value}, user)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
-                            <div className="col-7">
-                                <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onFieldChange({lastname: event.target.value}, user)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <div className="col-5"/>
-                            <div className="col-7">
-                                <button className="btn btn-primary" onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
-                            </div>
+    return (
+        <div>
+            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                &nbsp;
+                Administer brukere
+            </Link>
+            <header>
+                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                    <h1>Endre brukere</h1>
+                </div>
+            </header>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="users" className="col-form-label col-5">Velg bruker</label>
+                        <div className="col-7">
+                            <Users id="users" className="form-control" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                         </div>
                     </div>
-                    <br/>
-                </form>
+                    <div className="form-group row">
+                        <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
+                        <div className="col-7">
+                            <input id="username" className="form-control" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
+                        <div className="col-7">
+                            <input id="email" className="form-control" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
+                        <div className="col-7">
+                            <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
+                        <div className="col-7">
+                            <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <div className="col-5"/>
+                        <div className="col-7">
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
+                        </div>
+                    </div>
+                </div>
                 <br/>
-                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+            </form>
+            <br/>
+            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
+        user: state.user,
+        users: state.users,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        users: state.users,
-        usersMap: new Map(state.users.map(i => [i.fullname, i])),
-        user: state.user,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUserList: () => dispatch(USERS_REQUEST()),
-        onUsersFieldChange: (selectedValue, usersMap) => {
-            let user = usersMap.get(selectedValue);
-            let changedField = {
-                user: {...user},
-            };
-            dispatch(UPDATE(changedField));
+        onUsersFieldChange: (selectedValue, users) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let user = users.find(u => u.userid === selectedValueInt);
+            dispatch(UPDATE_USER({ ...user }));
         },
-        onFieldChange: (formValue, user) => {
-            let changedField = {
-                user: { ...user, ...formValue }
-            };
-            dispatch(UPDATE(changedField));
+        onUsernameChange: (username) => dispatch(UPDATE_USER({ username })),
+        onEmailChange: (email) => dispatch(UPDATE_USER({ email })),
+        onFirstnameChange: (firstname) => dispatch(UPDATE_USER({ firstname })),
+        onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
+        onSaveUpdatedUser: (user) => {
+            const { userid, username, email, firstname, lastname } = user;
+            dispatch(MODIFY_USER_REQUEST({ userid, username, email, firstname, lastname }));
         },
-        onSaveUpdatedUser: (user) => dispatch(MODIFY_USER_REQUEST(user)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 
-AdminUsersModify = connect(mapStateToProps, mapDispatchToProps)(AdminUsersModify);
-
-export default AdminUsersModify;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersModify);

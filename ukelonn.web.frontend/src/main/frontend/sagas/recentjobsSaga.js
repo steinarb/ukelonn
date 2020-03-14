@@ -20,7 +20,7 @@ function* receiveRecentJobsSaga(action) {
     try {
         const response = yield call(doRecentJobs, action.payload);
         const jobs = (response.headers['content-type'] === 'application/json') ? response.data : [];
-        yield put(RECENTJOBS_RECEIVE(jobs));
+        yield put(RECENTJOBS_RECEIVE(jobs.map(j => ({ ...j, delete: false }))));
     } catch (error) {
         yield put(RECENTJOBS_FAILURE(error));
     }

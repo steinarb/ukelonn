@@ -7,73 +7,55 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    ACCOUNT_REQUEST,
-    RECENTPAYMENTS_REQUEST,
-    UPDATE,
 } from '../actiontypes';
 
-class PerformedPayments extends Component {
-    componentDidMount() {
-        let { account } = this.props;
-        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const accountId = account.firstName === 'Ukjent' ? queryParams.accountId : account.accountId;
-        this.props.onPayments(accountId);
-        const parentTitle = queryParams.parentTitle ? queryParams.parentTitle : 'Register betaling';
-        this.props.onParentTitle(parentTitle);
-
-        if (account.firstName === 'Ukjent' && queryParams.username) {
-            this.props.onAccount(queryParams.username);
-        }
+function PerformedPayments(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
 
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+    let { account, payments, onLogout } = props;
+    let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
+    const { parentTitle } = queryParams;
 
-        let { account, payments, onLogout } = this.props;
-        let queryParams = parse(this.props.location.search, { ignoreQueryPrefix: true });
-        const { parentTitle } = queryParams;
-
-        return (
-            <div>
-                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                    &nbsp;
-                    {parentTitle}
-                </Link>
-                <header>
-                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                        <h1>Utbetalinger til {account.firstName}</h1>
-                    </div>
-                </header>
-                <div className="table-responsive table-sm table-striped">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th className="transaction-table-col transaction-table-col1">Dato</th>
-                                <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Utbetalinger</th>
-                                <th className="transaction-table-col transaction-table-col3b">Beløp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {payments.map((payment) =>
-                                 <tr key={payment.id}>
-                                     <td className="transaction-table-col">{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
-                                     <td className="transaction-table-col">{payment.name}</td>
-                                     <td className="transaction-table-col">{payment.transactionAmount}</td>
-                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
+    return (
+        <div>
+            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                &nbsp;
+                {parentTitle}
+            </Link>
+            <header>
+                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                    <h1>Utbetalinger til {account.firstName}</h1>
                 </div>
-                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../..">Tilbake til topp</a>
+            </header>
+            <div className="table-responsive table-sm table-striped">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th className="transaction-table-col transaction-table-col1">Dato</th>
+                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Utbetalinger</th>
+                            <th className="transaction-table-col transaction-table-col3b">Beløp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {payments.map((payment) =>
+                             <tr key={payment.id}>
+                                 <td className="transaction-table-col">{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
+                                 <td className="transaction-table-col">{payment.name}</td>
+                                 <td className="transaction-table-col">{payment.transactionAmount}</td>
+                             </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
-        );
-    }
-};
+            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -88,9 +70,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccount: (username) => dispatch(ACCOUNT_REQUEST(username)),
-        onPayments: (accountId) => dispatch(RECENTPAYMENTS_REQUEST(accountId)),
-        onParentTitle: (parentTitle) => dispatch(UPDATE({ parentTitle })),
     };
 }
 

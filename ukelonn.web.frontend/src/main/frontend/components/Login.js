@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import {
-    UPDATE,
+    UPDATE_USERNAME,
+    UPDATE_PASSWORD,
     LOGIN_REQUEST,
 } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
 function Login(props) {
-    const { username, password, loginResponse, onFieldChange, onLogin } = props;
+    const { username, password, loginResponse, onUsernameChange, onPasswordChange, onLogin } = props;
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return (<Redirect to="/ukelonn/admin" />);
@@ -29,13 +30,13 @@ function Login(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Brukernavn:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type='text' name='username' onChange={(event) => onFieldChange({ username: event.target.value })}></input>
+                            <input id="username" className="form-control" type='text' name='username' onChange={(event) => onUsernameChange(event.target.value)}></input>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Passord:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type='password' name='password' onChange={(event) => onFieldChange({ password: event.target.value })}/>
+                            <input id="password" className="form-control" type='password' name='password' onChange={(event) => onPasswordChange(event.target.value)}/>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -63,7 +64,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onFieldChange: (changedField) => dispatch(UPDATE(changedField)),
+        onUsernameChange: username => dispatch(UPDATE_USERNAME(username)),
+        onPasswordChange: password => dispatch(UPDATE_PASSWORD(password)),
         onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
     };
 }

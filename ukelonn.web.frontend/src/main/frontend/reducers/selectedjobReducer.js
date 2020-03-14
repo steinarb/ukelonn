@@ -1,16 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_ACCOUNT,
+    UPDATE_SELECTEDJOB,
+    UPDATE_JOB_RECEIVE,
 } from '../actiontypes';
 import { emptyTransaction } from './constants';
 
 const selectedjobReducer = createReducer({ ...emptyTransaction }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const selectedjob = action.payload.selectedjob;
-        if (selectedjob === undefined) { return state; }
-        return selectedjob;
-    },
+    [UPDATE_ACCOUNT]: (state, action) => ({ ...state, accountId: action.payload.accountId }),
+    [UPDATE_SELECTEDJOB]: (state, action) => ({ ...state, ...action.payload }),
+    [UPDATE_JOB_RECEIVE]: (state, action) => ({ ...state, ...emptyTransaction, transactionTypeId: -1 }),
 });
 
 export default selectedjobReducer;
