@@ -17,68 +17,66 @@ import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 import EarningsMessage from './EarningsMessage';
 
-class Admin extends Component {
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+function Admin(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
-        let {
-            account = {},
-            payment,
-            paymenttype,
-            amount,
-            accounts,
-            accountsMap,
-            paymenttypes,
-            paymenttypesMap,
-            onAccountsFieldChange,
-            onPaymenttypeFieldChange,
-            onAmountFieldChange,
-            onRegisterPayment,
-            onLogout } = this.props;
+    let {
+        account = {},
+        payment,
+        paymenttype,
+        amount,
+        accounts,
+        accountsMap,
+        paymenttypes,
+        paymenttypesMap,
+        onAccountsFieldChange,
+        onPaymenttypeFieldChange,
+        onAmountFieldChange,
+        onRegisterPayment,
+        onLogout } = props;
 
-        const parentTitle = 'Tilbake til ukelonn admin';
-        const accountId = account.accountId;
-        const username = account.username;
-        const noUser = !username;
-        const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
-        const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
-        const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
+    const parentTitle = 'Tilbake til ukelonn admin';
+    const accountId = account.accountId;
+    const username = account.username;
+    const noUser = !username;
+    const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
+    const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
+    const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
 
-        return (
-            <div>
-                <h1>Registrer betaling</h1>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
-                    <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
-                    <br/>
-                    <EarningsMessage /><br/>
-                    <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly={true} /><br/>
-                    <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
-                    <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
-                    <br/>
-                    <label htmlFor="amount">Beløp:</label>
-                    <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
-                    <br/>
-                    <br/>
-                    <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
-                </form>
+    return (
+        <div>
+            <h1>Registrer betaling</h1>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
+                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                 <br/>
-                <Link to={performedjobs}>Utforte jobber</Link><br/>
-                <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
-                <Link to={statistics}>Statistikker</Link><br/>
-                <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
-                <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
-                <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>
+                <EarningsMessage /><br/>
+                <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly={true} /><br/>
+                <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
+                <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                 <br/>
-                <button onClick={() => onLogout()}>Logout</button>
+                <label htmlFor="amount">Beløp:</label>
+                <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <a href="../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                <br/>
+                <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
+            </form>
+            <br/>
+            <Link to={performedjobs}>Utforte jobber</Link><br/>
+            <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
+            <Link to={statistics}>Statistikker</Link><br/>
+            <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
+            <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
+            <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>
+            <br/>
+            <button onClick={() => onLogout()}>Logout</button>
+            <br/>
+            <a href="../..">Tilbake til topp</a>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
