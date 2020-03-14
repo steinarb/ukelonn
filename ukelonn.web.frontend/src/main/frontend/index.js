@@ -5,6 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
+    INITIAL_LOGIN_STATE_REQUEST,
     UPDATE_NOTIFICATIONAVAILABLE,
 } from './actiontypes';
 import createUkelonnReducer from './reducers';
@@ -22,6 +23,7 @@ const store = configureStore({
     ],
 });
 sagaMiddleware.run(rootSaga);
+store.dispatch(INITIAL_LOGIN_STATE_REQUEST());
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {

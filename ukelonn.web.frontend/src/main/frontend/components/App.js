@@ -29,10 +29,6 @@ import AdminUsersChangePassword from './AdminUsersChangePassword';
 
 
 class App extends Component {
-    componentDidMount() {
-        this.props.initialLoginStateRequest();
-    }
-
     render() {
         const { history } = this.props;
         return(
@@ -64,13 +60,5 @@ class App extends Component {
         );
     }
 }
-
-function mapDispatchToProps(dispatch) {
-    return {
-        initialLoginStateRequest: () => dispatch(INITIAL_LOGIN_STATE_REQUEST())
-    };
-}
-
-App = connect(null, mapDispatchToProps)(App);
 
 export default App;
