@@ -17,6 +17,7 @@ function AdminPaymenttypesCreate(props) {
     }
 
     let {  transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
+    const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
     return (
         <div className="mdl-layout mdl-layout--fixed-header">

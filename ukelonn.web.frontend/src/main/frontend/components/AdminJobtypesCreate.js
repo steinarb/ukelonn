@@ -17,6 +17,7 @@ function AdminJobtypesCreate(props) {
     }
 
     let { jobtypes, jobtypesMap, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
+    const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
     return (
         <div className="mdl-layout mdl-layout--fixed-header">
