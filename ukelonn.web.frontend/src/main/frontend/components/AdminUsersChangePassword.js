@@ -20,7 +20,6 @@ function AdminUsersChangePassword(props) {
 
     let {
         users,
-        usersMap,
         user,
         passwords,
         onUsersFieldChange,

@@ -51,7 +51,6 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         paymenttypes: state.paymenttypes,
-        paymenttypesMap: new Map(state.paymenttypes.map(i => [i.transactionTypeName, i])),
         transactiontype: state.transactiontype,
     };
 }

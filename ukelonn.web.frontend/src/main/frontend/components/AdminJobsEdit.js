@@ -27,7 +27,7 @@ function AdminJobsEdit(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobs, accounts, accountsMap, jobtypes, jobtypesMap, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
+    let { account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
 
     return (
         <div>
@@ -84,9 +84,7 @@ function mapStateToProps(state) {
         account: state.account,
         jobs: state.jobs,
         accounts: state.accounts,
-        accountsMap: state.accountsMap,
         jobtypes: state.jobtypes,
-        jobtypesMap: state.jobtypesMap,
         selectedjob: state.selectedjob,
     };
 }
