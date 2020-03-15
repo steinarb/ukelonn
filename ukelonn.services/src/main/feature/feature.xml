@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features>
+    <repository>mvn:no.priv.bang.beans/beans/${beans.version}/xml/features</repository>
+    <feature name="${karaf-feature-name}">
+        <feature>beans-immutable</feature>
+    </feature>
+</features>

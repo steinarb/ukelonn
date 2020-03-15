@@ -1,21 +1,22 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_ACCOUNT,
     ACCOUNT_RECEIVE,
     REGISTERJOB_RECEIVE,
     REGISTERPAYMENT_RECEIVE,
+    INITIAL_LOGIN_STATE_RECEIVE,
+    LOGIN_RECEIVE,
 } from '../actiontypes';
+import { emptyAccount } from '../constants';
+import { isAdmin } from '../common/roles';
 
-const accountReducer = createReducer({ firstName: 'Ukjent', fullName: '', balance: 0.0 }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const account = action.payload.account;
-        if (account === undefined) { return state; }
-        return { ...state, ...account };
-    },
+const accountReducer = createReducer(emptyAccount, {
+    [UPDATE_ACCOUNT]: (state, action) => ({ ...action.payload }),
     [ACCOUNT_RECEIVE]: (state, action) => action.payload,
     [REGISTERJOB_RECEIVE]: (state, action) => action.payload,
     [REGISTERPAYMENT_RECEIVE]: (state, action) => action.payload,
+    [INITIAL_LOGIN_STATE_RECEIVE]: (state, action) => isAdmin(action) ? { ...emptyAccount } : state,
+    [LOGIN_RECEIVE]: (state, action) => isAdmin(action) ? { ...emptyAccount } : state,
 });
 
 export default accountReducer;

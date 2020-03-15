@@ -1,18 +1,20 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_ACCOUNT,
+    UPDATE_PAYMENT,
     REGISTERPAYMENT_RECEIVE,
+    INITIAL_LOGIN_STATE_RECEIVE,
+    LOGIN_RECEIVE,
 } from '../actiontypes';
-import { emptyPerformedTransaction } from './constants';
+import { bankAccount, emptyPerformedTransaction } from './constants';
+import { isAdmin } from '../common/roles';
 
 const paymentReducer = createReducer({ ...emptyPerformedTransaction }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const payment = action.payload.payment;
-        if (payment === undefined) { return state; }
-        return { ...state, ...payment };
-    },
+    [UPDATE_ACCOUNT]: (state, action) => ({ ...state, transactionTypeId: bankAccount, transactionAmount: action.payload.balance, account: { ...action.payload } }),
+    [UPDATE_PAYMENT]: (state, action) => ({ ...state, ...action.payload }),
     [REGISTERPAYMENT_RECEIVE]: (state, action) => ({ ...emptyPerformedTransaction }),
+    [INITIAL_LOGIN_STATE_RECEIVE]: (state, action) => isAdmin(action) ? { ...emptyPerformedTransaction } : state,
+    [LOGIN_RECEIVE]: (state, action) => isAdmin(action) ? { ...emptyPerformedTransaction } : state,
 });
 
 export default paymentReducer;

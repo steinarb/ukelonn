@@ -1,43 +1,43 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { applyMiddleware, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
-    UPDATE,
+    INITIAL_LOGIN_STATE_REQUEST,
+    UPDATE_NOTIFICATIONAVAILABLE,
 } from './actiontypes';
-import ukelonnReducer from './reducers';
+import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 
 const history = createBrowserHistory();
-const store = createStore(ukelonnReducer,
-                          composeWithDevTools(
-                              applyMiddleware(
-                                  sagaMiddleware,
-                                  routerMiddleware(history)
-                              )
-                          )
-                         );
+const store = configureStore({
+    reducer: createUkelonnReducer(history),
+    middleware: [
+        sagaMiddleware,
+        routerMiddleware(history),
+    ],
+});
 sagaMiddleware.run(rootSaga);
+store.dispatch(INITIAL_LOGIN_STATE_REQUEST());
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {
-        store.dispatch(UPDATE({ notificationAvailable: true }));
+        store.dispatch(UPDATE_NOTIFICATIONAVAILABLE(true));
         console.log(result);
     });
 } else {
-    store.dispatch(UPDATE({ notificationAvailable: false }));
+    store.dispatch(UPDATE_NOTIFICATIONAVAILABLE(false));
 }
 
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+      <App history={history} />
     </Provider>,
     document.getElementById('root')
 );

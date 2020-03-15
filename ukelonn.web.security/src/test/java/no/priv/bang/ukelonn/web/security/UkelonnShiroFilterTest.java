@@ -12,12 +12,11 @@ import org.junit.Test;
 
 import no.priv.bang.authservice.web.security.dbrealm.AuthserviceDbRealm;
 import no.priv.bang.authservice.web.security.memorysession.MemorySession;
-import no.priv.bang.ukelonn.db.authservicedbadapter.UkelonnDatabaseToAuthserviceDatabaseAdapter;
 
 public class UkelonnShiroFilterTest {
 
     @BeforeClass
-    public static void setupClass() {
+    public static void setupClass() throws Exception {
         setupFakeOsgiServices();
     }
 
@@ -32,10 +31,7 @@ public class UkelonnShiroFilterTest {
         AuthserviceDbRealm realm = new AuthserviceDbRealm();
         MemorySession session = new MemorySession();
         session.activate();
-        UkelonnDatabaseToAuthserviceDatabaseAdapter adapter = new UkelonnDatabaseToAuthserviceDatabaseAdapter();
-        adapter.setUkelonnDatabase(getUkelonnServiceSingleton().getDatabase());
-        adapter.activate();
-        realm.setDatabaseService(adapter);
+        realm.setDataSource(getUkelonnServiceSingleton().getDataSource());
         realm.activate();
         shirofilter.setSession(session);
         shirofilter.setRealm(realm);

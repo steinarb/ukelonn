@@ -82,6 +82,10 @@
             <artifactId>mockrunner-servlet</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.osgi.service.adapters</groupId>
+            <artifactId>logservice</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-api</artifactId>
         </dependency>
@@ -89,6 +93,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.servlet</groupId>
+            <artifactId>servlet.frontend</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
@@ -109,9 +117,9 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.7.6</version>
+                <version>1.9.1</version>
                 <configuration>
-                    <nodeVersion>v10.16.0</nodeVersion>
+                    <nodeVersion>v12.16.1</nodeVersion>
                     <workingDirectory>src/main/frontend</workingDirectory>
                     <installDirectory>target</installDirectory>
                 </configuration>

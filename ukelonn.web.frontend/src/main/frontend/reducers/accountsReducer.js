@@ -1,8 +1,8 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
     ACCOUNTS_RECEIVE,
 } from '../actiontypes';
-import { emptyAccount } from './constants';
+import { emptyAccount } from '../constants';
 
 const accountsReducer = createReducer([], {
     [ACCOUNTS_RECEIVE]: (state, action) => addEmptyAccountToAccountslist(action),

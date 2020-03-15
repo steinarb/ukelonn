@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2019 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,16 @@ package no.priv.bang.ukelonn.testutils;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.ukelonn.db.derbytest.UkelonnDatabaseProvider;
+import no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
@@ -56,60 +60,73 @@ public class TestUtils {
     /***
      * Fake injected OSGi services.
      * @return the serviceprovider implmenting the UkelonnService
+     * @throws Exception
      */
-    public static UkelonnServiceProvider setupFakeOsgiServices() {
+    public static UkelonnServiceProvider setupFakeOsgiServices() throws Exception {
         ukelonnServiceSingleton = new UkelonnServiceProvider();
         ukelonnServiceSingleton.activate();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
         LogService logservice = new MockLogService();
-        ukelonnDatabaseProvider.setLogService(logservice);
-        ukelonnDatabaseProvider.activate();
+        DataSource ukelonnDatasource = createUkelonnDatasource(logservice);
 
-        ukelonnServiceSingleton.setUkelonnDatabase(ukelonnDatabaseProvider);
+        ukelonnServiceSingleton.setDataSource(ukelonnDatasource);
         ukelonnServiceSingleton.setLogservice(logservice);
         return ukelonnServiceSingleton;
     }
 
     /***
      * Clear any (fake or non-fake) injected OSGi services.
-     *
-     * @throws NoSuchFieldException
-     * @throws SecurityException
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @throws Exception
      */
-    public static void releaseFakeOsgiServices() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public static void releaseFakeOsgiServices() throws Exception {
         rollbackMockDataInTestDatabase();
         UkelonnServiceProvider ukelonnService = new UkelonnServiceProvider();
         if (ukelonnService != null) {
-            ukelonnService.setUkelonnDatabase(null); // Release the database
+            ukelonnService.setDataSource(null); // Release the database
         }
     }
 
-    public static void rollbackMockDataInTestDatabase() {
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = null;
+    public static void restoreTestDatabase() throws Exception {
+        rollbackMockDataInTestDatabase();
+        DataSource ukelonnDatasource = createUkelonnDatasource(new MockLogService());
+        getUkelonnServiceSingleton().setDataSource(ukelonnDatasource);
+    }
+
+    public static void rollbackMockDataInTestDatabase() throws Exception {
+        DataSource ukelonnDatasource = null;
         try {
-            ukelonnDatabaseProvider = (UkelonnDatabaseProvider) ukelonnServiceSingleton.getDatabase();
+            ukelonnDatasource = ukelonnServiceSingleton.getDataSource();
         } catch (Exception e) {
             // Swallow exception and continue
         }
 
-        if (ukelonnDatabaseProvider == null) {
-            ukelonnDatabaseProvider = new UkelonnDatabaseProvider();
+        if (ukelonnDatasource == null) {
+            ukelonnDatasource = createUkelonnDatasource(new MockLogService());
         }
 
-        ukelonnDatabaseProvider.rollbackMockData();
+        TestLiquibaseRunner runner = createLiquibaseRunner(new MockLogService());
+        runner.rollbackMockData(ukelonnDatasource);
     }
 
-    public static void restoreTestDatabase() {
-        rollbackMockDataInTestDatabase();
-        UkelonnDatabaseProvider ukelonnDatabaseProvider = (UkelonnDatabaseProvider) ukelonnServiceSingleton.getDatabase();
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        ukelonnDatabaseProvider.setDataSourceFactory(derbyDataSourceFactory);
-        ukelonnDatabaseProvider.setLogService(ukelonnServiceSingleton.getLogservice());
-        ukelonnDatabaseProvider.activate();
+    static DataSource createUkelonnDatasource(LogService logservice) throws SQLException {
+        DerbyDataSourceFactory datasourceFactory = new DerbyDataSourceFactory();
+        Properties derbyDbCredentials = createDerbyMemoryDbCredentials();
+        DataSource ukelonnDatasource = datasourceFactory.createDataSource(derbyDbCredentials);
+        TestLiquibaseRunner runner = createLiquibaseRunner(logservice);
+        runner.prepare(ukelonnDatasource);
+        return ukelonnDatasource;
+    }
+
+    static TestLiquibaseRunner createLiquibaseRunner(LogService logservice) {
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(logservice);
+        runner.activate();
+        return runner;
+    }
+
+    private static Properties createDerbyMemoryDbCredentials() {
+        Properties properties = new Properties();
+        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
+        return properties;
     }
 
 }

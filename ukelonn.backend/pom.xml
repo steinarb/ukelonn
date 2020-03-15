@@ -44,16 +44,10 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <artifactId>ukelonn.db.authservicedbadapter</artifactId>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.db.liquibase</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
@@ -62,7 +56,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
+            <artifactId>ukelonn.db.liquibase.test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -99,10 +93,6 @@
             <artifactId>org.osgi.service.jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -120,13 +110,17 @@
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-pool-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
             <artifactId>pax-jdbc-derby</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.karaf.shell</groupId>
@@ -139,6 +133,15 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -157,6 +160,10 @@
                 <configuration>
                     <includeTransitiveDependency>true</includeTransitiveDependency>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-services-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

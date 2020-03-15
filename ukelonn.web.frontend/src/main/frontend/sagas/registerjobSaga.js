@@ -7,7 +7,7 @@ import {
     EARNINGS_SUM_OVER_YEAR_REQUEST,
     EARNINGS_SUM_OVER_MONTH_REQUEST,
 } from '../actiontypes';
-import { emptyAccount } from './constants';
+import { emptyAccount } from '../constants';
 
 
 // watcher saga

@@ -1,6 +1,6 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_USER,
     MODIFY_USER_RECEIVE,
     CREATE_USER_RECEIVE,
     MODIFY_USER_PASSWORD_RECEIVE,
@@ -9,12 +9,7 @@ import {
 import { emptyUser } from './constants';
 
 const userReducer = createReducer({ ...emptyUser }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const user = action.payload.user;
-        if (user === undefined) { return state; }
-        return { ...state, ...user };
-    },
+    [UPDATE_USER]: (state, action) => ({ ...state, ...action.payload }),
     [MODIFY_USER_RECEIVE]: (state, action) => ({ ...emptyUser }),
     [CREATE_USER_RECEIVE]: (state, action) => ({ ...emptyUser }),
     [MODIFY_USER_PASSWORD_RECEIVE]: (state, action) => ({ ...emptyUser }),

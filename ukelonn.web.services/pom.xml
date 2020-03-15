@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
+            <artifactId>ukelonn.db.liquibase.test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -87,9 +87,8 @@
             <artifactId>org.osgi.service.jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
-            <scope>test</scope>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
@@ -146,9 +145,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.karaf</groupId>
-            <artifactId>jersey-karaf-feature</artifactId>
-            <version>${jersey-feature.version}</version>
+            <groupId>no.priv.bang.servlet</groupId>
+            <artifactId>servlet.jersey</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.servlet</groupId>
+            <artifactId>servlet.jersey</artifactId>
+            <version>${bang-servlet.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

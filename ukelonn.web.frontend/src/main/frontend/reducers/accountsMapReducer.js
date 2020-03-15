@@ -1,8 +1,8 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
     ACCOUNTS_RECEIVE,
 } from '../actiontypes';
-import { emptyAccount } from './constants';
+import { emptyAccount } from '../constants';
 
 const accountsMapReducer = createReducer(new Map([]), {
     [ACCOUNTS_RECEIVE]: (state, action) => createMapFromAccounts(action),

@@ -43,12 +43,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>ukelonn.db.authservicedbadapter</artifactId>
-            <groupId>no.priv.bang.ukelonn</groupId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.authservice</groupId>
             <artifactId>authservice.definitions</artifactId>
             <scope>test</scope>
@@ -70,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
+            <artifactId>ukelonn.db.liquibase.test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -98,7 +92,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
+            <artifactId>osgiservice.users</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -133,6 +127,11 @@
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-extender-whiteboard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc-pool-common</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.jdbc</groupId>

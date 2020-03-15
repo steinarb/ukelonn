@@ -57,15 +57,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
-            <version>${osgi-service.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

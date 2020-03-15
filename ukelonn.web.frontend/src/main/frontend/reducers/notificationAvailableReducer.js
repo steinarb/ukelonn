@@ -1,15 +1,10 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_NOTIFICATIONAVAILABLE,
 } from '../actiontypes';
 
 const notificationAvailableReducer = createReducer(false, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const notificationAvailable = action.payload.notificationAvailable;
-        if (notificationAvailable === undefined) { return state; }
-        return notificationAvailable;
-    },
+    [UPDATE_NOTIFICATIONAVAILABLE]: (state, action) => action.payload,
 });
 
 export default notificationAvailableReducer;

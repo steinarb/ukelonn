@@ -5,80 +5,71 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    JOBTYPELIST_REQUEST,
-    UPDATE,
+    UPDATE_TRANSACTIONTYPE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
-import Jobtypes from './Jobtypes';
+import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
-class AdminJobtypesModify extends Component {
-    componentDidMount() {
-        this.props.onJobtypeList();
+function AdminJobtypesModify(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
 
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+    let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
-        let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = this.props;
-
-        return (
-            <div className="mdl-layout mdl-layout--fixed-header">
-                <header className="mdl-layout__header">
-                    <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
-                        <Link to="/ukelonn/admin/jobtypes" className="mdl-navigation__link">
-                            <i className="material-icons" >chevron_left</i>
-                            &nbsp;
-                            Administrer jobber og jobbtyper
-                        </Link>
-                        <span className="mdl-layout-title">Endre jobbtyper</span>
+    return (
+        <div className="mdl-layout mdl-layout--fixed-header">
+            <header className="mdl-layout__header">
+                <div className="mdl-layout__header-row" style={reduceHeaderRowPadding}>
+                    <Link to="/ukelonn/admin/jobtypes" className="mdl-navigation__link">
+                        <i className="material-icons" >chevron_left</i>
+                        &nbsp;
+                        Administrer jobber og jobbtyper
+                    </Link>
+                    <span className="mdl-layout-title">Endre jobbtyper</span>
+                </div>
+            </header>
+            <main className="mdl-layout__content">
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="mdl-grid hline-bottom">
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                            <label htmlFor="jobtype">Velg jobbtype</label>
+                        </div>
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                            <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
+                        </div>
                     </div>
-                </header>
-                <main className="mdl-layout__content">
-                    <form onSubmit={ e => { e.preventDefault(); }}>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="jobtype">Velg jobbtype</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Jobtypes id="jobtype" className="stretch-to-fill" jobtypes={jobtypes} jobtypesMap={jobtypesMap} value={transactiontype.transactionTypeName} onJobtypeFieldChange={onJobtypeFieldChange} />
-                            </div>
+                    <div className="mdl-grid hline-bottom">
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                            <label htmlFor="amount">Endre navn på jobbtype</label>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="amount">Endre navn på jobbtype</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <input id="name" className='mdl-textfield__input stretch-to-fill' type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                            </div>
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                            <input id="name" className='mdl-textfield__input stretch-to-fill' type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
-                                <label htmlFor="amount">Endre beløp for jobbtype</label>
-                            </div>
-                            <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                                <Amount id="amount" className="stretch-to-fill" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                            </div>
+                    </div>
+                    <div className="mdl-grid hline-bottom">
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--3-col-tablet mdl-cell--3-col-desktop">
+                            <label htmlFor="amount">Endre beløp for jobbtype</label>
                         </div>
-                        <div className="mdl-grid hline-bottom">
-                            <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
-                                &nbsp;
-                            </div>
-                            <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--4-col-tablet mdl-cell--4-col-desktop">
-                                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
-                            </div>
+                        <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
+                            <Amount id="amount" className="stretch-to-fill" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                         </div>
-                    </form>
-                </main>
-                <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                    </div>
+                    <div className="mdl-grid hline-bottom">
+                        <div className="mdl-cell mdl-cell--hide-phone mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
+                            &nbsp;
+                        </div>
+                        <div className="mdl-cell mdl-cell--4-col-phone mdl-cell--4-col-tablet mdl-cell--4-col-desktop">
+                            <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
+                        </div>
+                    </div>
+                </form>
+            </main>
+            <button className="mdl-button mdl-js-button mdl-button--raised" onClick={() => onLogout()}>Logout</button>
+        </div>
+    );
+}
 
 const emptyJobtype = {
     id: -1,
@@ -87,7 +78,7 @@ const emptyJobtype = {
 };
 
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -95,35 +86,20 @@ const mapStateToProps = state => {
         jobtypesMap: state.jobtypesMap,
         transactiontype: state.transactiontype,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
-        onJobtypeList: () => dispatch(JOBTYPELIST_REQUEST()),
-        onJobtypeFieldChange: (selectedValue, jobtypesMap, account, performedjob) => {
-            let jobtype = jobtypesMap.get(selectedValue);
-            let changedField = {
-                transactiontype: {...jobtype},
-            };
-            dispatch(UPDATE(changedField));
+        onJobtypeFieldChange: (selectedValue, jobtypes) => {
+            const selectedValueInt = parseInt(selectedValue, 10);
+            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
+            dispatch(UPDATE_TRANSACTIONTYPE({ ...jobtype }));
         },
-        onNameFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionTypeName: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onAmountFieldChange: (formValue, transactiontype) => {
-            let changedField = {
-                transactiontype: { ...transactiontype, transactionAmount: formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
+        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
         onSaveUpdatedJobType: (transactiontype) => dispatch(MODIFY_JOBTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
-};
+}
 
-AdminJobtypesModify = connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesModify);
-
-export default AdminJobtypesModify;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesModify);

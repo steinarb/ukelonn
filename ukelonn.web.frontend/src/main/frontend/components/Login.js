@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import {
-    UPDATE,
+    UPDATE_USERNAME,
+    UPDATE_PASSWORD,
     LOGIN_REQUEST,
 } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
-let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
+function Login(props) {
+    const { username, password, loginResponse, onUsernameChange, onPasswordChange, onLogin } = props;
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return (<Redirect to="/ukelonn/admin" />);
@@ -31,7 +33,7 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
                             <label htmlFor="username">Brukernavn:</label>
                         </div>
                         <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            <input type='text' name='username' className='stretch-to-fill' onChange={(event) => onFieldChange({ username: event.target.value })}></input>
+                            <input id="username" type="text" name="username" className="stretch-to-fill" onChange={(event) => onUsernameChange(event.target.value)}></input>
                         </div>
                     </div>
                     <div className="mdl-grid graybox">
@@ -39,7 +41,7 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
                             <label htmlFor="password">Passord:</label>
                         </div>
                         <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            <input type='password' name='password' className='stretch-to-fill' onChange={(event) => onFieldChange({ password: event.target.value })}/>
+                            <input id="password" type="password" name="password" className="stretch-to-fill" onChange={(event) => onPasswordChange(event.target.value)}/>
                         </div>
                     </div>
                     <div className="mdl-grid">
@@ -55,23 +57,22 @@ let Login = ({username, password, loginResponse, onFieldChange, onLogin}) => {
             </main>
         </div>
     );
-};
+}
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         username: state.username,
         password: state.password,
         loginResponse: state.loginResponse
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
-        onFieldChange: (changedField) => dispatch(UPDATE(changedField)),
+        onUsernameChange: username => dispatch(UPDATE_USERNAME(username)),
+        onPasswordChange: password => dispatch(UPDATE_PASSWORD(password)),
         onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
     };
-};
+}
 
-Login = connect(mapStateToProps, mapDispatchToProps)(Login);
-
-export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

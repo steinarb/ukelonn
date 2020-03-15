@@ -1,9 +1,12 @@
 import React from 'react';
 
-const Users = ({id, className, users, usersMap, value, onUsersFieldChange }) => (
-    <select id={id} className={className} onChange={(event) => onUsersFieldChange(event.target.value, usersMap)} value={value}>
-        {users.map((val) => <option key={val.userid}>{val.fullname}</option>)}
-    </select>
-);
+function Users(props) {
+    const {id, className, users, value, onUsersFieldChange } = props;
+    return (
+        <select id={id} className={className} onChange={(event) => onUsersFieldChange(event.target.value, users)} value={value}>
+          {users.map((val) => <option key={val.userid} value={val.userid}>{val.fullname}</option>)}
+        </select>
+    );
+}
 
 export default Users;

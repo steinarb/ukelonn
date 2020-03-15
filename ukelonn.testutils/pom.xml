@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.derbytest</artifactId>
+            <artifactId>ukelonn.db.liquibase.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -79,10 +79,6 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
-            <artifactId>osgiservice.database</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.users</artifactId>
         </dependency>
         <dependency>
@@ -94,6 +90,10 @@
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
             <artifactId>service-mocks</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
         </dependency>
     </dependencies>
 

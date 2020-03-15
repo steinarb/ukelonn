@@ -2,10 +2,11 @@ import { spawnNotification } from './spawnnotification.js';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    UPDATE,
+    UPDATE_NOTIFICATIONMESSAGE,
 } from '../actiontypes';
 
-var Notification = ({notificationMessage, onNullNotification}) => {
+function Notification(props) {
+    const { notificationMessage, onNullNotification } = props;
     if (notificationMessage) {
         if (Notification) {
             spawnNotification(notificationMessage);
@@ -18,18 +19,16 @@ var Notification = ({notificationMessage, onNullNotification}) => {
     return null;
 };
 
-const mapStateToProps = state => {
+function mapStateToProps(state) {
     return {
         notificationMessage: state.notificationMessage,
     };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
     return {
-        onNullNotification: () => dispatch(UPDATE({ notificationMessage: null })),
+        onNullNotification: () => dispatch(UPDATE_NOTIFICATIONMESSAGE(null)),
     };
-};
+}
 
-Notification = connect(mapStateToProps, mapDispatchToProps)(Notification);
-
-export default Notification;
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);

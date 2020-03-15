@@ -1,9 +1,12 @@
 import React from 'react';
 
-let LoginErrorMessage = ({loginResponse}) => {
+function LoginErrorMessage(props) {
+    const { loginResponse } = props;
     if (loginResponse.roles.length === 0) {
         return (<h1>{loginResponse.errorMessage}</h1>);
     }
-};
+
+    return null;
+}
 
 export default LoginErrorMessage;

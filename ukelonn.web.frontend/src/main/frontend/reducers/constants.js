@@ -1,7 +1,8 @@
 import moment from 'moment';
 
+export const bankAccount = 4;
+
 export const emptyPerformedTransaction = {
-    account: { id: -1 },
     transactionTypeId: -1,
     transactionAmount: 0.0
 };
@@ -32,13 +33,4 @@ export const emptyPasswords = {
     user: {...emptyUser},
     password1: '',
     password2: '',
-};
-
-export const emptyAccount = {
-    accountId: -1,
-    username: '',
-    firstName: '',
-    lastName: '',
-    fullName: '',
-    balance: 0.0,
 };

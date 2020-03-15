@@ -1,19 +1,16 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import moment from 'moment';
 import {
-    UPDATE,
+    ACCOUNT_RECEIVE,
+    UPDATE_PERFORMEDJOB,
     REGISTERJOB_RECEIVE,
 } from '../actiontypes';
 import { emptyPerformedTransaction } from './constants';
 
 const performedjobReducer = createReducer({ ...emptyPerformedTransaction }, {
-    [UPDATE]: (state, action) => {
-        if (!action.payload) { return state; }
-        const performedjob = action.payload.performedjob;
-        if (performedjob === undefined) { return state; }
-        return { ...state, ...performedjob };
-    },
-    [REGISTERJOB_RECEIVE]: (state, action) => ({ ...emptyPerformedTransaction, transactionName: '', transactionDate: moment() }),
+    [ACCOUNT_RECEIVE]: (state, action) => ({ ...state, account: { ...action.payload } }),
+    [UPDATE_PERFORMEDJOB]: (state, action) => ({ ...state, ...action.payload }),
+    [REGISTERJOB_RECEIVE]: (state, action) => ({ ...emptyPerformedTransaction, transactionDate: moment(), account: { ...action.payload } }),
 });
 
 export default performedjobReducer;

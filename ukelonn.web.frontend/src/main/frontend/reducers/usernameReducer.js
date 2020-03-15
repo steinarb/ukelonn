@@ -1,15 +1,10 @@
-import { createReducer } from 'redux-starter-kit';
+import { createReducer } from '@reduxjs/toolkit';
 import {
-    UPDATE,
+    UPDATE_USERNAME,
 } from '../actiontypes';
 
 const usernameReducer = createReducer(null, {
-    [UPDATE]: (state, action) => {
-        if (!(action.payload && action.payload.username)) {
-            return state;
-        }
-        return action.payload.username;
-    },
+    [UPDATE_USERNAME]: (state, action) => action.payload,
 });
 
 export default usernameReducer;
