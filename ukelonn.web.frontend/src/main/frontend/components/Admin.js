@@ -68,7 +68,7 @@ function Admin(props) {
                             <label htmlFor="account-balance">Til gode:</label>
                         </div>
                         <div className="mdl-cell mdl-cell--2-col-phone mdl-cell--5-col-tablet mdl-cell--9-col-desktop">
-                            <input id="account-balance" className='mdl-textfield__input stretch-to-fill' type="text" value={account.balance} readOnly="true" />
+                            <input id="account-balance" className='mdl-textfield__input stretch-to-fill' type="text" value={account.balance} readOnly={true} />
                         </div>
                     </div>
                     <div className="mdl-grid hline-bottom">
