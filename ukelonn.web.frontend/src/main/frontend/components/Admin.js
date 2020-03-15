@@ -28,9 +28,7 @@ function Admin(props) {
         paymenttype,
         amount,
         accounts,
-        accountsMap,
         paymenttypes,
-        paymenttypesMap,
         onAccountsFieldChange,
         onPaymenttypeFieldChange,
         onAmountFieldChange,
@@ -136,9 +134,7 @@ function mapStateToProps(state) {
         payment: state.payment,
         paymenttype: state.paymenttype,
         accounts: state.accounts,
-        accountsMap: state.accountsMap,
         paymenttypes: state.paymenttypes,
-        paymenttypesMap: new Map(state.paymenttypes.map(i => [i.transactionTypeName, i])),
     };
 }
 

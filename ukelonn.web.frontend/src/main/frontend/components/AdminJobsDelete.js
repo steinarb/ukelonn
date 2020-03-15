@@ -23,7 +23,7 @@ function AdminJobsDelete(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
+    let { account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
 
     return (
         <div>

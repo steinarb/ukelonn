@@ -23,7 +23,6 @@ function AdminUsersCreate(props) {
         usernames,
         user,
         passwords,
-        passwordsNotIdentical,
         onUsernameChange,
         onEmailChange,
         onFirstnameChange,
@@ -39,7 +38,7 @@ function AdminUsersCreate(props) {
     const emailIsNotValid = user.email && !isEmail(user.email);
     const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
     const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
-    const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
+    const passwordGroupClass = 'form-control' + (passwords.passwordsNotIdentical ? ' is-invalid' : '');
 
     return (
         <div>
@@ -92,7 +91,7 @@ function AdminUsersCreate(props) {
                         <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
                         <div className="col-7">
                             <input id="password2" className={passwordGroupClass} type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
-                            { passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
+                            { passwords.passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
                         </div>
                     </div>
                     <div className="form-group row">
