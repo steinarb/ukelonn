@@ -62,7 +62,7 @@ function AdminUsersCreate(props) {
                 <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                 <br/>
                 <label htmlFor="password2">Gjenta passord:</label>
-                <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
+                <input id="password2" type="password" value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
                 { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                 <br/>
                 <button onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>

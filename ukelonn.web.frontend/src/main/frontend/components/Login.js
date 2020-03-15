@@ -23,9 +23,9 @@ function Login(props) {
             <h1>Ukelønn login</h1>
             <form  onSubmit={ e => { e.preventDefault(); }}>
                 <label htmlFor="username">Brukernavn:</label>
-                <input id="username" type='text' name='username' onChange={(event) => onUsernameChange(event.target.value)}></input><br/>
+                <input id="username" type="text" name="username" onChange={(event) => onUsernameChange(event.target.value)}></input><br/>
                 <label htmlFor="password">Passord:</label>
-                <input id="password" type='password' name='password' onChange={(event) => onPasswordChange(event.target.value)}/><br/>
+                <input id="password" type="password" name='password' onChange={(event) => onPasswordChange(event.target.value)}/><br/>
                 <button onClick={() => onLogin(username, password)}>Login</button>
             </form>
             <LoginErrorMessage loginResponse={loginResponse} />
