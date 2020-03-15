@@ -16,7 +16,7 @@ function AdminJobtypesModify(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { jobtypes, jobtypesMap, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
+    let { jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
     const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
     return (
@@ -84,7 +84,6 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         jobtypes: state.jobtypes,
-        jobtypesMap: state.jobtypesMap,
         transactiontype: state.transactiontype,
     };
 }

@@ -24,7 +24,7 @@ function AdminJobsDelete(props) {
     }
 
     const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-    let { account, jobs, accounts, accountsMap, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
+    let { account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
 
     return (
         <div className="mdl-layout mdl-layout--fixed-header">

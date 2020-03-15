@@ -28,7 +28,7 @@ function AdminJobsEdit(props) {
     }
 
     const reduceHeaderRowPadding = { padding: '0 0 0 0' };
-    let { account, jobs, accounts, accountsMap, jobtypes, jobtypesMap, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
+    let { account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
 
     return (
         <div className="mdl-layout mdl-layout--fixed-header">
@@ -118,9 +118,7 @@ function mapStateToProps(state) {
         account: state.account,
         jobs: state.jobs,
         accounts: state.accounts,
-        accountsMap: state.accountsMap,
         jobtypes: state.jobtypes,
-        jobtypesMap: state.jobtypesMap,
         selectedjob: state.selectedjob,
     };
 }
