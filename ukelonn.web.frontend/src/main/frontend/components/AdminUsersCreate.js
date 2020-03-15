@@ -23,7 +23,6 @@ function AdminUsersCreate(props) {
         usernames,
         user,
         passwords,
-        passwordsNotIdentical,
         onUsernameChange,
         onEmailChange,
         onFirstnameChange,
