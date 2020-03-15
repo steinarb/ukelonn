@@ -81,13 +81,13 @@ function AdminJobsEdit(props) {
                     </div>
                 </div>
                 <div className="form-group row">
-                    <label htmlfor="amount" className="col-form-label col-5">Beløp</label>
+                    <label htmlFor="amount" className="col-form-label col-5">Beløp</label>
                     <div className="col-7">
                         <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
                     </div>
                 </div>
                 <div className="form-group row">
-                    <label htmlfor="date" className="col-form-label col-5">Dato</label>
+                    <label htmlFor="date" className="col-form-label col-5">Dato</label>
                     <div className="col-7">
                         <DatePicker id="date" selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
                     </div>
