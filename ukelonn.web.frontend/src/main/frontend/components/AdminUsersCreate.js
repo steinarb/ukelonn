@@ -6,113 +6,107 @@ import { isEmail } from 'validator';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORD,
-    USERS_REQUEST,
-    UPDATE,
+    UPDATE_USER,
+    UPDATE_PASSWORDS,
     CREATE_USER_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Users from './Users';
 import Amount from './Amount';
 
-class AdminUsersCreate extends Component {
-    componentDidMount() {
-        this.props.onClearUserAndPassword();
-        this.props.onUserList();
+function AdminUsersCreate(props) {
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
     }
 
-    render() {
-        if (userIsNotLoggedIn(this.props)) {
-            return <Redirect to="/ukelonn/login" />;
-        }
+    let {
+        usernames,
+        user,
+        passwords,
+        onUsernameChange,
+        onEmailChange,
+        onFirstnameChange,
+        onLastnameChange,
+        onPassword1Change,
+        onPassword2Change,
+        onSaveCreatedUser,
+        onLogout,
+    } = props;
 
-        let {
-            usernames,
-            user,
-            passwords,
-            passwordsNotIdentical,
-            onUserFieldChange,
-            onPasswordsFieldChange,
-            onSaveCreatedUser,
-            onLogout,
-        } = this.props;
+    const usernameEmpty = !user.username;
+    const usernameExists = usernames.indexOf(user.username) > -1;
+    const emailIsNotValid = user.email && !isEmail(user.email);
+    const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
+    const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
+    const passwordGroupClass = 'form-control' + (passwords.passwordsNotIdentical ? ' is-invalid' : '');
 
-        const usernameEmpty = !user.username;
-        const usernameExists = usernames.indexOf(user.username) > -1;
-        const emailIsNotValid = user.email && !isEmail(user.email);
-        const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
-        const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
-        const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
-
-        return (
-            <div>
-                <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
-                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                    &nbsp;
-                    Administer brukere
-                </Link>
-                <header>
-                    <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                        <h1>Legg til ny bruker</h1>
-                    </div>
-                </header>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div className="container">
-                        <div className="form-group row">
-                            <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
-                            <div className="col-7">
-                                <input id="username" className={usernameInputClass} type="text" value={user.username} onChange={(event) => onUserFieldChange({username: event.target.value}, user)} />
-                                { usernameEmpty && <span className="invalid-feedback d-block">Brukernavn kan ikke være tomt</span> }
-                                { usernameExists && <span className="invalid-feedback d-block">Brukernavnet finnes fra før</span> }
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
-                            <div className="col-7">
-                                <input id="email" className={emailInputClass} type="text" value={user.email} onChange={(event) => onUserFieldChange({email: event.target.value}, user)} />
-                                { emailIsNotValid && <span className="invalid-feedback d-block">Ikke en gyldig epostadresse</span> }
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
-                            <div className="col-7">
-                                <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onUserFieldChange({firstname: event.target.value}, user)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
-                            <div className="col-7">
-                                <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onUserFieldChange({lastname: event.target.value}, user)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="password1" className="col-form-label col-5">Passord:</label>
-                            <div className="col-7">
-                                <input id="password1" className={passwordGroupClass} type='password' value={passwords.password1} onChange={(event) => onPasswordsFieldChange({ password1: event.target.value }, passwords)} />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
-                            <div className="col-7">
-                                <input id="password2" className={passwordGroupClass} type='password' value={passwords.password2} onChange={(event) => onPasswordsFieldChange({ password2: event.target.value }, passwords)} />
-                                { passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <div className="col-5"/>
-                            <div className="col-7">
-                                <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
-                            </div>
+    return (
+        <div>
+            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
+                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                &nbsp;
+                Administer brukere
+            </Link>
+            <header>
+                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
+                    <h1>Legg til ny bruker</h1>
+                </div>
+            </header>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
+                        <div className="col-7">
+                            <input id="username" className={usernameInputClass} type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
+                            { usernameEmpty && <span className="invalid-feedback d-block">Brukernavn kan ikke være tomt</span> }
+                            { usernameExists && <span className="invalid-feedback d-block">Brukernavnet finnes fra før</span> }
                         </div>
                     </div>
-                </form>
-                <br/>
-                <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
-                <br/>
-                <a href="../../../..">Tilbake til topp</a>
-            </div>
-        );
-    };
-};
+                    <div className="form-group row">
+                        <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
+                        <div className="col-7">
+                            <input id="email" className={emailInputClass} type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
+                            { emailIsNotValid && <span className="invalid-feedback d-block">Ikke en gyldig epostadresse</span> }
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
+                        <div className="col-7">
+                            <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
+                        <div className="col-7">
+                            <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="password1" className="col-form-label col-5">Passord:</label>
+                        <div className="col-7">
+                            <input id="password1" className={passwordGroupClass} type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
+                        <div className="col-7">
+                            <input id="password2" className={passwordGroupClass} type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
+                            { passwords.passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <div className="col-5"/>
+                        <div className="col-7">
+                            <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <br/>
+            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+        </div>
+    );
+}
 
 function mapStateToProps(state) {
     return {
@@ -120,18 +114,8 @@ function mapStateToProps(state) {
         loginResponse: state.loginResponse,
         user: state.user,
         passwords: state.passwords,
-        passwordsNotIdentical: state.passwordsNotIdentical,
         usernames: state.usernames,
     };
-}
-
-function checkIfPasswordsAreNotIdentical(passwords) {
-    let { password1, password2 } = passwords;
-    if (!password2) {
-        return false; // if second password is empty we don't compare because it probably hasn't been typed into yet
-    }
-
-    return password1 !== password2;
 }
 
 function mapDispatchToProps(dispatch) {
@@ -139,27 +123,15 @@ function mapDispatchToProps(dispatch) {
         onClearUserAndPassword: () => {
             dispatch(CLEAR_USER_AND_PASSWORD());
         },
-        onUserList: () => dispatch(USERS_REQUEST()),
-        onUserFieldChange: (formValue, user) => {
-            let changedField = {
-                user: { ...user, ...formValue }
-            };
-            dispatch(UPDATE(changedField));
-        },
-        onPasswordsFieldChange: (formValue, passwordsFromState) => {
-            const passwords = { ...passwordsFromState, ...formValue };
-            const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(passwords);
-            let changedField = {
-                passwords,
-                passwordsNotIdentical,
-            };
-            dispatch(UPDATE(changedField));
-        },
+        onUsernameChange: (username) => dispatch(UPDATE_USER({ username })),
+        onEmailChange: (email) => dispatch(UPDATE_USER({ email })),
+        onFirstnameChange: (firstname) => dispatch(UPDATE_USER({ firstname })),
+        onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
+        onPassword1Change: (password1) => dispatch(UPDATE_PASSWORDS({ password1 })),
+        onPassword2Change: (password2) => dispatch(UPDATE_PASSWORDS({ password2 })),
         onSaveCreatedUser: (user, passwords) => dispatch(CREATE_USER_REQUEST({ user, passwords })),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 
-AdminUsersCreate = connect(mapStateToProps, mapDispatchToProps)(AdminUsersCreate);
-
-export default AdminUsersCreate;
+export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersCreate);

@@ -2,7 +2,7 @@ import { spawnNotification } from './spawnnotification.js';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    UPDATE,
+    UPDATE_NOTIFICATIONMESSAGE,
 } from '../actiontypes';
 
 function Notification(props) {
@@ -27,7 +27,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onNullNotification: () => dispatch(UPDATE({ notificationMessage: null })),
+        onNullNotification: () => dispatch(UPDATE_NOTIFICATIONMESSAGE(null)),
     };
 }
 

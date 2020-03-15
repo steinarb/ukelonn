@@ -12,7 +12,6 @@ export function* requestModifyUserSaga() {
 }
 
 function doModifyUser(user) {
-    delete user.fullname;
     return axios.post('/ukelonn/api/admin/user/modify', user);
 }
 
