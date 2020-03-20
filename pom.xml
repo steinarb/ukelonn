@@ -61,7 +61,6 @@
         <beans.version>1.0.0</beans.version>
         <datasourceproxy.version>1.0.0</datasourceproxy.version>
         <jackson.version>2.9.10</jackson.version>
-        <jackson.databind.version>2.9.10.3</jackson.databind.version>
         <jersey.version>2.30</jersey.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
@@ -322,18 +321,6 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.databind.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
