@@ -9,13 +9,11 @@ import paymentReducer from './paymentReducer';
 import jobsReducer from './jobsReducer';
 import paymentsReducer from './paymentsReducer';
 import jobtypesReducer from './jobtypesReducer';
-import jobtypesMapReducer from './jobtypesMapReducer';
 import haveReceivedResponseFromLoginReducer from './haveReceivedResponseFromLoginReducer';
 import loginResponseReducer from './loginResponseReducer';
 import performedjobReducer from './performedjobReducer';
 import selectedjobReducer from './selectedjobReducer';
 import accountsReducer from './accountsReducer';
-import accountsMapReducer from './accountsMapReducer';
 import paymenttypesReducer from './paymenttypesReducer';
 import transactiontypeReducer from './transactiontypeReducer';
 import usersReducer from './usersReducer';
@@ -36,13 +34,11 @@ export default (history) => combineReducers({
     jobs: jobsReducer,
     payments: paymentsReducer,
     jobtypes: jobtypesReducer,
-    jobtypesMap: jobtypesMapReducer,
     haveReceivedResponseFromLogin: haveReceivedResponseFromLoginReducer,
     loginResponse: loginResponseReducer,
     performedjob: performedjobReducer,
     selectedjob: selectedjobReducer,
     accounts: accountsReducer,
-    accountsMap: accountsMapReducer,
     paymenttypes: paymenttypesReducer,
     transactiontype: transactiontypeReducer,
     users: usersReducer,
