@@ -20,7 +20,7 @@
 
     <packaging>pom</packaging>
 
-    <name>ukelonn parent project</name>
+    <name>ukelonn webapp</name>
 
     <modules>
         <module>ukelonn.services</module>
