@@ -1922,7 +1922,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Check the REST API response (no notifications expected)
         assertEquals(200, notificationsResponse.getStatus());
         assertEquals("application/json", notificationsResponse.getContentType());
-        List<User> notificationsToJad = mapper.readValue(getBinaryContent(notificationsResponse), new TypeReference<List<Notification>>() {});
+        List<User> notificationsToJad = mapper.readValue(getBinaryContent(notificationsResponse), new TypeReference<List<User>>() {});
         assertThat(notificationsToJad).isEmpty();
 
         // Send a notification to user "jad" over the REST API
