@@ -43,6 +43,23 @@ To set the default to English, and to get English text on the prepopulated datab
   config:update
 #+end_example
 
+*** Docker image
+There is a docker image of the demo version of the application at docker hub: [[https://hub.docker.com/repository/docker/steinarb/ukelonn-demo][ukelonn-demo]].
+
+Start with:
+#+begin_examplea
+  docker pull steinarb/ukelonn-demo:latest
+  docker run -p 8101:8101 -p 8181:8181 -d steinarb/ukelonn-demo:latest
+#+end_example
+
+Then connect to http://docker-container-host:8181/ukelonn with a web browser (replace docker-container-host with whatever host docker is running on), possible logins are:
+| username | password | comment                                      |
+|----------+----------+----------------------------------------------|
+| admin    | admin    | Admin user, can add new users and work tasks |
+| jad      | 1ad      | Regular user, can register work done         |
+
+The demo version use an in-container derby databse that works while the container is up but dies with the container.
+
 * Status
 
 [[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=alert_status#.svg]]
@@ -103,6 +120,19 @@ Framgangsmåten er som følger:
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
     - For en administrator-bruker, brukernavn/passord: admin/admin
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+** Kjøring i docker-container
+
+Last ned image fra docker hub og start image med:
+#+begin_examplea
+  docker pull steinarb/ukelonn-demo:latest
+  docker run -p 8101:8101 -p 8181:8181 -d steinarb/ukelonn-demo:latest
+#+end_example
+
+Åpne en nettleser mot http://docker-container-host:8181/ukelonn (erstatt docker-container-host med maskinen docker kjører på), mulige testbrukere, er:
+| brukernavn | passord | kommentar                                                                               |
+|------------+---------+-----------------------------------------------------------------------------------------|
+| admin      | admin   | Admin-bruker, kan legge til nye brukere, nye arbeidsoppgaver og registrere utbetalinger |
+| jad        | 1ad     | Vanlig bruker, kan registrere utførte arbeidsoppgaver                                   |
 
 Databasen som kjører er en ekte SQL-database men kjører kun i minnet så endringer blir ikke persistert og blir borte når karaf-prosessen blir stoppet.
 
