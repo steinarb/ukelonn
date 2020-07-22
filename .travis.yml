@@ -6,7 +6,7 @@ addons:
         token: $SONAR_TOKEN
 script:
     - mvn -q -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
-    - mvn -q -B cobertura:cobertura coveralls:report
+    - mvn -q -B cobertura:cobertura coveralls:report >/dev/null
 
 deploy:
     provider: script
