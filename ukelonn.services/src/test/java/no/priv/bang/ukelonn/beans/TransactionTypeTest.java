@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,6 @@ public class TransactionTypeTest {
         assertTrue(set.contains(emptyBean));
 
         assertNotEquals(bean, null);
-        assertNotEquals(bean, "bean");
         TransactionType beanWithNullAmount1 = new TransactionType(1, "Vaske", null, true, false);
         assertNotEquals(beanWithNullAmount1, bean);
         TransactionType beanWithNullAmount2 = new TransactionType(1, "Vaske", null, true, false);

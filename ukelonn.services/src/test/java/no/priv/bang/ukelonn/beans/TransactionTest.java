@@ -71,7 +71,6 @@ public class TransactionTest {
         assertTrue(set.contains(emptyBean));
 
         assertNotEquals(bean, null);
-        assertNotEquals(bean, "bean");
         assertEquals(bean, beanCopy);
         assertNotEquals(bean, emptyBean);
         assertNotEquals(emptyBean, bean);
