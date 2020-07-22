@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class StatisticsTest {
 
         String username = "jad";
         List<SumYear> earningsSumOverYear = resource.earningsSumOverYear(username);
-        assertThat(earningsSumOverYear.size()).isGreaterThan(0);
+        assertThat(earningsSumOverYear).isNotEmpty();
         assertEquals(2016, earningsSumOverYear.get(0).getYear());
     }
 
@@ -52,7 +52,7 @@ public class StatisticsTest {
 
         String username = "jad";
         List<SumYearMonth> earningsSumOverYear = resource.earningsSumOverMonth(username);
-        assertThat(earningsSumOverYear.size()).isGreaterThan(0);
+        assertThat(earningsSumOverYear).isNotEmpty();
         assertEquals(2016, earningsSumOverYear.get(0).getYear());
     }
 
