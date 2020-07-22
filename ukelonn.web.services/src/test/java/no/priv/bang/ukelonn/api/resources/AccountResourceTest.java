@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class AccountResourceTest extends ServletTestBase {
      *
      * @throws Exception
      */
-    @Test(expected=ForbiddenException.class)
+    @Test
     public void testGetAccountOtherUsername() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -96,9 +96,9 @@ public class AccountResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test with a different username
-        resource.getAccount("jod");
-
-        // Expect a ForbiddenException to be thrown
+        assertThrows(ForbiddenException.class, () -> {
+                resource.getAccount("jod");
+            });
     }
 
     /**
@@ -138,13 +138,12 @@ public class AccountResourceTest extends ServletTestBase {
         assertEquals(673.0, result.getBalance(), 0.0);
     }
 
-    @Test(expected=BadRequestException.class)
+    @Test
     public void testGetAccountNoUsername() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create the object to be tested
         AccountResource resource = new AccountResource();
@@ -158,15 +157,13 @@ public class AccountResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        resource.getAccount(null);
-
-        // Verify that the test never gets here
-        assertNull("Should never get here, exception should be thrown", response);
-        fail("Should never get here, exception should be thrown");
+        assertThrows(BadRequestException.class, () -> {
+                resource.getAccount(null);
+            });
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=InternalServerErrorException.class)
+    @Test
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -190,14 +187,12 @@ public class AccountResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        resource.getAccount("on");
-
-        // Verify that the test never gets here
-        assertNull("Should never get here, exception should be thrown", response);
-        fail("Should never get here, exception should be thrown");
+        assertThrows(InternalServerErrorException.class, () -> {
+                resource.getAccount("on");
+            });
     }
 
-    @Test(expected=InternalServerErrorException.class)
+    @Test
     public void testGetAccountWhenSubjectHasNullPrincipal() {
         createSubjectWithNullPrincipalAndBindItToThread();
 
@@ -213,10 +208,8 @@ public class AccountResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        Account account = resource.getAccount("on");
-
-        // Verify that the test never gets here
-        assertNull("Should never get here, exception should be thrown", account);
-        fail("Should never get here, exception should be thrown");
+        assertThrows(InternalServerErrorException.class, () -> {
+                resource.getAccount("on");
+            });
     }
 }

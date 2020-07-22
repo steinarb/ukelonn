@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class LoginTest extends ServletTestBase {
         LoginResult result = resource.doLogin(credentials);
 
         // Check the response
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 
@@ -77,7 +77,7 @@ public class LoginTest extends ServletTestBase {
         LoginResult result = resource.doLogin(credentials);
 
         // Check the response
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 
@@ -161,7 +161,7 @@ public class LoginTest extends ServletTestBase {
         assertEquals("Unknown error", result.getErrorMessage());
     }
 
-    @Test(expected=InternalServerErrorException.class)
+    @Test
     public void testLoginWithUnexpectedException() {
         createSubjectThrowingExceptionAndBindItToThread(IllegalArgumentException.class);
         LoginCredentials credentials = new LoginCredentials("jad", "wrong");
@@ -170,10 +170,9 @@ public class LoginTest extends ServletTestBase {
         // Create the servlet and do the login
         Login resource = new Login();
         resource.logservice = logservice;
-        LoginResult result = resource.doLogin(credentials);
-        // Check the response
-        assertEquals(0, result.getRoles().length);
-        assertEquals("Unknown error", result.getErrorMessage());
+        assertThrows(InternalServerErrorException.class, () -> {
+                resource.doLogin(credentials);
+            });
     }
 
     /**
@@ -206,7 +205,7 @@ public class LoginTest extends ServletTestBase {
         LoginResult result = resource.loginStatus();
 
         // Check the response
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 

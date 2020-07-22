@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2029 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class UkelonnServletTest {
 
         assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
-        assertThat(response.getBufferSize()).isGreaterThan(0);
+        assertThat(response.getBufferSize()).isPositive();
     }
 
 

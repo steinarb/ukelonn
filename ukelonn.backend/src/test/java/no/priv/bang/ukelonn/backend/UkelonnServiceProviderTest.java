@@ -160,22 +160,24 @@ public class UkelonnServiceProviderTest {
      * Corner case test: test what happens when an account has no transactions
      * (the query result is empty)
      */
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
-        Account accountForAdmin = provider.getAccount("on");
-        assertNull("Should never get here", accountForAdmin);
+        assertThrows(UkelonnException.class, () -> {
+                provider.getAccount("on");
+            });
     }
 
     /**
      * Corner case test: test what happens when trying to get an
      * account for a username that isn't present in the database
      */
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        Account accountNotInDatabase = ukelonn.getAccount("unknownuser");
-        assertNull("Should never get here", accountNotInDatabase);
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.getAccount("unknownuser");
+            });
     }
 
     /**
@@ -188,7 +190,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
@@ -203,8 +205,9 @@ public class UkelonnServiceProviderTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
-            Account account = ukelonn.getAccount("jad");
-            assertNull("Should never get here", account);
+            assertThrows(UkelonnException.class, () -> {
+                    ukelonn.getAccount("jad");
+                });
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -236,12 +239,12 @@ public class UkelonnServiceProviderTest {
         // Add a new account to the database
         User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
         Account newAccount = ukelonn.addAccount(userWithUserId);
-        assertThat(newAccount.getAccountId()).isGreaterThan(0);
+        assertThat(newAccount.getAccountId()).isPositive();
         assertEquals(0.0, newAccount.getBalance(), 0);
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=AuthserviceException.class)
+    @Test
     public void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
@@ -267,15 +270,10 @@ public class UkelonnServiceProviderTest {
         // Create a passwords object containing the user
         UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
 
-        // Create a user in the database, and retrieve it (to get the user id)
-        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
-        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
-
-        // Add a new account to the database
-        User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
-        Account newAccount = ukelonn.addAccount(userWithUserId);
-        assertThat(newAccount.getAccountId()).isGreaterThan(0);
-        assertEquals(0.0, newAccount.getBalance(), 0);
+        // Create a user in the database, expected to fail
+        assertThrows(AuthserviceException.class, () -> {
+                usermanagement.addUser(passwords);
+            });
     }
 
     @Test
@@ -321,7 +319,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
@@ -341,8 +339,9 @@ public class UkelonnServiceProviderTest {
             when(statement.executeQuery()).thenThrow(SQLException.class);
             ukelonn.setDataSource(datasource);
             PerformedTransaction performedJob = new PerformedTransaction(account, 1, 45.0, new Date());
-            Account updatedAccount = ukelonn.registerPerformedJob(performedJob);
-            assertEquals("Expected account balance to be unchanged", account.getBalance(), updatedAccount.getBalance(), 0.0);
+            assertThrows(UkelonnException.class, () -> {
+                    ukelonn.registerPerformedJob(performedJob);
+                });
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -510,7 +509,7 @@ public class UkelonnServiceProviderTest {
         }
     }
 
-    @Test(expected=UkelonnException.class)
+    @Test
     public void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         MockLogService logservice = new MockLogService();
@@ -526,8 +525,9 @@ public class UkelonnServiceProviderTest {
         ukelonn.setDataSource(datasource);
 
         // trying to set the parameter here will throw an UkelonnException
-        ukelonn.addParametersToDeleteJobsStatement(1, statement);
-        fail("Should never get here!");
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.addParametersToDeleteJobsStatement(1, statement);
+            });
     }
 
     @Test
@@ -567,7 +567,7 @@ public class UkelonnServiceProviderTest {
         }
     }
 
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testUpdateJobGetSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
@@ -579,8 +579,10 @@ public class UkelonnServiceProviderTest {
 
         ukelonn.setDataSource(datasource);
 
-        ukelonn.updateJob(new UpdatedTransaction());
-        fail("Should never get here");
+        UpdatedTransaction updatedTransaction = new UpdatedTransaction();
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.updateJob(updatedTransaction);
+            });
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
@@ -785,7 +787,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testModifyJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
@@ -804,8 +806,9 @@ public class UkelonnServiceProviderTest {
         TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
 
         // Try update the jobtype in the database, which should cause an exception
-        ukelonn.modifyJobtype(jobtype);
-        fail("Should never get here!");
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.modifyJobtype(jobtype);
+            });
     }
 
     @Test
@@ -826,7 +829,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testCreateJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
@@ -845,8 +848,9 @@ public class UkelonnServiceProviderTest {
         TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
 
         // Try update the jobtype in the database, which should cause an exception
-        ukelonn.createJobtype(jobtype);
-        fail("Should never get here!");
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.createJobtype(jobtype);
+            });
     }
 
     @Test
@@ -870,7 +874,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testModifyPaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
@@ -889,8 +893,9 @@ public class UkelonnServiceProviderTest {
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
 
         // Try update the payment type in the database, which should cause an exception
-        ukelonn.modifyPaymenttype(paymenttype);
-        fail("Should never get here!");
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.modifyPaymenttype(paymenttype);
+            });
     }
 
     @Test
@@ -911,7 +916,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected=UkelonnException.class)
+    @Test
     public void testCreatePaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
@@ -930,8 +935,9 @@ public class UkelonnServiceProviderTest {
         TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
 
         // Try creating the payment type in the database, which should cause an exception
-        ukelonn.createPaymenttype(paymenttype);
-        fail("Should never get here!");
+        assertThrows(UkelonnException.class, () -> {
+                ukelonn.createPaymenttype(paymenttype);
+            });
     }
 
     @Test
@@ -1048,7 +1054,7 @@ public class UkelonnServiceProviderTest {
     public void testEarningsSumOverYear() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
-        assertThat(statistics.size()).isGreaterThan(0);
+        assertThat(statistics.size()).isPositive();
         SumYear firstYear = statistics.get(0);
         assertEquals(1250.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
@@ -1083,7 +1089,7 @@ public class UkelonnServiceProviderTest {
     public void testEarningsSumOverMonth() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
-        assertThat(statistics.size()).isGreaterThan(0);
+        assertThat(statistics.size()).isPositive();
         SumYearMonth firstYear = statistics.get(0);
         assertEquals(125.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());

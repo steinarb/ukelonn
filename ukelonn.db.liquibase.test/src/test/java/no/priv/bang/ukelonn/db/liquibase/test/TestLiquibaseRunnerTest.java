@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
@@ -76,7 +75,7 @@ public class TestLiquibaseRunnerTest {
             float balance = onAccount.getFloat("balance");
             assertEquals(4, account_id);
             assertEquals("jad", username);
-            assertThat(balance).isGreaterThan(0);
+            assertThat(balance).isPositive();
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
@@ -123,23 +122,6 @@ public class TestLiquibaseRunnerTest {
         }
     }
 
-    @Test(expected=SQLSyntaxErrorException.class)
-    public void testBadSql() throws Exception {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
-        runner.setLogService(new MockLogService());
-        runner.activate();
-        runner.prepare(datasource); // Create the database
-
-        // A bad select returns a null instead of a prepared statement
-        try(Connection connection = datasource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("zelect * from uzers");
-            assertNull(statement);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testFailToInsertMockData() throws SQLException {
@@ -165,13 +147,13 @@ public class TestLiquibaseRunnerTest {
         // Check that database has the mock data in place
         SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
         int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isPositive();
         int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
-        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isPositive();
         int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
-        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isPositive();
         int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isPositive();
         expectedStatusBeforeRollback.assertAll();
 
         int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");

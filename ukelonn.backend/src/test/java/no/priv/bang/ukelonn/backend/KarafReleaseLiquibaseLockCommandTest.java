@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,8 @@ public class KarafReleaseLiquibaseLockCommandTest {
      */
     @Test
     public void testExecuteNullDatabaseOsgiService() throws Exception {
+        KarafReleaseLiquibaseLockCommand action = new KarafReleaseLiquibaseLockCommand();
         try {
-            KarafReleaseLiquibaseLockCommand action = new KarafReleaseLiquibaseLockCommand();
             action.execute();
             fail("Expected a NullPointerExceptio to be thrown");
         } catch (NullPointerException e) {
