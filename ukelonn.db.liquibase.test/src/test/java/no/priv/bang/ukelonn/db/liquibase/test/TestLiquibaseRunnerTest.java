@@ -122,23 +122,6 @@ public class TestLiquibaseRunnerTest {
         }
     }
 
-    @Test(expected=SQLSyntaxErrorException.class)
-    public void testBadSql() throws Exception {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
-        runner.setLogService(new MockLogService());
-        runner.activate();
-        runner.prepare(datasource); // Create the database
-
-        // A bad select returns a null instead of a prepared statement
-        try(Connection connection = datasource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("zelect * from uzers");
-            assertNull(statement);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testFailToInsertMockData() throws SQLException {
