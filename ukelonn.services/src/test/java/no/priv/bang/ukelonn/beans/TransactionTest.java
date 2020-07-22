@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,12 +71,10 @@ public class TransactionTest {
         assertTrue(set.contains(emptyBean));
 
         assertNotEquals(bean, null);
-        assertEquals(bean, bean);
         assertNotEquals(bean, "bean");
         assertEquals(bean, beanCopy);
         assertNotEquals(bean, emptyBean);
         assertNotEquals(emptyBean, bean);
-        assertEquals(emptyBean, emptyBean);
         Transaction beanDifferentAmount = new Transaction(id, transactionType, transactionTime, 102.0, paidOut);
         assertNotEquals(bean, beanDifferentAmount);
         final Calendar calendar = Calendar.getInstance();
