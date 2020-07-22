@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xml:space="preserve">
 
-    <!-- Copyright 2016-2019 Steinar Bang                                                -->
+    <!-- Copyright 2016-2020 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -15,7 +15,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.priv.bang.ukelonn</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>ukelonn</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -41,16 +41,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
-        <karaf.version>4.2.5</karaf.version>
+        <karaf.version>4.2.8</karaf.version>
         <mockrunner.version>2.0.1</mockrunner.version>
-        <liquibase.version>3.5.3</liquibase.version>
+        <liquibase.version>3.8.0</liquibase.version>
         <snakeyaml.version>1.17</snakeyaml.version>
         <derby.version>10.11.1.1</derby.version>
         <postgresql.version>42.2.10</postgresql.version>
         <dependency.osgi.version>6.0.0</dependency.osgi.version>
         <osgi-service.version>1.5.0</osgi-service.version>
         <osgi-service-adaptors.version>1.0.1</osgi-service-adaptors.version>
-        <authservice.version>1.11.7</authservice.version>
+        <authservice.version>1.11.9</authservice.version>
         <dependency.shiro.version>1.5.1</dependency.shiro.version>
         <osgi.service.version>1.3.0</osgi.service.version>
         <dependency.osgi.log.version>1.3.0</dependency.osgi.log.version>
