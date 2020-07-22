@@ -56,7 +56,7 @@ public class LoginTest extends ServletTestBase {
         LoginResult result = resource.doLogin(credentials);
 
         // Check the response
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 
@@ -77,7 +77,7 @@ public class LoginTest extends ServletTestBase {
         LoginResult result = resource.doLogin(credentials);
 
         // Check the response
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 
@@ -205,7 +205,7 @@ public class LoginTest extends ServletTestBase {
         LoginResult result = resource.loginStatus();
 
         // Check the response
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 

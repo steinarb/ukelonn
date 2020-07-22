@@ -114,7 +114,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 
@@ -154,7 +154,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 
@@ -329,7 +329,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.getRoles().length).isGreaterThan(0);
+        assertThat(result.getRoles()).isNotEmpty();
         assertEquals("", result.getErrorMessage());
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -265,7 +265,7 @@ public class AdminUserResourceTest {
         List<User> updatedUsers = resource.create(passwords);
 
         // Should never get here
-        assertThat(updatedUsers.size()).isGreaterThan(0);
+        assertThat(updatedUsers).isNotEmpty();
     }
 
     @Test
