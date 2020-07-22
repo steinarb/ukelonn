@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
@@ -76,7 +75,7 @@ public class TestLiquibaseRunnerTest {
             float balance = onAccount.getFloat("balance");
             assertEquals(4, account_id);
             assertEquals("jad", username);
-            assertThat(balance).isGreaterThan(0);
+            assertThat(balance).isPositive();
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
@@ -165,13 +164,13 @@ public class TestLiquibaseRunnerTest {
         // Check that database has the mock data in place
         SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
         int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isPositive();
         int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
-        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isPositive();
         int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
-        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isPositive();
         int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isGreaterThan(0);
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isPositive();
         expectedStatusBeforeRollback.assertAll();
 
         int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");

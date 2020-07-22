@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -541,7 +541,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         List<TransactionType> jobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
-        assertThat(jobtypes.size()).isGreaterThan(0);
+        assertThat(jobtypes.size()).isPositive();
     }
 
     @Test
@@ -1686,7 +1686,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         List<User> users = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
-        assertThat(users.size()).isGreaterThan(0);
+        assertThat(users.size()).isPositive();
     }
 
     @Test

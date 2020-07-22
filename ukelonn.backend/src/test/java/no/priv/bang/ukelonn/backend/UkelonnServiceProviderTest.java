@@ -239,7 +239,7 @@ public class UkelonnServiceProviderTest {
         // Add a new account to the database
         User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
         Account newAccount = ukelonn.addAccount(userWithUserId);
-        assertThat(newAccount.getAccountId()).isGreaterThan(0);
+        assertThat(newAccount.getAccountId()).isPositive();
         assertEquals(0.0, newAccount.getBalance(), 0);
     }
 
@@ -1054,7 +1054,7 @@ public class UkelonnServiceProviderTest {
     public void testEarningsSumOverYear() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
-        assertThat(statistics.size()).isGreaterThan(0);
+        assertThat(statistics.size()).isPositive();
         SumYear firstYear = statistics.get(0);
         assertEquals(1250.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
@@ -1089,7 +1089,7 @@ public class UkelonnServiceProviderTest {
     public void testEarningsSumOverMonth() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
-        assertThat(statistics.size()).isGreaterThan(0);
+        assertThat(statistics.size()).isPositive();
         SumYearMonth firstYear = statistics.get(0);
         assertEquals(125.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
