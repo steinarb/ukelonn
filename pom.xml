@@ -532,6 +532,9 @@
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <configuration>
+                    <jacocoReports>
+                        <jacocoReport>${project.basedir}/jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+                    </jacocoReports>
                 </configuration>
             </plugin>
             <plugin>
