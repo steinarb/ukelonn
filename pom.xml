@@ -42,7 +42,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
         <karaf.version>4.2.8</karaf.version>
-        <mockrunner.version>2.0.1</mockrunner.version>
+        <mockrunner.version>2.0.4</mockrunner.version>
         <liquibase.version>3.8.0</liquibase.version>
         <snakeyaml.version>1.17</snakeyaml.version>
         <derby.version>10.11.1.1</derby.version>
