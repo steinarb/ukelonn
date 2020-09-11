@@ -280,12 +280,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.servicemix.bundles</groupId>
-                <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
-                <version>1_3</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.derby</groupId>
                 <artifactId>derby</artifactId>
                 <version>${derby.version}</version>
