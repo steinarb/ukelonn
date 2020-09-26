@@ -46,7 +46,7 @@
         <liquibase.version>3.8.0</liquibase.version>
         <snakeyaml.version>1.17</snakeyaml.version>
         <derby.version>10.11.1.1</derby.version>
-        <postgresql.version>42.2.10</postgresql.version>
+        <postgresql.version>42.2.12</postgresql.version>
         <dependency.osgi.version>6.0.0</dependency.osgi.version>
         <osgi-service.version>1.5.0</osgi-service.version>
         <osgi-service-adaptors.version>1.0.1</osgi-service-adaptors.version>
