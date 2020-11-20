@@ -34,6 +34,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
@@ -41,8 +42,11 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.glassfish.jersey.server.ServerProperties;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.osgi.service.log.LogService;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -59,6 +63,7 @@ import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
+import no.priv.bang.ukelonn.beans.Bonus;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.SumYear;
@@ -77,6 +82,8 @@ import no.priv.bang.ukelonn.beans.UpdatedTransaction;
  *
  */
 public class UkelonnRestApiServletTest extends ServletTestBase {
+    public static final ObjectMapper mapper = new ObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Test
     public void testLoginOk() throws Exception {
@@ -1948,6 +1955,142 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(utbetalt.getMessage(), notificationsToJad2.get(0).getMessage());
     }
 
+    @Test
+    public void testGetActiveBonuses() throws Exception {
+        // Set up REST API servlet with mocked services
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(new Bonus()));
+
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildGetUrl("/activebonuses");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Bonus> activeBonuses = mapper.readValue(getBinaryContent(response), new TypeReference<List<Bonus>>() {});
+        assertThat(activeBonuses).isNotEmpty();
+    }
+
+    @Test
+    public void testGetAllBonuses() throws Exception {
+        // Set up REST API servlet with mocked services
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(new Bonus()));
+
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildGetUrl("/allbonuses");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Bonus> allBonuses = mapper.readValue(getBinaryContent(response), new TypeReference<List<Bonus>>() {});
+        assertThat(allBonuses).isNotEmpty();
+    }
+
+    @Test
+    public void testPostCreateBonus() throws Exception {
+        // Set up REST API servlet with mocked services
+        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.createBonus(eq(bonus))).thenReturn(Collections.singletonList(bonus));
+
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildPostUrl("/admin/createbonus");
+        String postBody = mapper.writeValueAsString(bonus);
+        request.setBodyContent(postBody);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Bonus> bonusesWithAddedBonus = mapper.readValue(getBinaryContent(response), new TypeReference<List<Bonus>>() {});
+        assertThat(bonusesWithAddedBonus).contains(bonus);
+    }
+
+    @Test
+    public void testPostUpdateBonus() throws Exception {
+        // Set up REST API servlet with mocked services
+        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.modifyBonus(eq(bonus))).thenReturn(Collections.singletonList(bonus));
+
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildPostUrl("/admin/modifybonus");
+        String postBody = mapper.writeValueAsString(bonus);
+        request.setBodyContent(postBody);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Bonus> bonusesWithUpdatedBonus = mapper.readValue(getBinaryContent(response), new TypeReference<List<Bonus>>() {});
+        assertThat(bonusesWithUpdatedBonus).contains(bonus);
+    }
+
+    @Test
+    public void testPostDeleteBonus() throws Exception {
+        // Set up REST API servlet with mocked services
+        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.deleteBonus(eq(bonus))).thenReturn(Collections.singletonList(new Bonus()));
+
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildPostUrl("/admin/deletebonus");
+        String postBody = mapper.writeValueAsString(bonus);
+        request.setBodyContent(postBody);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<Bonus> bonusesWithDeletedBonus = mapper.readValue(getBinaryContent(response), new TypeReference<List<Bonus>>() {});
+        assertThat(bonusesWithDeletedBonus)
+            .isNotEmpty()
+            .doesNotContain(bonus);
+    }
+
     private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
         MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
         return outputstream.getBinaryContent();
@@ -1968,24 +2111,44 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
     }
 
-    private MockHttpServletRequest buildGetUrl(String localpath) {
-        MockHttpServletRequest request = buildGetRootUrl();
-        request.setRequestURL("http://localhost:8181/ukelonn/api" + localpath);
-        request.setRequestURI("/ukelonn/api" + localpath);
+
+    private MockHttpServletRequest buildGetUrl(String resource) {
+        MockHttpServletRequest request = buildRequest(resource);
+        request.setMethod("GET");
         return request;
     }
 
-    private MockHttpServletRequest buildGetRootUrl() {
+    private MockHttpServletRequest buildPostUrl(String resource) throws Exception {
+        String contenttype = MediaType.APPLICATION_JSON;
+        MockHttpServletRequest request = buildRequest(resource);
+        request.setMethod("POST");
+        request.setContentType(contenttype);
+        request.addHeader("Content-Type", contenttype);
+        request.setCharacterEncoding("UTF-8");
+        return request;
+    }
+
+    private MockHttpServletRequest buildRequest(String resource) {
         MockHttpSession session = new MockHttpSession();
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setProtocol("HTTP/1.1");
-        request.setMethod("GET");
-        request.setRequestURL("http://localhost:8181/ukelonn/api/");
-        request.setRequestURI("/ukelonn/api/");
+        request.setRequestURL("http://localhost:8181/ukelon/api" + resource);
+        request.setRequestURI("/ukelonn/api" + resource);
         request.setContextPath("/ukelonn");
         request.setServletPath("/api");
         request.setSession(session);
         return request;
+    }
+
+    private UkelonnRestApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(UkelonnService ukelonn, LogService logservice, UserManagementService useradmin) throws Exception {
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogservice(logservice);
+        servlet.setUkelonnService(ukelonn);
+        servlet.setUserManagement(useradmin);
+        servlet.activate();
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+        return servlet;
     }
 
 }

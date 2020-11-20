@@ -12,6 +12,7 @@ import {
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
+import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -46,6 +47,7 @@ function Admin(props) {
     return (
         <div>
             <h1>Registrer betaling</h1>
+            <BonusBanner/>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
                 <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
@@ -68,6 +70,7 @@ function Admin(props) {
             <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
             <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
             <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>
+            <Link to="/ukelonn/admin/bonuses">Administrere bonuser</Link><br/>
             <br/>
             <button onClick={() => onLogout()}>Logout</button>
             <br/>

@@ -12,6 +12,7 @@ import {
     UPDATE_PERFORMEDJOB,
     REGISTERJOB_REQUEST,
 } from '../actiontypes';
+import BonusBanner from './BonusBanner';
 import Jobtypes from './Jobtypes';
 import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
@@ -32,6 +33,7 @@ function User(props) {
         <div>
             <Notification notificationMessage={notificationMessage}/>
             <h1>{title}</h1>
+            <BonusBanner/>
             <div>Til gode: { account.balance }</div><br/>
             <EarningsMessage /><br/>
             <form onSubmit={ e => { e.preventDefault(); }}>

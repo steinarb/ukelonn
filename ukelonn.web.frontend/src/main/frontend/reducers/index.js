@@ -20,6 +20,9 @@ import usersReducer from './usersReducer';
 import usernamesReducer from './usernamesReducer';
 import userReducer from './userReducer';
 import passwordsReducer from './passwordsReducer';
+import activebonusesReducer from './activebonusesReducer';
+import allbonusesReducer from './allbonusesReducer';
+import bonusReducer from './bonusReducer';
 import earningsSumOverYearReducer from './earningsSumOverYearReducer';
 import earningsSumOverMonthReducer from './earningsSumOverMonthReducer';
 
@@ -45,6 +48,9 @@ export default (history) => combineReducers({
     usernames: usernamesReducer,
     user: userReducer,
     passwords: passwordsReducer,
+    activebonuses: activebonusesReducer,
+    allbonuses: allbonusesReducer,
+    bonus: bonusReducer,
     earningsSumOverYear: earningsSumOverYearReducer,
     earningsSumOverMonth: earningsSumOverMonthReducer,
 });
