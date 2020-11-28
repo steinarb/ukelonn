@@ -121,6 +121,11 @@ function Admin(props) {
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
+                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses">
+                    Administrer bonuser
+                    &nbsp;
+                    <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                </Link>
             </div>
             <br/>
             <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
