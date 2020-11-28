@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <!-- Copyright 2019 Steinar Bang                                                     -->
+    <!-- Copyright 2019-2020 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -100,6 +100,45 @@
         </preConditions>
 
         <createView viewName="sum_over_year_and_month_view" fullDefinition="false">select sum(t.transaction_amount) as aggregate_amount, extract(year from t.transaction_time) as aggregate_year, extract(month from t.transaction_time) as aggregate_month, a.username as username from transactions t join transaction_types tt on tt.transaction_type_id=t.transaction_type_id join accounts a on a.account_id=t.account_id where tt.transaction_is_work group by extract(year from t.transaction_time), extract(month from t.transaction_time), a.username order by extract(year from t.transaction_time), extract(month from t.transaction_time)</createView>
+    </changeSet>
+
+    <changeSet author="sb" id="add-table-bonuses">
+        <createTable tableName="bonuses">
+            <column autoIncrement="true" name="bonus_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="bonus_id_key" />
+            </column>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iconurl" type="VARCHAR(256)" />
+            <column name="title" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bonus_factor" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="sb" id="bonuses-add-indexes">
+        <createIndex indexName="idx_bonuses_enabled" tableName="bonuses">
+            <column name="enabled" />
+        </createIndex>
+        <createIndex indexName="idx_bonuses_start_date" tableName="bonuses">
+            <column name="start_date" />
+        </createIndex>
+        <createIndex indexName="idx_bonuses_end_date" tableName="bonuses">
+            <column name="end_date" />
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Bonus;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.SumYear;
@@ -86,5 +87,15 @@ public interface UkelonnService {
     List<SumYear> earningsSumOverYear(String username);
 
     List<SumYearMonth> earningsSumOverMonth(String username);
+
+    List<Bonus> getActiveBonuses();
+
+    List<Bonus> getAllBonuses();
+
+    List<Bonus> createBonus(Bonus newBonus);
+
+    List<Bonus> modifyBonus(Bonus updatedBonus);
+
+    List<Bonus> deleteBonus(Bonus removedBonus);
 
 }

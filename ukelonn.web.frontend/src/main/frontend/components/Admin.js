@@ -12,6 +12,7 @@ import {
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
+import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -51,6 +52,7 @@ function Admin(props) {
                     <h1>Registrer betaling</h1>
                 </div>
             </header>
+            <BonusBanner/>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
@@ -116,6 +118,11 @@ function Admin(props) {
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users">
                     Administrere brukere
+                    &nbsp;
+                    <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
+                </Link>
+                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses">
+                    Administrer bonuser
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>

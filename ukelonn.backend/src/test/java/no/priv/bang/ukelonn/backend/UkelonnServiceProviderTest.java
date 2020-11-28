@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -45,6 +47,7 @@ import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Bonus;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -1121,4 +1124,174 @@ public class UkelonnServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get sum of earnings per month for account");
     }
 
+    @Test
+    public void testGetCreateModifyAndDeleteBonuses() {
+        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        int initialBonusCount = ukelonn.getAllBonuses().size();
+
+        // Verify that without any bonuses addBonus() will
+        // return the job registration transaction amount unchanged
+        double amount = 25.0;
+        assertEquals(amount, ukelonn.addBonus(amount), 0.0);
+
+        // Add an enabled bonus with start date before today and end date after today
+        // this will show up as an active bonus
+        Date julestart = Date.from(LocalDateTime.now().minusDays(3).toInstant(ZoneOffset.UTC));
+        Date juleslutt = Date.from(LocalDateTime.now().plusDays(3).toInstant(ZoneOffset.UTC));
+        Bonus julebonus = new Bonus(0, true, null, "Julebonus", "Dobbelt betaling for utførte jobber", 2.0, julestart, juleslutt);
+        Bonus enabledBonus = ukelonn.createBonus(julebonus).stream().filter(b -> "Julebonus".equals(b.getTitle())).findFirst().get();
+        int bonusCountWithOneAddedBonus = ukelonn.getAllBonuses().size();
+        assertThat(bonusCountWithOneAddedBonus).isGreaterThan(initialBonusCount);
+
+        // Verify that the active bonus will double the payment
+        // of registered jobs.
+        double expectAmount = 2 * amount;
+        assertEquals(expectAmount, ukelonn.addBonus(amount), 0.0);
+
+        // Add an extra active bonus to verify that two
+        // concurrent bonuses will give the expected result
+        Bonus julebonus2 = ukelonn.createBonus(new Bonus(0, true, null, "Julebonuz", "Dobbelt betaling for utførte jobber", 1.25, julestart, juleslutt)).stream().filter(b -> "Julebonuz".equals(b.getTitle())).findFirst().get();
+        double expectAmount2 = julebonus.getBonusFactor() * amount + julebonus2.getBonusFactor() * amount - amount;
+        assertEquals(expectAmount2, ukelonn.addBonus(amount), 0.0);
+        ukelonn.deleteBonus(julebonus2);
+
+        // Add an inactive bonus with start and end date both in the future
+        // Since we're outside of the startDate/endDate, this will not show up
+        // as an active bonus
+        Date paaskestart = Date.from(LocalDateTime.now().plusDays(5).toInstant(ZoneOffset.UTC));
+        Date paaskeslutt = Date.from(LocalDateTime.now().plusDays(10).toInstant(ZoneOffset.UTC));
+        Bonus paaskebonus = new Bonus(0, true, null, "Påskebonus", "Dobbelt betaling for utførte jobber", 2.0, paaskestart, paaskeslutt);
+        Bonus inactiveBonus = ukelonn.createBonus(paaskebonus).stream().filter(b -> "Påskebonus".equals(b.getTitle())).findFirst().get();
+        assertThat(ukelonn.getAllBonuses().size()).isGreaterThan(bonusCountWithOneAddedBonus);
+
+        // Verify that active count is larger than 0 and is less than total count
+        List<Bonus> activeBonuses = ukelonn.getActiveBonuses();
+        assertThat(activeBonuses).isNotEmpty();
+        int activeBonusCount = activeBonuses.size();
+        assertThat(ukelonn.getAllBonuses().size()).isGreaterThan(activeBonusCount);
+
+        // Verify that active count is greater than initial count
+        assertThat(activeBonusCount).isGreaterThan(initialBonusCount);
+
+        // Change the enabled bonus to set the enabled flag to false, and keep the rest of the values
+        // (ie. deactivate the currenly active bonus)
+        List<Bonus> bonuses = ukelonn.modifyBonus(disableBonus(enabledBonus));
+        Bonus disabledBonus = bonuses.stream().filter(b -> b.getBonusId() == enabledBonus.getBonusId()).findFirst().get();
+        assertFalse(disabledBonus.isEnabled());
+        assertEquals(enabledBonus.getTitle(), disabledBonus.getTitle());
+        assertEquals(enabledBonus.getDescription(), disabledBonus.getDescription());
+        assertEquals(enabledBonus.getBonusFactor(), disabledBonus.getBonusFactor(), 0.0);
+        assertEquals(enabledBonus.getStartDate(), disabledBonus.getStartDate());
+        assertEquals(enabledBonus.getEndDate(), disabledBonus.getEndDate());
+
+        // Verify that the active bonus count is less than before the update
+        assertThat(ukelonn.getActiveBonuses().size()).isLessThan(activeBonusCount);
+
+        // Delete both bonuses and verify that the count decreases
+        int countBeforeDelete = bonuses.size();
+        bonuses = ukelonn.deleteBonus(disabledBonus);
+        int countAfterFirstDelete = bonuses.size();
+        assertThat(countAfterFirstDelete).isLessThan(countBeforeDelete);
+        bonuses = ukelonn.deleteBonus(inactiveBonus);
+        assertEquals(initialBonusCount, bonuses.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetActiveBonusesWithSQLException() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+        ukelonn.setDataSource(datasource);
+        ukelonn.activate();
+
+        // Verify that what we get with an SQL failure
+        // is an empty result and a warning in the log
+        List<Bonus> bonuses = ukelonn.getActiveBonuses();
+        assertThat(bonuses).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get list of active bonuses");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetAllBonusesWithSQLException() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+        ukelonn.setDataSource(datasource);
+        ukelonn.activate();
+
+        // Verify that what we get with an SQL failure
+        // is an empty result and a warning in the log
+        List<Bonus> bonuses = ukelonn.getAllBonuses();
+        assertThat(bonuses).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get list of all bonuses");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testAddBonusWithSQLException() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+        ukelonn.setDataSource(datasource);
+        ukelonn.activate();
+
+        // Verify that what we get with an SQL failure
+        // is an empty result and a warning in the log
+        List<Bonus> bonuses = ukelonn.createBonus(new Bonus());
+        assertThat(bonuses).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to add Bonus");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testUpdateBonusWithSQLException() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+        ukelonn.setDataSource(datasource);
+        ukelonn.activate();
+
+        // Verify that what we get with an SQL failure
+        // is an empty result and a warning in the log
+        List<Bonus> bonuses = ukelonn.modifyBonus(new Bonus());
+        assertThat(bonuses).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to update Bonus");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDeleteBonusWithSQLException() throws Exception {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(SQLException.class);
+        MockLogService logservice = new MockLogService();
+        ukelonn.setLogservice(logservice);
+        ukelonn.setDataSource(datasource);
+        ukelonn.activate();
+
+        // Verify that what we get with an SQL failure
+        // is an empty result and a warning in the log
+        List<Bonus> bonuses = ukelonn.deleteBonus(new Bonus());
+        assertThat(bonuses).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to delete Bonus");
+    }
+
+    private Bonus disableBonus(Bonus bonus) {
+        return new Bonus(bonus.getBonusId(), false, bonus.getIconurl(), bonus.getTitle(), bonus.getDescription(), bonus.getBonusFactor(), bonus.getStartDate(), bonus.getEndDate());
+    }
 }

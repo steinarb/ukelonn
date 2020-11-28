@@ -12,6 +12,7 @@ import {
     UPDATE_PERFORMEDJOB,
     REGISTERJOB_REQUEST,
 } from '../actiontypes';
+import BonusBanner from './BonusBanner';
 import Jobtypes from './Jobtypes';
 import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
@@ -38,6 +39,7 @@ function User(props) {
                 </div>
             </header>
             <div className="container-fluid">
+                <BonusBanner/>
                 <div className="container">
                     <div className="row border rounded mb-3">
                         <div className="col">

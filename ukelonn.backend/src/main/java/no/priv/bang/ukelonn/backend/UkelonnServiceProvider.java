@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +42,7 @@ import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Bonus;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -146,7 +148,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public Account registerPerformedJob(PerformedTransaction job) {
         int accountId = job.getAccount().getAccountId();
         int jobtypeId = job.getTransactionTypeId();
-        double jobamount = job.getTransactionAmount();
+        double jobamount = addBonus(job.getTransactionAmount());
         Date timeofjob = job.getTransactionDate();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
@@ -460,8 +462,129 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         notifications.add(notification);
     }
 
+    @Override
+    public List<Bonus> getActiveBonuses() {
+        List<Bonus> activebonuses = new ArrayList<>();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from bonuses where enabled and start_date <= ? and end_date >= ?")) {
+                Timestamp today = Timestamp.from(new Date().toInstant());
+                statement.setTimestamp(1, today);
+                statement.setTimestamp(2, today);
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        buildBonusFromResultSetAndAddToList(activebonuses, results);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logWarning("Failed to get list of active bonuses", e);
+        }
+
+        return activebonuses;
+    }
+
+    @Override
+    public List<Bonus> getAllBonuses() {
+        List<Bonus> allbonuses = new ArrayList<>();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from bonuses")) {
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        buildBonusFromResultSetAndAddToList(allbonuses, results);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logWarning("Failed to get list of all bonuses", e);
+        }
+
+        return allbonuses;
+    }
+
+    @Override
+    public List<Bonus> createBonus(Bonus newBonus) {
+        String title = newBonus.getTitle();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("insert into bonuses (enabled, iconurl, title, description, bonus_factor, start_date, end_date) values (?, ?, ?, ?, ?, ?, ?)")) {
+                statement.setBoolean(1, newBonus.isEnabled());
+                statement.setString(2, newBonus.getIconurl());
+                statement.setString(3, title);
+                statement.setString(4, newBonus.getDescription());
+                statement.setDouble(5, newBonus.getBonusFactor());
+                Date startDate = newBonus.getStartDate() != null ? newBonus.getStartDate() : new Date();
+                statement.setTimestamp(6, Timestamp.from(startDate.toInstant()));
+                Date endDate = newBonus.getEndDate() != null ? newBonus.getEndDate() : new Date();
+                statement.setTimestamp(7, Timestamp.from(endDate.toInstant()));
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logWarning(String.format("Failed to add Bonus with title \"%s\"", title), e);
+        }
+
+        return getAllBonuses();
+    }
+
+    @Override
+    public List<Bonus> modifyBonus(Bonus updatedBonus) {
+        int id = updatedBonus.getBonusId();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("update bonuses set enabled=?, iconurl=?, title=?, description=?, bonus_factor=?, start_date=?, end_date=? where bonus_id=?")) {
+                statement.setBoolean(1, updatedBonus.isEnabled());
+                statement.setString(2, updatedBonus.getIconurl());
+                statement.setString(3, updatedBonus.getTitle());
+                statement.setString(4, updatedBonus.getDescription());
+                statement.setDouble(5, updatedBonus.getBonusFactor());
+                statement.setTimestamp(6, Timestamp.from(updatedBonus.getStartDate().toInstant()));
+                statement.setTimestamp(7, Timestamp.from(updatedBonus.getEndDate().toInstant()));
+                statement.setInt(8, id);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logWarning(String.format("Failed to update Bonus with database id %d", id), e);
+        }
+
+        return getAllBonuses();
+    }
+
+    @Override
+    public List<Bonus> deleteBonus(Bonus removedBonus) {
+        int id = removedBonus.getBonusId();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("delete from bonuses where bonus_id=?")) {
+                statement.setInt(1, id);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logWarning(String.format("Failed to delete Bonus with database id %d", id), e);
+        }
+
+        return getAllBonuses();
+    }
+
     private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
         return notificationQueues.computeIfAbsent(username, k-> new ConcurrentLinkedQueue<>());
+    }
+
+    double addBonus(double transactionAmount) {
+        List<Bonus> activebonuses = getActiveBonuses();
+        if (activebonuses.isEmpty()) {
+            return transactionAmount;
+        }
+
+        double bonus = activebonuses.stream().mapToDouble(b -> b.getBonusFactor() * transactionAmount - transactionAmount).sum();
+        return transactionAmount + bonus;
+    }
+
+    void buildBonusFromResultSetAndAddToList(List<Bonus> allbonuses, ResultSet results) throws SQLException {
+        int id = results.getInt("bonus_id");
+        boolean enabled = results.getBoolean("enabled");
+        String iconurl = results.getString("iconurl");
+        String title = results.getString("title");
+        String description = results.getString("description");
+        double bonusFactor = results.getDouble("bonus_factor");
+        Date startDate = Date.from(results.getTimestamp("start_date").toInstant());
+        Date endDate = Date.from(results.getTimestamp("end_date").toInstant());
+        allbonuses.add(new Bonus(id, enabled, iconurl, title, description, bonusFactor, startDate, endDate));
     }
 
     static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {

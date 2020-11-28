@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,10 @@ public class UkelonnServlet extends FrontendServlet {
             "/admin/users/modify",
             "/admin/users/password",
             "/admin/users",
+            "/admin/bonuses/modify",
+            "/admin/bonuses/create",
+            "/admin/bonuses/delete",
+            "/admin/bonuses",
             "/admin");
     }
 

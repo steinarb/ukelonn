@@ -20,6 +20,8 @@ import static org.junit.Assert.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -60,6 +62,11 @@ public class UkelonnLiquibaseTest {
 
                 assertEquals(0, count);
             }
+
+            Date fromDate = new Date();
+            Date toDate = new Date();
+            createBonuses(connection, fromDate, toDate);
+            assertBonuses(connection, fromDate, toDate);
         }
     }
 
@@ -82,6 +89,41 @@ public class UkelonnLiquibaseTest {
                 }
             }
         }
+    }
+
+    private void createBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
+        createBonus(connection, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
+    }
+
+    private void createBonus(Connection connection, boolean enabled, String title, String description, double bonusFactor, Date startDate, Date endDate) throws Exception {
+        try (PreparedStatement statement = connection.prepareStatement("insert into bonuses (enabled, title, description, bonus_factor, start_date, end_date) values (?, ?, ?, ?, ?, ?)")) {
+            statement.setBoolean(1, enabled);
+            statement.setString(2, title);
+            statement.setString(3, description);
+            statement.setDouble(4, bonusFactor);
+            statement.setTimestamp(5, new Timestamp(startDate.toInstant().toEpochMilli()));
+            statement.setTimestamp(6, new Timestamp(endDate.toInstant().toEpochMilli()));
+            statement.executeUpdate();
+        }
+    }
+
+    private void assertBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
+        try (PreparedStatement statement = connection.prepareStatement("select * from bonuses")) {
+            try(ResultSet results = statement.executeQuery()) {
+                assertBonus(results, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
+            }
+        }
+    }
+
+    private void assertBonus(ResultSet results, boolean enabled, String title, String description, double bonusFactor, Date startDate, Date endDate) throws Exception {
+        assertTrue(results.next());
+        assertEquals(enabled, results.getBoolean("enabled"));
+        assertNull(results.getString("iconurl"));
+        assertEquals(title, results.getString("title"));
+        assertEquals(description, results.getString("description"));
+        assertEquals(bonusFactor, results.getDouble("bonus_factor"), 0.0);
+        assertEquals(startDate, new Date(results.getTimestamp("start_date").getTime()));
+        assertEquals(endDate, new Date(results.getTimestamp("end_date").getTime()));
     }
 
     static private Connection createConnection() throws Exception {

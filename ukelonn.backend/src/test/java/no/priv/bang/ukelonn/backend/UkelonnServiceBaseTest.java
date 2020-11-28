@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
+import no.priv.bang.ukelonn.beans.Bonus;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.SumYear;
@@ -131,6 +132,36 @@ public class UkelonnServiceBaseTest {
 
                 @Override
                 public List<SumYearMonth> earningsSumOverMonth(String username) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<Bonus> getActiveBonuses() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<Bonus> getAllBonuses() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<Bonus> createBonus(Bonus newBonus) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<Bonus> modifyBonus(Bonus updatedBonus) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<Bonus> deleteBonus(Bonus removedBonus) {
                     // TODO Auto-generated method stub
                     return null;
                 }

@@ -25,6 +25,10 @@ import AdminPaymenttypesCreate from './AdminPaymenttypesCreate';
 import AdminUsers from './AdminUsers';
 import AdminUsersModify from './AdminUsersModify';
 import AdminUsersCreate from './AdminUsersCreate';
+import AdminBonusModify from './AdminBonusModify';
+import AdminBonusCreate from './AdminBonusCreate';
+import AdminBonusDelete from './AdminBonusDelete';
+import AdminBonuses from './AdminBonuses';
 import AdminUsersChangePassword from './AdminUsersChangePassword';
 import Bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 import '../ukelonn.css';
@@ -55,6 +59,10 @@ function App(props) {
                 <Route path="/ukelonn/admin/users/modify" component={AdminUsersModify} />
                 <Route path="/ukelonn/admin/users/create" component={AdminUsersCreate} />
                 <Route path="/ukelonn/admin/users" component={AdminUsers} />
+                <Route path="/ukelonn/admin/bonuses/modify" component={AdminBonusModify} />
+                <Route path="/ukelonn/admin/bonuses/create" component={AdminBonusCreate} />
+                <Route path="/ukelonn/admin/bonuses/delete" component={AdminBonusDelete} />
+                <Route path="/ukelonn/admin/bonuses" component={AdminBonuses} />
                 <Route path="/ukelonn/admin" component={Admin} />
             </Switch>
         </Router>
