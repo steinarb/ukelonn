@@ -19,6 +19,11 @@ import { requestModifyPaymenttypeSaga } from './modifypaymenttypeSaga';
 import { requestUsersSaga } from './usersSaga';
 import { requestModifyUserSaga } from './modifyuserSaga';
 import { requestCreateUserSaga } from './createuserSaga';
+import { requestActivebonusesSaga } from './activebonusesSaga';
+import { requestAllbonusesSaga } from './allbonusesSaga';
+import modifybonusSaga from './modifybonusSaga';
+import createbonusSaga from './createbonusSaga';
+import deletebonusSaga from './deletebonusSaga';
 import { requestChangePasswordSaga } from './modifyuserpasswordSaga';
 import { startNotificationListening } from './notificationSaga';
 import earningsSumOverYearSaga from './earningsSumOverYearSaga';
@@ -46,6 +51,11 @@ export function* rootSaga() {
         fork(requestCreatePaymenttypeSaga),
         fork(requestUsersSaga),
         fork(requestModifyUserSaga),
+        fork(requestActivebonusesSaga),
+        fork(requestAllbonusesSaga),
+        fork(modifybonusSaga),
+        fork(createbonusSaga),
+        fork(deletebonusSaga),
         fork(requestCreateUserSaga),
         fork(requestChangePasswordSaga),
         fork(startNotificationListening),

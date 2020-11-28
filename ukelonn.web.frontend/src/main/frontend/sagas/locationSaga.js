@@ -10,7 +10,11 @@ import {
     JOBTYPELIST_REQUEST,
     RECENTJOBS_REQUEST,
     RECENTPAYMENTS_REQUEST,
+    GET_ACTIVE_BONUSES,
+    GET_ALL_BONUSES,
+    UPDATE_BONUS,
 } from '../actiontypes';
+import { emptyBonus } from '../constants';
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
@@ -21,6 +25,7 @@ function* locationChange(action) {
         yield put(ACCOUNT_REQUEST(username));
         yield put(START_NOTIFICATION_LISTENING(username));
         yield put(JOBTYPELIST_REQUEST());
+        yield put(GET_ACTIVE_BONUSES());
     }
 
     if (pathname === '/ukelonn/performedjobs') {
@@ -46,6 +51,7 @@ function* locationChange(action) {
     if (pathname === '/ukelonn/admin') {
         yield put(ACCOUNTS_REQUEST());
         yield put(PAYMENTTYPES_REQUEST());
+        yield put(GET_ACTIVE_BONUSES());
     }
 
     if (pathname === '/ukelonn/admin/jobtypes/modify' || pathname === '/ukelonn/admin/jobtypes/create') {
@@ -71,6 +77,20 @@ function* locationChange(action) {
 
     if (pathname === '/ukelonn/admin/users/modify' || pathname === '/ukelonn/admin/users/password' || pathname === '/ukelonn/admin/users/create') {
         yield put(USERS_REQUEST());
+    }
+
+    if (pathname === '/ukelonn/admin/bonuses/create') {
+        yield put(UPDATE_BONUS(emptyBonus));
+    }
+
+    if (pathname === '/ukelonn/admin/bonuses/modify') {
+        yield put(GET_ALL_BONUSES());
+        yield put(UPDATE_BONUS(emptyBonus));
+    }
+
+    if (pathname === '/ukelonn/admin/bonuses/delete') {
+        yield put(GET_ALL_BONUSES());
+        yield put(UPDATE_BONUS(emptyBonus));
     }
 }
 

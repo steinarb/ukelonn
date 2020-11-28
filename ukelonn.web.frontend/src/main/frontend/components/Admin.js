@@ -12,6 +12,7 @@ import {
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
+import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
@@ -51,6 +52,7 @@ function Admin(props) {
                     <h1>Registrer betaling</h1>
                 </div>
             </header>
+            <BonusBanner/>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">

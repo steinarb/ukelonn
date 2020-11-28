@@ -80,7 +80,7 @@ public class TestLiquibaseRunnerTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(47, ranChangeSets.size());
+        assertEquals(49, ranChangeSets.size());
     }
 
     @Test
