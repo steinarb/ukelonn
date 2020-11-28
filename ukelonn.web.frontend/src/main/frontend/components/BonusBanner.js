@@ -9,7 +9,7 @@ function BonusBanner(props) {
     }
 
     return (
-        <div>
+        <div className="container">
             {activebonuses.map(renderBonus)}
         </div>
     );
@@ -27,19 +27,22 @@ export default connect(mapStateToProps)(BonusBanner);
 function renderBonus(bonus, idx) {
     const key = 'bonus' + idx.toString();
     const daysRemaining = moment(bonus.endDate).diff(moment(), 'days');
-    return (
-        <div key={key}>
-            <div><BonusIcon bonus={bonus}/>{bonus.title} aktiv! ({daysRemaining} dager igjen)</div>
-            <div>{bonus.description}</div>
-        </div>
-    );
-}
-
-function BonusIcon(props) {
-    const { bonus } = props;
     if (!bonus.iconurl) {
-        return null;
+        return (
+            <div key={key} className="alert alert-info container" role="alert">
+                <div className="row">{bonus.title} aktiv! ({daysRemaining} dager igjen)</div>
+                <div className="row">{bonus.description}</div>
+            </div>
+        );
     }
 
-    return (<img src={bonus.iconurl}/>);
+    return (
+        <div key={key} className="alert alert-info row" role="alert">
+            <div className="col col-md-auto"><img src={bonus.iconurl}/></div>
+            <div className="col">
+                <div className="row">{bonus.title} aktiv! ({daysRemaining} dager igjen)</div>
+                <div className="row">{bonus.description}</div>
+            </div>
+        </div>
+    );
 }
