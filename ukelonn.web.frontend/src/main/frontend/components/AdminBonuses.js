@@ -16,35 +16,32 @@ function AdminBonuses(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/">
-                &lt;-
+            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
+                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
                 Register betaling
             </Link>
             <header>
-                <div>
+                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
                     <h1>Administrer bonuser</h1>
                 </div>
             </header>
             <div>
-                <Link to="/ukelonn/admin/bonuses/modify">
+                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses/modify">
                     Endre bonuser
                     &nbsp;
-                    -&gt;
+                    <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <br/>
-                <Link to="/ukelonn/admin/bonuses/create">
+                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses/create">
                     Lag ny bonus
                     &nbsp;
-                    -&gt;
+                    <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <br/>
-                <Link to="/ukelonn/admin/bonuses/delete">
+                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses/delete">
                     Slett bonus
                     &nbsp;
-                    -&gt;
+                    <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <br/>
             </div>
             <br/>
             <br/>

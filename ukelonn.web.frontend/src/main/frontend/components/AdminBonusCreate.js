@@ -39,64 +39,64 @@ function AdminBonusCreate(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/bonuses">
-                &lt;-
+            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/bonuses">
+                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
                 Administer bonuser
             </Link>
             <header>
-                <div>
+                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
                     <h1>Lag ny bonus</h1>
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <div>
-                    <div>
-                        <label htmlFor="enabled">Aktivert</label>
-                        <div>
-                            <input id="enabled" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="enabled" className="col-form-label col-5">Aktivert</label>
+                        <div className="col-1">
+                            <input id="enabled" className="form-control" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="iconurl">Ikon-URL</label>
-                        <div>
-                            <input id="iconurl" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
+                    <div className="form-group row">
+                        <label htmlFor="iconurl" className="col-form-label col-5">Ikon-URL</label>
+                        <div className="col-7">
+                            <input id="iconurl" className="form-control" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="title">Tittel</label>
-                        <div>
-                            <input id="title" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
+                    <div className="form-group row">
+                        <label htmlFor="title" className="col-form-label col-5">Tittel</label>
+                        <div className="col-7">
+                            <input id="title" className="form-control" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="description">Beskrivelse</label>
-                        <div>
-                            <input id="description" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
+                    <div className="form-group row">
+                        <label htmlFor="description" className="col-form-label col-5">Beskrivelse</label>
+                        <div className="col-7">
+                            <input id="description" className="form-control" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="bonusfactor">Bonusfaktor</label>
-                        <div>
-                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
+                    <div className="form-group row">
+                        <label htmlFor="bonusfactor" className="col-form-label col-5">Bonusfaktor</label>
+                        <div className="col-7">
+                            <input id="bonusfactor" className="form-control" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="startdate">Startdato</label>
-                        <div>
+                    <div className="form-group row">
+                        <label htmlFor="startdate" className="col-form-label col-5">Startdato</label>
+                        <div className="col-7">
                             <DatePicker selected={startDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateStartDate(bonus, d)} readOnly={true} />
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="enddate">Sluttdato</label>
-                        <div>
+                    <div className="form-group row">
+                        <label htmlFor="enddate" className="col-form-label col-5">Sluttdato</label>
+                        <div className="col-7">
                             <DatePicker selected={endDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateEndDate(bonus, d)} readOnly={true} />
                         </div>
                     </div>
-                    <div>
-                        <div/>
-                        <div>
-                            <button onClick={() => onCreateBonus(bonus)}>Lag ny bonus</button>
+                    <div className="form-group row">
+                        <div className="col-5"/>
+                        <div className="col-7">
+                            <button className="btn btn-primary" onClick={() => onCreateBonus(bonus)}>Lag ny bonus</button>
                         </div>
                     </div>
                 </div>
