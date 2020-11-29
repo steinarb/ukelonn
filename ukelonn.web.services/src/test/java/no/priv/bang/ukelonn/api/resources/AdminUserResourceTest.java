@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -39,11 +40,15 @@ import org.junit.Test;
 
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.api.beans.AdminStatus;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
+import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 public class AdminUserResourceTest {
 
@@ -149,6 +154,132 @@ public class AdminUserResourceTest {
         assertEquals(newEmailaddress, lastUser.getEmail());
         assertEquals(newFirstname, lastUser.getFirstname());
         assertEquals(newLastname, lastUser.getLastname());
+    }
+
+    @Test
+    public void testAdminStatusWhenUserIsAdministrator() {
+        AdminUserResource resource = new AdminUserResource();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+        resource.useradmin = useradmin;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        AdminStatus status = resource.adminStatus(user);
+        assertEquals(user, status.getUser());
+        assertTrue(status.isAdministrator());
+    }
+
+    @Test
+    public void testAdminStatusWhenUserIsNotAdministrator() {
+        AdminUserResource resource = new AdminUserResource();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, "ukelonnuser", "ukelonn user");
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+        resource.useradmin = useradmin;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        AdminStatus status = resource.adminStatus(user);
+        assertEquals(user, status.getUser());
+        assertFalse(status.isAdministrator());
+    }
+
+    @Test
+    public void testChangeAdminStatusMakeUserAdministrator() {
+        AdminUserResource resource = new AdminUserResource();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(adminrole));
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.emptyList()).thenReturn(Collections.singletonList(adminrole));
+        resource.useradmin = useradmin;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus changedStatus = resource.changeAdminStatus(status);
+        assertEquals(user, changedStatus.getUser());
+        assertTrue(changedStatus.isAdministrator());
+    }
+
+    @Test
+    public void testChangeAdminStatusMakeUserNotAdministrator() {
+        AdminUserResource resource = new AdminUserResource();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(adminrole));
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole)).thenReturn(Collections.emptyList());
+        resource.useradmin = useradmin;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        AdminStatus status = new AdminStatus(user, false);
+        AdminStatus changedStatus = resource.changeAdminStatus(status);
+        assertEquals(user, changedStatus.getUser());
+        assertFalse(changedStatus.isAdministrator());
+    }
+
+    @Test
+    public void testChangeAdminStatusSetUserAdministratorWhenUserAlreadyAdministrator() {
+        AdminUserResource resource = new AdminUserResource();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(adminrole));
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+        resource.useradmin = useradmin;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus changedStatus = resource.changeAdminStatus(status);
+        assertEquals(user, changedStatus.getUser());
+        assertTrue(changedStatus.isAdministrator());
+    }
+
+    @Test
+    public void testChangeAdminStatusAdminRoleNotPresent() {
+        AdminUserResource resource = new AdminUserResource();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.getRoles()).thenReturn(Collections.emptyList());
+        resource.useradmin = useradmin;
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus changedStatus = resource.changeAdminStatus(status);
+        assertEquals(user, changedStatus.getUser());
+        assertFalse(changedStatus.isAdministrator());
     }
 
     @SuppressWarnings("unchecked")

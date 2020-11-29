@@ -20,6 +20,7 @@ import usersReducer from './usersReducer';
 import usernamesReducer from './usernamesReducer';
 import userReducer from './userReducer';
 import passwordsReducer from './passwordsReducer';
+import userIsAdministrator from './userIsAdministratorReducer';
 import activebonusesReducer from './activebonusesReducer';
 import allbonusesReducer from './allbonusesReducer';
 import bonusReducer from './bonusReducer';
@@ -48,6 +49,7 @@ export default (history) => combineReducers({
     usernames: usernamesReducer,
     user: userReducer,
     passwords: passwordsReducer,
+    userIsAdministrator,
     activebonuses: activebonusesReducer,
     allbonuses: allbonusesReducer,
     bonus: bonusReducer,

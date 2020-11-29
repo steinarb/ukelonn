@@ -7,8 +7,10 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORD,
     UPDATE_USER,
+    UPDATE_USER_IS_ADMINISTRATOR,
     UPDATE_PASSWORDS,
     CREATE_USER_REQUEST,
+    CHANGE_ADMIN_STATUS,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Users from './Users';
@@ -22,6 +24,7 @@ function AdminUsersCreate(props) {
     let {
         usernames,
         user,
+        userIsAdministrator,
         passwords,
         onUsernameChange,
         onEmailChange,
@@ -29,6 +32,7 @@ function AdminUsersCreate(props) {
         onLastnameChange,
         onPassword1Change,
         onPassword2Change,
+        onUpdateUserIsAdministrator,
         onSaveCreatedUser,
         onLogout,
     } = props;
@@ -65,7 +69,14 @@ function AdminUsersCreate(props) {
                 <input id="password2" type="password" value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
                 { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
                 <br/>
-                <button onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
+                <div>
+                    <label htmlFor="administrator">Administrator</label>
+                    <div>
+                        <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                    </div>
+                </div>
+                <br/>
+                <button onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>Lag bruker</button>
             </form>
             <br/>
             <button onClick={() => onLogout()}>Logout</button>
@@ -80,6 +91,7 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         user: state.user,
+        userIsAdministrator: state.userIsAdministrator,
         passwords: state.passwords,
         usernames: state.usernames,
     };
@@ -96,7 +108,11 @@ function mapDispatchToProps(dispatch) {
         onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
         onPassword1Change: (password1) => dispatch(UPDATE_PASSWORDS({ password1 })),
         onPassword2Change: (password2) => dispatch(UPDATE_PASSWORDS({ password2 })),
-        onSaveCreatedUser: (user, passwords) => dispatch(CREATE_USER_REQUEST({ user, passwords })),
+        onUpdateUserIsAdministrator: e => dispatch(UPDATE_USER_IS_ADMINISTRATOR(e.target.checked)),
+        onSaveCreatedUser: (user, passwords, administrator) => {
+            dispatch(CREATE_USER_REQUEST({ user, passwords }));
+            dispatch(CHANGE_ADMIN_STATUS({ user: { username: user.username }, administrator }));
+        },
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
