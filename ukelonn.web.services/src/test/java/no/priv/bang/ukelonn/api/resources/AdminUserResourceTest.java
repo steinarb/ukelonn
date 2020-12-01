@@ -156,6 +156,25 @@ public class AdminUserResourceTest {
         assertEquals(newLastname, lastUser.getLastname());
     }
 
+    @Test(expected = UkelonnException.class)
+    public void testCreateAndFailToFindUser() {
+        AdminUserResource resource = new AdminUserResource();
+
+        // Inject OSGi services into the resource
+        UserManagementService useradmin = mock(UserManagementService.class);
+        resource.useradmin = useradmin;
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        resource.ukelonn = ukelonn;
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+
+        // Create a passwords object containing the user
+        UserAndPasswords passwords = new UserAndPasswords(new User(), "zecret", "zecret", false);
+
+        // Create a user
+        resource.create(passwords);
+    }
+
     @Test
     public void testAdminStatusWhenUserIsAdministrator() {
         AdminUserResource resource = new AdminUserResource();
