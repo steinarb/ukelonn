@@ -98,13 +98,12 @@ function AdminUsersCreate(props) {
                             { passwords.passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="administrator">Administrator</label>
-                        <div>
-                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                    <div className="form-group row">
+                        <label htmlFor="administrator" className="col-form-label col-5">Administrator</label>
+                        <div className="col-1">
+                            <input id="administrator" className="form-control" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
                         </div>
                     </div>
-                    <br/>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
