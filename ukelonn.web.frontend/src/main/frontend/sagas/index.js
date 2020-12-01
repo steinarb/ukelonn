@@ -19,6 +19,8 @@ import { requestModifyPaymenttypeSaga } from './modifypaymenttypeSaga';
 import { requestUsersSaga } from './usersSaga';
 import { requestModifyUserSaga } from './modifyuserSaga';
 import { requestCreateUserSaga } from './createuserSaga';
+import adminstatusSaga from './adminstatusSaga';
+import changeadminstatusSaga from './changeadminstatusSaga';
 import { requestActivebonusesSaga } from './activebonusesSaga';
 import { requestAllbonusesSaga } from './allbonusesSaga';
 import modifybonusSaga from './modifybonusSaga';
@@ -51,6 +53,8 @@ export function* rootSaga() {
         fork(requestCreatePaymenttypeSaga),
         fork(requestUsersSaga),
         fork(requestModifyUserSaga),
+        fork(adminstatusSaga),
+        fork(changeadminstatusSaga),
         fork(requestActivebonusesSaga),
         fork(requestAllbonusesSaga),
         fork(modifybonusSaga),

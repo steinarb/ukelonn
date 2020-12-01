@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     UPDATE_USER,
+    UPDATE_USER_IS_ADMINISTRATOR,
+    REQUEST_ADMIN_STATUS,
     MODIFY_USER_REQUEST,
+    CHANGE_ADMIN_STATUS,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Users from './Users';
@@ -18,12 +21,14 @@ function AdminUsersModify(props) {
 
     let {
         user,
+        userIsAdministrator,
         users,
         onUsersFieldChange,
         onUsernameChange,
         onEmailChange,
         onFirstnameChange,
         onLastnameChange,
+        onUpdateUserIsAdministrator,
         onSaveUpdatedUser,
         onLogout,
     } = props;
@@ -72,6 +77,13 @@ function AdminUsersModify(props) {
                             <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                         </div>
                     </div>
+                    <div>
+                        <label htmlFor="administrator">Administrator</label>
+                        <div>
+                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                        </div>
+                    </div>
+                    <br/>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
@@ -90,6 +102,7 @@ function AdminUsersModify(props) {
 function mapStateToProps(state) {
     return {
         user: state.user,
+        userIsAdministrator: state.userIsAdministrator,
         users: state.users,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
@@ -102,14 +115,17 @@ function mapDispatchToProps(dispatch) {
             const selectedValueInt = parseInt(selectedValue, 10);
             let user = users.find(u => u.userid === selectedValueInt);
             dispatch(UPDATE_USER({ ...user }));
+            dispatch(REQUEST_ADMIN_STATUS({ username: user.username }));
         },
         onUsernameChange: (username) => dispatch(UPDATE_USER({ username })),
         onEmailChange: (email) => dispatch(UPDATE_USER({ email })),
         onFirstnameChange: (firstname) => dispatch(UPDATE_USER({ firstname })),
         onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
-        onSaveUpdatedUser: (user) => {
+        onUpdateUserIsAdministrator: e => dispatch(UPDATE_USER_IS_ADMINISTRATOR(e.target.checked)),
+        onSaveUpdatedUser: (user, administrator) => {
             const { userid, username, email, firstname, lastname } = user;
             dispatch(MODIFY_USER_REQUEST({ userid, username, email, firstname, lastname }));
+            dispatch(CHANGE_ADMIN_STATUS({ user: { username }, administrator }));
         },
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
