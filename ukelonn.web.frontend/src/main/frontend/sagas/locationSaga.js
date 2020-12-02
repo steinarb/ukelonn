@@ -4,6 +4,8 @@ import { parse } from 'qs';
 import {
     ACCOUNT_REQUEST,
     ACCOUNTS_REQUEST,
+    UPDATE_USER,
+    UPDATE_USER_IS_ADMINISTRATOR,
     USERS_REQUEST,
     PAYMENTTYPES_REQUEST,
     START_NOTIFICATION_LISTENING,
@@ -15,6 +17,7 @@ import {
     UPDATE_BONUS,
 } from '../actiontypes';
 import { emptyBonus } from '../constants';
+import { emptyUser } from '../reducers/constants';
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
@@ -77,6 +80,8 @@ function* locationChange(action) {
 
     if (pathname === '/ukelonn/admin/users/modify' || pathname === '/ukelonn/admin/users/password' || pathname === '/ukelonn/admin/users/create') {
         yield put(USERS_REQUEST());
+        yield put(UPDATE_USER(emptyUser));
+        yield put(UPDATE_USER_IS_ADMINISTRATOR(false));
     }
 
     if (pathname === '/ukelonn/admin/bonuses/create') {

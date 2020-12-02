@@ -53,11 +53,13 @@ import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.api.beans.AdminStatus;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
@@ -70,6 +72,7 @@ import no.priv.bang.ukelonn.beans.SumYear;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
+import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 /**
  * The tests in this test class mirrors the tests for the Jersey
@@ -2089,6 +2092,77 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertThat(bonusesWithDeletedBonus)
             .isNotEmpty()
             .doesNotContain(bonus);
+    }
+
+    @Test
+    public void testPostAdminStatus() throws Exception {
+        // Set up REST API servlet with mocked services
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildPostUrl("/admin/user/adminstatus");
+        String postBody = mapper.writeValueAsString(user);
+        request.setBodyContent(postBody);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        AdminStatus updatedStatus = mapper.readValue(getBinaryContent(response), AdminStatus.class);
+        assertEquals(user, updatedStatus.getUser());
+        assertTrue(updatedStatus.isAdministrator());
+    }
+
+    @Test
+    public void testPostChangeAdminStatus() throws Exception {
+        // Set up REST API servlet with mocked services
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create a user object
+        String newUsername = "aragorn";
+        String newEmailaddress = "strider@hotmail.com";
+        String newFirstname = "Aragorn";
+        String newLastname = "McArathorn";
+        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        AdminStatus status = new AdminStatus(user, true);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildPostUrl("/admin/user/changeadminstatus");
+        String postBody = mapper.writeValueAsString(status);
+        request.setBodyContent(postBody);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        AdminStatus updatedStatus = mapper.readValue(getBinaryContent(response), AdminStatus.class);
+        assertEquals(user, updatedStatus.getUser());
+        assertTrue(updatedStatus.isAdministrator());
     }
 
     private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {

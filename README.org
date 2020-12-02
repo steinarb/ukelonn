@@ -84,7 +84,7 @@ Framgangsmåten er som følger:
     - For en administrator-bruker, brukernavn/passord: admin/admin
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
 
-Databasen som kjører er en ekte SQL-database men kjører kun i minnet så endringer blir ikke persistert og blir borte nor karaf-prosessen blir stoppet.
+Databasen som kjører er en ekte SQL-database men kjører kun i minnet så endringer blir ikke persistert og blir borte når karaf-prosessen blir stoppet.
 
 * Beskrivelse av koden
 (/Beskriver versjonen fra master/)
