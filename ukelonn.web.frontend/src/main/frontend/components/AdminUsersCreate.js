@@ -107,7 +107,7 @@ function AdminUsersCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords)}>Lag bruker</button>
+                            <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>Lag bruker</button>
                         </div>
                     </div>
                 </div>

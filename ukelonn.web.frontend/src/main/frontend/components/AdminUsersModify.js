@@ -86,7 +86,7 @@ function AdminUsersModify(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedUser(user)}>Lagre endringer av bruker</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedUser(user, userIsAdministrator)}>Lagre endringer av bruker</button>
                         </div>
                     </div>
                 </div>
