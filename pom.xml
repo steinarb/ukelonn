@@ -43,6 +43,7 @@
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
         <karaf.version>4.2.8</karaf.version>
         <mockrunner.version>2.0.4</mockrunner.version>
+        <slf4j.version>1.7.26</slf4j.version>
         <liquibase.version>3.8.0</liquibase.version>
         <snakeyaml.version>1.17</snakeyaml.version>
         <derby.version>10.11.1.1</derby.version>
@@ -352,8 +353,13 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.7.25</version>
+                <version>${slf4j.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
