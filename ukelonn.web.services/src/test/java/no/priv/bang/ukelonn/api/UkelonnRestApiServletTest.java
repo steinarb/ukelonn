@@ -103,14 +103,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -143,14 +140,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -183,13 +177,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -222,14 +213,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -261,14 +249,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet and do the login
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         createSubjectAndBindItToThread(request, response);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -319,13 +304,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -379,13 +361,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -428,13 +407,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -483,13 +459,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -527,7 +500,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
 
@@ -535,9 +508,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobTypes()).thenReturn(getJobtypes());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -577,14 +547,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -627,14 +594,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -685,13 +649,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -736,14 +697,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -788,13 +746,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -835,7 +790,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
         servlet.setUkelonnService(ukelonn);
@@ -843,9 +798,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Inject fake OSGi service UserAdminService
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -885,14 +837,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -942,13 +891,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -992,14 +938,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1038,13 +981,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1076,13 +1016,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1124,13 +1061,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1170,7 +1104,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
 
@@ -1178,9 +1112,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1220,16 +1151,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1278,7 +1206,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
 
@@ -1286,9 +1214,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1331,7 +1256,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
 
@@ -1339,9 +1264,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1378,7 +1300,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
         servlet.setUserManagement(useradmin);
 
@@ -1386,9 +1308,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPaymenttypes()).thenReturn(getPaymenttypes());
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1427,14 +1346,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPayment(any())).thenReturn(account);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1477,14 +1393,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1525,15 +1438,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<TransactionType> updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).collect(Collectors.toList());
         when(ukelonn.createJobtype(any())).thenReturn(updatedjobtypes);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1576,14 +1486,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyPaymenttype(any())).thenReturn(Arrays.asList(paymenttype));
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1624,15 +1531,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<TransactionType> updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).collect(Collectors.toList());
         when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
         servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1670,7 +1574,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -1680,9 +1584,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
         servlet.setUserManagement(useradmin);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1725,15 +1626,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.modifyUser(any())).thenReturn(Arrays.asList(user));
         servlet.setUserManagement(useradmin);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1784,16 +1682,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         UserManagementService useradmin = mock(UserManagementService.class);
         List<User> updatedusers = Stream.concat(getUsersForUserManagement().stream(), Stream.of(user)).collect(Collectors.toList());
         when(useradmin.addUser(any())).thenReturn(updatedusers);
         servlet.setUserManagement(useradmin);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1845,15 +1740,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the servlet
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
         servlet.setUkelonnService(ukelonn);
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.updatePassword(any())).thenReturn(users);
         servlet.setUserManagement(useradmin);
-
-        // Activate the servlet DS component
-        servlet.activate();
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -1881,10 +1773,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<SumYear> earningsSumOverYear = Arrays.asList(new SumYear(1250.0, 2016), new SumYear(2345.0, 2017), new SumYear(5467.0, 2018), new SumYear(2450.0, 2019));
         when(ukelonn.earningsSumOverYear(eq("jad"))).thenReturn(earningsSumOverYear);
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         servlet.setUkelonnService(ukelonn);
-        servlet.activate();
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);
 
@@ -1911,10 +1802,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = new UkelonnServiceProvider();
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUserManagement(useradmin);
         servlet.setUkelonnService(ukelonn);
-        servlet.activate();
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);
 
@@ -2216,10 +2106,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
     private UkelonnRestApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(UkelonnService ukelonn, LogService logservice, UserManagementService useradmin) throws Exception {
         UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        servlet.setLogService(logservice);
         servlet.setUkelonnService(ukelonn);
         servlet.setUserManagement(useradmin);
-        servlet.activate();
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);
         return servlet;

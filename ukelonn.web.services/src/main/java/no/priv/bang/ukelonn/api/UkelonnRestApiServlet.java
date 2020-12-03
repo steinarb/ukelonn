@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,16 @@
  */
 package no.priv.bang.ukelonn.api;
 
-import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 
-import org.glassfish.jersey.internal.inject.AbstractBinder;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.servlet.ServletContainer;
-import org.glassfish.jersey.servlet.WebConfig;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.osgiservice.users.UserManagementService;
+import no.priv.bang.servlet.jersey.JerseyServlet;
 import no.priv.bang.ukelonn.UkelonnService;
 
 @Component(
@@ -45,49 +37,22 @@ import no.priv.bang.ukelonn.UkelonnService;
     immediate=true
 )
 @SuppressWarnings("serial")
-public class UkelonnRestApiServlet extends ServletContainer {
-
-    private UkelonnService ukelonnService; // NOSONAR In an OSGi DS component injected dependencies are set before activation and is effectively a constant
-    private LogService logservice; // NOSONAR In an OSGi DS component injected dependencies are set before activation and is effectively a constant
-    private UserManagementService useradmin; // NOSONAR In an OSGi DS component injected dependencies are set before activation and is effectively a constant
-
-    @Activate
-    public void activate() {
-        logservice.log(LogService.LOG_INFO, String.format("Ukelonn Jersey servlet activated with UkelonnService %s", ukelonnService.toString()));
-    }
-
-    @Override
-    protected void init(WebConfig webConfig) throws ServletException {
-        super.init(webConfig);
-        ResourceConfig copyOfExistingConfig = new ResourceConfig(getConfiguration());
-        copyOfExistingConfig.register(new AbstractBinder() {
-                @Override
-                protected void configure() {
-                    bind(logservice).to(LogService.class);
-                    bind(ukelonnService).to(UkelonnService.class);
-                    bind(useradmin).to(UserManagementService.class);
-                }
-            });
-        reload(copyOfExistingConfig);
-        Map<String, Object> configProperties = getConfiguration().getProperties();
-        Set<Class<?>> classes = getConfiguration().getClasses();
-        logservice.log(LogService.LOG_INFO, String.format("Ukelonn Jersey servlet initialized with WebConfig, with resources: %s  and config params: %s", classes.toString(), configProperties.toString()));
-    }
+public class UkelonnRestApiServlet extends JerseyServlet {
 
     @Reference
     public void setUkelonnService(UkelonnService ukelonnService) {
-        this.ukelonnService = ukelonnService;
-
+        addInjectedOsgiService(UkelonnService.class, ukelonnService);
     }
 
     @Reference
     public void setUserManagement(UserManagementService useradmin) {
-        this.useradmin = useradmin;
+        addInjectedOsgiService(UserManagementService.class, useradmin);
     }
 
     @Reference
-    public void setLogservice(LogService logservice) {
-        this.logservice = logservice;
+    @Override
+    public void setLogService(LogService logservice) {
+        super.setLogService(logservice);
     }
 
 }
