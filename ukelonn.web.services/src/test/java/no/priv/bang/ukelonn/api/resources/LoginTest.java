@@ -31,6 +31,8 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 import org.junit.Test;
 
+import com.mockrunner.mock.web.MockHttpServletRequest;
+
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
@@ -43,7 +45,8 @@ public class LoginTest extends ServletTestBase {
     public void testLoginOk() throws Exception {
         // Set up the login request
         LoginCredentials credentials = new LoginCredentials("jad", "1ad");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
@@ -64,7 +67,8 @@ public class LoginTest extends ServletTestBase {
     public void testAdminLoginOk() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("admin", "admin");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
@@ -85,7 +89,8 @@ public class LoginTest extends ServletTestBase {
     public void testLoginUnknownUser() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("unknown", "unknown");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
@@ -106,7 +111,8 @@ public class LoginTest extends ServletTestBase {
     public void testLoginWrongPassword() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("jad", "wrong");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
@@ -129,7 +135,8 @@ public class LoginTest extends ServletTestBase {
             lockAccount("jad");
             // Set up the request
             LoginCredentials credentials = new LoginCredentials("jad", "wrong");
-            HttpServletRequest request = buildLoginRequest(credentials);
+            MockHttpServletRequest request = buildPostUrl("/login");
+            request.setBodyContent(mapper.writeValueAsString(credentials));
             HttpServletResponse response = mock(HttpServletResponse.class);
             // Create mock OSGi services to inject
             MockLogService logservice = new MockLogService();
