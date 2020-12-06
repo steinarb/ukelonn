@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -31,11 +30,7 @@ import java.util.stream.Stream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.MediaType;
-
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
@@ -49,8 +44,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
@@ -85,6 +78,11 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  *
  */
 public class UkelonnRestApiServletTest extends ServletTestBase {
+
+    public UkelonnRestApiServletTest() {
+        super("/ukelonn", "/api");
+    }
+
     public static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -92,7 +90,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testLoginOk() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("jad", "1ad");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -100,21 +99,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-        createSubjectAndBindItToThread(request, response);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -132,7 +119,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testAdminLoginOk() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("admin", "admin");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -140,21 +128,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet and do the login
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-        createSubjectAndBindItToThread(request, response);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -173,27 +149,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testLoginUnknownUser() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("unknown", "unknown");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-
-        // Create the servlet and do the login
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-        createSubjectAndBindItToThread(request, response);
+        UserManagementService useradmin = mock(UserManagementService.class);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -211,7 +178,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testLoginWrongPassword() throws Exception {
         // Set up the request
         LoginCredentials credentials = new LoginCredentials("jad", "wrong");
-        HttpServletRequest request = buildLoginRequest(credentials);
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent(mapper.writeValueAsString(credentials));
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -219,21 +187,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet and do the login
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-        createSubjectAndBindItToThread(request, response);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -250,7 +206,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testLoginWrongJson() throws Exception {
         // Set up the request
-        HttpServletRequest request = buildRequestFromStringBody("xxxyzzy");
+        MockHttpServletRequest request = buildPostUrl("/login");
+        request.setBodyContent("xxxyzzy");
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -258,21 +215,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet and do the login
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-        createSubjectAndBindItToThread(request, response);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -293,16 +238,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetLoginStateWhenLoggedIn() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/login"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/login");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/login");
 
         // Create the response that will cause a NullPointerException
         // when trying to print the body
@@ -311,25 +247,14 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
+        UkelonnService ukelonn = mock(UkelonnService.class);
 
         // Set up Shiro to be in a logged-in state
         WebSubject subject = createSubjectAndBindItToThread(request, response);
         UsernamePasswordToken token = new UsernamePasswordToken("jad", "1ad".toCharArray(), true);
         subject.login(token);
 
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Check the login state with HTTP GET
         servlet.service(request, response);
@@ -354,16 +279,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetLoginStateWhenNotLoggedIn() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/login"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/login");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/login");
 
         // Create the response that will cause a NullPointerException
         // when trying to print the body
@@ -372,24 +288,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
+        UkelonnService ukelonn = mock(UkelonnService.class);
 
         // Set up Shiro to be in a logged-in state
         WebSubject subject = createSubjectAndBindItToThread(request, response);
         subject.logout();
 
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Check the login state with HTTP GET
         servlet.service(request, response);
@@ -406,15 +311,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testLogoutOk() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/logout"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/logout");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildPostUrl("/logout");
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -422,23 +319,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Set up Shiro to be in a logged-in state
-        loginUser(request, response, "jad", "1ad");
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the logout
         servlet.service(request, response);
@@ -460,16 +343,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testLogoutNotLoggedIn() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/logout"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/logout");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildPostUrl("/logout");
 
         // Create the response that will receive the login result
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -477,23 +351,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
+        UkelonnService ukelonn = mock(UkelonnService.class);
 
         // Set up shiro
         createSubjectAndBindItToThread(request, response);
 
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the logout
         servlet.service(request, response);
@@ -510,38 +373,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetJobtypes() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/jobtypes"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/jobtypes");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        MockHttpServletRequest request = buildGetUrl("/jobtypes");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobTypes()).thenReturn(getJobtypes());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -557,16 +400,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetAccounts() throws Exception {
         // Create the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/accounts"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/accounts");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/accounts");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -574,24 +408,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -607,16 +427,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetAccount() throws Exception {
         // Create the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/account/jad"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/account/jad");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/account/jad");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -624,24 +435,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -665,16 +462,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetAccountOtherUsername() throws Exception {
         // Create the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/account/jod"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/account/jod");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/account/jod");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -682,23 +470,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -716,16 +490,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/account/jad"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/account/jad");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/account/jad");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -733,24 +498,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
-        // Log the admin user in to shiro
-        loginUser(request, response, "admin", "admin");
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -768,16 +519,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetAccountNoUsername() throws Exception {
         // Create the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/account"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/account");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/account");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -785,20 +527,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
@@ -816,36 +547,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/account/unknownuser"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/account/unknownuser");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequest request = buildGetUrl("/account/unknownuse");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Inject fake OSGi service UserAdminService
-        UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Activate the servlet DS component
-        servlet.activate();
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // When the servlet is activated it will be plugged into the http whiteboard and configured
         ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
@@ -871,10 +584,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
-        String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
+        String jobAsJson = mapper.writeValueAsString(job);
+        MockHttpServletRequest request = buildPostUrl("/job/register");
+        request.setBodyContent(jobAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -882,24 +594,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -926,33 +624,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
+        MockHttpServletRequest request = buildPostUrl("/job/register");
+        request.setBodyContent(jobAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
-
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -976,9 +659,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
+        MockHttpServletRequest request = buildPostUrl("/job/register");
+        request.setBodyContent(jobAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -989,21 +671,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1025,9 +696,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
+        MockHttpServletRequest request = buildPostUrl("/job/register");
+        request.setBodyContent(jobAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1035,20 +705,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
@@ -1063,9 +722,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterJobUnparsablePostData() throws Exception {
         // Create the request
-        HttpServletRequest request = buildRequestFromStringBody("this is not json");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
+        MockHttpServletRequest request = buildPostUrl("/job/register");
+        request.setBodyContent("this is not json");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1073,20 +731,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1111,9 +758,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> jobTypes = getJobtypes();
         PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
-        HttpServletRequest request = buildRequestFromStringBody(jobAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/job/register"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/job/register");
+        MockHttpServletRequest request = buildPostUrl("/job/register");
+        request.setBodyContent(jobAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
@@ -1121,20 +767,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Clear the Subject to ensure that Shiro will fail
         // no matter what order test methods are run in
@@ -1150,41 +785,19 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetJobs() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
         Account account = getJadAccount();
-        String requestURL = String.format("http://localhost:8181/ukelonn/api/jobs/%d", account.getAccountId());
-        String requestURI = String.format("/ukelonn/api/jobs/%d", account.getAccountId());
-        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
-        when(request.getRequestURI()).thenReturn(requestURI);
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        MockHttpServletRequest request = buildGetUrl(String.format("/jobs/%d", account.getAccountId()));
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -1205,35 +818,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
         AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
         String accountWithJobIdsAsJson = ServletTestBase.mapper.writeValueAsString(accountWithJobIds);
-        HttpServletRequest request = buildRequestFromStringBody(accountWithJobIdsAsJson);
-        when(request.getMethod()).thenReturn("POST");
-        String requestURL = "http://localhost:8181/ukelonn/api/admin/jobs/delete";
-        String requestURI = "/ukelonn/api/admin/jobs/delete";
-        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
-        when(request.getRequestURI()).thenReturn(requestURI);
+        MockHttpServletRequest request = buildPostUrl("/admin/jobs/delete");
+        request.setBodyContent(accountWithJobIdsAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -1263,36 +859,19 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Build the HTTP request
         String editedJobAsJson = ServletTestBase.mapper.writeValueAsString(editedJob);
-        HttpServletRequest request = buildRequestFromStringBody(editedJobAsJson);
-        when(request.getMethod()).thenReturn("POST");
-        String requestURL = "http://localhost:8181/ukelonn/api/job/update";
-        String requestURI = "/ukelonn/api/job/update";
-        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
-        when(request.getRequestURI()).thenReturn(requestURI);
+        MockHttpServletRequest request = buildPostUrl("/job/update");
+        request.setBodyContent(editedJobAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -1311,41 +890,19 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetPayments() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
         Account account = getJadAccount();
-        String requestURL = String.format("http://localhost:8181/ukelonn/api/payments/%d", account.getAccountId());
-        String requestURI = String.format("/ukelonn/api/payments/%d", account.getAccountId());
-        when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL));
-        when(request.getRequestURI()).thenReturn(requestURI);
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        MockHttpServletRequest request = buildGetUrl(String.format("/payments/%d", account.getAccountId()));
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -1361,38 +918,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetPaymenttypes() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/paymenttypes"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/paymenttypes");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        MockHttpServletRequest request = buildGetUrl("/paymenttypes");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
         UserManagementService useradmin = mock(UserManagementService.class);
-        servlet.setUserManagement(useradmin);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPaymenttypes()).thenReturn(getPaymenttypes());
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -1414,9 +951,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         PerformedTransaction payment = new PerformedTransaction(account, paymentTypes.get(0).getId(), account.getBalance(), new Date());
         account.setBalance(0.0);
         String paymentAsJson = ServletTestBase.mapper.writeValueAsString(payment);
-        HttpServletRequest request = buildRequestFromStringBody(paymentAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/registerpayment"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/registerpayment");
+        MockHttpServletRequest request = buildPostUrl("/registerpayment");
+        request.setBodyContent(paymentAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1424,21 +960,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPayment(any())).thenReturn(account);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1464,9 +989,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the request
         String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(jobtype);
-        HttpServletRequest request = buildRequestFromStringBody(jobtypeAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/jobtype/modify"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/jobtype/modify");
+        MockHttpServletRequest request = buildPostUrl("/admin/jobtype/modify");
+        request.setBodyContent(jobtypeAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1474,21 +998,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1512,9 +1025,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the request
         String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(jobtype);
-        HttpServletRequest request = buildRequestFromStringBody(jobtypeAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/jobtype/create"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/jobtype/create");
+        MockHttpServletRequest request = buildPostUrl("/admin/jobtype/create");
+        request.setBodyContent(jobtypeAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1522,22 +1034,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<TransactionType> updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).collect(Collectors.toList());
         when(ukelonn.createJobtype(any())).thenReturn(updatedjobtypes);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1563,9 +1064,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the request
         String paymenttypeAsJson = ServletTestBase.mapper.writeValueAsString(paymenttype);
-        HttpServletRequest request = buildRequestFromStringBody(paymenttypeAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/jobtype/modify"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/paymenttype/modify");
+        MockHttpServletRequest request = buildPostUrl("/admin/paymenttype/modify");
+        request.setBodyContent(paymenttypeAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1573,21 +1073,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyPaymenttype(any())).thenReturn(Arrays.asList(paymenttype));
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1610,10 +1099,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         TransactionType paymenttype = new TransactionType(-2, "Vipps", 0.0, false, true);
 
         // Create the request
-        String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(paymenttype);
-        HttpServletRequest request = buildRequestFromStringBody(jobtypeAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/paymenttype/create"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/paymenttype/create");
+        String paymenttypeAsJson = ServletTestBase.mapper.writeValueAsString(paymenttype);
+        MockHttpServletRequest request = buildPostUrl("/admin/paymenttype/create");
+        request.setBodyContent(paymenttypeAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -1621,22 +1109,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<TransactionType> updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).collect(Collectors.toList());
         when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
-        servlet.setUkelonnService(ukelonn);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1653,40 +1130,18 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testGetUsers() throws Exception {
         // Set up the request
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/users"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/users");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.emptyEnumeration());
+        MockHttpServletRequest request = buildGetUrl("/users");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        // Create the servlet that is to be tested
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        servlet.setLogservice(logservice);
-
-        // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
-
-        // Inject fake OSGi service UserAdminService
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
-        servlet.setUserManagement(useradmin);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Call the method under test
         servlet.service(request, response);
@@ -1713,31 +1168,19 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the request
         String userAsJson = ServletTestBase.mapper.writeValueAsString(user);
-        HttpServletRequest request = buildRequestFromStringBody(userAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/user/modify"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/modify");
+        MockHttpServletRequest request = buildPostUrl("/admin/user/modify");
+        request.setBodyContent(userAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.modifyUser(any())).thenReturn(Arrays.asList(user));
-        servlet.setUserManagement(useradmin);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1772,32 +1215,20 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the request
         String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
-        HttpServletRequest request = buildRequestFromStringBody(passwordsAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/user/create"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/create");
+        MockHttpServletRequest request = buildPostUrl("/admin/user/create");
+        request.setBodyContent(passwordsAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
         UserManagementService useradmin = mock(UserManagementService.class);
         List<User> updatedusers = Stream.concat(getUsersForUserManagement().stream(), Stream.of(user)).collect(Collectors.toList());
         when(useradmin.addUser(any())).thenReturn(updatedusers);
-        servlet.setUserManagement(useradmin);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1833,31 +1264,19 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create the request
         String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
-        HttpServletRequest request = buildRequestFromStringBody(passwordsAsJson);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/admin/user/password"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/admin/user/password");
+        MockHttpServletRequest request = buildPostUrl("/admin/user/password");
+        request.setBodyContent(passwordsAsJson);
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
-
-        // Create the servlet
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        servlet.setUkelonnService(ukelonn);
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.updatePassword(any())).thenReturn(users);
-        servlet.setUserManagement(useradmin);
 
-        // Activate the servlet DS component
-        servlet.activate();
-
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -1880,13 +1299,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<SumYear> earningsSumOverYear = Arrays.asList(new SumYear(1250.0, 2016), new SumYear(2345.0, 2017), new SumYear(5467.0, 2018), new SumYear(2450.0, 2019));
         when(ukelonn.earningsSumOverYear(eq("jad"))).thenReturn(earningsSumOverYear);
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
-        servlet.setUkelonnService(ukelonn);
-        servlet.activate();
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Create the request and response
         MockHttpServletRequest request = buildGetUrl("/statistics/earnings/sumoveryear/jad");
@@ -1910,18 +1324,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = new UkelonnServiceProvider();
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUserManagement(useradmin);
-        servlet.setUkelonnService(ukelonn);
-        servlet.activate();
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // A request for notifications to a user
-        HttpServletRequest requestGetNotifications = buildGetRequest();
-        when(requestGetNotifications.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/notificationsto/jad"));
-        when(requestGetNotifications.getRequestURI()).thenReturn("/ukelonn/api/notificationsto/jad");
+        MockHttpServletRequest requestGetNotifications = buildGetUrl("/notificationsto/jad");
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse notificationsResponse = new MockHttpServletResponse();
@@ -1938,10 +1345,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Send a notification to user "jad" over the REST API
         Notification utbetalt = new Notification("Ukelønn", "150 kroner betalt til konto");
         String utbetaltAsJson = mapper.writeValueAsString(utbetalt);
-        HttpServletRequest sendNotificationRequest = buildRequestFromStringBody(utbetaltAsJson);
-        when(sendNotificationRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/notificationto/jad"));
-        when(sendNotificationRequest.getRequestURI()).thenReturn("/ukelonn/api/notificationto/jad");
-        MockHttpServletResponse sendNotificationResponse = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        MockHttpServletRequest sendNotificationRequest = buildPostUrl("/notificationto/jad");
+        sendNotificationRequest.setBodyContent(utbetaltAsJson);
+        MockHttpServletResponse sendNotificationResponse = new MockHttpServletResponse();
         servlet.service(sendNotificationRequest, sendNotificationResponse);
 
         if (sendNotificationResponse.getStatus() == HttpServletResponse.SC_BAD_REQUEST) {
@@ -2165,9 +1571,19 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertTrue(updatedStatus.isAdministrator());
     }
 
-    private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
-        MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
-        return outputstream.getBinaryContent();
+    private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
+        return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
+    }
+
+
+    private UkelonnRestApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(UkelonnService ukelonn, LogService logservice, UserManagementService useradmin) throws Exception {
+        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
+        servlet.setLogService(logservice);
+        servlet.setUkelonnService(ukelonn);
+        servlet.setUserManagement(useradmin);
+        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        servlet.init(config);
+        return servlet;
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
@@ -2179,50 +1595,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(config.getServletContext()).thenReturn(servletContext);
         when(servletContext.getAttributeNames()).thenReturn(Collections.emptyEnumeration());
         return config;
-    }
-
-    private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
-    }
-
-
-    private MockHttpServletRequest buildGetUrl(String resource) {
-        MockHttpServletRequest request = buildRequest(resource);
-        request.setMethod("GET");
-        return request;
-    }
-
-    private MockHttpServletRequest buildPostUrl(String resource) throws Exception {
-        String contenttype = MediaType.APPLICATION_JSON;
-        MockHttpServletRequest request = buildRequest(resource);
-        request.setMethod("POST");
-        request.setContentType(contenttype);
-        request.addHeader("Content-Type", contenttype);
-        request.setCharacterEncoding("UTF-8");
-        return request;
-    }
-
-    private MockHttpServletRequest buildRequest(String resource) {
-        MockHttpSession session = new MockHttpSession();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setProtocol("HTTP/1.1");
-        request.setRequestURL("http://localhost:8181/ukelon/api" + resource);
-        request.setRequestURI("/ukelonn/api" + resource);
-        request.setContextPath("/ukelonn");
-        request.setServletPath("/api");
-        request.setSession(session);
-        return request;
-    }
-
-    private UkelonnRestApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(UkelonnService ukelonn, LogService logservice, UserManagementService useradmin) throws Exception {
-        UkelonnRestApiServlet servlet = new UkelonnRestApiServlet();
-        servlet.setLogservice(logservice);
-        servlet.setUkelonnService(ukelonn);
-        servlet.setUserManagement(useradmin);
-        servlet.activate();
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-        return servlet;
     }
 
 }

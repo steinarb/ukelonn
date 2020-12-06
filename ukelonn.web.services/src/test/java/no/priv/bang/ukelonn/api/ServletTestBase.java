@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,35 +18,67 @@ package no.priv.bang.ukelonn.api;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.mockito.Mockito.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
+import java.nio.file.Paths;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.priv.bang.ukelonn.api.beans.LoginCredentials;
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletOutputStream;
 
 public class ServletTestBase {
+    private String baseURL = "http://localhost:8181";
+    private String contextPath = "/ukelonn";
+    private String servletPath = "/api";
+
+    public ServletTestBase(String baseURL, String contextPath, String servletPath) {
+        this.baseURL = baseURL;
+        this.contextPath = contextPath;
+        this.servletPath = servletPath;
+    }
+
+    public ServletTestBase(String contextPath, String servletPath) {
+        this("http://localhost:8181", contextPath, servletPath);
+    }
+
     public static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public ServletTestBase() {
-        super();
+    protected byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
+        MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
+        return outputstream.getBinaryContent();
+    }
+
+    protected MockHttpServletRequest buildGetUrl(String resource) {
+        MockHttpServletRequest request = buildRequest(resource);
+        request.setMethod("GET");
+        return request;
+    }
+
+    protected MockHttpServletRequest buildPostUrl(String resource) throws Exception {
+        String contenttype = MediaType.APPLICATION_JSON;
+        MockHttpServletRequest request = buildRequest(resource);
+        request.setMethod("POST");
+        request.setContentType(contenttype);
+        request.addHeader("Content-Type", contenttype);
+        request.setCharacterEncoding("UTF-8");
+        return request;
+    }
+
+    protected void loginUser(HttpServletRequest request, HttpServletResponse response, String username, String password) {
+        WebSubject subject = createSubjectAndBindItToThread(request, response);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
     }
 
     protected WebSubject createSubjectAndBindItToThread(HttpServletRequest request, HttpServletResponse response) {
@@ -61,66 +93,24 @@ public class ServletTestBase {
         return subject;
     }
 
-    protected void loginUser(HttpServletRequest request, HttpServletResponse response, String username, String password) {
-        WebSubject subject = createSubjectAndBindItToThread(request, response);
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
-        subject.login(token);
-    }
-
-    protected HttpServletRequest buildLoginRequest(LoginCredentials credentials) throws JsonProcessingException, IOException {
-        String credentialsAsJson = ServletTestBase.mapper.writeValueAsString(credentials);
-        return buildRequestFromStringBody(credentialsAsJson);
-    }
-
-    protected HttpServletRequest buildGetRequest() throws IOException {
-        HttpSession session = mock(HttpSession.class);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
-        when(request.getSession()).thenReturn(session);
+    private MockHttpServletRequest buildRequest(String resource) {
+        MockHttpSession session = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setProtocol("HTTP/1.1");
+        request.setRequestURL(buildFullURL(resource));
+        request.setRequestURI(buildURI(resource));
+        request.setContextPath(contextPath);
+        request.setServletPath(servletPath);
+        request.setSession(session);
         return request;
     }
 
-    protected HttpServletRequest buildRequestFromStringBody(String textToSendAsBody) throws IOException {
-        ServletInputStream postBody = wrap(new ByteArrayInputStream(textToSendAsBody.getBytes(StandardCharsets.UTF_8)));
-        HttpSession session = mock(HttpSession.class);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getProtocol()).thenReturn("HTTP/1.1");
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/api/login"));
-        when(request.getRequestURI()).thenReturn("/ukelonn/api/login");
-        when(request.getContextPath()).thenReturn("/ukelonn");
-        when(request.getServletPath()).thenReturn("/api");
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Arrays.asList("Content-Type")));
-        when(request.getHeaders(eq("Content-Type"))).thenReturn(Collections.enumeration(Arrays.asList("application/json")));
-        when(request.getInputStream()).thenReturn(postBody);
-        when(request.getSession()).thenReturn(session);
-        return request;
+    String buildURI(String resource) {
+        return Paths.get(contextPath, servletPath, resource).toUri().getPath();
     }
 
-    private ServletInputStream wrap(InputStream inputStream) {
-        return new ServletInputStream() {
-
-            @Override
-            public int read() throws IOException {
-                return inputStream.read();
-            }
-
-            public boolean isFinished() {
-                return false;
-            }
-
-            public boolean isReady() {
-                return true;
-            }
-
-            public void setReadListener(ReadListener readListener) {
-                // Does nothing
-            }
-        };
+    String buildFullURL(String resource) {
+        return baseURL + buildURI(resource);
     }
 
 }
