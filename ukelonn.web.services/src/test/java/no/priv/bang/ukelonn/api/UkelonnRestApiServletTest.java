@@ -321,9 +321,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = mock(UkelonnService.class);
 
-        // Set up Shiro to be in a logged-in state
-        loginUser(request, response, "jad", "1ad");
-
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Do the logout
@@ -416,9 +413,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
-
         // Run the method under test
         servlet.service(request, response);
 
@@ -445,9 +439,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
-
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
 
         // Run the method under test
         servlet.service(request, response);
@@ -483,9 +474,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
-
         // Run the method under test
         servlet.service(request, response);
 
@@ -514,9 +502,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
-
-        // Log the admin user in to shiro
-        loginUser(request, response, "admin", "admin");
 
         // Run the method under test
         servlet.service(request, response);
@@ -614,9 +599,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
-
         // Run the method under test
         servlet.service(request, response);
 
@@ -647,9 +629,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create a response object that will receive and hold the servlet output
         MockHttpServletResponse response = new MockHttpServletResponse();
-
-        // Log the user in to shiro
-        loginUser(request, response, "jad", "1ad");
 
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
