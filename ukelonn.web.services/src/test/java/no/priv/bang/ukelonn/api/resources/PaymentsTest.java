@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,10 @@ import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Transaction;
 
 public class PaymentsTest extends ServletTestBase {
+
+    public PaymentsTest() {
+        super("/ukelonn", "/api");
+    }
 
     @Test
     public void testGetPayments() {

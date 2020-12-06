@@ -19,6 +19,7 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,12 +37,22 @@ import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
 public class ServletTestBase {
+    private String baseURL = "http://localhost:8181";
+    private String contextPath = "/ukelonn";
+    private String servletPath = "/api";
+
+    public ServletTestBase(String baseURL, String contextPath, String servletPath) {
+        this.baseURL = baseURL;
+        this.contextPath = contextPath;
+        this.servletPath = servletPath;
+    }
+
+    public ServletTestBase(String contextPath, String servletPath) {
+        this("http://localhost:8181", contextPath, servletPath);
+    }
+
     public static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-    public ServletTestBase() {
-        super();
-    }
 
     protected byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
         MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
@@ -86,12 +97,20 @@ public class ServletTestBase {
         MockHttpSession session = new MockHttpSession();
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setProtocol("HTTP/1.1");
-        request.setRequestURL("http://localhost:8181/ukelonn/api" + resource);
-        request.setRequestURI("/ukelonn/api" + resource);
-        request.setContextPath("/ukelonn");
-        request.setServletPath("/api");
+        request.setRequestURL(buildFullURL(resource));
+        request.setRequestURI(buildURI(resource));
+        request.setContextPath(contextPath);
+        request.setServletPath(servletPath);
         request.setSession(session);
         return request;
+    }
+
+    String buildURI(String resource) {
+        return Paths.get(contextPath, servletPath, resource).toUri().getPath();
+    }
+
+    String buildFullURL(String resource) {
+        return baseURL + buildURI(resource);
     }
 
 }

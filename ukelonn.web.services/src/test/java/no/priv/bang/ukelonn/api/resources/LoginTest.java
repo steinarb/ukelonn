@@ -41,6 +41,10 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 public class LoginTest extends ServletTestBase {
 
+    public LoginTest() {
+        super("/ukelonn", "/api");
+    }
+
     @Test
     public void testLoginOk() throws Exception {
         // Set up the login request

@@ -36,6 +36,10 @@ import no.priv.bang.ukelonn.beans.Account;
 
 public class AccountResourceTest extends ServletTestBase {
 
+    public AccountResourceTest() {
+        super("/ukelonn", "/api");
+    }
+
     @Test
     public void testGetAccount() throws Exception {
         // Create the request and response for the Shiro login

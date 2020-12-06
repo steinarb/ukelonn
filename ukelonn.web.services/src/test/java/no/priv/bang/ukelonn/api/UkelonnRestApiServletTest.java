@@ -78,6 +78,11 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  *
  */
 public class UkelonnRestApiServletTest extends ServletTestBase {
+
+    public UkelonnRestApiServletTest() {
+        super("/ukelonn", "/api");
+    }
+
     public static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 

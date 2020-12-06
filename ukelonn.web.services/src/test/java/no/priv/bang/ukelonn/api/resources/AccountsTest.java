@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 
 public class AccountsTest extends ServletTestBase {
+
+    public AccountsTest() {
+        super("/ukelonn", "/api");
+    }
 
     @Test
     public void testGetAccounts() throws Exception {
