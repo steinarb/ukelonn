@@ -26,16 +26,11 @@ import java.util.List;
 import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
-public class RegisterPaymentTest extends ServletTestBase {
-
-    public RegisterPaymentTest() {
-        super("/ukelonn", "/api");
-    }
+public class RegisterPaymentTest {
 
     @Test
     public void testRegisterPayment() throws Exception {

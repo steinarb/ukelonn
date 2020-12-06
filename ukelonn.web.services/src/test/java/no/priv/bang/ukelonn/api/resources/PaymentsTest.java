@@ -24,15 +24,10 @@ import java.util.List;
 import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Transaction;
 
-public class PaymentsTest extends ServletTestBase {
-
-    public PaymentsTest() {
-        super("/ukelonn", "/api");
-    }
+public class PaymentsTest {
 
     @Test
     public void testGetPayments() {

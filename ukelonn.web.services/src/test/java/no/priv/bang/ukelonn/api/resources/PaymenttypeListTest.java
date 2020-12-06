@@ -23,14 +23,9 @@ import java.util.List;
 import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.TransactionType;
 
-public class PaymenttypeListTest extends ServletTestBase {
-
-    public PaymenttypeListTest() {
-        super("/ukelonn", "/api");
-    }
+public class PaymenttypeListTest {
 
     @Test
     public void testGetPaymenttypes() throws Exception {
