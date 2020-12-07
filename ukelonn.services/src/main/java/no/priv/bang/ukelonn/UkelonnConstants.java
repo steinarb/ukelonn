@@ -18,6 +18,7 @@ package no.priv.bang.ukelonn;
 public class UkelonnConstants {
 
     public static final String UKELONNADMIN_ROLE = "ukelonnadmin";
+    public static final String UKELONNUSER_ROLE = "ukelonnuser";
 
     private UkelonnConstants() {
         // Private constructor to avoid instantiation

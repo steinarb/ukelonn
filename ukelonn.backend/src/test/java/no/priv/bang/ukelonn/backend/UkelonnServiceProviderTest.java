@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -42,6 +43,7 @@ import org.junit.Test;
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
@@ -57,6 +59,7 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
+import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 public class UkelonnServiceProviderTest {
 
@@ -1203,8 +1206,10 @@ public class UkelonnServiceProviderTest {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
+        ukelonn.setUserAdmin(useradmin);
         ukelonn.activate();
 
         // Verify that what we get with an SQL failure
@@ -1222,8 +1227,10 @@ public class UkelonnServiceProviderTest {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
+        ukelonn.setUserAdmin(useradmin);
         ukelonn.activate();
 
         // Verify that what we get with an SQL failure
@@ -1241,8 +1248,10 @@ public class UkelonnServiceProviderTest {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
+        ukelonn.setUserAdmin(useradmin);
         ukelonn.activate();
 
         // Verify that what we get with an SQL failure
@@ -1260,8 +1269,10 @@ public class UkelonnServiceProviderTest {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
+        ukelonn.setUserAdmin(useradmin);
         ukelonn.activate();
 
         // Verify that what we get with an SQL failure
@@ -1279,8 +1290,10 @@ public class UkelonnServiceProviderTest {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
+        ukelonn.setUserAdmin(useradmin);
         ukelonn.activate();
 
         // Verify that what we get with an SQL failure
@@ -1289,6 +1302,77 @@ public class UkelonnServiceProviderTest {
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to delete Bonus");
+    }
+
+    @Test
+    public void testAddRoleIfNotPresentWhenRoleIsPresent() {
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        Role userrole = new Role(2, UKELONNUSER_ROLE, "ukelonn user");
+        when(useradmin.getRoles()).thenReturn(Arrays.asList(userrole, adminrole));
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        ukelonn.setUserAdmin(useradmin);
+
+        Optional<Role> role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
+        assertThat(role).isNotEmpty();
+        assertEquals(UKELONNADMIN_ROLE, role.get().getRolename());
+    }
+
+    @Test
+    public void testAddRoleIfNotPresentWhenRoleIsNotPresent() {
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        Role userrole = new Role(2, UKELONNUSER_ROLE, "ukelonn user");
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(userrole));
+        when(useradmin.addRole(any())).thenReturn(Arrays.asList(userrole, adminrole));
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        ukelonn.setUserAdmin(useradmin);
+
+        Optional<Role> role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
+        assertThat(role).isNotEmpty();
+        assertEquals(UKELONNADMIN_ROLE, role.get().getRolename());
+    }
+
+    @Test
+    public void testAddAdminroleToUserAdminWhenRoleIsMissing() {
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        UserManagementService useradmin = mock(UserManagementService.class);
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        ukelonn.setUserAdmin(useradmin);
+
+        ukelonn.addAdminroleToUserAdmin(Optional.of(adminrole));
+        verify(useradmin, times(1)).getUser(anyString());
+        verify(useradmin, times(1)).getRolesForUser(anyString());
+        verify(useradmin, times(1)).addUserRoles(any());
+    }
+
+    @Test
+    public void testAddAdminroleToUserAdminWhenRoleIsPresent() {
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        ukelonn.setUserAdmin(useradmin);
+
+        ukelonn.addAdminroleToUserAdmin(Optional.of(adminrole));
+        verify(useradmin, times(1)).getUser(anyString());
+        verify(useradmin, times(1)).getRolesForUser(anyString());
+        verify(useradmin, times(0)).addUserRoles(any());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testAddAdminroleToUserAdminWhenAdminUserIsNotPresent() {
+        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        ukelonn.setUserAdmin(useradmin);
+
+        ukelonn.addAdminroleToUserAdmin(Optional.of(adminrole));
+        verify(useradmin, times(1)).getUser(anyString());
+        verify(useradmin, times(0)).getRolesForUser(anyString());
+        verify(useradmin, times(0)).addUserRoles(any());
     }
 
     private Bonus disableBonus(Bonus bonus) {

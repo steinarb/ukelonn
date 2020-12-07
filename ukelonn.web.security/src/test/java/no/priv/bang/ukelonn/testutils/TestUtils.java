@@ -15,6 +15,8 @@
  */
 package no.priv.bang.ukelonn.testutils;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -29,6 +31,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 /**
@@ -64,12 +67,14 @@ public class TestUtils {
      */
     public static UkelonnServiceProvider setupFakeOsgiServices() throws Exception {
         ukelonnServiceSingleton = new UkelonnServiceProvider();
-        ukelonnServiceSingleton.activate();
         LogService logservice = new MockLogService();
         DataSource ukelonnDatasource = createUkelonnDatasource(logservice);
+        UserManagementService useradmin = mock(UserManagementService.class);
 
         ukelonnServiceSingleton.setDataSource(ukelonnDatasource);
         ukelonnServiceSingleton.setLogservice(logservice);
+        ukelonnServiceSingleton.setUserAdmin(useradmin);
+        ukelonnServiceSingleton.activate();
         return ukelonnServiceSingleton;
     }
 
