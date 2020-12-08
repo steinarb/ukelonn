@@ -112,6 +112,11 @@
             <artifactId>service-mocks</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-api</artifactId>
         </dependency>
