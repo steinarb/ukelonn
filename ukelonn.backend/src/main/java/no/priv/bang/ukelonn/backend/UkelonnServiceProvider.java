@@ -33,12 +33,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.sql.DataSource;
 
+import no.priv.bang.authservice.definitions.AuthserviceException;
+import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
+import no.priv.bang.osgiservice.users.UserRoles;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
@@ -52,6 +56,7 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
+import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 /**
  * The OSGi component that provides the business logic of the ukelonn
@@ -74,7 +79,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Activate
     public void activate() {
-        // Nothing to do here
+        addRolesIfNotPresent();
     }
 
     @Reference(target = "(osgi.jndi.service.name=jdbc/ukelonn)")
@@ -692,6 +697,37 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             user.getFirstname(),
             user.getLastname(),
             results.getDouble("balance"));
+    }
+
+    private void addRolesIfNotPresent() {
+        Optional<Role> ukelonnadmin = addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
+        addRoleIfNotPresent(UKELONNUSER_ROLE, "Bruker av applikasjonen ukelonn");
+        addAdminroleToUserAdmin(ukelonnadmin);
+    }
+
+    Optional<Role> addRoleIfNotPresent(String rolename, String description) {
+        List<Role> roles = useradmin.getRoles();
+        Optional<Role> existingRole = roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
+        if (!existingRole.isPresent()) {
+            roles = useradmin.addRole(new Role(-1, rolename, description));
+            return roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
+        }
+
+        return existingRole;
+    }
+
+    void addAdminroleToUserAdmin(Optional<Role> ukelonnadmin) {
+        if (ukelonnadmin.isPresent()) {
+            try {
+                no.priv.bang.osgiservice.users.User admin = useradmin.getUser("admin");
+                List<Role> roles = useradmin.getRolesForUser("admin");
+                if (roles.stream().noneMatch(r -> ukelonnadmin.get().equals(r))) {
+                    useradmin.addUserRoles(new UserRoles(admin, Arrays.asList(ukelonnadmin.get())));
+                }
+            } catch (AuthserviceException e) {
+                // No admin user, skip and continue
+            }
+        }
     }
 
     static Transaction mapTransaction(ResultSet resultset) throws SQLException {
