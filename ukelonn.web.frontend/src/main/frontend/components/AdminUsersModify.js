@@ -77,10 +77,12 @@ function AdminUsersModify(props) {
                             <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <label htmlFor="administrator" className="col-form-label col-5">Administrator</label>
-                        <div className="col-1">
-                            <input id="administrator" className="form-control" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                    <div clasName="row">
+                        <div className="col">
+                            <div className="form-check">
+                                <input id="administrator" className="form-check-input" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                                <label htmlFor="administrator" className="form-check-label">Administrator</label>
+                            </div>
                         </div>
                     </div>
                     <div className="form-group row">
