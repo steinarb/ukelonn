@@ -11,7 +11,7 @@ export const emptyAccount = {
 
 export const emptyBonus = {
     bonusId: -1,
-    enabled: false,
+    enabled: true,
     iconurl: '',
     title: '',
     description: '',

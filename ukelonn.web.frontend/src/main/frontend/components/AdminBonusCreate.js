@@ -51,10 +51,14 @@ function AdminBonusCreate(props) {
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
-                        <label htmlFor="enabled" className="col-form-label col-5">Aktivert</label>
-                        <div className="col-1">
-                            <input id="enabled" className="form-control" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
+                    <div clasName="row">
+                        <div className="col">
+                            <div className="form-check">
+                                <div className="form-check">
+                                    <input id="enabled" className="form-check-input" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
+                                    <label htmlFor="enabled" className="form-check-label">Aktivert</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="form-group row">
