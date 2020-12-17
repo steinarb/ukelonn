@@ -31,32 +31,80 @@ function User(props) {
 
     return (
         <div>
+            <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
             <Notification notificationMessage={notificationMessage}/>
-            <h1>{title}</h1>
-            <BonusBanner/>
-            <div>{text.owedAmount} {account.balance}</div><br/>
-            <EarningsMessage /><br/>
+            <header>
+                <div>
+                    <h1>{title}</h1>
+                </div>
+            </header>
+            <div>
+                <BonusBanner/>
+                <div>
+                    <div>
+                        <div>
+                            <label>{text.owedAmount}</label>
+                        </div>
+                        <div>
+                            {account.balance}
+                        </div>
+                    </div>
+                    <div>
+                        <EarningsMessage />
+                    </div>
+                </div>
+            </div>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="jobtype">{text.chooseJob}</label>
-                <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
-                <br/>
-                <label htmlFor="amount">{text.amount}</label>
-                <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
-                <br/>
-                <label htmlFor="date">{text.date}</label>
-                <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
-                <br/>
-
-                <button onClick={() => onRegisterJob(performedjob)}>{text.registerJob}</button>
+                <div>
+                    <div>
+                        <label htmlFor="jobtype">{text.chooseJob}</label>
+                        <div>
+                            <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.amount}</label>
+                        <div>
+                            <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="date">{text.date}</label>
+                        <div>
+                            <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onRegisterJob(performedjob)}>{text.registerJob}</button>
+                        </div>
+                    </div>
+                </div>
             </form>
-            <br/>
-            <Link to={performedjobs}>{text.performedJobs}</Link><br/>
-            <Link to={performedpayments}>{text.performedPayments}</Link><br/>
-            <Link to={statistics}>{text.statistics}</Link><br/>
+            <div>
+                <Link to={performedjobs}>
+                    {text.performedJobs}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to={performedpayments}>
+                    {text.performedPayments}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to={statistics}>
+                    {text.statistics}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }

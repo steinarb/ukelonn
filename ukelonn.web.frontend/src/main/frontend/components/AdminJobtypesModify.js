@@ -20,22 +20,44 @@ function AdminJobtypesModify(props) {
 
     return (
         <div>
-            <h1>{text.modifyJobTypes}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
-            <br/>
-            <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="jobtype">{text.chooseJobType}</label>
-                <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
-                <br/>
-                <label htmlFor="amount">{text.modifyNameOfJobType}</label>
-                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                <br/>
-                <label htmlFor="amount">{text.modifyAmountOfJobType}</label>
-                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                <br/>
-                <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.saveChangesToJobType}</button>
+            <Link to="/ukelonn/admin/jobtypes">
+                &lt;-
+                &nbsp;
+                {text.administrateJobsAndJobTypes}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.modifyJobTypes}</h1>
+                </div>
+            </header>
+            <div>
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div>
+                        <label htmlFor="jobtype">{text.chooseJobType}</label>
+                        <div>
+                            <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.modifyNameOfJobType}</label>
+                        <div>
+                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.modifyAmountOfJobType}</label>
+                        <div>
+                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.saveChangesToJobType}</button>
+                        </div>
+                    </div>
             </form>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>

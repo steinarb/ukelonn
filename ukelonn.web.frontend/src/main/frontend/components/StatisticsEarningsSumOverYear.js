@@ -21,25 +21,34 @@ function StatisticsEarningsSumOverYear(props) {
 
     return (
         <div>
-            <h1>{text.sumAmountEarnedPerYear}</h1>
-            <br/>
-            <Link to={statistics}>{text.backToStatistics}</Link><br/>
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <td>{text.year}</td>
-                        <td>{text.totalEarnings}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {earningsSumOverYear.map((sumOverYear) =>
-                        <tr key={sumOverYear.year}>
-                            <td>{sumOverYear.year}</td>
-                            <td>{sumOverYear.sum}</td>
+            <Link to={statistics}>
+                &lt;-
+                &nbsp;
+                {text.backToStatistics}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.sumAmountEarnedPerYear}</h1>
+                </div>
+            </header>
+            <div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.year}</td>
+                            <td>{text.totalEarnings}</td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {earningsSumOverYear.map((sumOverYear) =>
+                                                 <tr key={sumOverYear.year}>
+                                                     <td>{sumOverYear.year}</td>
+                                                     <td>{sumOverYear.sum}</td>
+                                                 </tr>
+                                                )}
+                    </tbody>
+                </table>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>

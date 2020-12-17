@@ -27,36 +27,49 @@ function AdminJobsDelete(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
-            <br/>
-            <h1>{text.deleteErronouslyRegisteredJobsFor}Slett feilregisterte jobber for {account.firstName}</h1>
+            <Link to="/ukelonn/admin/jobtypes">
+                &lt;-
+                &nbsp;
+                {text.administrateJobsAndJobTypes}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.deleteErronouslyRegisteredJobsFor}Slett feilregisterte jobber for {account.firstName}</h1>
+                </div>
+            </header>
 
-            <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}<br/>
-                <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
-            <label htmlFor="account-selector">{text.chooseAccount}:</label>
-            <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+            <div>
+                <div>
+                    <em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
+                    <br/>
+                    <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}
+                    <br/>
+                </div>
+                <label htmlFor="account-selector">{text.chooseAccount}:</label>
+                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
 
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <td>{text.delete}</td>
-                        <td>{text.date}</td>
-                        <td>{text.jobs}</td>
-                        <td>{text.amount}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {jobs.map((job) =>
-                        <tr key={job.id}>
-                            <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
-                            <td>{job.transactionTime}</td>
-                            <td>{job.name}</td>
-                            <td>{job.transactionAmount}</td>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.delete}</td>
+                            <td>{text.date}</td>
+                            <td>{text.jobs}</td>
+                            <td>{text.amount}</td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
-            <button onClick={() => onDeleteMarkedJobs(account, jobs)}>{text.deleteMarkedJobs}</button>
+                    </thead>
+                    <tbody>
+                        {jobs.map((job) =>
+                                  <tr key={job.id}>
+                                      <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
+                                      <td>{job.transactionTime}</td>
+                                      <td>{job.name}</td>
+                                      <td>{job.transactionAmount}</td>
+                                  </tr>
+                                 )}
+                    </tbody>
+                </table>
+                <button onClick={() => onDeleteMarkedJobs(account, jobs)}>{text.deleteMarkedJobs}</button>
+            </div>
             <br/>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

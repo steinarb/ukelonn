@@ -16,11 +16,30 @@ function AdminPaymenttypes(props) {
 
     return (
         <div>
-          <h1>{text.administratePaymenttypes}</h1>
-          <br/>
-          <Link to="/ukelonn/admin">{text.registerPayment}</Link><br/>
-          <Link to="/ukelonn/admin/paymenttypes/modify">{text.modifyPaymenttypes}</Link><br/>
-          <Link to="/ukelonn/admin/paymenttypes/create">{text.createPaymenttype}</Link><br/>
+            <Link to="/ukelonn/admin">
+                &lt;-
+                &nbsp;
+                {text.registerPayment}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.administratePaymenttypes}</h1>
+                </div>
+            </header>
+            <div>
+                <Link to="/ukelonn/admin/paymenttypes/modify">
+                    {text.modifyPaymenttypes}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/paymenttypes/create">
+                    {text.createPaymenttype}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+            </div>
           <br/>
           <button onClick={() => onLogout()}>{text.logout}</button>
           <br/>

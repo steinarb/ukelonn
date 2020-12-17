@@ -20,29 +20,38 @@ function PerformedJobs(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/">{parentTitle}</Link>
-            <br/>
-            <h1>{text.performedJobsFor} {account.firstName}</h1>
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <td>{text.date}</td>
-                        <td>{text.jobs}</td>
-                        <td>{text.amount}</td>
-                        <td>{text.paid}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {jobs.map((job) =>
-                        <tr key={job.id}>
-                            <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
-                            <td>{job.name}</td>
-                            <td>{job.transactionAmount}</td>
-                            <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
+            <Link to="/ukelonn/">
+                &lt;-
+                &nbsp;
+                {parentTitle}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.performedJobsFor} {account.firstName}</h1>
+                </div>
+            </header>
+            <div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.date}</td>
+                            <td>{text.jobs}</td>
+                            <td>{text.amount}</td>
+                            <td>{text.paid}</td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {jobs.map((job) =>
+                                  <tr key={job.id}>
+                                      <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
+                                      <td>{job.name}</td>
+                                      <td>{job.transactionAmount}</td>
+                                      <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
+                                  </tr>
+                                 )}
+                    </tbody>
+                </table>
+            </div>
             <br/>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

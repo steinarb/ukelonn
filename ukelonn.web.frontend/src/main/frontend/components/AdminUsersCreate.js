@@ -43,41 +43,71 @@ function AdminUsersCreate(props) {
 
     return (
         <div>
-            <h1>{text.addUser}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link>
-            <br/>
-            <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="username">{text.username}</label>
-                <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
-                { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
-                { usernameExists && <span>{text.usernameExists}</span> }
-                <br/>
-                <label htmlFor="email">{text.emailAddress}</label>
-                <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
-                { user.email && !isEmail(user.email) && <span>{text.notAValidEmailAddress}</span> }
-                <br/>
-                <label htmlFor="firstname">{text.firstName}</label>
-                <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
-                <br/>
-                <label htmlFor="lastname">{text.lastName}</label>
-                <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
-                <br/>
-                <label htmlFor="password1">{text.password}:</label>
-                <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
-                <br/>
-                <label htmlFor="password2">{text.repeatPassword}:</label>
-                <input id="password2" type="password" value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
-                { passwords.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
-                <br/>
+            <Link to="/ukelonn/admin/users">
+                &lt;-
+                &nbsp;
+                {text.administrateUsers}
+            </Link>
+            <header>
                 <div>
-                    <label htmlFor="administrator">{text.administrator}</label>
+                    <h1>{text.addUser}</h1>
+                </div>
+            </header>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <div>
                     <div>
-                        <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                        <label htmlFor="username">{text.username}</label>
+                        <div>
+                            <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
+                            { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
+                            { usernameExists && <span>{text.usernameExists}</span> }
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="email">{text.emailAddress}</label>
+                        <div>
+                            <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
+                            { user.email && !isEmail(user.email) && <span>{text.notAValidEmailAddress}</span> }
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="firstname">{text.firstName}</label>
+                        <div>
+                            <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="lastname">{text.lastName}</label>
+                        <div>
+                            <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="password1">{text.password}:</label>
+                        <div>
+                            <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="password2">{text.repeatPassword}:</label>
+                        <div>
+                            <input id="password2" type="password" value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
+                            { passwords.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="administrator">{text.administrator}</label>
+                        <div>
+                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>{text.createUser}</button>
+                        </div>
                     </div>
                 </div>
-                <br/>
-                <button onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>{text.createUser}</button>
             </form>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

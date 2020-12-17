@@ -20,27 +20,36 @@ function PerformedPayments(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/">{parentTitle}</Link>
-            <br/>
-            <h1>{text.performedPaymentsFor} {account.firstName}</h1>
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <td>{text.date}</td>
-                        <td>{text.payments}</td>
-                        <td>{text.amount}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {payments.map((payment) =>
-                        <tr key={payment.id}>
-                            <td>{moment(payment.transactionTime).format('YYYY-MM-DD')}</td>
-                            <td>{payment.name}</td>
-                            <td>{payment.transactionAmount}</td>
+            <Link to="/ukelonn/">
+                &lt;-
+                &nbsp;
+                {parentTitle}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.performedPaymentsFor} {account.firstName}</h1>
+                </div>
+            </header>
+            <div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.date}</td>
+                            <td>{text.paymentType}</td>
+                            <td>{text.amount}</td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {payments.map((payment) =>
+                                      <tr key={payment.id}>
+                                          <td>{moment(payment.transactionTime).format('YYYY-MM-DD')}</td>
+                                          <td>{payment.name}</td>
+                                          <td>{payment.transactionAmount}</td>
+                                      </tr>
+                                     )}
+                    </tbody>
+                </table>
+            </div>
             <br/>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

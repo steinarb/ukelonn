@@ -20,27 +20,36 @@ function StatisticsEarningsSumOverMonth(props) {
 
     return (
         <div>
-            <h1>{text.sumAmountEarnedPerMonthAndYear}</h1>
-            <br/>
-            <Link to={statistics}>{text.backToStatistics}</Link><br/>
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <td>{text.year}</td>
-                        <td>{text.month}</td>
-                        <td>{text.totalAmountEarned}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {earningsSumOverMonth.map((sumOverMonth) =>
-                        <tr key={''.concat(sumOverMonth.year, sumOverMonth.month)}>
-                            <td>{sumOverMonth.year}</td>
-                            <td>{sumOverMonth.month}</td>
-                            <td>{sumOverMonth.sum}</td>
+            <Link to={statistics}>
+                &lt;-
+                &nbsp;
+                {text.backToStatistics}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.sumAmountEarnedPerMonthAndYear}</h1>
+                </div>
+            </header>
+            <div>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.year}</td>
+                            <td>{text.month}</td>
+                            <td>{text.totalAmountEarned}</td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {earningsSumOverMonth.map((sumOverMonth) =>
+                                                  <tr key={''.concat(sumOverMonth.year, sumOverMonth.month)}>
+                                                      <td>{sumOverMonth.year}</td>
+                                                      <td>{sumOverMonth.month}</td>
+                                                      <td>{sumOverMonth.sum}</td>
+                                                  </tr>
+                                                 )}
+                    </tbody>
+                </table>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>

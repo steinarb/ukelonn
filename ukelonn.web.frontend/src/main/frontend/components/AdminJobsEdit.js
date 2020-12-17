@@ -31,43 +31,69 @@ function AdminJobsEdit(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
-            <br/>
-            <h1>{text.modifyJobsFor} {account.firstName}</h1>
+            <Link to="/ukelonn/admin/jobtypes">
+                &lt;-
+                &nbsp;
+                {text.administrateJobsAndJobTypes}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.modifyJobsFor} {account.firstName}</h1>
+                </div>
+            </header>
+            <div>
+                <label htmlFor="account-selector">{text.chooseAccount}:</label>
+                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+                <br/>
 
-            <label htmlFor="account-selector">{text.chooseAccount}:</label>
-            <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
-            <br/>
-
-            <table className="table table-bordered">
-                <thead>
-                    <tr>
-                        <td>{text.date}</td>
-                        <td>{text.jobs}</td>
-                        <td>{text.amount}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {jobs.map((job) =>
-                        <tr onClick={ ()=>onRowClick(job) } key={job.id}>
-                            <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
-                            <td>{job.name}</td>
-                            <td>{job.transactionAmount}</td>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.date}</td>
+                            <td>{text.jobs}</td>
+                            <td>{text.amount}</td>
                         </tr>
-                    )}
-                </tbody>
-            </table>
-            <h2>{text.modifyJob}</h2>
-            <label htmlFor="jobtype">{text.jobType}</label>
-            <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
-            <br/>
-            <label htmlFor="amount">{text.amount}</label>
-            <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
-            <br/>
-            <label htmlFor="date">{text.date}</label>
-            <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
-            <br/>
-            <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJobType}</button>
+                    </thead>
+                    <tbody>
+                        {jobs.map((job) =>
+                                  <tr onClick={ ()=>onRowClick(job) } key={job.id}>
+                                      <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
+                                      <td>{job.name}</td>
+                                      <td>{job.transactionAmount}</td>
+                                  </tr>
+                                 )}
+                    </tbody>
+                </table>
+                <h2>{text.modifyJob}</h2>
+                <form onSubmit={ e => { e.preventDefault(); }}>
+                    <div>
+                        <div>
+                            <label htmlFor="jobtype">{text.jobType}</label>
+                            <div>
+                                <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            </div>
+                        </div>
+                        <div>
+                            <label htmlFor="amount">{text.amount}</label>
+                            <div>
+                                <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
+                            </div>
+                        </div>
+                        <div>
+                            <label htmlFor="date">{text.date}</label>
+                            <div>
+                                <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
+                            </div>
+                        </div>
+                        <div>
+                            <div/>
+                            <div>
+                                <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJobType}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <br/>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

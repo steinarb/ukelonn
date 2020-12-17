@@ -36,34 +36,61 @@ function AdminUsersModify(props) {
 
     return (
         <div>
-            <h1>{text.modifyUsers}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link>
-            <br/>
-            <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="users">{text.chooseUser}</label>
-                <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
-                <br/>
-                <label htmlFor="username">{text.username}</label>
-                <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
-                <br/>
-                <label htmlFor="email">{text.emailAddress}</label>
-                <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
-                <br/>
-                <label htmlFor="firstname">{text.firstName}</label>
-                <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
-                <br/>
-                <label htmlFor="lastname">{text.lastName}</label>
-                <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
-                <br/>
+            <Link to="/ukelonn/admin/users">
+                &lt;-
+                &nbsp;
+                {text.administrateUsers}
+            </Link>
+            <header>
                 <div>
-                    <label htmlFor="administrator">{text.administrator}</label>
+                    <h1>{text.modifyUsers}</h1>
+                </div>
+            </header>
+            <form onSubmit={ e => { e.preventDefault(); }}>
+                <div>
                     <div>
-                        <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                        <label htmlFor="users">{text.chooseUser}</label>
+                        <div>
+                            <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="username">{text.username}</label>
+                        <div>
+                            <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="email">{text.emailAddress}</label>
+                        <div>
+                            <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="firstname">{text.firstName}</label>
+                        <div>
+                            <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="lastname">{text.lastName}</label>
+                        <div>
+                            <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="administrator">{text.administrator}</label>
+                        <div>
+                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveUpdatedUser(user, userIsAdministrator)}>{text.saveUserModifications}</button>
+                        </div>
                     </div>
                 </div>
-                <br/>
-                <button onClick={() => onSaveUpdatedUser(user, userIsAdministrator)}>{text.saveUserModifications}</button>
             </form>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

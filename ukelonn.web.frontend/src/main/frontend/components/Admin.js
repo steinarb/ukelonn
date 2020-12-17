@@ -47,35 +47,97 @@ function Admin(props) {
 
     return (
         <div>
-            <h1>{text.registerPayment}</h1>
-            <BonusBanner/>
+            <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
+            <header>
+                <div>
+                    <h1>{text.registerPayment}</h1>
+                </div>
+            </header>
+            <div>
+                <BonusBanner/>
+            </div>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="account-selector">{text.chooseWhoToPayTo}:</label>
-                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
-                <br/>
-                <EarningsMessage /><br/>
-                <label htmlFor="account-balance">{text.owedAmount}:</label><input id="account-balance" type="text" value={account.balance} readOnly={true} /><br/>
-                <label htmlFor="paymenttype-selector">{text.paymentType}:</label>
-                <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
-                <br/>
-                <label htmlFor="amount">{text.amount}:</label>
-                <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
-                <br/>
-                <br/>
-                <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>{text.registerPayment}</button>
+                <div>
+                    <div>
+                        <label htmlFor="account-selector">{text.chooseWhoToPayTo}:</label>
+                        <div>
+                            <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+                        </div>
+                    </div>
+                    <EarningsMessage />
+                    <br/>
+                    <div>
+                        <label htmlFor="account-balance">{text.owedAmount}:</label>
+                        <div>
+                            <input id="account-balance" type="text" value={account.balance} readOnly={true} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="paymenttype-selector">{text.paymentType}:</label>
+                        <div>
+                            <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.amount}:</label>
+                        <div>
+                            <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>{text.registerPayment}</button>
+                        </div>
+                    </div>
+                </div>
             </form>
-            <br/>
-            <Link to={performedjobs}>{text.performedJobs}</Link><br/>
-            <Link to={performedpayments}>{text.performedPayments}</Link><br/>
-            <Link to={statistics}>{text.statistics}</Link><br/>
-            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link><br/>
-            <Link to="/ukelonn/admin/paymenttypes">{text.administratePaymenttypes}</Link><br/>
-            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link><br/>
-            <Link to="/ukelonn/admin/bonuses">{text.administrateBonuses}</Link><br/>
+            <div>
+                <Link to={performedjobs}>
+                    {text.performedJobs}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to={performedpayments}>
+                    {text.performedPayments}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to={statistics}>
+                    {text.statistics}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/jobtypes">
+                    {text.administrateJobsAndJobTypes}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/paymenttypes">
+                    {text.administratePaymenttypes}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/users">
+                    {text.administrateUsers}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/bonuses">
+                    {text.administrateBonuses}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }

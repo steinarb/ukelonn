@@ -21,11 +21,30 @@ function Statistics(props) {
 
     return (
         <div>
-            <h1>{text.workStatistics}</h1>
-            <br/>
-            <Link to="/ukelonn/">{text.back}</Link><br/>
-            <Link to={sumoveryear}>{text.sumEarnedPerYear}</Link><br/>
-            <Link to={sumovermonth}>{text.sumEarnedPerMonth}</Link><br/>
+            <Link to="/ukelonn/">
+                &lt;-
+                &nbsp;
+                {text.back}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.workStatistics}</h1>
+                </div>
+            </header>
+            <div>
+                <Link to={sumoveryear}>
+                    {text.sumEarnedPerYear}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to={sumovermonth}>
+                    {text.sumEarnedPerMonth}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>

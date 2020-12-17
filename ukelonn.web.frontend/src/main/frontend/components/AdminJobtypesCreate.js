@@ -20,18 +20,37 @@ function AdminJobtypesCreate(props) {
 
     return (
         <div>
-            <h1>{text.createNewJobType}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
-            <br/>
+            <Link to="/ukelonn/admin/jobtypes">
+                &lt;-
+                &nbsp;
+                {text.administrateJobsAndJobTypes}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.createNewJobType}</h1>
+                </div>
+            </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="amount">{text.nameOfJobType}</label>
-                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
-                <br/>
-                <label htmlFor="amount">{text.amountForJobType}</label>
-                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                <br/>
-                <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.createNewJobType}</button>
+                <div>
+                    <div>
+                        <label htmlFor="amount">{text.nameOfJobType}</label>
+                        <div>
+                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.amountForJobType}</label>
+                        <div>
+                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.createNewJobType}</button>
+                        </div>
+                    </div>
+                </div>
             </form>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

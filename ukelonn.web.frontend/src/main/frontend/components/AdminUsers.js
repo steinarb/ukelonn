@@ -16,16 +16,36 @@ function AdminUsers(props) {
 
     return (
         <div>
-            <h1>{text.administrateUsers}Administrere brukere</h1>
-            <br/>
-            <Link to="/ukelonn/admin">{text.registerPayment}</Link><br/>
-            <br/>
-            <Link to="/ukelonn/admin/users/modify">{text.modifyUsers}</Link>
-            <br/>
-            <Link to="/ukelonn/admin/users/password">{text.changeUsersPassword}</Link>
-            <br/>
-            <Link to="/ukelonn/admin/users/create">{text.addUser}</Link>
-            <br/>
+            <Link to="/ukelonn/admin">
+                &lt;-
+                &nbsp;
+                {text.registerPayment}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.administrateUsers}Administrere brukere</h1>
+                </div>
+            </header>
+            <div>
+                <Link to="/ukelonn/admin/users/modify">
+                    {text.modifyUsers}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/users/password">
+                    {text.changeUsersPassword}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/users/create">
+                    {text.addUser}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+            </div>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
             <a href="../../..">{text.returnToTop}</a>

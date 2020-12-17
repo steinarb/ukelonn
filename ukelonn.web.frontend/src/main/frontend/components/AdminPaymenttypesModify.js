@@ -22,21 +22,43 @@ function AdminPaymenttypesModify(props) {
 
     return (
         <div>
-            <h1>{text.modifyPaymenttypes}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/paymenttypes">{text.administratePaymenttypes}</Link>
-            <br/>
+            <Link to="/ukelonn/admin/paymenttypes">
+                &lt;-
+                &nbsp;
+                {text.administratePaymenttypes}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.modifyPaymenttypes}</h1>
+                </div>
+            </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="paymenttype">{text.choosePaymentType}</label>
-                <PaymenttypesBox id="paymenttype" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
-                <br/>
-                <label htmlFor="amount">{text.modifyPaymentTypeName}</label>
-                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
-                <br/>
-                <label htmlFor="amount">{text.modifyPaymentTypeAmount}</label>
-                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                <br/>
-                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.saveChangesToPaymentType}</button>
+                <div>
+                    <div>
+                        <label htmlFor="paymenttype">{text.choosePaymentType}</label>
+                        <div>
+                            <PaymenttypesBox id="paymenttype" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.modifyPaymentTypeName}</label>
+                        <div>
+                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.modifyPaymentTypeAmount}</label>
+                        <div>
+                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.saveChangesToPaymentType}</button>
+                        </div>
+                    </div>
+                </div>
             </form>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

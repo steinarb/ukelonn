@@ -32,22 +32,44 @@ function AdminUsersChangePassword(props) {
 
     return (
         <div>
-            <h1>{text.changeUsersPassword}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link>
-            <br/>
+            <Link to="/ukelonn/admin/users">
+                &lt;-
+                &nbsp;
+                {text.administrateUsers}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.changeUsersPassword}</h1>
+                </div>
+            </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="users">{text.chooseUser}</label>
-                <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
-                <br/>
-                <label htmlFor="password1">{text.password}:</label>
-                <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
-                <br/>
-                <label htmlFor="password2">{text.repeatPassword}:</label>
-                <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
-                { passwords.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
-                <br/>
-                <button onClick={() => onSaveUpdatedPassword(user, passwords)}>{text.changePassword}</button>
+                <div>
+                    <div>
+                        <label htmlFor="users">{text.chooseUser}</label>
+                        <div>
+                            <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="password1">{text.password}:</label>
+                        <div>
+                            <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="password2">{text.repeatPassword}:</label>
+                        <div>
+                            <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
+                            { passwords.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveUpdatedPassword(user, passwords)}>{text.changePassword}</button>
+                        </div>
+                    </div>
+                </div>
             </form>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>

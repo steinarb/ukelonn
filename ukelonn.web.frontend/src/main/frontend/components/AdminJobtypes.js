@@ -16,13 +16,43 @@ function AdminJobtypes(props) {
 
     return (
         <div>
-            <h1>{text.administrateJobsAndJobTypes}</h1>
+            <Link to="/ukelonn/">
+                &lt;-
+                &nbsp;
+                {text.registerPayment}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.administrateJobsAndJobTypes}</h1>
+                </div>
+            </header>
             <br/>
-            <Link to="/ukelonn/admin">{text.registerPayment}</Link><br/>
-            <Link to="/ukelonn/admin/jobtypes/modify">{text.modifyJobTypes}</Link><br/>
-            <Link to="/ukelonn/admin/jobtypes/create">{text.createNewJobType}</Link><br/>
-            <Link to="/ukelonn/admin/jobs/delete">{text.deleteJobs}</Link><br/>
-            <Link to="/ukelonn/admin/jobs/edit">{text.modifyJobs}</Link><br/>
+            <div>
+                <Link to="/ukelonn/admin/jobtypes/modify">
+                    {text.modifyJobTypes}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/jobtypes/create">
+                    {text.createNewJobType}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/jobs/delete">
+                    {text.deleteJobs}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+                <Link to="/ukelonn/admin/jobs/edit">
+                    {text.modifyJobs}
+                    &nbsp;
+                    -&gt;
+                </Link>
+                <br/>
+            </div>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>

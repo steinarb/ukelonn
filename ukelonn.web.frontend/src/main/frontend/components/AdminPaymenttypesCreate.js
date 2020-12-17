@@ -20,18 +20,37 @@ function AdminPaymenttypesCreate(props) {
 
     return (
         <div>
-            <h1>{text.createPaymenttype}</h1>
-            <br/>
-            <Link to="/ukelonn/admin/paymenttypes">{text.administratePaymenttypes}</Link>
-            <br/>
+            <Link to="/ukelonn/admin/paymenttypes">
+                &lt;-
+                &nbsp;
+                {text.administratePaymenttypes}
+            </Link>
+            <header>
+                <div>
+                    <h1>{text.createPaymenttype}</h1>
+                </div>
+            </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="amount">{text.paymentTypeName}</label>
-                <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
-                <br/>
-                <label htmlFor="amount">{text.paymentTypeAmount}</label>
-                <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
-                <br/>
-                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.createNewPaymentType}</button>
+                <div>
+                    <div>
+                        <label htmlFor="amount">{text.paymentTypeName}</label>
+                        <div>
+                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="amount">{text.paymentTypeAmount}</label>
+                        <div>
+                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                        </div>
+                    </div>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.createNewPaymentType}</button>
+                        </div>
+                    </div>
+                </div>
             </form>
             <br/>
             <button onClick={() => onLogout()}>{text.logout}</button>
