@@ -16,38 +16,39 @@ function AdminPaymenttypesModify(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
+    let { text, transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
     const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
     return (
         <div>
-            <h1>Endre utbetalingstyper</h1>
+            <h1>{text.modifyPaymenttypes}</h1>
             <br/>
-            <Link to="/ukelonn/admin/paymenttypes">Administer utbetalingstyper</Link>
+            <Link to="/ukelonn/admin/paymenttypes">{text.administratePaymenttypes}</Link>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="paymenttype">Velg betalingstype</label>
+                <label htmlFor="paymenttype">{text.choosePaymentType}</label>
                 <PaymenttypesBox id="paymenttype" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                 <br/>
-                <label htmlFor="amount">Endre navn på betalingstype</label>
+                <label htmlFor="amount">{text.modifyPaymentTypeName}</label>
                 <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
                 <br/>
-                <label htmlFor="amount">Endre beløp for betalingstype</label>
+                <label htmlFor="amount">{text.modifyPaymentTypeAmount}</label>
                 <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lagre endringer i betalingstype</button>
+                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.saveChangesToPaymentType}</button>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         paymenttypes: state.paymenttypes,

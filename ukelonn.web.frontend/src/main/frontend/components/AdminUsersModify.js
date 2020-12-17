@@ -20,6 +20,7 @@ function AdminUsersModify(props) {
     }
 
     let {
+        text,
         user,
         userIsAdministrator,
         users,
@@ -35,45 +36,46 @@ function AdminUsersModify(props) {
 
     return (
         <div>
-            <h1>Endre brukere</h1>
+            <h1>{text.modifyUsers}</h1>
             <br/>
-            <Link to="/ukelonn/admin/users">Administer brukere</Link>
+            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="users">Velg bruker</label>
+                <label htmlFor="users">{text.chooseUser}</label>
                 <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                 <br/>
-                <label htmlFor="username">Brukernavn</label>
+                <label htmlFor="username">{text.username}</label>
                 <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
                 <br/>
-                <label htmlFor="email">Epostadresse</label>
+                <label htmlFor="email">{text.emailAddress}</label>
                 <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
                 <br/>
-                <label htmlFor="firstname">Fornavn</label>
+                <label htmlFor="firstname">{text.firstName}</label>
                 <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
                 <br/>
-                <label htmlFor="lastname">Etternavn</label>
+                <label htmlFor="lastname">{text.lastName}</label>
                 <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                 <br/>
                 <div>
-                    <label htmlFor="administrator">Administrator</label>
+                    <label htmlFor="administrator">{text.administrator}</label>
                     <div>
                         <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
                     </div>
                 </div>
                 <br/>
-                <button onClick={() => onSaveUpdatedUser(user, userIsAdministrator)}>Lagre endringer av bruker</button>
+                <button onClick={() => onSaveUpdatedUser(user, userIsAdministrator)}>{text.saveUserModifications}</button>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         user: state.user,
         userIsAdministrator: state.userIsAdministrator,
         users: state.users,

@@ -27,24 +27,24 @@ function AdminJobsEdit(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
+    let { text, account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
 
     return (
         <div>
-            <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
             <br/>
-            <h1>Endre jobber for {account.firstName}</h1>
+            <h1>{text.modifyJobsFor} {account.firstName}</h1>
 
-            <label htmlFor="account-selector">Velg konto:</label>
+            <label htmlFor="account-selector">{text.chooseAccount}:</label>
             <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
             <br/>
 
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <td>Dato</td>
-                        <td>Jobber</td>
-                        <td>Beløp</td>
+                        <td>{text.date}</td>
+                        <td>{text.jobs}</td>
+                        <td>{text.amount}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,28 +57,29 @@ function AdminJobsEdit(props) {
                     )}
                 </tbody>
             </table>
-            <h2>Endre jobb</h2>
-            <label htmlFor="jobtype">Jobbtype</label>
+            <h2>{text.modifyJob}</h2>
+            <label htmlFor="jobtype">{text.jobType}</label>
             <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
             <br/>
-            <label htmlFor="amount">Beløp</label>
+            <label htmlFor="amount">{text.amount}</label>
             <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
             <br/>
-            <label htmlFor="date">Dato</label>
+            <label htmlFor="date">{text.date}</label>
             <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
             <br/>
-            <button onClick={() => onSaveEditedJob(selectedjob)}>Lagre endret jobb</button>
+            <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJobType}</button>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

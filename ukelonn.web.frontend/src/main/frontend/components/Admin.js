@@ -24,6 +24,7 @@ function Admin(props) {
     }
 
     let {
+        text,
         account = {},
         payment,
         paymenttype,
@@ -46,41 +47,42 @@ function Admin(props) {
 
     return (
         <div>
-            <h1>Registrer betaling</h1>
+            <h1>{text.registerPayment}</h1>
             <BonusBanner/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="account-selector">Velg hvem det skal betales til:</label>
+                <label htmlFor="account-selector">{text.chooseWhoToPayTo}:</label>
                 <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                 <br/>
                 <EarningsMessage /><br/>
-                <label htmlFor="account-balance">Til gode:</label><input id="account-balance" type="text" value={account.balance} readOnly={true} /><br/>
-                <label htmlFor="paymenttype-selector">Type av utbetaling:</label>
+                <label htmlFor="account-balance">{text.owedAmount}:</label><input id="account-balance" type="text" value={account.balance} readOnly={true} /><br/>
+                <label htmlFor="paymenttype-selector">{text.paymentType}:</label>
                 <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                 <br/>
-                <label htmlFor="amount">Beløp:</label>
+                <label htmlFor="amount">{text.amount}:</label>
                 <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
                 <br/>
-                <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
+                <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>{text.registerPayment}</button>
             </form>
             <br/>
-            <Link to={performedjobs}>Utforte jobber</Link><br/>
-            <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
-            <Link to={statistics}>Statistikker</Link><br/>
-            <Link to="/ukelonn/admin/jobtypes">Administrer jobber og jobbtyper</Link><br/>
-            <Link to="/ukelonn/admin/paymenttypes">Administrere utbetalingstyper</Link><br/>
-            <Link to="/ukelonn/admin/users">Administrere brukere</Link><br/>
-            <Link to="/ukelonn/admin/bonuses">Administrere bonuser</Link><br/>
+            <Link to={performedjobs}>{text.performedJobs}</Link><br/>
+            <Link to={performedpayments}>{text.performedPayments}</Link><br/>
+            <Link to={statistics}>{text.statistics}</Link><br/>
+            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link><br/>
+            <Link to="/ukelonn/admin/paymenttypes">{text.administratePaymenttypes}</Link><br/>
+            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link><br/>
+            <Link to="/ukelonn/admin/bonuses">{text.administrateBonuses}</Link><br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../..">Tilbake til topp</a>
+            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

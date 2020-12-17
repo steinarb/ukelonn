@@ -12,27 +12,28 @@ function AdminJobtypes(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
-            <h1>Administrer jobber og jobbtyper</h1>
+            <h1>{text.administrateJobsAndJobTypes}</h1>
             <br/>
-            <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
-            <Link to="/ukelonn/admin/jobtypes/modify">Endre jobbtyper</Link><br/>
-            <Link to="/ukelonn/admin/jobtypes/create">Lag ny jobbtype</Link><br/>
-            <Link to="/ukelonn/admin/jobs/delete">Slett jobber</Link><br/>
-            <Link to="/ukelonn/admin/jobs/edit">Endre jobber</Link><br/>
+            <Link to="/ukelonn/admin">{text.registerPayment}</Link><br/>
+            <Link to="/ukelonn/admin/jobtypes/modify">{text.modifyJobTypes}</Link><br/>
+            <Link to="/ukelonn/admin/jobtypes/create">{text.createNewJobType}</Link><br/>
+            <Link to="/ukelonn/admin/jobs/delete">{text.deleteJobs}</Link><br/>
+            <Link to="/ukelonn/admin/jobs/edit">{text.modifyJobs}</Link><br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 };
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };

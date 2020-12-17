@@ -22,6 +22,7 @@ function AdminUsersCreate(props) {
     }
 
     let {
+        text,
         usernames,
         user,
         userIsAdministrator,
@@ -42,52 +43,53 @@ function AdminUsersCreate(props) {
 
     return (
         <div>
-            <h1>Legg til ny bruker</h1>
+            <h1>{text.addUser}</h1>
             <br/>
-            <Link to="/ukelonn/admin/users">Administer brukere</Link>
+            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="username">Brukernavn</label>
+                <label htmlFor="username">{text.username}</label>
                 <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
-                { usernameEmpty && <span>Brukernavn kan ikke være tomt</span> }
-                { usernameExists && <span>Brukernavnet finnes fra før</span> }
+                { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
+                { usernameExists && <span>{text.usernameExists}</span> }
                 <br/>
-                <label htmlFor="email">Epostadresse</label>
+                <label htmlFor="email">{text.emailAddress}</label>
                 <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
-                { user.email && !isEmail(user.email) && <span>Ikke en gyldig epostadresse</span> }
+                { user.email && !isEmail(user.email) && <span>{text.notAValidEmailAddress}</span> }
                 <br/>
-                <label htmlFor="firstname">Fornavn</label>
+                <label htmlFor="firstname">{text.firstName}</label>
                 <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
                 <br/>
-                <label htmlFor="lastname">Etternavn</label>
+                <label htmlFor="lastname">{text.lastName}</label>
                 <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                 <br/>
-                <label htmlFor="password1">Passord:</label>
+                <label htmlFor="password1">{text.password}:</label>
                 <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                 <br/>
-                <label htmlFor="password2">Gjenta passord:</label>
+                <label htmlFor="password2">{text.repeatPassword}:</label>
                 <input id="password2" type="password" value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
-                { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                { passwords.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                 <br/>
                 <div>
-                    <label htmlFor="administrator">Administrator</label>
+                    <label htmlFor="administrator">{text.administrator}</label>
                     <div>
                         <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
                     </div>
                 </div>
                 <br/>
-                <button onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>Lag bruker</button>
+                <button onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>{text.createUser}</button>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         user: state.user,

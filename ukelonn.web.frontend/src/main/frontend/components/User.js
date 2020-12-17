@@ -22,8 +22,8 @@ function User(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = props;
-    const title = 'Ukelønn for ' + account.firstName;
+    let { text, account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = props;
+    const title = text.weeklyAllowanceFor + ' ' + account.firstName;
     const username = account.username;
     const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
     const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
@@ -34,29 +34,29 @@ function User(props) {
             <Notification notificationMessage={notificationMessage}/>
             <h1>{title}</h1>
             <BonusBanner/>
-            <div>Til gode: { account.balance }</div><br/>
+            <div>{text.owedAmount} {account.balance}</div><br/>
             <EarningsMessage /><br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="jobtype">Velg jobb</label>
+                <label htmlFor="jobtype">{text.chooseJob}</label>
                 <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
                 <br/>
-                <label htmlFor="amount">Beløp</label>
+                <label htmlFor="amount">{text.amount}</label>
                 <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
                 <br/>
-                <label htmlFor="date">Dato</label>
+                <label htmlFor="date">{text.date}</label>
                 <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
                 <br/>
 
-                <button onClick={() => onRegisterJob(performedjob)}>Registrer jobb</button>
+                <button onClick={() => onRegisterJob(performedjob)}>{text.registerJob}</button>
             </form>
             <br/>
-            <Link to={performedjobs}>Utforte jobber</Link><br/>
-            <Link to={performedpayments}>Siste utbetalinger til bruker</Link><br/>
-            <Link to={statistics}>Statistikker</Link><br/>
+            <Link to={performedjobs}>{text.performedJobs}</Link><br/>
+            <Link to={performedpayments}>{text.performedPayments}</Link><br/>
+            <Link to={statistics}>{text.statistics}</Link><br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../..">Tilbake til topp</a>
+            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }
@@ -70,6 +70,7 @@ const emptyJob = {
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

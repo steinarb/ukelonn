@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -1373,6 +1374,26 @@ public class UkelonnServiceProviderTest {
         verify(useradmin, times(1)).getUser(anyString());
         verify(useradmin, times(0)).getRolesForUser(anyString());
         verify(useradmin, times(0)).addUserRoles(any());
+    }
+
+    @Test
+    public void testDefaultLocale() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        assertEquals("nb_NO", ukelonn.defaultLocale());
+    }
+
+    @Test
+    public void testAvailableLocales() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        List<String> locales = ukelonn.availableLocales();
+        assertThat(locales).isNotEmpty().contains(ukelonn.defaultLocale());
+    }
+
+    @Test
+    public void testDisplayTextsForDefaultLocale() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        Map<String, String> displayTexts = ukelonn.displayTexts(ukelonn.defaultLocale());
+        assertThat(displayTexts).isNotEmpty();
     }
 
     private Bonus disableBonus(Bonus bonus) {

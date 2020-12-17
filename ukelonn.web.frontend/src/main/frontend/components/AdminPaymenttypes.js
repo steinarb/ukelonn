@@ -12,25 +12,26 @@ function AdminPaymenttypes(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
-          <h1>Administrer betalingstyper</h1>
+          <h1>{text.administratePaymenttypes}</h1>
           <br/>
-          <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
-          <Link to="/ukelonn/admin/paymenttypes/modify">Endre utbetalingstyper</Link><br/>
-          <Link to="/ukelonn/admin/paymenttypes/create">Lag ny utbetalingstype</Link><br/>
+          <Link to="/ukelonn/admin">{text.registerPayment}</Link><br/>
+          <Link to="/ukelonn/admin/paymenttypes/modify">{text.modifyPaymenttypes}</Link><br/>
+          <Link to="/ukelonn/admin/paymenttypes/create">{text.createPaymenttype}</Link><br/>
           <br/>
-          <button onClick={() => onLogout()}>Logout</button>
+          <button onClick={() => onLogout()}>{text.logout}</button>
           <br/>
-          <a href="../../..">Tilbake til topp</a>
+          <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };

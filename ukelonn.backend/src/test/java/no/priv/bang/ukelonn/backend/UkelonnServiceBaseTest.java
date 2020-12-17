@@ -18,6 +18,7 @@ package no.priv.bang.ukelonn.backend;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -162,6 +163,24 @@ public class UkelonnServiceBaseTest {
 
                 @Override
                 public List<Bonus> deleteBonus(Bonus removedBonus) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public String defaultLocale() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public List<String> availableLocales() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public Map<String, String> displayTexts(String locale) {
                     // TODO Auto-generated method stub
                     return null;
                 }

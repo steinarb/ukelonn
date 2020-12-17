@@ -23,26 +23,26 @@ function AdminJobsDelete(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
+    let { text, account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
 
     return (
         <div>
-            <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
             <br/>
-            <h1>Slett feilregisterte jobber for {account.firstName}</h1>
+            <h1>{text.deleteErronouslyRegisteredJobsFor}Slett feilregisterte jobber for {account.firstName}</h1>
 
-            <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
-               <em>Ikke</em> slett jobber som skal utbetales</p>
-            <label htmlFor="account-selector">Velg konto:</label>
+            <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}<br/>
+                <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
+            <label htmlFor="account-selector">{text.chooseAccount}:</label>
             <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
 
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <td>Slett</td>
-                        <td>Dato</td>
-                        <td>Jobber</td>
-                        <td>Beløp</td>
+                        <td>{text.delete}</td>
+                        <td>{text.date}</td>
+                        <td>{text.jobs}</td>
+                        <td>{text.amount}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,18 +56,19 @@ function AdminJobsDelete(props) {
                     )}
                 </tbody>
             </table>
-            <button onClick={() => onDeleteMarkedJobs(account, jobs)}>Slett merkede jobber</button>
+            <button onClick={() => onDeleteMarkedJobs(account, jobs)}>{text.deleteMarkedJobs}</button>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

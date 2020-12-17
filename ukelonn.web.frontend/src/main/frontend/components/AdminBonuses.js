@@ -12,35 +12,35 @@ function AdminBonuses(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
             <Link to="/ukelonn/">
                 &lt;-
                 &nbsp;
-                Register betaling
+                {text.registerPayment}
             </Link>
             <header>
                 <div>
-                    <h1>Administrer bonuser</h1>
+                    <h1>{text.administrateBonuses}</h1>
                 </div>
             </header>
             <div>
                 <Link to="/ukelonn/admin/bonuses/modify">
-                    Endre bonuser
+                    {text.modifyBonuses}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
                 <Link to="/ukelonn/admin/bonuses/create">
-                    Lag ny bonus
+                    {text.createNewBonus}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
                 <Link to="/ukelonn/admin/bonuses/delete">
-                    Slett bonus
+                    {text.deleteBonuses}
                     &nbsp;
                     -&gt;
                 </Link>
@@ -48,15 +48,16 @@ function AdminBonuses(props) {
             </div>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 };
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };

@@ -19,6 +19,7 @@ function AdminUsersChangePassword(props) {
     }
 
     let {
+        text,
         users,
         user,
         passwords,
@@ -31,33 +32,34 @@ function AdminUsersChangePassword(props) {
 
     return (
         <div>
-            <h1>Bytt passord på bruker</h1>
+            <h1>{text.changeUsersPassword}</h1>
             <br/>
-            <Link to="/ukelonn/admin/users">Administer brukere</Link>
+            <Link to="/ukelonn/admin/users">{text.administrateUsers}</Link>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="users">Velg bruker</label>
+                <label htmlFor="users">{text.chooseUser}</label>
                 <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
                 <br/>
-                <label htmlFor="password1">Passord:</label>
+                <label htmlFor="password1">{text.password}:</label>
                 <input id="password1" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                 <br/>
-                <label htmlFor="password2">Gjenta passord:</label>
+                <label htmlFor="password2">{text.repeatPassword}:</label>
                 <input id="password2" type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
-                { passwords.passwordsNotIdentical && <span>Passordene er ikke identiske</span> }
+                { passwords.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                 <br/>
-                <button onClick={() => onSaveUpdatedPassword(user, passwords)}>Endre passord</button>
+                <button onClick={() => onSaveUpdatedPassword(user, passwords)}>{text.changePassword}</button>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         users: state.users,

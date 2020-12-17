@@ -14,7 +14,7 @@ function PerformedPayments(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, payments, onLogout } = props;
+    let { text, account, payments, onLogout } = props;
     let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parentTitle } = queryParams;
 
@@ -22,13 +22,13 @@ function PerformedPayments(props) {
         <div>
             <Link to="/ukelonn/">{parentTitle}</Link>
             <br/>
-            <h1>Utførte utbetalinger til {account.firstName}</h1>
+            <h1>{text.performedPaymentsFor} {account.firstName}</h1>
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <td>Dato</td>
-                        <td>Utbetalinger</td>
-                        <td>Beløp</td>
+                        <td>{text.date}</td>
+                        <td>{text.payments}</td>
+                        <td>{text.amount}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,15 +43,16 @@ function PerformedPayments(props) {
             </table>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../..">Tilbake til topp</a>
+            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         parentTitle: state.parentTitle,

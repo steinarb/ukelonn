@@ -18,6 +18,7 @@ function AdminBonusesModify(props) {
     }
 
     let {
+        text,
         allbonuses,
         bonus,
         onUpdateBonus,
@@ -46,17 +47,17 @@ function AdminBonusesModify(props) {
             <Link to="/ukelonn/admin/bonuses">
                 &lt;-
                 &nbsp;
-                Administer bonuser
+                {text.administrateBonuses}
             </Link>
             <header>
                 <div>
-                    <h1>Endre bonuser</h1>
+                    <h1>{text.modifyBonuses}</h1>
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div>
                     <div>
-                        <label htmlFor="bonus">Velg bonus</label>
+                        <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
                             <select id="bonus" value={bonusId} onChange={e => onUpdateBonus(bonuses.find(b => b.bonusId === parseInt(e.target.value)))}>
                                 {bonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
@@ -64,43 +65,43 @@ function AdminBonusesModify(props) {
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="enabled">Aktivert</label>
+                        <label htmlFor="enabled">{text.activated}</label>
                         <div>
                             <input id="enabled" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="iconurl">Ikon-URL</label>
+                        <label htmlFor="iconurl">{text.iconURL}</label>
                         <div>
                             <input id="iconurl" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="title">Tittel</label>
+                        <label htmlFor="title">{text.title}</label>
                         <div>
                             <input id="title" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="description">Beskrivelse</label>
+                        <label htmlFor="description">{text.description}</label>
                         <div>
                             <input id="description" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="bonusfactor">Bonusfaktor</label>
+                        <label htmlFor="bonusfactor">{text.bonusFactor}</label>
                         <div>
                             <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="startdate">Startdato</label>
+                        <label htmlFor="startdate">{text.startDate}</label>
                         <div>
                             <DatePicker selected={startDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateStartDate(bonus, d)} readOnly={true} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="enddate">Sluttdato</label>
+                        <label htmlFor="enddate">{text.endDate}</label>
                         <div>
                             <DatePicker selected={endDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateEndDate(bonus, d)} readOnly={true} />
                         </div>
@@ -108,19 +109,20 @@ function AdminBonusesModify(props) {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onModifyBonus(bonus)}>Lagre endringer i bonus</button>
+                            <button onClick={() => onModifyBonus(bonus)}>{text.saveChangesToBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,

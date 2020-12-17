@@ -14,21 +14,21 @@ function StatisticsEarningsSumOverMonth(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { earningsSumOverMonth, onLogout } = props;
+    let { text, earningsSumOverMonth, onLogout } = props;
     const username = findUsernameFromAccountOrQueryParameter(props);
     const statistics = '/ukelonn/statistics?' + stringify({ username });
 
     return (
         <div>
-            <h1>Sum av lønn pr måned og år</h1>
+            <h1>{text.sumAmountEarnedPerMonthAndYear}</h1>
             <br/>
-            <Link to={statistics}>Tilbake til statistikk</Link><br/>
+            <Link to={statistics}>{text.backToStatistics}</Link><br/>
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <td>År</td>
-                        <td>Måned</td>
-                        <td>Totalt tjent</td>
+                        <td>{text.year}</td>
+                        <td>{text.month}</td>
+                        <td>{text.totalAmountEarned}</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,15 +42,16 @@ function StatisticsEarningsSumOverMonth(props) {
                 </tbody>
             </table>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

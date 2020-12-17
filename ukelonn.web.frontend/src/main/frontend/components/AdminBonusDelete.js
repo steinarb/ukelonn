@@ -22,6 +22,7 @@ function AdminBonusesDelete(props) {
     }
 
     let {
+        text,
         allbonuses,
         bonus,
         onUpdateBonus,
@@ -38,18 +39,18 @@ function AdminBonusesDelete(props) {
             <Link to="/ukelonn/admin/bonuses">
                 &lt;-
                 &nbsp;
-                Administer bonuser
+                {text.administrateBonuses}
             </Link>
             <header>
                 <div>
-                    <h1>Slett bonuser</h1>
+                    <h1>{text.deleteBonuses}</h1>
                 </div>
             </header>
 
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div>
                     <div>
-                        <label htmlFor="bonus">Velg bonus</label>
+                        <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
                             <select id="bonus" value={bonusId} onChange={e => onUpdateBonus(bonuses.find(b => b.bonusId === parseInt(e.target.value)))}>
                                 {bonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
@@ -57,13 +58,13 @@ function AdminBonusesDelete(props) {
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="title">Tittel</label>
+                        <label htmlFor="title">{text.title}</label>
                         <div>
                             <input readOnly id="title" type="text" value={title} />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="description">Beskrivelse</label>
+                        <label htmlFor="description">{text.description}</label>
                         <div>
                             <input readOnly id="description" type="text" value={description} />
                         </div>
@@ -71,21 +72,22 @@ function AdminBonusesDelete(props) {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onDeleteBonus(bonus)}>Slett valgt bonus</button>
+                            <button onClick={() => onDeleteBonus(bonus)}>{text.deleteSelectedBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,

@@ -16,30 +16,30 @@ function AdminJobtypesModify(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
+    let { text, jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
-            <h1>Endre jobbtyper</h1>
+            <h1>{text.modifyJobTypes}</h1>
             <br/>
-            <Link to="/ukelonn/admin/jobtypes">Administer jobber og jobbtyper</Link>
+            <Link to="/ukelonn/admin/jobtypes">{text.administrateJobsAndJobTypes}</Link>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="jobtype">Velg jobbtype</label>
+                <label htmlFor="jobtype">{text.chooseJobType}</label>
                 <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
                 <br/>
-                <label htmlFor="amount">Endre navn på jobbtype</label>
+                <label htmlFor="amount">{text.modifyNameOfJobType}</label>
                 <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                 <br/>
-                <label htmlFor="amount">Endre beløp for jobbtype</label>
+                <label htmlFor="amount">{text.modifyAmountOfJobType}</label>
                 <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <button onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
+                <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.saveChangesToJobType}</button>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
@@ -53,6 +53,7 @@ const emptyJobtype = {
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         jobtypes: state.jobtypes,

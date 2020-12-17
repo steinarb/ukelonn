@@ -16,27 +16,27 @@ function AdminPaymenttypesCreate(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let {  transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
+    let { text, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
     return (
         <div>
-            <h1>Lag ny utbetalingstype</h1>
+            <h1>{text.createPaymenttype}</h1>
             <br/>
-            <Link to="/ukelonn/admin/paymenttypes">Administer utbetalingstyper</Link>
+            <Link to="/ukelonn/admin/paymenttypes">{text.administratePaymenttypes}</Link>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <label htmlFor="amount">Navn på utbetalingstype</label>
+                <label htmlFor="amount">{text.paymentTypeName}</label>
                 <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
                 <br/>
-                <label htmlFor="amount">Beløp for utbetalingstype</label>
+                <label htmlFor="amount">{text.paymentTypeAmount}</label>
                 <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                 <br/>
-                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lag ny utbetalingstype</button>
+                <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.createNewPaymentType}</button>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
@@ -50,6 +50,7 @@ const emptyPaymenttype = {
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         transactiontype: state.transactiontype,

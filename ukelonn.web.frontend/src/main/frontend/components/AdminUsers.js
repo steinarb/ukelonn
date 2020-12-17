@@ -12,29 +12,30 @@ function AdminUsers(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
-            <h1>Administrere brukere</h1>
+            <h1>{text.administrateUsers}Administrere brukere</h1>
             <br/>
-            <Link to="/ukelonn/admin">Registrer betaling</Link><br/>
+            <Link to="/ukelonn/admin">{text.registerPayment}</Link><br/>
             <br/>
-            <Link to="/ukelonn/admin/users/modify">Endre brukere</Link>
+            <Link to="/ukelonn/admin/users/modify">{text.modifyUsers}</Link>
             <br/>
-            <Link to="/ukelonn/admin/users/password">Bytt passord på bruker</Link>
+            <Link to="/ukelonn/admin/users/password">{text.changeUsersPassword}</Link>
             <br/>
-            <Link to="/ukelonn/admin/users/create">Legg til ny bruker</Link>
+            <Link to="/ukelonn/admin/users/create">{text.addUser}</Link>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };
