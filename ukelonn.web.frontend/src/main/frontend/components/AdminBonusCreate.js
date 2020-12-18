@@ -9,6 +9,7 @@ import {
     UPDATE_BONUS,
     CREATE_BONUS,
 } from '../actiontypes';
+import Locale from './Locale';
 import { emptyBonus } from '../constants';
 
 function AdminBonusCreate(props) {
@@ -48,6 +49,9 @@ function AdminBonusCreate(props) {
             <header>
                 <div>
                     <h1>{text.createNewBonus}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>

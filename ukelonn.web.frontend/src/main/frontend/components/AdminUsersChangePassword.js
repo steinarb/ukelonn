@@ -10,6 +10,7 @@ import {
     MODIFY_USER_PASSWORD_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Users from './Users';
 import Amount from './Amount';
 
@@ -40,6 +41,9 @@ function AdminUsersChangePassword(props) {
             <header>
                 <div>
                     <h1>{text.changeUsersPassword}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>

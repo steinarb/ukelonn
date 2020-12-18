@@ -8,6 +8,7 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function Statistics(props) {
     if (userIsNotLoggedIn(props)) {
@@ -29,6 +30,9 @@ function Statistics(props) {
             <header>
                 <div>
                     <h1>{text.workStatistics}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

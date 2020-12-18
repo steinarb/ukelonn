@@ -6,6 +6,7 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function AdminUsers(props) {
     if (userIsNotLoggedIn(props)) {
@@ -24,6 +25,9 @@ function AdminUsers(props) {
             <header>
                 <div>
                     <h1>{text.administrateUsers}Administrere brukere</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

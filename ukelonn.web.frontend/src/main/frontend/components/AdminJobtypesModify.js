@@ -8,6 +8,7 @@ import {
     UPDATE_TRANSACTIONTYPE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
@@ -28,6 +29,9 @@ function AdminJobtypesModify(props) {
             <header>
                 <div>
                     <h1>{text.modifyJobTypes}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

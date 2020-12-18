@@ -10,6 +10,7 @@ import {
     UPDATE_BONUS,
     MODIFY_BONUS,
 } from '../actiontypes';
+import Locale from './Locale';
 import { emptyBonus } from '../constants';
 
 function AdminBonusesModify(props) {
@@ -52,6 +53,9 @@ function AdminBonusesModify(props) {
             <header>
                 <div>
                     <h1>{text.modifyBonuses}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>

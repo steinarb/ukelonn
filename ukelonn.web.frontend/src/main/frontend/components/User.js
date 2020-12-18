@@ -12,6 +12,7 @@ import {
     UPDATE_PERFORMEDJOB,
     REGISTERJOB_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Jobtypes from './Jobtypes';
 import Notification from './Notification';
@@ -36,6 +37,9 @@ function User(props) {
             <header>
                 <div>
                     <h1>{title}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

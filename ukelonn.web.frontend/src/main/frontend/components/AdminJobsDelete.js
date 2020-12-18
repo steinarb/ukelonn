@@ -10,6 +10,7 @@ import {
     UPDATE_ACCOUNT,
     DELETE_JOBS_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Accounts from './Accounts';
 
 function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
@@ -35,6 +36,9 @@ function AdminJobsDelete(props) {
             <header>
                 <div>
                     <h1>{text.deleteErronouslyRegisteredJobsFor}Slett feilregisterte jobber for {account.firstName}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
 

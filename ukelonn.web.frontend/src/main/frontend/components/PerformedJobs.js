@@ -8,6 +8,7 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function PerformedJobs(props) {
     if (userIsNotLoggedIn(props)) {
@@ -28,6 +29,9 @@ function PerformedJobs(props) {
             <header>
                 <div>
                     <h1>{text.performedJobsFor} {account.firstName}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

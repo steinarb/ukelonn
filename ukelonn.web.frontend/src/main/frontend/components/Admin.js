@@ -12,6 +12,7 @@ import {
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
+import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
@@ -51,6 +52,9 @@ function Admin(props) {
             <header>
                 <div>
                     <h1>{text.registerPayment}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

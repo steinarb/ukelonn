@@ -13,6 +13,7 @@ import {
     CHANGE_ADMIN_STATUS,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Users from './Users';
 import Amount from './Amount';
 
@@ -51,6 +52,9 @@ function AdminUsersCreate(props) {
             <header>
                 <div>
                     <h1>{text.addUser}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>

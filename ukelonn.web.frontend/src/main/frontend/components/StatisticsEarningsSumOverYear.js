@@ -8,6 +8,7 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function StatisticsEarningsSumOverYear(props) {
     if (userIsNotLoggedIn(props)) {
@@ -29,6 +30,9 @@ function StatisticsEarningsSumOverYear(props) {
             <header>
                 <div>
                     <h1>{text.sumAmountEarnedPerYear}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>

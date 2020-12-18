@@ -31,6 +31,7 @@ import { startNotificationListening } from './notificationSaga';
 import earningsSumOverYearSaga from './earningsSumOverYearSaga';
 import earningsSumOverMonthSaga from './earningsSumOverMonthSaga';
 import defaultLocaleSaga from './defaultLocaleSaga';
+import localeSaga from './localeSaga';
 import availableLocalesSaga from './availableLocalesSaga';
 import displayTextsSaga from './displayTextsSaga';
 
@@ -69,6 +70,7 @@ export function* rootSaga() {
         fork(earningsSumOverYearSaga),
         fork(earningsSumOverMonthSaga),
         fork(defaultLocaleSaga),
+        fork(localeSaga),
         fork(availableLocalesSaga),
         fork(displayTextsSaga),
     ];

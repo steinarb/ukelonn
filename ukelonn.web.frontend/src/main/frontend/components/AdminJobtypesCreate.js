@@ -8,6 +8,7 @@ import {
     CREATE_JOBTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Jobtypes from './Jobtypes';
 import Amount from './Amount';
 
@@ -28,6 +29,9 @@ function AdminJobtypesCreate(props) {
             <header>
                 <div>
                     <h1>{text.createNewJobType}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>

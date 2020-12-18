@@ -8,6 +8,7 @@ import {
     UPDATE_BONUS,
     DELETE_BONUS,
 } from '../actiontypes';
+import Locale from './Locale';
 import { emptyBonus } from '../constants';
 
 function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadBonuses) {
@@ -44,6 +45,9 @@ function AdminBonusesDelete(props) {
             <header>
                 <div>
                     <h1>{text.deleteBonuses}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
 

@@ -4,14 +4,14 @@ import {
     DISPLAY_TEXTS_REQUEST,
     DISPLAY_TEXTS_RECEIVE,
     DISPLAY_TEXTS_ERROR,
-    DEFAULT_LOCALE_RECEIVE,
+    UPDATE_LOCALE,
 } from '../actiontypes';
 import { stringify } from 'qs';
 
 // watcher saga
 export default function* displayTextsSaga() {
     yield takeLatest(DISPLAY_TEXTS_REQUEST, receiveDisplayTextsSaga);
-    yield takeLatest(DEFAULT_LOCALE_RECEIVE, receiveDisplayTextsSaga);
+    yield takeLatest(UPDATE_LOCALE, receiveDisplayTextsSaga);
 }
 
 function doDisplayTexts(locale) {

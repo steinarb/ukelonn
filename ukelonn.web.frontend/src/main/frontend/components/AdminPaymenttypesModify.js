@@ -8,6 +8,7 @@ import {
     MODIFY_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
 import Amount from './Amount';
 
@@ -30,6 +31,9 @@ function AdminPaymenttypesModify(props) {
             <header>
                 <div>
                     <h1>{text.modifyPaymenttypes}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>

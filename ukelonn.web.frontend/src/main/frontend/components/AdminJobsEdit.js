@@ -13,6 +13,7 @@ import {
     UPDATE_JOB_REQUEST,
     RECENTJOBS_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 
@@ -39,6 +40,9 @@ function AdminJobsEdit(props) {
             <header>
                 <div>
                     <h1>{text.modifyJobsFor} {account.firstName}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>
