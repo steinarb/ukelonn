@@ -24,7 +24,7 @@ function AdminUsers(props) {
             </Link>
             <header>
                 <div>
-                    <h1>{text.administrateUsers}Administrere brukere</h1>
+                    <h1>{text.administrateUsers}</h1>
                 </div>
                 <div>
                     <Locale />

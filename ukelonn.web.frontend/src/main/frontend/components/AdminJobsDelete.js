@@ -35,7 +35,7 @@ function AdminJobsDelete(props) {
             </Link>
             <header>
                 <div>
-                    <h1>{text.deleteErronouslyRegisteredJobsFor}Slett feilregisterte jobber for {account.firstName}</h1>
+                    <h1>{text.deleteErronouslyRegisteredJobsFor} {account.firstName}</h1>
                 </div>
                 <div>
                     <Locale />
