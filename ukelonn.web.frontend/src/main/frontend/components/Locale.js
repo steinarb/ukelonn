@@ -6,9 +6,10 @@ import {
 
 function Locale(props) {
     const { className, locale, availableLocales, onUpdateLocale } = props;
+    const classes = (className || '') + ' form-control col-2';
 
     return (
-        <select className={className} onChange={(event) => onUpdateLocale(event.target.value)} value={locale}>
+        <select className={classes} onChange={(event) => onUpdateLocale(event.target.value)} value={locale}>
             {availableLocales.map((l) => <option key={'locale_' + l} value={l}>{l}</option>)}
         </select>
     );
