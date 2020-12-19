@@ -9,6 +9,7 @@ import {
     UPDATE_BONUS,
     CREATE_BONUS,
 } from '../actiontypes';
+import Locale from './Locale';
 import { emptyBonus } from '../constants';
 
 function AdminBonusCreate(props) {
@@ -17,6 +18,7 @@ function AdminBonusCreate(props) {
     }
 
     const {
+        text,
         bonuses,
         bonus,
         onUpdateEnabled,
@@ -42,11 +44,14 @@ function AdminBonusCreate(props) {
             <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/bonuses">
                 <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
-                Administer bonuser
+                {text.administrateBonuses}
             </Link>
             <header>
                 <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Lag ny bonus</h1>
+                    <h1>{text.createNewBonus}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
@@ -56,43 +61,43 @@ function AdminBonusCreate(props) {
                             <div className="form-check">
                                 <div className="form-check">
                                     <input id="enabled" className="form-check-input" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
-                                    <label htmlFor="enabled" className="form-check-label">Aktivert</label>
+                                    <label htmlFor="enabled" className="form-check-label">{text.activated}</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="iconurl" className="col-form-label col-5">Ikon-URL</label>
+                        <label htmlFor="iconurl" className="col-form-label col-5">{text.iconURL}</label>
                         <div className="col-7">
                             <input id="iconurl" className="form-control" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="title" className="col-form-label col-5">Tittel</label>
+                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input id="title" className="form-control" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="description" className="col-form-label col-5">Beskrivelse</label>
+                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input id="description" className="form-control" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="bonusfactor" className="col-form-label col-5">Bonusfaktor</label>
+                        <label htmlFor="bonusfactor" className="col-form-label col-5">{text.bonusFactor}</label>
                         <div className="col-7">
                             <input id="bonusfactor" className="form-control" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="startdate" className="col-form-label col-5">Startdato</label>
+                        <label htmlFor="startdate" className="col-form-label col-5">{text.startDate}</label>
                         <div className="col-7">
                             <DatePicker selected={startDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateStartDate(bonus, d)} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="enddate" className="col-form-label col-5">Sluttdato</label>
+                        <label htmlFor="enddate" className="col-form-label col-5">{text.endDate}</label>
                         <div className="col-7">
                             <DatePicker selected={endDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateEndDate(bonus, d)} readOnly={true} />
                         </div>
@@ -100,21 +105,22 @@ function AdminBonusCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onCreateBonus(bonus)}>Lag ny bonus</button>
+                            <button className="btn btn-primary" onClick={() => onCreateBonus(bonus)}>{text.createNewBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 };
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,

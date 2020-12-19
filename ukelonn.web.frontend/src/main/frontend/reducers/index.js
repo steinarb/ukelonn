@@ -26,9 +26,15 @@ import allbonusesReducer from './allbonusesReducer';
 import bonusReducer from './bonusReducer';
 import earningsSumOverYearReducer from './earningsSumOverYearReducer';
 import earningsSumOverMonthReducer from './earningsSumOverMonthReducer';
+import locale from './localeReducer';
+import availableLocales from './availableLocalesReducer';
+import displayTexts from './displayTextsReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
+    locale,
+    availableLocales,
+    displayTexts,
     username: usernameReducer,
     password: passwordReducer,
     notificationAvailable: notificationAvailableReducer,

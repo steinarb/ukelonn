@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -97,5 +98,11 @@ public interface UkelonnService {
     List<Bonus> modifyBonus(Bonus updatedBonus);
 
     List<Bonus> deleteBonus(Bonus removedBonus);
+
+    String defaultLocale();
+
+    List<String> availableLocales();
+
+    Map<String, String> displayTexts(String locale);
 
 }

@@ -10,6 +10,7 @@ import {
     UPDATE_BONUS,
     MODIFY_BONUS,
 } from '../actiontypes';
+import Locale from './Locale';
 import { emptyBonus } from '../constants';
 
 function AdminBonusesModify(props) {
@@ -18,6 +19,7 @@ function AdminBonusesModify(props) {
     }
 
     let {
+        text,
         allbonuses,
         bonus,
         onUpdateBonus,
@@ -46,63 +48,66 @@ function AdminBonusesModify(props) {
             <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/bonuses">
                 <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
-                Administer bonuser
+                {text.administrateBonuses}
             </Link>
             <header>
                 <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Endre bonuser</h1>
+                    <h1>{text.modifyBonuses}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="bonus" className="col-form-label col-5">Velg bonus</label>
+                        <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
                             <select id="bonus" className="form-control" value={bonusId} onChange={e => onUpdateBonus(bonuses.find(b => b.bonusId === parseInt(e.target.value)))}>
                                 {bonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
                         </div>
                     </div>
-                    <div clasName="row">
+                    <div className="row">
                         <div className="col">
                             <div className="form-check">
                                 <input id="enabled" className="form-check-input" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
-                                <label htmlFor="enabled" className="form-check-label">Aktivert</label>
+                                <label htmlFor="enabled" className="form-check-label">{text.activated}</label>
                             </div>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="iconurl" className="col-form-label col-5">Ikon-URL</label>
+                        <label htmlFor="iconurl" className="col-form-label col-5">{text.iconURL}</label>
                         <div className="col-7">
                             <input id="iconurl" className="form-control" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="title" className="col-form-label col-5">Tittel</label>
+                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input id="title" className="form-control" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="description" className="col-form-label col-5">Beskrivelse</label>
+                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input id="description" className="form-control" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="bonusfactor" className="col-form-label col-5">Bonusfaktor</label>
+                        <label htmlFor="bonusfactor" className="col-form-label col-5">{text.bonusFactor}</label>
                         <div className="col-7">
                             <input id="bonusfactor" className="form-control" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="startdate" className="col-form-label col-5">Startdato</label>
+                        <label htmlFor="startdate" className="col-form-label col-5">{text.startDate}</label>
                         <div className="col-7">
                             <DatePicker selected={startDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateStartDate(bonus, d)} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="enddate" className="col-form-label col-5">Sluttdato</label>
+                        <label htmlFor="enddate" className="col-form-label col-5">{text.endDate}</label>
                         <div className="col-7">
                             <DatePicker selected={endDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateEndDate(bonus, d)} readOnly={true} />
                         </div>
@@ -110,19 +115,20 @@ function AdminBonusesModify(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onModifyBonus(bonus)}>Lagre endringer i bonus</button>
+                            <button className="btn btn-primary" onClick={() => onModifyBonus(bonus)}>{text.saveChangesToBonus} bonus</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,

@@ -31,12 +31,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.sql.DataSource;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
@@ -67,6 +71,7 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  */
 @Component(service=UkelonnService.class, immediate=true)
 public class UkelonnServiceProvider extends UkelonnServiceBase {
+    private static final String RESOURCES_BASENAME = "i18n.ApplicationResources";
     private DataSource datasource;
     private UserManagementService useradmin;
     private LogService logservice;
@@ -566,6 +571,22 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getAllBonuses();
     }
 
+    @Override
+    public String defaultLocale() {
+        return "nb_NO";
+    }
+
+    @Override
+    public List<String> availableLocales() {
+        return Arrays.asList("nb_NO", "en_UK");
+    }
+
+    @Override
+    public Map<String, String> displayTexts(String languageTag) {
+        Locale locale = Locale.forLanguageTag(languageTag.replace('_', '-'));
+        return transformResourceBundleToMap(locale);
+    }
+
     private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
         return notificationQueues.computeIfAbsent(username, k-> new ConcurrentLinkedQueue<>());
     }
@@ -755,6 +776,18 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 resultset.getDouble("transaction_amount"),
                 resultset.getBoolean("transaction_is_work"),
                 resultset.getBoolean("transaction_is_wage_payment"));
+    }
+
+    Map<String, String> transformResourceBundleToMap(Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        ResourceBundle bundle = ResourceBundle.getBundle(RESOURCES_BASENAME, locale);
+        Enumeration<String> keys = bundle.getKeys();
+        while(keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, bundle.getString(key));
+        }
+
+        return map;
     }
 
 }

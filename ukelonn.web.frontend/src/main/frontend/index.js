@@ -7,6 +7,8 @@ import createSagaMiddleware from 'redux-saga';
 import {
     INITIAL_LOGIN_STATE_REQUEST,
     UPDATE_NOTIFICATIONAVAILABLE,
+    DEFAULT_LOCALE_REQUEST,
+    AVAILABLE_LOCALES_REQUEST,
 } from './actiontypes';
 import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
@@ -24,6 +26,8 @@ const store = configureStore({
 });
 sagaMiddleware.run(rootSaga);
 store.dispatch(INITIAL_LOGIN_STATE_REQUEST());
+store.dispatch(DEFAULT_LOCALE_REQUEST());
+store.dispatch(AVAILABLE_LOCALES_REQUEST());
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {

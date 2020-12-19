@@ -8,13 +8,14 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function PerformedPayments(props) {
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, payments, onLogout } = props;
+    let { text, account, payments, onLogout } = props;
     let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parentTitle } = queryParams;
 
@@ -27,16 +28,19 @@ function PerformedPayments(props) {
             </Link>
             <header>
                 <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Utbetalinger til {account.firstName}</h1>
+                    <h1>{text.performedPaymentsFor} {account.firstName}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div className="table-responsive table-sm table-striped">
                 <table className="table">
                     <thead>
                         <tr>
-                            <th className="transaction-table-col transaction-table-col1">Dato</th>
-                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Utbetalinger</th>
-                            <th className="transaction-table-col transaction-table-col3b">Beløp</th>
+                            <th className="transaction-table-col transaction-table-col1">{text.date}</th>
+                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">{text.paymentType}</th>
+                            <th className="transaction-table-col transaction-table-col3b">{text.amount}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,15 +54,16 @@ function PerformedPayments(props) {
                     </tbody>
                 </table>
             </div>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../..">Tilbake til topp</a>
+            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         parentTitle: state.parentTitle,

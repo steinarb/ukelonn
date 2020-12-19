@@ -13,6 +13,7 @@ import {
     CHANGE_ADMIN_STATUS,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Users from './Users';
 import Amount from './Amount';
 
@@ -22,6 +23,7 @@ function AdminUsersCreate(props) {
     }
 
     let {
+        text,
         usernames,
         user,
         userIsAdministrator,
@@ -49,79 +51,80 @@ function AdminUsersCreate(props) {
             <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
                 <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
-                Administer brukere
+                {text.administrateUsers}
             </Link>
             <header>
                 <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Legg til ny bruker</h1>
+                    <h1>{text.addUser}</h1>
                 </div>
             </header>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="username" className="col-form-label col-5">Brukernavn</label>
+                        <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
                             <input id="username" className={usernameInputClass} type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
-                            { usernameEmpty && <span className="invalid-feedback d-block">Brukernavn kan ikke være tomt</span> }
-                            { usernameExists && <span className="invalid-feedback d-block">Brukernavnet finnes fra før</span> }
+                            { usernameEmpty && <span className="invalid-feedback d-block">{text.usernameCanNotBeEmpty}</span> }
+                            { usernameExists && <span className="invalid-feedback d-block">{text.usernameExists}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="email" className="col-form-label col-5">Epostadresse</label>
+                        <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
                             <input id="email" className={emailInputClass} type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
-                            { emailIsNotValid && <span className="invalid-feedback d-block">Ikke en gyldig epostadresse</span> }
+                            { emailIsNotValid && <span className="invalid-feedback d-block">{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="firstname" className="col-form-label col-5">Fornavn</label>
+                        <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
                             <input id="firstname" className="form-control" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="lastname" className="col-form-label col-5">Etternavn</label>
+                        <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
                             <input id="lastname" className="form-control" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="password1" className="col-form-label col-5">Passord:</label>
+                        <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
                             <input id="password1" className={passwordGroupClass} type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="password2" className="col-form-label col-5">Gjenta passord:</label>
+                        <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
                             <input id="password2" className={passwordGroupClass} type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)}/>
-                            { passwords.passwordsNotIdentical && <span className="invalid-feedback d-block">Passordene er ikke identiske</span> }
+                            { passwords.passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div clasName="row">
                         <div className="col">
                             <div className="form-check">
                                 <input id="administrator" className="form-check-input" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
-                                <label htmlFor="administrator" className="form-check-label">Administrator</label>
+                                <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>Lag bruker</button>
+                            <button className="btn btn-primary" onClick={() => onSaveCreatedUser(user, passwords, userIsAdministrator)}>{text.createUser}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.returnToTop}</button>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         user: state.user,

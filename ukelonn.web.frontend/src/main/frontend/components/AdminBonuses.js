@@ -6,54 +6,59 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function AdminBonuses(props) {
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
             <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
                 <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
-                Register betaling
+                {text.registerPayment}
             </Link>
             <header>
                 <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Administrer bonuser</h1>
+                    <h1>{text.administrateBonuses}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses/modify">
-                    Endre bonuser
+                    {text.modifyBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses/create">
-                    Lag ny bonus
+                    {text.createNewBonus}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses/delete">
-                    Slett bonus
+                    {text.deleteBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
             </div>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 };
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };

@@ -8,13 +8,14 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function StatisticsEarningsSumOverMonth(props) {
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { earningsSumOverMonth, onLogout } = props;
+    let { text, earningsSumOverMonth, onLogout } = props;
     const username = findUsernameFromAccountOrQueryParameter(props);
     const statistics = '/ukelonn/statistics?' + stringify({ username });
 
@@ -23,20 +24,23 @@ function StatisticsEarningsSumOverMonth(props) {
             <Link className="btn btn-block btn-primary mb-0 left-align-cell" to={statistics}>
                 <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                 &nbsp;
-                Tilbake til statistikk
+                {text.backToStatistics}
             </Link>
             <header>
                 <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Sum av lønn pr måned og år</h1>
+                    <h1>{text.sumAmountEarnedPerMonthAndYear}</h1>
+                </div>
+                <div>
+                    <Locale />
                 </div>
             </header>
             <div className="table-responsive table-sm table-striped">
                 <table className="table">
                     <thead>
                         <tr>
-                            <td>År</td>
-                            <td>Måned</td>
-                            <td>Totalt tjent</td>
+                            <td>{text.year}</td>
+                            <td>{text.month}</td>
+                            <td>{text.totalAmountEarned}</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,15 +55,16 @@ function StatisticsEarningsSumOverMonth(props) {
                 </table>
             </div>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,
