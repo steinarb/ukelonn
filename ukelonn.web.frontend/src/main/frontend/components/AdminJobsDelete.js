@@ -43,12 +43,10 @@ function AdminJobsDelete(props) {
             </header>
 
             <div>
-                <div>
-                    <em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
+                <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
                     <br/>
-                    <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}
-                    <br/>
-                </div>
+                    <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
+
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
                 <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
 
