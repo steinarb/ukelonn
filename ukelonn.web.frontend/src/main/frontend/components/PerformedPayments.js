@@ -38,9 +38,9 @@ function PerformedPayments(props) {
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <td>{text.date}</td>
-                            <td>{text.paymentType}</td>
-                            <td>{text.amount}</td>
+                            <th>{text.date}</th>
+                            <th>{text.paymentType}</th>
+                            <th>{text.amount}</th>
                         </tr>
                     </thead>
                     <tbody>

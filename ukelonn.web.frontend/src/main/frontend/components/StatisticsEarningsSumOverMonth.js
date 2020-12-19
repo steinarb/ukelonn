@@ -38,9 +38,9 @@ function StatisticsEarningsSumOverMonth(props) {
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <td>{text.year}</td>
-                            <td>{text.month}</td>
-                            <td>{text.totalAmountEarned}</td>
+                            <th>{text.year}</th>
+                            <th>{text.month}</th>
+                            <th>{text.totalAmountEarned}</th>
                         </tr>
                     </thead>
                     <tbody>

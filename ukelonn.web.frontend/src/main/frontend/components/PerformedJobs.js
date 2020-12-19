@@ -38,10 +38,10 @@ function PerformedJobs(props) {
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <td>{text.date}</td>
-                            <td>{text.jobs}</td>
-                            <td>{text.amount}</td>
-                            <td>{text.paid}</td>
+                            <th>{text.date}</th>
+                            <th>{text.jobs}</th>
+                            <th>{text.amount}</th>
+                            <th>{text.paid}</th>
                         </tr>
                     </thead>
                     <tbody>
