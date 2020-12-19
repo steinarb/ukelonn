@@ -37,19 +37,15 @@ function AdminUsersModify(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/users">
-                &lt;-
-                &nbsp;
-                {text.administrateUsers}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.modifyUsers}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/users">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateUsers}
+                </Link>
+                <h1>{text.modifyUsers}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div>
                     <div>

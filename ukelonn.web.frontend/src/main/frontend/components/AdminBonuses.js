@@ -17,19 +17,15 @@ function AdminBonuses(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/">
-                &lt;-
-                &nbsp;
-                {text.registerPayment}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.administrateBonuses}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/">
+                    &lt;-
+                    &nbsp;
+                    {text.registerPayment}
+                </Link>
+                <h1>{text.administrateBonuses}</h1>
+                <Locale />
+            </nav>
             <div>
                 <Link to="/ukelonn/admin/bonuses/modify">
                     {text.modifyBonuses}

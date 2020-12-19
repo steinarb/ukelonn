@@ -21,19 +21,15 @@ function AdminJobtypesCreate(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/jobtypes">
-                &lt;-
-                &nbsp;
-                {text.administrateJobsAndJobTypes}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.createNewJobType}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/jobtypes">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.createNewJobType}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div>
                     <div>

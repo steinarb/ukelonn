@@ -32,17 +32,13 @@ function User(props) {
 
     return (
         <div>
-            <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
             <Notification notificationMessage={notificationMessage}/>
-            <header>
-                <div>
-                    <h1>{title}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
-            <div>
+            <nav>
+                <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
+                <h1 id="logo">{title}</h1>
+                <Locale />
+            </nav>
+            <div className="container-fluid">
                 <BonusBanner/>
                 <div>
                     <div>

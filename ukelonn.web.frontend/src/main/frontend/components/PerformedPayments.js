@@ -21,19 +21,15 @@ function PerformedPayments(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/">
-                &lt;-
-                &nbsp;
-                {parentTitle}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.performedPaymentsFor} {account.firstName}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/">
+                    &lt;-
+                    &nbsp;
+                    {parentTitle}
+                </Link>
+                <h1>{text.performedPaymentsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
             <div>
                 <table className="table table-bordered">
                     <thead>

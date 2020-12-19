@@ -17,19 +17,15 @@ function AdminUsers(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin">
-                &lt;-
-                &nbsp;
-                {text.registerPayment}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.administrateUsers}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin">
+                    &lt;-
+                    &nbsp;
+                    {text.registerPayment}
+                </Link>
+                <h1>{text.administrateUsers}</h1>
+                <Locale />
+            </nav>
             <div>
                 <Link to="/ukelonn/admin/users/modify">
                     {text.modifyUsers}

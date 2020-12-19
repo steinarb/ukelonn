@@ -48,15 +48,11 @@ function Admin(props) {
 
     return (
         <div>
-            <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
-            <header>
-                <div>
-                    <h1>{text.registerPayment}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
+                <h1>{text.registerPayment}</h1>
+                <Locale />
+            </nav>
             <div>
                 <BonusBanner/>
             </div>

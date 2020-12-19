@@ -21,19 +21,15 @@ function AdminPaymenttypesCreate(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/paymenttypes">
-                &lt;-
-                &nbsp;
-                {text.administratePaymenttypes}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.createPaymenttype}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/paymenttypes">
+                    &lt;-
+                    &nbsp;
+                    {text.administratePaymenttypes}
+                </Link>
+                <h1>{text.createPaymenttype}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div>
                     <div>

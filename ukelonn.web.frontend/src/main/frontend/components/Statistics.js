@@ -22,19 +22,15 @@ function Statistics(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/">
-                &lt;-
-                &nbsp;
-                {text.back}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.workStatistics}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/">
+                    &lt;-
+                    &nbsp;
+                    {text.back}
+                </Link>
+                <h1>{text.workStatistics}</h1>
+                <Locale />
+            </nav>
             <div>
                 <Link to={sumoveryear}>
                     {text.sumEarnedPerYear}

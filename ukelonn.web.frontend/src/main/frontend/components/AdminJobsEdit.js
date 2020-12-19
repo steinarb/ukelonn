@@ -32,19 +32,15 @@ function AdminJobsEdit(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/jobtypes">
-                &lt;-
-                &nbsp;
-                {text.administrateJobsAndJobTypes}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.modifyJobsFor} {account.firstName}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/jobtypes">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.modifyJobsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
             <div>
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
                 <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>

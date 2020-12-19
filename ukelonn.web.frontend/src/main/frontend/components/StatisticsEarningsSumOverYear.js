@@ -22,19 +22,15 @@ function StatisticsEarningsSumOverYear(props) {
 
     return (
         <div>
-            <Link to={statistics}>
-                &lt;-
-                &nbsp;
-                {text.backToStatistics}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.sumAmountEarnedPerYear}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to={statistics}>
+                    &lt;-
+                    &nbsp;
+                    {text.backToStatistics}
+                </Link>
+                <h1>{text.sumAmountEarnedPerYear}</h1>
+                <Locale />
+            </nav>
             <div>
                 <table className="table table-bordered">
                     <thead>

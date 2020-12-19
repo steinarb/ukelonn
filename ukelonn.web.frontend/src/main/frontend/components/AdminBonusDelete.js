@@ -37,19 +37,15 @@ function AdminBonusesDelete(props) {
 
     return (
         <div>
-            <Link to="/ukelonn/admin/bonuses">
-                &lt;-
-                &nbsp;
-                {text.administrateBonuses}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.deleteBonuses}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/bonuses">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateBonuses}
+                </Link>
+                <h1>{text.deleteBonuses}</h1>
+                <Locale />
+            </nav>
 
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div>
