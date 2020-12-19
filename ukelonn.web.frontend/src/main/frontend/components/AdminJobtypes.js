@@ -17,19 +17,15 @@ function AdminJobtypes(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.registerPayment}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.administrateJobsAndJobTypes}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/">
+                    &lt;-
+                    &nbsp;
+                    {text.registerPayment}
+                </Link>
+                <h1>{text.administrateJobsAndJobTypes}</h1>
+                <Locale />
+            </nav>
             <div className="container">
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/modify">
                     {text.modifyJobTypes}

@@ -17,19 +17,15 @@ function AdminUsers(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.registerPayment}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.administrateUsers}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin">
+                    &lt;-
+                    &nbsp;
+                    {text.registerPayment}
+                </Link>
+                <h1>{text.administrateUsers}</h1>
+                <Locale />
+            </nav>
             <div className="container">
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/modify">
                     {text.modifyUsers}

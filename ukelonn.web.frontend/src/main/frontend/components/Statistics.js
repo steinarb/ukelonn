@@ -22,19 +22,15 @@ function Statistics(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+            <nav>
+                <Link to="/ukelonn/">
+                    &lt;-
                     &nbsp;
                     {text.back}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.workStatistics}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+                </Link>
+                <h1>{text.workStatistics}</h1>
+                <Locale />
+            </nav>
             <div className="container">
                 <Link className="btn btn-block btn-primary right-align-cell" to={sumoveryear}>
                     {text.sumEarnedPerYear}

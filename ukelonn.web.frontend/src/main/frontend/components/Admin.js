@@ -48,15 +48,11 @@ function Admin(props) {
 
     return (
         <div>
-            <a className="btn btn-block btn-primary left-align-cell" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;{text.returnToTop}</a>
-            <header>
-                <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
-                    <h1>{text.registerPayment}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
+                <h1>{text.registerPayment}</h1>
+                <Locale />
+            </nav>
             <div>
                 <BonusBanner/>
             </div>

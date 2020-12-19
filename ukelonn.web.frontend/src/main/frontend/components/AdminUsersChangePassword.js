@@ -35,19 +35,15 @@ function AdminUsersChangePassword(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/users">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.administrateUsers}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.changeUsersPassword}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/users">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateUsers}
+                </Link>
+                <h1>{text.changeUsersPassword}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">

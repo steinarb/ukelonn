@@ -22,25 +22,21 @@ function StatisticsEarningsSumOverYear(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to={statistics}>
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.backToStatistics}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.sumAmountEarnedPerYear}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to={statistics}>
+                    &lt;-
+                    &nbsp;
+                    {text.backToStatistics}
+                </Link>
+                <h1>{text.sumAmountEarnedPerYear}</h1>
+                <Locale />
+            </nav>
             <div className="table-responsive table-sm table-striped">
                 <table className="table">
                     <thead>
                         <tr>
-                            <td>{text.year}</td>
-                            <td>{text.totalEarnings}</td>
+                            <th>{text.year}</th>
+                            <th>{text.totalEarnings}</th>
                         </tr>
                     </thead>
                     <tbody>

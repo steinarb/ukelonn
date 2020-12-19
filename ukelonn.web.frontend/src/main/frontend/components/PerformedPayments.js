@@ -21,19 +21,15 @@ function PerformedPayments(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {parentTitle}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.performedPaymentsFor} {account.firstName}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/">
+                    &lt;-
+                    &nbsp;
+                    {parentTitle}
+                </Link>
+                <h1>{text.performedPaymentsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
             <div className="table-responsive table-sm table-striped">
                 <table className="table">
                     <thead>

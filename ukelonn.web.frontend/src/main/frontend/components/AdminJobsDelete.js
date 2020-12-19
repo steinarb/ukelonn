@@ -28,19 +28,15 @@ function AdminJobsDelete(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.administrateJobsAndJobTypes}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.deleteErronouslyRegisteredJobsFor} {account.firstName}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/jobtypes">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.deleteErronouslyRegisteredJobsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
 
             <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
                 <br/>

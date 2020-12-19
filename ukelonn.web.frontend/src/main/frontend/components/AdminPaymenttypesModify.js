@@ -23,19 +23,15 @@ function AdminPaymenttypesModify(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/paymenttypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.administratePaymenttypes}
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>{text.modifyPaymenttypes}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/paymenttypes">
+                    &lt;-
+                    &nbsp;
+                    {text.administratePaymenttypes}
+                </Link>
+                <h1>{text.modifyPaymenttypes}</h1>
+                <Locale />
+            </nav>
             <br/>
             <br/>
             <form onSubmit={ e => { e.preventDefault(); }}>

@@ -32,19 +32,15 @@ function AdminJobsEdit(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                {text.administrateJobsAndJobTypes}
-            </Link>
-            <header>
-                <div>
-                    <h1>{text.modifyJobsFor} {account.firstName}</h1>
-                </div>
-                <div>
-                    <Locale />
-                </div>
-            </header>
+            <nav>
+                <Link to="/ukelonn/admin/jobtypes">
+                    &lt;-
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.modifyJobsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
 
 
             <div className="container">
