@@ -48,8 +48,8 @@ function Admin(props) {
 
     return (
         <div>
-            <nav>
-                <a href="../..">&lt;-&nbsp;{text.returnToTop}</a>
+            <nav className="navbar navbar-light bg-light">
+                <a className="btn btn-primary" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;{text.returnToTop}</a>
                 <h1>{text.registerPayment}</h1>
                 <Locale />
             </nav>

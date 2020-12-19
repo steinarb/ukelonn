@@ -22,9 +22,9 @@ function Statistics(props) {
 
     return (
         <div>
-            <nav>
-                <Link to="/ukelonn/">
-                    &lt;-
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.back}
                 </Link>
