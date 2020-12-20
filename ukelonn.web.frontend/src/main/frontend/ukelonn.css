@@ -18,6 +18,11 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.transaction-table-col-clip-overflow {
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+}
 .transaction-table-col1 { width: 6em }
 .transaction-table-col2 {  }
 .transaction-table-col3 { width: 2em }

@@ -36,8 +36,8 @@ function PerformedJobs(props) {
                         <tr>
                             <th className="transaction-table-col transaction-table-col1">{text.date}</th>
                             <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">{text.jobs}</th>
-                            <th className="transaction-table-col transaction-table-col3">{text.amount}</th>
-                            <th className="transaction-table-col transaction-table-col4">{text.paid}</th>
+                            <th className="transaction-table-col transaction-table-col-clip-overflow transaction-table-col3">{text.amount}</th>
+                            <th className="transaction-table-col transaction-table-col-clip-overflow transaction-table-col4">{text.paid}</th>
                         </tr>
                     </thead>
                     <tbody>
