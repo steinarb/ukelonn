@@ -1211,7 +1211,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1232,7 +1232,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1253,7 +1253,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1274,7 +1274,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1295,7 +1295,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1379,12 +1379,18 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testDefaultLocale() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ukelonn.setUserAdmin(useradmin);
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         assertEquals("nb_NO", ukelonn.defaultLocale());
     }
 
     @Test
     public void testAvailableLocales() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ukelonn.setUserAdmin(useradmin);
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         List<String> locales = ukelonn.availableLocales();
         assertThat(locales).isNotEmpty().contains(ukelonn.defaultLocale());
     }
@@ -1392,6 +1398,9 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testDisplayTextsForDefaultLocale() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ukelonn.setUserAdmin(useradmin);
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         Map<String, String> displayTexts = ukelonn.displayTexts(ukelonn.defaultLocale());
         assertThat(displayTexts).isNotEmpty();
     }

@@ -69,13 +69,14 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  * @author Steinar Bang
  *
  */
-@Component(service=UkelonnService.class, immediate=true)
+@Component(service=UkelonnService.class, immediate=true, property= { "defaultlocale=nb_NO" })
 public class UkelonnServiceProvider extends UkelonnServiceBase {
     private static final String RESOURCES_BASENAME = "i18n.ApplicationResources";
     private DataSource datasource;
     private UserManagementService useradmin;
     private LogService logservice;
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
+    private String defaultLocale;
     static final String LAST_NAME = "last_name";
     static final String FIRST_NAME = "first_name";
     static final String USERNAME = "username";
@@ -83,7 +84,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     static final String USER_ID = "user_id";
 
     @Activate
-    public void activate() {
+    public void activate(Map<String, Object> config) {
+        defaultLocale = (String) config.get("defaultlocale");
         addRolesIfNotPresent();
     }
 
@@ -573,7 +575,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public String defaultLocale() {
-        return "nb_NO";
+        return defaultLocale;
     }
 
     @Override
