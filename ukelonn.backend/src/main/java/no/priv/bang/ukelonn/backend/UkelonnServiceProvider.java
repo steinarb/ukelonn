@@ -580,7 +580,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<String> availableLocales() {
-        return Arrays.asList("nb_NO", "en_UK");
+        return Arrays.asList("nb_NO", "en_GB");
     }
 
     @Override

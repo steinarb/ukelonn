@@ -27,7 +27,7 @@ The code (classnames, variable names etc.) and comments and commit messages are 
 
 The README is in Norwegian (except for this summary).
 
-*** Configuring english as the default language
+*** Configuring English as the default language
 
 By default the GUI language is Norwegian.
 
@@ -36,7 +36,7 @@ Changing the locale setting is persisted in a cookie in the browser, but to avoi
 To set the default to English, do the following commands in the karaf console:
 #+begin_example
   config:edit no.priv.bang.ukelonn.backend.UkelonnServiceProvider
-  config:property-set defaultlocale en_UK
+  config:property-set defaultlocale en_GB
   config:update
 #+end_example
 

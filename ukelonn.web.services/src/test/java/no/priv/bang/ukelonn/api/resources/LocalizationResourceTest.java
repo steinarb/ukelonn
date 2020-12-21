@@ -45,7 +45,7 @@ public class LocalizationResourceTest {
     public void testAvailableLocales() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn("nb_NO");
-        when(ukelonn.availableLocales()).thenReturn(Arrays.asList("nb_NO", "en_UK"));
+        when(ukelonn.availableLocales()).thenReturn(Arrays.asList("nb_NO", "en_GB"));
         LocalizationResource resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
         List<String> availableLocales = resource.availableLocales();
