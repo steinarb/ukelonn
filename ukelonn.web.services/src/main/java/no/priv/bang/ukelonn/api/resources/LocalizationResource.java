@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 
 @Path("")
 public class LocalizationResource {
@@ -35,15 +37,15 @@ public class LocalizationResource {
 
     @GET
     @Path("defaultlocale")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String defaultLocale() {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Locale defaultLocale() {
         return ukelonn.defaultLocale();
     }
 
     @GET
     @Path("availablelocales")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> availableLocales() {
+    public List<LocaleBean> availableLocales() {
         return ukelonn.availableLocales();
     }
 
@@ -51,7 +53,7 @@ public class LocalizationResource {
     @Path("displaytexts")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> displayTexts(@QueryParam("locale")String locale) {
-        return ukelonn.displayTexts(locale);
+        return ukelonn.displayTexts(Locale.forLanguageTag(locale.replace('_', '-')));
     }
 
 }

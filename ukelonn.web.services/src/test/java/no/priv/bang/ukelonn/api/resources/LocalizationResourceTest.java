@@ -21,47 +21,51 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 
 public class LocalizationResourceTest {
+    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     @Test
     public void testDefaultLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.defaultLocale()).thenReturn("nb_NO");
+        when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         LocalizationResource resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        String defaultLocale = resource.defaultLocale();
-        assertEquals("nb_NO", defaultLocale);
+        Locale defaultLocale = resource.defaultLocale();
+        assertEquals(NB_NO, defaultLocale);
     }
 
     @Test
     public void testAvailableLocales() {
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.defaultLocale()).thenReturn("nb_NO");
-        when(ukelonn.availableLocales()).thenReturn(Arrays.asList("nb_NO", "en_GB"));
+        when(ukelonn.defaultLocale()).thenReturn(NB_NO);
+        when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> new LocaleBean(l)).collect(Collectors.toList()));
         LocalizationResource resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        List<String> availableLocales = resource.availableLocales();
-        assertThat(availableLocales).isNotEmpty().contains(ukelonn.defaultLocale());
+        List<LocaleBean> availableLocales = resource.availableLocales();
+        assertThat(availableLocales).isNotEmpty().contains(new LocaleBean(ukelonn.defaultLocale()));
     }
 
     @Test
     public void testDisplayTextsForDefaultLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.defaultLocale()).thenReturn("nb_NO");
+        when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         Map<String, String> texts = new HashMap<>();
         texts.put("date", "Dato");
-        when(ukelonn.displayTexts(anyString())).thenReturn(texts);
+        when(ukelonn.displayTexts(any())).thenReturn(texts);
         LocalizationResource resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        Map<String, String> displayTexts = resource.displayTexts(ukelonn.defaultLocale());
+        Map<String, String> displayTexts = resource.displayTexts(ukelonn.defaultLocale().toString());
         assertThat(displayTexts).isNotEmpty();
     }
 

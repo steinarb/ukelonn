@@ -41,6 +41,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
+
 import javax.sql.DataSource;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
@@ -51,6 +53,7 @@ import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Bonus;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -76,7 +79,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     private UserManagementService useradmin;
     private LogService logservice;
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
-    private String defaultLocale;
+    private Locale defaultLocale;
     static final String LAST_NAME = "last_name";
     static final String FIRST_NAME = "first_name";
     static final String USERNAME = "username";
@@ -85,7 +88,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Activate
     public void activate(Map<String, Object> config) {
-        defaultLocale = (String) config.get("defaultlocale");
+        defaultLocale = Locale.forLanguageTag(((String) config.get("defaultlocale")).replace('_', '-'));
         addRolesIfNotPresent();
     }
 
@@ -574,18 +577,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Override
-    public String defaultLocale() {
+    public Locale defaultLocale() {
         return defaultLocale;
     }
 
     @Override
-    public List<String> availableLocales() {
-        return Arrays.asList("nb_NO", "en_GB");
+    public List<LocaleBean> availableLocales() {
+        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(LocaleBean::new).collect(Collectors.toList());
     }
 
     @Override
-    public Map<String, String> displayTexts(String languageTag) {
-        Locale locale = Locale.forLanguageTag(languageTag.replace('_', '-'));
+    public Map<String, String> displayTexts(Locale locale) {
         return transformResourceBundleToMap(locale);
     }
 
