@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -73,7 +74,7 @@ public class TestUtils {
         ukelonnServiceSingleton.setDataSource(ukelonnDatasource);
         ukelonnServiceSingleton.setLogservice(logservice);
         ukelonnServiceSingleton.setUserAdmin(useradmin);
-        ukelonnServiceSingleton.activate();
+        ukelonnServiceSingleton.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         return ukelonnServiceSingleton;
     }
 

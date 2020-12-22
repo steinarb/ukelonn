@@ -10,7 +10,7 @@ function Locale(props) {
 
     return (
         <select className={classes} onChange={(event) => onUpdateLocale(event.target.value)} value={locale}>
-            {availableLocales.map((l) => <option key={'locale_' + l} value={l}>{l}</option>)}
+            {availableLocales.map((l) => <option key={'locale_' + l.code} value={l.code}>{l.displayLanguage}</option>)}
         </select>
     );
 }

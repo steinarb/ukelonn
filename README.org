@@ -25,7 +25,20 @@ The application also uses [[https://www.liquibase.org][Liquibase]] to create and
 
 The code (classnames, variable names etc.) and comments and commit messages are all in English.
 
-The GUI texts and this README are in Norwegian.
+The README is in Norwegian (except for this summary).
+
+*** Configuring English as the default language
+
+By default the GUI language is Norwegian.
+
+Changing the locale setting is persisted in a cookie in the browser, but to avoid needing to do the change, it is possible to set the default to something else in the karaf configuration.
+
+To set the default to English, do the following commands in the karaf console:
+#+begin_example
+  config:edit no.priv.bang.ukelonn.backend.UkelonnServiceProvider
+  config:property-set defaultlocale en_GB
+  config:update
+#+end_example
 
 * Status
 /NB!/ Byggefeilen skyldes et problem med travis-ci som jeg ikke skjønner

@@ -16,34 +16,43 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
+import org.osgi.service.log.LogService;
+
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 
 @Path("")
-public class LocalizationResource {
+public class LocalizationResource extends ResourceBase {
 
     @Inject
     UkelonnService ukelonn;
 
+    @Inject
+    LogService logservice;
+
     @GET
     @Path("defaultlocale")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String defaultLocale() {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Locale defaultLocale() {
         return ukelonn.defaultLocale();
     }
 
     @GET
     @Path("availablelocales")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> availableLocales() {
+    public List<LocaleBean> availableLocales() {
         return ukelonn.availableLocales();
     }
 
@@ -51,7 +60,13 @@ public class LocalizationResource {
     @Path("displaytexts")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> displayTexts(@QueryParam("locale")String locale) {
-        return ukelonn.displayTexts(locale);
+        try {
+            return ukelonn.displayTexts(Locale.forLanguageTag(locale.replace('_', '-')));
+        } catch (MissingResourceException e) {
+            String message = String.format("Unknown locale '%s' used when fetching GUI texts", locale);
+            logservice.log(LogService.LOG_ERROR, message);
+            throw new WebApplicationException(response(500, message));
+        }
     }
 
 }

@@ -26,7 +26,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,10 +59,12 @@ import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.beans.AdminStatus;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
+import no.priv.bang.ukelonn.api.resources.ErrorMessage;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
 import no.priv.bang.ukelonn.beans.Bonus;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.SumYear;
@@ -80,6 +84,8 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  *
  */
 public class UkelonnRestApiServletTest extends ServletTestBase {
+    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
 
     public UkelonnRestApiServletTest() {
         super("/ukelonn", "/api");
@@ -1577,7 +1583,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testDefaultLocale() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.defaultLocale()).thenReturn("nb_NO");
+        when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
 
@@ -1592,16 +1598,16 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Check the response
         assertEquals(200, response.getStatus());
-        assertEquals("text/plain", response.getContentType());
-        String defaultLocale = response.getOutputStreamContent();
-        assertEquals("nb_NO", defaultLocale);
+        assertEquals("application/json", response.getContentType());
+        Locale defaultLocale = mapper.readValue(getBinaryContent(response), Locale.class);
+        assertEquals(NB_NO, defaultLocale);
     }
 
     @Test
     public void testAvailableLocales() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.availableLocales()).thenReturn(Collections.singletonList("nb_NO"));
+        when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> new LocaleBean(l)).collect(Collectors.toList()));
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
 
@@ -1617,8 +1623,8 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Check the response
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
-        List<String> availableLocales = mapper.readValue(getBinaryContent(response), new TypeReference<List<String>>() {});
-        assertThat(availableLocales).isNotEmpty().contains("nb_NO");
+        List<LocaleBean> availableLocales = mapper.readValue(getBinaryContent(response), new TypeReference<List<LocaleBean>>() {});
+        assertThat(availableLocales).isNotEmpty().contains(new LocaleBean(Locale.forLanguageTag("nb-NO")));
     }
 
     @Test
@@ -1627,7 +1633,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         Map<String, String> texts = new HashMap<>();
         texts.put("date", "Dato");
-        when(ukelonn.displayTexts(eq("nb_NO"))).thenReturn(texts);
+        when(ukelonn.displayTexts(eq(NB_NO))).thenReturn(texts);
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
 
@@ -1646,6 +1652,35 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
         Map<String, String> displayTexts = mapper.readValue(getBinaryContent(response), new TypeReference<Map<String, String>>() {});
         assertThat(displayTexts).isNotEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDisplayTextsWithUnknownLocale() throws Exception {
+        // Set up REST API servlet with mocked services
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        Map<String, String> texts = new HashMap<>();
+        texts.put("date", "Dato");
+        when(ukelonn.displayTexts(eq(EN_UK))).thenThrow(MissingResourceException.class);
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildGetUrl("/displaytexts");
+        request.setQueryString("locale=en_UK");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(500, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        ErrorMessage errorMessage = mapper.readValue(getBinaryContent(response), ErrorMessage.class);
+        assertEquals(500, errorMessage.getStatus());
+        assertThat(errorMessage.getMessage()).startsWith("Unknown locale");
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {

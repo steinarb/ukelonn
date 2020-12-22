@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -24,6 +25,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Bonus;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.SumYear;
@@ -99,10 +101,10 @@ public interface UkelonnService {
 
     List<Bonus> deleteBonus(Bonus removedBonus);
 
-    String defaultLocale();
+    Locale defaultLocale();
 
-    List<String> availableLocales();
+    List<LocaleBean> availableLocales();
 
-    Map<String, String> displayTexts(String locale);
+    Map<String, String> displayTexts(Locale locale);
 
 }

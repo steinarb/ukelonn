@@ -18,6 +18,7 @@ package no.priv.bang.ukelonn.backend;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Test;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Bonus;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 import no.priv.bang.ukelonn.beans.SumYear;
@@ -168,19 +170,19 @@ public class UkelonnServiceBaseTest {
                 }
 
                 @Override
-                public String defaultLocale() {
+                public Locale defaultLocale() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public List<String> availableLocales() {
+                public List<LocaleBean> availableLocales() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
-                public Map<String, String> displayTexts(String locale) {
+                public Map<String, String> displayTexts(Locale locale) {
                     // TODO Auto-generated method stub
                     return null;
                 }
