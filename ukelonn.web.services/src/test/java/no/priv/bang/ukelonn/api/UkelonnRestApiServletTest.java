@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,6 +59,7 @@ import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.beans.AdminStatus;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
+import no.priv.bang.ukelonn.api.resources.ErrorMessage;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
@@ -83,6 +85,7 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  */
 public class UkelonnRestApiServletTest extends ServletTestBase {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
 
     public UkelonnRestApiServletTest() {
         super("/ukelonn", "/api");
@@ -1649,6 +1652,35 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
         Map<String, String> displayTexts = mapper.readValue(getBinaryContent(response), new TypeReference<Map<String, String>>() {});
         assertThat(displayTexts).isNotEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDisplayTextsWithUnknownLocale() throws Exception {
+        // Set up REST API servlet with mocked services
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        Map<String, String> texts = new HashMap<>();
+        texts.put("date", "Dato");
+        when(ukelonn.displayTexts(eq(EN_UK))).thenThrow(MissingResourceException.class);
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create the request and response
+        MockHttpServletRequest request = buildGetUrl("/displaytexts");
+        request.setQueryString("locale=en_UK");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(500, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        ErrorMessage errorMessage = mapper.readValue(getBinaryContent(response), ErrorMessage.class);
+        assertEquals(500, errorMessage.getStatus());
+        assertThat(errorMessage.getMessage()).startsWith("Unknown locale");
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {

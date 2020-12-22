@@ -23,12 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.stream.Collectors;
+
+import javax.ws.rs.WebApplicationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.LocaleBean;
 
@@ -66,6 +69,19 @@ public class LocalizationResourceTest {
         LocalizationResource resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
         Map<String, String> displayTexts = resource.displayTexts(ukelonn.defaultLocale().toString());
+        assertThat(displayTexts).isNotEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test(expected = WebApplicationException.class)
+    public void testDisplayTextsWithUnknownLocale() {
+        UkelonnService ukelonn = mock(UkelonnService.class);
+        when(ukelonn.displayTexts(any())).thenThrow(MissingResourceException.class);
+        LocalizationResource resource = new LocalizationResource();
+        MockLogService logservice = new MockLogService();
+        resource.logservice = logservice;
+        resource.ukelonn = ukelonn;
+        Map<String, String> displayTexts = resource.displayTexts("en_UK");
         assertThat(displayTexts).isNotEmpty();
     }
 
