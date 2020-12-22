@@ -124,7 +124,7 @@ public class TestUtils {
     static TestLiquibaseRunner createLiquibaseRunner(LogService logservice) {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         return runner;
     }
 

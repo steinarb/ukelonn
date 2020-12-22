@@ -22,7 +22,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -51,31 +53,126 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
+import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 
 public class TestLiquibaseRunnerTest {
 
     @Test
     public void testPrepareDatabase() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate(); // Create the database
+        runner.activate(Collections.emptyMap());
+        runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
         try(Connection connection = datasource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?");
-            statement.setString(1, "jad");
-            ResultSet onAccount = statement.executeQuery();
-            assertNotNull(onAccount);
-            assertTrue(onAccount.next());
-            int account_id = onAccount.getInt("account_id");
-            String username = onAccount.getString("username");
-            float balance = onAccount.getFloat("balance");
-            assertEquals(4, account_id);
-            assertEquals("jad", username);
-            assertThat(balance).isPositive();
+            try (PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+                statement.setString(1, "jad");
+                try(ResultSet onAccount = statement.executeQuery()) {
+                    assertNotNull(onAccount);
+                    assertTrue(onAccount.next());
+                    int account_id = onAccount.getInt("account_id");
+                    String username = onAccount.getString("username");
+                    float balance = onAccount.getFloat("balance");
+                    assertEquals(4, account_id);
+                    assertEquals("jad", username);
+                    assertThat(balance).isPositive();
+                }
+            }
+            // Verify that the texts in the database are in the default language  (i.e. Norwegian)
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
+                    assertNotNull(transactionTypes);
+                    assertTrue(transactionTypes.next());
+                    String transactionTypeName = transactionTypes.getString("transaction_type_name");
+                    assertEquals("Støvsuging 1. etasje", transactionTypeName);
+                }
+            }
+        }
+
+        // Verify that the schema changeset as well as all of the test data change sets has been run
+        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
+        assertEquals(49, ranChangeSets.size());
+    }
+
+    @Test
+    public void testPrepareDatabaseWithConfiguredLanguage() throws SQLException, DatabaseException {
+        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("en");
+        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate(Collections.singletonMap("databaselanguage", "en_GB")); // Create the database
+        runner.prepare(datasource); // Create the database
+
+        // Test the database by making a query using a view
+        try(Connection connection = datasource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+                statement.setString(1, "jad");
+                try(ResultSet onAccount = statement.executeQuery()) {
+                    assertNotNull(onAccount);
+                    assertTrue(onAccount.next());
+                    int account_id = onAccount.getInt("account_id");
+                    String username = onAccount.getString("username");
+                    float balance = onAccount.getFloat("balance");
+                    assertEquals(4, account_id);
+                    assertEquals("jad", username);
+                    assertThat(balance).isPositive();
+                }
+            }
+            // Verify that the texts in the database are in the default language  (i.e. Norwegian)
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
+                    assertNotNull(transactionTypes);
+                    assertTrue(transactionTypes.next());
+                    String transactionTypeName = transactionTypes.getString("transaction_type_name");
+                    assertEquals("Vacuuming 1st floor", transactionTypeName);
+                }
+            }
+        }
+
+        // Verify that the schema changeset as well as all of the test data change sets has been run
+        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
+        assertEquals(49, ranChangeSets.size());
+    }
+
+    @Test
+    public void testPrepareDatabaseWithConfiguredLanguageNotFound() throws SQLException, DatabaseException {
+        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("uk");
+        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+        runner.activate(Collections.singletonMap("databaselanguage", "en_UK")); // Create the database
+        runner.prepare(datasource); // Create the database
+
+        // Test the database by making a query using a view
+        try(Connection connection = datasource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+                statement.setString(1, "jad");
+                try(ResultSet onAccount = statement.executeQuery()) {
+                    assertNotNull(onAccount);
+                    assertTrue(onAccount.next());
+                    int account_id = onAccount.getInt("account_id");
+                    String username = onAccount.getString("username");
+                    float balance = onAccount.getFloat("balance");
+                    assertEquals(4, account_id);
+                    assertEquals("jad", username);
+                    assertThat(balance).isPositive();
+                }
+            }
+            // Verify that the texts in the database are in the default language  (i.e. Norwegian)
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
+                    assertNotNull(transactionTypes);
+                    assertTrue(transactionTypes.next());
+                    String transactionTypeName = transactionTypes.getString("transaction_type_name");
+                    assertEquals("Støvsuging 1. etasje", transactionTypeName);
+                }
+            }
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
@@ -86,11 +183,11 @@ public class TestLiquibaseRunnerTest {
     @Test
     public void testInsert() throws SQLException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Verify that the user isn't present
@@ -137,11 +234,11 @@ public class TestLiquibaseRunnerTest {
     @Test
     public void testRollbackMockData() throws Exception {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Check that database has the mock data in place
@@ -183,12 +280,45 @@ public class TestLiquibaseRunnerTest {
     public void testFailToRollbackMockData() throws Exception {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
 
         boolean rollbackSuccessful = runner.rollbackMockData(datasource);
         assertFalse(rollbackSuccessful);
+    }
+
+    @Test
+    public void testDummyDataResourceNameNoLanguageSet() {
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        MockLogService logservice = new MockLogService();
+        runner.setLogService(logservice);
+        runner.activate(Collections.emptyMap());
+
+        assertEquals(DEFAULT_DUMMY_DATA_CHANGELOG, runner.dummyDataResourceName());
+        assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    public void testDummyDataResourceNameWithLanguageSet() {
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        MockLogService logservice = new MockLogService();
+        runner.setLogService(logservice);
+        runner.activate(Collections.singletonMap("databaselanguage", "en_GB"));
+
+        assertEquals(DEFAULT_DUMMY_DATA_CHANGELOG.replace(".xml", "_en_GB.xml"), runner.dummyDataResourceName());
+        assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    public void testDummyDataResourceNameWithNotFoundLanguageSet() {
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        MockLogService logservice = new MockLogService();
+        runner.setLogService(logservice);
+        runner.activate(Collections.singletonMap("databaselanguage", "en_UK"));
+
+        assertEquals(DEFAULT_DUMMY_DATA_CHANGELOG, runner.dummyDataResourceName());
+        assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     /**
@@ -261,9 +391,9 @@ public class TestLiquibaseRunnerTest {
         liquibase.updateSchema(connect);
     }
 
-    private Properties createDerbyMemoryCredentials() {
+    private Properties createDerbyMemoryCredentials(String language) {
         Properties properties = new Properties();
-        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
+        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn" + language + ";create=true");
         return properties;
     }
 
