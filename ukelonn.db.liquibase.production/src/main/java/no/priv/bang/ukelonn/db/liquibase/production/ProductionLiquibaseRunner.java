@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package no.priv.bang.ukelonn.db.liquibase.production;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.hook.PreHook;
@@ -35,9 +37,11 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(immediate=true, property = "name=ukelonndb")
 public class ProductionLiquibaseRunner implements PreHook {
+    static final String INITIAL_DATA_DEFAULT_RESOURCE_NAME = "db-changelog/db-changelog.xml";
     private LogService logService;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
+    private String databaselanguage;
 
     @Reference
     public void setLogService(LogService logService) {
@@ -45,8 +49,8 @@ public class ProductionLiquibaseRunner implements PreHook {
     }
 
     @Activate
-    public void activate() {
-        // Called when the DS component is activated
+    public void activate(Map<String, Object> config) {
+        databaselanguage = (String) config.get("databaselanguage");
     }
 
     @Override
@@ -70,7 +74,7 @@ public class ProductionLiquibaseRunner implements PreHook {
         try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = createLiquibase("db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            Liquibase liquibase = createLiquibase(initialDataResourceName(), classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
             return true;
         } catch (Exception e) {
@@ -111,6 +115,20 @@ public class ProductionLiquibaseRunner implements PreHook {
 
     void setLiquibaseFactory(LiquibaseFactory liquibaseFactory) {
         this.liquibaseFactory = liquibaseFactory;
+    }
+
+    String initialDataResourceName() {
+        if (databaselanguage == null) {
+            return INITIAL_DATA_DEFAULT_RESOURCE_NAME;
+        }
+
+        String resourceName = INITIAL_DATA_DEFAULT_RESOURCE_NAME.replace(".xml", "_" + databaselanguage + ".xml");
+        if (getClass().getClassLoader().getResource(resourceName) == null) {
+            logService.log(LogService.LOG_WARNING, String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
+            return INITIAL_DATA_DEFAULT_RESOURCE_NAME;
+        }
+
+        return resourceName;
     }
 
 }

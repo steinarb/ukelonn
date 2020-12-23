@@ -8,6 +8,7 @@ import {
     UPDATE_BONUS,
     DELETE_BONUS,
 } from '../actiontypes';
+import Locale from './Locale';
 import { emptyBonus } from '../constants';
 
 function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadBonuses) {
@@ -22,6 +23,7 @@ function AdminBonusesDelete(props) {
     }
 
     let {
+        text,
         allbonuses,
         bonus,
         onUpdateBonus,
@@ -35,21 +37,20 @@ function AdminBonusesDelete(props) {
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/bonuses">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Administer bonuser
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Slett bonuser</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin/bonuses">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.administrateBonuses}
+                </Link>
+                <h1>{text.deleteBonuses}</h1>
+                <Locale />
+            </nav>
 
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="bonus" className="col-form-label col-5">Velg bonus</label>
+                        <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
                             <select id="bonus" className="form-control" value={bonusId} onChange={e => onUpdateBonus(bonuses.find(b => b.bonusId === parseInt(e.target.value)))}>
                                 {bonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
@@ -57,13 +58,13 @@ function AdminBonusesDelete(props) {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="title" className="col-form-label col-5">Tittel</label>
+                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input readOnly id="title" className="form-control" type="text" value={title} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="description" className="col-form-label col-5">Beskrivelse</label>
+                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input readOnly id="description" className="form-control" type="text" value={description} />
                         </div>
@@ -71,21 +72,22 @@ function AdminBonusesDelete(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onDeleteBonus(bonus)}>Slett valgt bonus</button>
+                            <button className="btn btn-primary" onClick={() => onDeleteBonus(bonus)}>{text.deleteSelectedBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,

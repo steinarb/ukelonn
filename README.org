@@ -6,6 +6,8 @@ Webapplikasjonen er skrevet for å bli kjørt i en [[https://www.osgi.org/develo
 
 Dette er en Webapplikasjon istedenfor en app, fordi resten av familien kjører iDingser og det er ikke så lett å få egenskrevne app'er inn på iDingser.
 
+Instruksjoner for installasjon, finner du i: [[https://github.com/steinarb/ukelonn/wiki/ukelonn---en-webapp-for-ukel%C3%B8nn][ukelonn en webapp for ukelønn]].
+
 ** English summary
 
 This is a web application for keeping track of my kids' allowance.
@@ -23,17 +25,37 @@ The application also uses [[https://www.liquibase.org][Liquibase]] to create and
 
 The code (classnames, variable names etc.) and comments and commit messages are all in English.
 
-The GUI texts and this README are in Norwegian.
+The README is in Norwegian (except for this summary).
+
+*** Configuring English as the default language
+
+By default the GUI language is Norwegian.
+
+Changing the locale setting is persisted in a cookie in the browser, but to avoid needing to do the change, it is possible to set the default to something else in the karaf configuration.
+
+To set the default to English, and to get English text on the prepopulated database entries, do the following commands in the karaf console:
+#+begin_example
+  config:edit no.priv.bang.ukelonn.backend.UkelonnServiceProvider
+  config:property-set defaultlocale en_GB
+  config:update
+  config:edit no.priv.bang.ukelonn.db.liquibase.test.ProductionLiquibaseRunner
+  config:property-set databaselanguage en_GB
+  config:update
+#+end_example
 
 * Status
+/NB!/ Byggefeilen skyldes et problem med travis-ci som jeg ikke skjønner
+/Note/ The build failure is an issue with travis-ci that I've been unable to figure out
+
 [[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=alert_status#.svg]]
+
 
 ** SonarCloud
 [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=coverage#.svg]]
 
 * Lisens
 
-Lisensen er Apache Public License v 2.0 fordi denne er kompatibel med Affero GPL v 3.0.
+Lisensen er Apache Public License v 2.0.
 
 Se fila LICENSE for teksten på lisensen.
 

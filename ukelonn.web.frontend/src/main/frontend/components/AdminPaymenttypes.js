@@ -6,48 +6,49 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function AdminPaymenttypes(props) {
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Register betaling
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Administrer betalingstyper</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.registerPayment}
+                </Link>
+                <h1>{text.administratePaymenttypes}</h1>
+                <Locale />
+            </nav>
             <div className="container">
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes/modify">
-                    Endre utbetalingstyper
+                    {text.modifyPaymenttypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes/create">
-                    Lag ny utbetalingstype
+                    {text.createPaymenttype}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
             </div>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };

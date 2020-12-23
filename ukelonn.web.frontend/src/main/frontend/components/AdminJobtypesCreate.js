@@ -8,6 +8,7 @@ import {
     CREATE_JOBTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Jobtypes from './Jobtypes';
 import Amount from './Amount';
 
@@ -16,30 +17,29 @@ function AdminJobtypesCreate(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { jobtypes, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
+    let { text, jobtypes, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Administer jobber og jobbtyper
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Lag ny jobbtype</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.createNewJobType}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-form-label col-5">Navn på jobbtype</label>
+                        <label htmlFor="amount" className="col-form-label col-5">{text.nameOfJobType}</label>
                         <div className="col-7">
                             <input id="name" className="form-control" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-form-label col-5">Beløp for jobbtype</label>
+                        <label htmlFor="amount" className="col-form-label col-5">{text.amountForJobType}</label>
                         <div className="col-7">
                             <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                         </div>
@@ -47,15 +47,15 @@ function AdminJobtypesCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>Lag ny jobbtype</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.createNewJobType}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 };
@@ -69,6 +69,7 @@ const emptyJobtype = {
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         jobtypes: state.jobtypes,

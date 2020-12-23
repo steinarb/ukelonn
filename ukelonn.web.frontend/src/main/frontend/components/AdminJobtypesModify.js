@@ -8,6 +8,7 @@ import {
     UPDATE_TRANSACTIONTYPE,
     MODIFY_JOBTYPE_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
 import Amount from './Amount';
 
@@ -16,36 +17,35 @@ function AdminJobtypesModify(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
+    let { text, jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Administer jobber og jobbtyper
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Endre jobbtyper</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.modifyJobTypes}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="jobtype" className="col-form-label col-5">Velg jobbtype</label>
+                        <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJobType}</label>
                         <div className="col-7">
                             <JobtypesBox id="jobtype" className="form-control" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-form-label col-5">Endre navn på jobbtype</label>
+                        <label htmlFor="amount" className="col-form-label col-5">{text.modifyNameOfJobType}</label>
                         <div className="col-7">
                             <input id="name" type="text" className="form-control" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-form-label col-5">Endre beløp for jobbtype</label>
+                        <label htmlFor="amount" className="col-form-label col-5">{text.modifyAmountOfJobType}</label>
                         <div className="col-7">
                             <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                         </div>
@@ -53,13 +53,13 @@ function AdminJobtypesModify(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>Lagre endringer i jobbtype</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.saveChangesToJobType}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
         </div>
     );
 }
@@ -73,6 +73,7 @@ const emptyJobtype = {
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         jobtypes: state.jobtypes,

@@ -8,6 +8,7 @@ import {
     CREATE_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Paymenttypes from './Paymenttypes';
 import Amount from './Amount';
 
@@ -16,30 +17,29 @@ function AdminPaymenttypesCreate(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let {  transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
+    let { text, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/paymenttypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Administer betalingstyper
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Lag ny utbetalingstype</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin/paymenttypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.administratePaymenttypes}
+                </Link>
+                <h1>{text.createPaymenttype}</h1>
+                <Locale />
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-5">Navn på utbetalingstype</label>
+                        <label htmlFor="amount" className="col-5">{text.paymentTypeName}</label>
                         <div className="col-7">
                             <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-5">Beløp for utbetalingstype</label>
+                        <label htmlFor="amount" className="col-5">{text.paymentTypeAmount}</label>
                         <div className="col-7">
                             <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
                         </div>
@@ -47,15 +47,15 @@ function AdminPaymenttypesCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType(transactiontype)}>Lag ny utbetalingstype</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.createNewPaymentType}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
@@ -69,6 +69,7 @@ const emptyPaymenttype = {
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         transactiontype: state.transactiontype,

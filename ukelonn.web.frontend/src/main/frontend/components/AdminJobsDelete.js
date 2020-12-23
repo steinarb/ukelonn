@@ -10,6 +10,7 @@ import {
     UPDATE_ACCOUNT,
     DELETE_JOBS_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Accounts from './Accounts';
 
 function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
@@ -23,27 +24,27 @@ function AdminJobsDelete(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
+    let { text, account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Administer jobber og jobbtyper
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Slett feilregisterte jobber for {account.firstName}</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.deleteErronouslyRegisteredJobsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
 
-            <p><em>Merk!</em> Det er bare feilregistreringer som skal slettes!<br/>
-               <em>Ikke</em> slett jobber som skal utbetales</p>
+            <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
+                <br/>
+                <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
 
             <div className="container">
                 <div className="form-group row">
-                    <label htmlFor="account-selector" className="col-form-label col-5">Velg konto:</label>
+                    <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseAccount}:</label>
                     <div className="col-7">
                         <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                     </div>
@@ -54,10 +55,10 @@ function AdminJobsDelete(props) {
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <td>Slett</td>
-                            <td>Dato</td>
-                            <td>Jobber</td>
-                            <td>Beløp</td>
+                            <td>{text.delete}</td>
+                            <td>{text.date}</td>
+                            <td>{text.jobs}</td>
+                            <td>{text.amount}</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,18 +73,19 @@ function AdminJobsDelete(props) {
                     </tbody>
                 </table>
             </div>
-            <button className="btn btn-default" onClick={() => onDeleteMarkedJobs(account, jobs)}>Slett merkede jobber</button>
+            <button className="btn btn-default" onClick={() => onDeleteMarkedJobs(account, jobs)}>{text.deleteMarkedJobs}</button>
             <br/>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

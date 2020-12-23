@@ -31,11 +31,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -47,6 +53,7 @@ import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Bonus;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -65,12 +72,14 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  * @author Steinar Bang
  *
  */
-@Component(service=UkelonnService.class, immediate=true)
+@Component(service=UkelonnService.class, immediate=true, property= { "defaultlocale=nb_NO" })
 public class UkelonnServiceProvider extends UkelonnServiceBase {
+    private static final String RESOURCES_BASENAME = "i18n.ApplicationResources";
     private DataSource datasource;
     private UserManagementService useradmin;
     private LogService logservice;
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
+    private Locale defaultLocale;
     static final String LAST_NAME = "last_name";
     static final String FIRST_NAME = "first_name";
     static final String USERNAME = "username";
@@ -78,7 +87,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     static final String USER_ID = "user_id";
 
     @Activate
-    public void activate() {
+    public void activate(Map<String, Object> config) {
+        defaultLocale = Locale.forLanguageTag(((String) config.get("defaultlocale")).replace('_', '-'));
         addRolesIfNotPresent();
     }
 
@@ -566,6 +576,21 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getAllBonuses();
     }
 
+    @Override
+    public Locale defaultLocale() {
+        return defaultLocale;
+    }
+
+    @Override
+    public List<LocaleBean> availableLocales() {
+        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(LocaleBean::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, String> displayTexts(Locale locale) {
+        return transformResourceBundleToMap(locale);
+    }
+
     private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
         return notificationQueues.computeIfAbsent(username, k-> new ConcurrentLinkedQueue<>());
     }
@@ -755,6 +780,18 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 resultset.getDouble("transaction_amount"),
                 resultset.getBoolean("transaction_is_work"),
                 resultset.getBoolean("transaction_is_wage_payment"));
+    }
+
+    Map<String, String> transformResourceBundleToMap(Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        ResourceBundle bundle = ResourceBundle.getBundle(RESOURCES_BASENAME, locale);
+        Enumeration<String> keys = bundle.getKeys();
+        while(keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, bundle.getString(key));
+        }
+
+        return map;
     }
 
 }

@@ -12,6 +12,7 @@ import {
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
+import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
@@ -24,6 +25,7 @@ function Admin(props) {
     }
 
     let {
+        text,
         account = {},
         payment,
         paymenttype,
@@ -46,17 +48,18 @@ function Admin(props) {
 
     return (
         <div>
-            <a className="btn btn-block btn-primary left-align-cell" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Tilbake til topp</a>
-            <header>
-                <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
-                    <h1>Registrer betaling</h1>
-                </div>
-            </header>
-            <BonusBanner/>
+            <nav className="navbar navbar-light bg-light">
+                <a className="btn btn-primary" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;{text.returnToTop}</a>
+                <h1>{text.registerPayment}</h1>
+                <Locale />
+            </nav>
+            <div>
+                <BonusBanner/>
+            </div>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="account-selector" className="col-form-label col-5">Velg hvem det skal betales til:</label>
+                        <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseWhoToPayTo}:</label>
                         <div className="col-7">
                             <Accounts id="account-selector" className="form-control" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                         </div>
@@ -65,19 +68,19 @@ function Admin(props) {
                         <EarningsMessage />
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="account-balance" className="col-form-label col-5">Til gode:</label>
+                        <label htmlFor="account-balance" className="col-form-label col-5">{text.owedAmount}:</label>
                         <div className="col-7">
                             <input id="account-balance" className="form-control" type="text" value={account.balance} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="paymenttype-selector" className="col-form-label col-5">Type av utbetaling:</label>
+                        <label htmlFor="paymenttype-selector" className="col-form-label col-5">{text.paymentType}:</label>
                         <div className="col-7">
                             <Paymenttypes id="paymenttype-selector" className="form-control" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-form-label col-5">Beløp:</label>
+                        <label htmlFor="amount" className="col-form-label col-5">{text.amount}:</label>
                         <div className="col-7">
                             <Amount id="amount" className="form-control" payment={payment} onAmountFieldChange={onAmountFieldChange} />
                         </div>
@@ -85,56 +88,57 @@ function Admin(props) {
                     <div className="form-group row">
                         <div className="col-5" />
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onRegisterPayment(payment, paymenttype)}>Registrer betaling</button>
+                            <button className="btn btn-primary" onClick={() => onRegisterPayment(payment, paymenttype)}>{text.registerPayment}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <div className="container">
                 <Link className="btn btn-block btn-primary right-align-cell" to={performedjobs}>
-                    Utforte jobber
+                    {text.performedJobs}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to={performedpayments}>
-                    Siste utbetalinger til bruker
+                    {text.performedPayments}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to={statistics}>
-                    Statistikk
+                    {text.statistics}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes">
-                    Administrere jobber og jobbtyper
+                    {text.administrateJobsAndJobTypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes">
-                    Administrere utbetalingstyper
+                    {text.administratePaymenttypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users">
-                    Administrere brukere
+                    {text.administrateUsers}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses">
-                    Administrer bonuser
+                    {text.administrateBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
             </div>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

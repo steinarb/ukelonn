@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -45,8 +46,10 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(immediate=true, property = "name=ukelonndb")
 public class TestLiquibaseRunner implements PreHook {
+    static final String DEFAULT_DUMMY_DATA_CHANGELOG = "sql/data/db-initial-changelog.xml";
     private LogService logService;
     private boolean initialChangelog = false;
+    private String databaselanguage;
 
     @Reference
     public void setLogService(LogService logService) {
@@ -54,8 +57,8 @@ public class TestLiquibaseRunner implements PreHook {
     }
 
     @Activate
-    public void activate() {
-        // Called when component is activated
+    public void activate(Map<String, Object> config) {
+        databaselanguage = (String) config.get("databaselanguage");
     }
 
     @Override
@@ -86,7 +89,7 @@ public class TestLiquibaseRunner implements PreHook {
             } else {
                 // Schema before authservice schema applied
                 initialChangelog = true;
-                Liquibase liquibase = new Liquibase("sql/data/db-initial-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+                Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
                 liquibase.update("");
             }
             return true;
@@ -119,7 +122,7 @@ public class TestLiquibaseRunner implements PreHook {
                 try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
                     statement.executeUpdate();
                 }
-                Liquibase liquibase = new Liquibase("sql/data/db-initial-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+                Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
                 liquibase.rollback(3, "");
             } else {
                 Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
@@ -156,6 +159,20 @@ public class TestLiquibaseRunner implements PreHook {
         }
 
         return Collections.emptyList();
+    }
+
+    String dummyDataResourceName() {
+        if (databaselanguage == null) {
+            return DEFAULT_DUMMY_DATA_CHANGELOG;
+        }
+
+        String resourceName = DEFAULT_DUMMY_DATA_CHANGELOG.replace(".xml", "_" + databaselanguage + ".xml");
+        if (getClass().getClassLoader().getResource(resourceName) == null) {
+            logService.log(LogService.LOG_WARNING, String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
+            return DEFAULT_DUMMY_DATA_CHANGELOG;
+        }
+
+        return resourceName;
     }
 
 }

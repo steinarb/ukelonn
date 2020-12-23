@@ -6,59 +6,60 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 
 function AdminJobtypes(props) {
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { onLogout } = props;
+    let { text, onLogout } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Register betaling
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Administrer jobber og jobbtyper</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.registerPayment}
+                </Link>
+                <h1>{text.administrateJobsAndJobTypes}</h1>
+                <Locale />
+            </nav>
             <div className="container">
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/modify">
-                    Endre jobbtyper
+                    {text.modifyJobTypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes/create">
-                    Lag ny jobbtype
+                    {text.createNewJobType}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobs/delete">
-                    Slett jobber
+                    {text.deleteJobs}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
                 <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobs/edit">
-                    Endre jobber
+                    {text.modifyJobs}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
             </div>
             <br/>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>Logout</button>
+            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../..">Tilbake til topp</a>
+            <a href="../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
     };

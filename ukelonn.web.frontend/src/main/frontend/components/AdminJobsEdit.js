@@ -13,6 +13,7 @@ import {
     UPDATE_JOB_REQUEST,
     RECENTJOBS_REQUEST,
 } from '../actiontypes';
+import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 
@@ -27,25 +28,24 @@ function AdminJobsEdit(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
+    let { text, account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
 
     return (
         <div>
-            <Link className="btn btn-block btn-primary mb-0 left-align-cell" to="/ukelonn/admin/jobtypes">
-                <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
-                &nbsp;
-                Administer jobber og jobbtyper
-            </Link>
-            <header>
-                <div className="pb-2 mt-0 mb-2 border-bottom bg-light">
-                    <h1>Endre jobber for {account.firstName}</h1>
-                </div>
-            </header>
+            <nav className="navbar navbar-light bg-light">
+                <Link className="btn btn-primary" to="/ukelonn/admin/jobtypes">
+                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
+                    &nbsp;
+                    {text.administrateJobsAndJobTypes}
+                </Link>
+                <h1>{text.modifyJobsFor} {account.firstName}</h1>
+                <Locale />
+            </nav>
 
 
             <div className="container">
                 <div className="form-group row">
-                    <label htmlFor="account-selector" className="col-form-label col-5">Velg konto:</label>
+                    <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseAccount}:</label>
                     <div className="col-7">
                         <Accounts  id="account-selector" className="form-control" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                     </div>
@@ -56,9 +56,9 @@ function AdminJobsEdit(props) {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th className="transaction-table-col transaction-table-col1">Dato</th>
-                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">Jobber</th>
-                            <th className="transaction-table-col transaction-table-col3">Bel.</th>
+                            <th className="transaction-table-col transaction-table-col1">{text.date}Dato</th>
+                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">{text.jobs}</th>
+                            <th className="transaction-table-col transaction-table-col3">{text.amount}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,36 +75,37 @@ function AdminJobsEdit(props) {
             <h2>Endre jobb</h2>
             <div className="container">
                 <div className="form-group row">
-                    <label htmlFor="jobtype" className="col-form-label col-5">Jobbtype</label>
+                    <label htmlFor="jobtype" className="col-form-label col-5">{text.jobType}</label>
                     <div className="col-7">
                         <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
                     </div>
                 </div>
                 <div className="form-group row">
-                    <label htmlFor="amount" className="col-form-label col-5">Beløp</label>
+                    <label htmlFor="amount" className="col-form-label col-5">{text.amount}</label>
                     <div className="col-7">
                         <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
                     </div>
                 </div>
                 <div className="form-group row">
-                    <label htmlFor="date" className="col-form-label col-5">Dato</label>
+                    <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                     <div className="col-7">
                         <DatePicker id="date" selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
                     </div>
                 </div>
             </div>
-            <button onClick={() => onSaveEditedJob(selectedjob)}>Lagre endret jobb</button>
+            <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJobType}</button>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>Logout</button>
+            <button onClick={() => onLogout()}>{text.logout}</button>
             <br/>
-            <a href="../../../..">Tilbake til topp</a>
+            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
 
 function mapStateToProps(state) {
     return {
+        text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         account: state.account,

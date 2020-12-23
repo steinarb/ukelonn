@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,22 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.production;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
+
 import javax.sql.DataSource;
 import org.junit.Test;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
-import no.priv.bang.ukelonn.db.liquibase.production.mocks.MockLogService;
+import static no.priv.bang.ukelonn.db.liquibase.production.ProductionLiquibaseRunner.*;
 
 public class ProductionLiquibaseRunnerTest {
 
@@ -51,13 +55,13 @@ public class ProductionLiquibaseRunnerTest {
         Connection connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
 
         // Execute the method under test
         runner.prepare(datasource);
 
         // Verify that no errors have been logged
-        assertEquals(0, logservice.getLogmessagecount());
+        assertEquals(0, logservice.getLogmessages().size());
     }
 
     @SuppressWarnings("unchecked")
@@ -67,7 +71,7 @@ public class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
 
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -76,7 +80,7 @@ public class ProductionLiquibaseRunnerTest {
         runner.prepare(datasource);
 
         // Verify that no errors have been logged
-        assertEquals(1, logservice.getLogmessagecount());
+        assertEquals(1, logservice.getLogmessages().size());
     }
 
     @SuppressWarnings("unchecked")
@@ -85,7 +89,7 @@ public class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         boolean successfullyinserteddata = runner.insertInitialDataInDatabase(datasource );
@@ -97,7 +101,7 @@ public class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         DatabaseConnection connection = mock(DatabaseConnection.class);
         when(connection.getDatabaseProductName()).thenReturn("PostgreSQL");
         Liquibase liquibase = runner.createLiquibase(null, null, connection);
@@ -109,9 +113,42 @@ public class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         UkelonnLiquibase liquibase = runner.createUkelonnLiquibase();
         assertNotNull(liquibase);
+    }
+
+    @Test
+    public void testInitialDataResourceNameNoLanguageSet() {
+        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
+        MockLogService logservice = new MockLogService();
+        runner.setLogService(logservice);
+        runner.activate(Collections.emptyMap());
+
+        assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME, runner.initialDataResourceName());
+        assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    public void testInitialDataResourceNameWithLanguageSet() {
+        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
+        MockLogService logservice = new MockLogService();
+        runner.setLogService(logservice);
+        runner.activate(Collections.singletonMap("databaselanguage", "en_GB"));
+
+        assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME.replace(".xml", "_en_GB.xml"), runner.initialDataResourceName());
+        assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    public void testInitialDataResourceNameWithNotFoundLanguageSet() {
+        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
+        MockLogService logservice = new MockLogService();
+        runner.setLogService(logservice);
+        runner.activate(Collections.singletonMap("databaselanguage", "en_UK"));
+
+        assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME, runner.initialDataResourceName());
+        assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
 }

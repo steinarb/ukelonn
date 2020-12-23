@@ -31,6 +31,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,7 @@ import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Bonus;
+import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
@@ -62,6 +65,7 @@ import no.priv.bang.ukelonn.beans.User;
 import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 public class UkelonnServiceProviderTest {
+    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     @BeforeClass
     public static void setupForAllTests() throws Exception {
@@ -1210,7 +1214,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1231,7 +1235,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1252,7 +1256,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1273,7 +1277,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1294,7 +1298,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
-        ukelonn.activate();
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
@@ -1373,6 +1377,35 @@ public class UkelonnServiceProviderTest {
         verify(useradmin, times(1)).getUser(anyString());
         verify(useradmin, times(0)).getRolesForUser(anyString());
         verify(useradmin, times(0)).addUserRoles(any());
+    }
+
+    @Test
+    public void testDefaultLocale() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ukelonn.setUserAdmin(useradmin);
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        assertEquals(NB_NO, ukelonn.defaultLocale());
+    }
+
+    @Test
+    public void testAvailableLocales() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ukelonn.setUserAdmin(useradmin);
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        List<LocaleBean> locales = ukelonn.availableLocales();
+        assertThat(locales).isNotEmpty().contains(new LocaleBean(ukelonn.defaultLocale()));
+    }
+
+    @Test
+    public void testDisplayTextsForDefaultLocale() {
+        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ukelonn.setUserAdmin(useradmin);
+        ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        Map<String, String> displayTexts = ukelonn.displayTexts(ukelonn.defaultLocale());
+        assertThat(displayTexts).isNotEmpty();
     }
 
     private Bonus disableBonus(Bonus bonus) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -44,6 +46,14 @@ public class ResourceBase {
             logservice.log(LogService.LOG_ERROR, message, e);
             throw new InternalServerErrorException(message);
         }
+    }
+
+    protected Response response(int status, String message) {
+        return Response
+            .status(status)
+            .entity(new ErrorMessage(status, message))
+            .type(MediaType.APPLICATION_JSON)
+            .build();
     }
 
 }
