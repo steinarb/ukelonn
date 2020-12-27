@@ -8,7 +8,6 @@ import {
     UPDATE_USER_IS_ADMINISTRATOR,
     USERS_REQUEST,
     PAYMENTTYPES_REQUEST,
-    START_NOTIFICATION_LISTENING,
     JOBTYPELIST_REQUEST,
     RECENTJOBS_REQUEST,
     RECENTPAYMENTS_REQUEST,
@@ -26,7 +25,6 @@ function* locationChange(action) {
     if (pathname === '/ukelonn/user') {
         const username = yield select(findUsername);
         yield put(ACCOUNT_REQUEST(username));
-        yield put(START_NOTIFICATION_LISTENING(username));
         yield put(JOBTYPELIST_REQUEST());
         yield put(GET_ACTIVE_BONUSES());
     }
