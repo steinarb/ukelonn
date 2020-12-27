@@ -17,6 +17,7 @@ import {
 } from '../actiontypes';
 import { emptyBonus } from '../constants';
 import { emptyUser } from '../reducers/constants';
+import { findUsername } from '../common/login';
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
@@ -99,11 +100,6 @@ function* locationChange(action) {
 
 export default function* locationSaga() {
     yield takeLatest(LOCATION_CHANGE, locationChange);
-}
-
-function findUsername(state) {
-    const loginResponse = state.loginResponse || {};
-    return loginResponse.username || '';
 }
 
 function findAccountId(state) {
