@@ -568,10 +568,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
-        // When the servlet is activated it will be plugged into the http whiteboard and configured
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
-        servlet.init(config);
-
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
 

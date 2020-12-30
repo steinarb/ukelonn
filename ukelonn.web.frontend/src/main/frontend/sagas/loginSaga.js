@@ -8,6 +8,7 @@ import {
     LOGIN_RECEIVE,
     LOGIN_FAILURE,
     ACCOUNT_REQUEST,
+    START_NOTIFICATION_LISTENING,
 } from '../actiontypes';
 import { emptyLoginResponse } from './constants';
 
@@ -28,6 +29,7 @@ export function* receiveInitialLoginStateSaga() {
         const { roles } = loginResponse;
         if (roles.indexOf('ukelonnadmin') === -1) {
             yield put(ACCOUNT_REQUEST(loginResponse.username));
+            yield put(START_NOTIFICATION_LISTENING(loginResponse.username));
         }
     } catch (error) {
         yield put(INITIAL_LOGIN_STATE_FAILURE(error));
