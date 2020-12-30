@@ -131,10 +131,6 @@
             <artifactId>shiro-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.beans</groupId>
             <artifactId>beans.immutable</artifactId>
         </dependency>
