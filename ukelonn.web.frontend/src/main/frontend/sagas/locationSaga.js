@@ -8,7 +8,6 @@ import {
     UPDATE_USER_IS_ADMINISTRATOR,
     USERS_REQUEST,
     PAYMENTTYPES_REQUEST,
-    START_NOTIFICATION_LISTENING,
     JOBTYPELIST_REQUEST,
     RECENTJOBS_REQUEST,
     RECENTPAYMENTS_REQUEST,
@@ -18,6 +17,7 @@ import {
 } from '../actiontypes';
 import { emptyBonus } from '../constants';
 import { emptyUser } from '../reducers/constants';
+import { findUsername } from '../common/login';
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
@@ -26,7 +26,6 @@ function* locationChange(action) {
     if (pathname === '/ukelonn/user') {
         const username = yield select(findUsername);
         yield put(ACCOUNT_REQUEST(username));
-        yield put(START_NOTIFICATION_LISTENING(username));
         yield put(JOBTYPELIST_REQUEST());
         yield put(GET_ACTIVE_BONUSES());
     }
@@ -101,11 +100,6 @@ function* locationChange(action) {
 
 export default function* locationSaga() {
     yield takeLatest(LOCATION_CHANGE, locationChange);
-}
-
-function findUsername(state) {
-    const loginResponse = state.loginResponse || {};
-    return loginResponse.username || '';
 }
 
 function findAccountId(state) {

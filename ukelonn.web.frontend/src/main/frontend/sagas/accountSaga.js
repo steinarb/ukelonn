@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put, fork, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     UPDATE_ACCOUNT,
@@ -9,8 +9,10 @@ import {
     EARNINGS_SUM_OVER_YEAR_RECEIVE,
     EARNINGS_SUM_OVER_MONTH_REQUEST,
     EARNINGS_SUM_OVER_MONTH_RECEIVE,
+    RECEIVED_NOTIFICATION,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
+import { findUsername } from '../common/login';
 
 
 function doAccount(username) {
@@ -45,8 +47,14 @@ function* receiveAccountSaga(action) {
     }
 }
 
+function* updateAccountOnNotification() {
+    const username = yield select(findUsername);
+    yield put(ACCOUNT_REQUEST(username));
+}
+
 // watcher saga
 export default function* accountSaga() {
     yield takeLatest(UPDATE_ACCOUNT, updateAccountSaga);
     yield takeLatest(ACCOUNT_REQUEST, receiveAccountSaga);
+    yield takeLatest(RECEIVED_NOTIFICATION, updateAccountOnNotification);
 }

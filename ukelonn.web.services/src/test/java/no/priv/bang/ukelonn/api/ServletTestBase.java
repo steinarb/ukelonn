@@ -19,6 +19,7 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,7 +107,15 @@ public class ServletTestBase {
     }
 
     String buildURI(String resource) {
-        return Paths.get(contextPath, servletPath, resource).toUri().getPath();
+        return removeDriveLetter(Paths.get(contextPath, servletPath, resource).toUri().getPath());
+    }
+
+    String removeDriveLetter(String path) {
+        if (path.matches("^/[A-Za-z]:.*")) {
+            return path.replaceAll("^/[A-Za-z]:", "");
+        }
+
+        return path;
     }
 
     String buildFullURL(String resource) {
