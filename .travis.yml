@@ -4,7 +4,7 @@ addons:
         organization: steinarb-github
         token: $SONAR_TOKEN
 script:
-    - travis_wait mvn -q -B -Dorg.slf4j.simpleLogger.defaultLogLevel=warn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar coveralls:report >/dev/null
+    - mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar coveralls:report
 
 deploy:
     provider: script
