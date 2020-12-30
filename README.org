@@ -44,8 +44,6 @@ To set the default to English, and to get English text on the prepopulated datab
 #+end_example
 
 * Status
-/NB!/ Byggefeilen skyldes et problem med travis-ci som jeg ikke skjønner
-/Note/ The build failure is an issue with travis-ci that I've been unable to figure out
 
 [[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=alert_status#.svg]]
 
