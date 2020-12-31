@@ -24,7 +24,6 @@
 
     <properties>
         <logback.version>1.0.4</logback.version>
-        <slf4j.version>1.7.4</slf4j.version>
         <pax.exam.framework>equinox</pax.exam.framework>
         <pax.exam.container>native</pax.exam.container>
     </properties>
@@ -103,10 +102,6 @@
             <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
