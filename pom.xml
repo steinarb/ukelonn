@@ -34,6 +34,7 @@
         <module>ukelonn.db.as.authservicedb</module>
         <module>ukelonn.db.liquibase.production</module>
         <module>karaf</module>
+        <module>ukelonn.tests</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
