@@ -58,7 +58,7 @@
         <dependency.osgi.log.version>1.3.0</dependency.osgi.log.version>
         <dependency.osgi.jdbc.version>1.0.0</dependency.osgi.jdbc.version>
         <dependency.pax.web.version>7.2.14</dependency.pax.web.version>
-        <dependency.pax.exam.version>4.10.0</dependency.pax.exam.version>
+        <paxexam.version>4.13.4</paxexam.version>
         <dependency.pax.jdbc.version>1.3.1</dependency.pax.jdbc.version>
         <dependency.pax.url.version>2.5.4</dependency.pax.url.version>
         <bang-servlet.version>1.3.2</bang-servlet.version>
@@ -214,42 +214,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-container-karaf</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.karaf</groupId>
-                <artifactId>apache-karaf-minimal</artifactId>
-                <version>${karaf.version}</version>
-                <type>zip</type>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.karaf.features</groupId>
                 <artifactId>standard</artifactId>
                 <version>${karaf.version}</version>
                 <type>xml</type>
                 <classifier>features</classifier>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-junit4</artifactId>
-                <version>${dependency.pax.exam.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>pax-exam-link-mvn</artifactId>
-                <version>${dependency.pax.exam.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

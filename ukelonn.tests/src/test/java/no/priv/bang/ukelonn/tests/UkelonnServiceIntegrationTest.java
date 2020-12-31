@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,108 +15,37 @@
  */
 package no.priv.bang.ukelonn.tests;
 
-import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
-import org.junit.Ignore;
+import org.apache.karaf.itests.KarafTestSupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.web.itest.base.client.HttpTestClient;
-import org.ops4j.pax.web.itest.base.client.HttpTestClientFactory;
-
-import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.UkelonnDatabase;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class UkelonnServiceIntegrationTest extends UkelonnServiceIntegrationTestBase {
-    public static final String RMI_SERVER_PORT = "44445";
-    public static final String RMI_REG_PORT = "1100";
-
-    @Inject
-    private UkelonnService ukelonnService;
-
-    @Inject
-    private UkelonnDatabase database;
+public class UkelonnServiceIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final String jmxPort = freePortAsString();
-        final String httpPort = freePortAsString();
-        final String httpsPort = freePortAsString();
-        final MavenArtifactUrlReference derbyUrl = maven().groupId("org.apache.derby").artifactId("derby").versionAsInProject();
-        final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
-        final MavenArtifactUrlReference paxJdbcRepo = maven().groupId("org.ops4j.pax.jdbc").artifactId("pax-jdbc-features").versionAsInProject().type("xml").classifier("features");
         final MavenArtifactUrlReference ukelonnFeatureRepo = maven().groupId("no.priv.bang.ukelonn").artifactId("karaf").versionAsInProject().type("xml").classifier("features");
-        return options(
-            karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
-            configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
-            systemTimeout(720000),
-            keepRuntimeFolder(),
-            logLevel(LogLevel.DEBUG),
-            editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", RMI_REG_PORT),
-            editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", RMI_SERVER_PORT),
-            editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
-            editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port.secure", httpsPort),
-            replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg", getConfigFile("/etc/org.ops4j.pax.logging.cfg")),
-            systemProperty("org.ops4j.pax.logging.DefaultSer‌​viceLog.level").value("DEBUG"),
-            vmOptions("-Dtest-jmx-port=" + jmxPort),
-            junitBundles(),
-            mavenBundle(derbyUrl), // Without this mavenbundle the test gets ClassNotFoundException when trying to load derby exceptions
-            features(paxJdbcRepo),
-            features(ukelonnFeatureRepo, "ukelonn-with-derby"));
+        Option[] options = new Option[] {
+            features(ukelonnFeatureRepo)
+        };
+        return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
     }
 
     @Test
-    public void ukelonnServiceIntegrationTest() {
-        // Verify that the service could be injected
-        assertNotNull(ukelonnService);
-        assertEquals("Hello world!", ukelonnService.getMessage());
+    public void testLoadFeature() throws Exception {
+        installAndAssertFeature("ukelonn-with-derby");
     }
 
-    @Test
-    public void testDerbyTestDatabase() throws SQLException {
-        try(Connection connection = database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?");
-            statement.setString(1, "jad");
-            ResultSet onAccount = statement.executeQuery();
-            assertNotNull(onAccount);
-            assertTrue(onAccount.next()); // Verify that there is at least one result
-            int account_id = onAccount.getInt("account_id");
-            String username = onAccount.getString("username");
-            float balance = onAccount.getFloat("balance");
-            assertEquals(4, account_id);
-            assertEquals("jad", username);
-            assertNotEquals(0, balance);
-        }
-    }
-
-    @Ignore("I haven't been able to make this one work yet but hope I will.")
-    @Test
-    public void webappAccessTest() throws Exception {
-        HttpTestClient testclient = HttpTestClientFactory.createDefaultTestClient();
-        try {
-            testclient.doGET("http://localhost:8081/ukelonn/").withReturnCode(404);
-            String response = testclient.executeTest();
-            assertEquals("", response);
-        } finally {
-            testclient = null;
-        }
-    }
 }
