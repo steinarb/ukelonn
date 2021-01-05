@@ -5,7 +5,7 @@
     "dependencies": {
         "reactstrap": "^6.3.1",
         "bootstrap": "^4.1.3",
-        "axios": "^0.18.1",
+        "axios": "^0.21.1",
         "connected-react-router": "^6.7.0",
         "delay": "4.0.1",
         "moment": "2.22.2",
