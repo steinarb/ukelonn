@@ -1302,7 +1302,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = mock(UkelonnService.class);
         List<SumYear> earningsSumOverYear = Arrays.asList(new SumYear(1250.0, 2016), new SumYear(2345.0, 2017), new SumYear(5467.0, 2018), new SumYear(2450.0, 2019));
-        when(ukelonn.earningsSumOverYear(eq("jad"))).thenReturn(earningsSumOverYear);
+        when(ukelonn.earningsSumOverYear("jad")).thenReturn(earningsSumOverYear);
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
@@ -1423,7 +1423,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up REST API servlet with mocked services
         Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.createBonus(eq(bonus))).thenReturn(Collections.singletonList(bonus));
+        when(ukelonn.createBonus(bonus)).thenReturn(Collections.singletonList(bonus));
 
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1451,7 +1451,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up REST API servlet with mocked services
         Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.modifyBonus(eq(bonus))).thenReturn(Collections.singletonList(bonus));
+        when(ukelonn.modifyBonus(bonus)).thenReturn(Collections.singletonList(bonus));
 
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1479,7 +1479,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up REST API servlet with mocked services
         Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.deleteBonus(eq(bonus))).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.deleteBonus(bonus)).thenReturn(Collections.singletonList(new Bonus()));
 
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1629,7 +1629,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         Map<String, String> texts = new HashMap<>();
         texts.put("date", "Dato");
-        when(ukelonn.displayTexts(eq(NB_NO))).thenReturn(texts);
+        when(ukelonn.displayTexts(NB_NO)).thenReturn(texts);
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
 
@@ -1657,7 +1657,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         Map<String, String> texts = new HashMap<>();
         texts.put("date", "Dato");
-        when(ukelonn.displayTexts(eq(EN_UK))).thenThrow(MissingResourceException.class);
+        when(ukelonn.displayTexts(EN_UK)).thenThrow(MissingResourceException.class);
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
 
@@ -1697,7 +1697,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
         ServletConfig config = mock(ServletConfig.class);
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));
-        when(config.getInitParameter(eq(ServerProperties.PROVIDER_PACKAGES))).thenReturn("no.priv.bang.ukelonn.api.resources");
+        when(config.getInitParameter(ServerProperties.PROVIDER_PACKAGES)).thenReturn("no.priv.bang.ukelonn.api.resources");
         ServletContext servletContext = mock(ServletContext.class);
         when(servletContext.getContextPath()).thenReturn("/ukelonn");
         when(config.getServletContext()).thenReturn(servletContext);
