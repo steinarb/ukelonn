@@ -44,7 +44,7 @@ public class UkelonnServiceIntegrationTest extends KarafTestSupport {
     }
 
     @Test
-    public void testLoadFeature() throws Exception {
+    public void testLoadFeature() throws Exception { // NOSONAR this test has an assert, just not an assert sonar recognizes
         installAndAssertFeature("ukelonn-with-derby");
     }
 
