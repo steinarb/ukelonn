@@ -19,7 +19,6 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;

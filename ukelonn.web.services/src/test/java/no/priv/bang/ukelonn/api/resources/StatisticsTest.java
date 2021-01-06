@@ -34,7 +34,7 @@ public class StatisticsTest {
     public void testEarningsSumOverYear() {
         Statistics resource = new Statistics();
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.earningsSumOverYear(eq("jad"))).thenReturn(Arrays.asList(new SumYear(1250.0, 2016)));
+        when(ukelonn.earningsSumOverYear("jad")).thenReturn(Arrays.asList(new SumYear(1250.0, 2016)));
         resource.ukelonn = ukelonn;
 
         String username = "jad";
@@ -47,7 +47,7 @@ public class StatisticsTest {
     public void testEarningsSumOverMonth() {
         Statistics resource = new Statistics();
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.earningsSumOverMonth(eq("jad"))).thenReturn(Arrays.asList(new SumYearMonth(125.0, 2016, 7)));
+        when(ukelonn.earningsSumOverMonth("jad")).thenReturn(Arrays.asList(new SumYearMonth(125.0, 2016, 7)));
         resource.ukelonn = ukelonn;
 
         String username = "jad";
