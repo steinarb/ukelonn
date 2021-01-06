@@ -30,7 +30,6 @@ import AdminBonusCreate from './AdminBonusCreate';
 import AdminBonusDelete from './AdminBonusDelete';
 import AdminBonuses from './AdminBonuses';
 import AdminUsersChangePassword from './AdminUsersChangePassword';
-import Bootstrap from 'bootstrap/dist/css/bootstrap.min.css';
 import '../ukelonn.css';
 
 
