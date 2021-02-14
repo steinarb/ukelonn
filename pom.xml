@@ -36,6 +36,7 @@
         <module>karaf</module>
         <module>ukelonn.tests</module>
         <module>jacoco-coverage-report</module>
+        <module>docker</module>
     </modules>
 
     <properties>
