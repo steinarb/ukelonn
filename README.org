@@ -43,6 +43,23 @@ To set the default to English, and to get English text on the prepopulated datab
   config:update
 #+end_example
 
+*** Docker image
+There is a docker image of the demo version of the application at docker hub: [[https://hub.docker.com/repository/docker/steinarb/ukelonn-demo][ukelonn-demo]].
+
+Start with:
+#+begin_examplea
+  docker pull steinarb/ukelonn-demo:latest
+  docker run -p 8101:8101 -p 8181:8181 -d steinarb/ukelonn-demo:latest
+#+end_example
+
+Then connect to http://docker-container-host:8181/ukelonn with a web browser (replace docker-container-host with whatever host docker is running on), possible logins are:
+| username | password | comment                                      |
+|----------+----------+----------------------------------------------|
+| admin    | admin    | Admin user, can add new users and work tasks |
+| jad      | 1ad      | Regular user, can register work done         |
+
+The demo version use an in-container derby databse that works while the container is up but dies with the container.
+
 * Status
 
 [[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=alert_status#.svg]]
@@ -82,7 +99,10 @@ Jeg har også plan om å lage en branch med en versjon som bruker [[http://spark
 
 * Kjapp test av programvaren uten å bygge koden
 
-Det er mulig å teste programvaren uten å sjekke ut og bygge kode.  I denne testen kjører man mot en derby-database som settes opp med dummy-data.
+Det er flere muligheter til å teste programvaren uten å sjekke ut og bygge kode.
+
+** Med dummy-data i en derby-database
+I denne testen kjører man mot en derby-database som settes opp med dummy-data.
 
 Framgangsmåten er som følger:
  1. Følge Apache Karaf quick start guide https://karaf.apache.org/manual/latest/quick-start.html
@@ -103,8 +123,48 @@ Framgangsmåten er som følger:
       - Vanlig bruker kan registrere nye jobber og sjekke saldo
     - For en administrator-bruker, brukernavn/passord: admin/admin
       - Administrator-bruker kan registrere utbetalinger, legge inn nye jobbtyper og endre eksisterende, legge inn nye utbetalinger og justere på eksisterende, og legge inn brukere og endre på eksisterende brukere
+** Kjøring i docker-container
+
+*** Demo-image med dummy-data
+Dette docker-image't bruker samme dummy-database som [[Med dummy-data i en derby-database]].
+
+Last ned image fra docker hub og start image med:
+#+begin_example
+  docker pull steinarb/ukelonn-demo:latest
+  docker run -p 8101:8101 -p 8181:8181 -d steinarb/ukelonn-demo:latest
+#+end_example
+
+Åpne en nettleser mot http://docker-container-host:8181/ukelonn (erstatt docker-container-host med maskinen docker kjører på), mulige testbrukere, er:
+| brukernavn | passord | kommentar                                                                               |
+|------------+---------+-----------------------------------------------------------------------------------------|
+| admin      | admin   | Admin-bruker, kan legge til nye brukere, nye arbeidsoppgaver og registrere utbetalinger |
+| jad        | 1ad     | Vanlig bruker, kan registrere utførte arbeidsoppgaver                                   |
 
 Databasen som kjører er en ekte SQL-database men kjører kun i minnet så endringer blir ikke persistert og blir borte når karaf-prosessen blir stoppet.
+
+*** Docker-image med PostgreSQL-database
+
+Dette imaget trenger en blank PostgresSQL-database og vil sette opp skjema og fylle den opp med initielle data.
+
+Framgangsmåten er som følger:
+ 1. Gå til [[https://www.elephantsql.com/plans.html][ElephantSQL]] og enten lag en bruker der eller logg inn med en github-bruker og opprett en database
+ 2. Ta vare på oppkoblingsinformasjonen for databasen, f.eks.
+    | url              | jdbc:postgresql://lazzie.db.elephantsql.com:5432/mrpdrgft |
+    | user             | mrpdrgft                                                  |
+    | password         | 78TPpFgp7NFwFmF1nVr1F2LnzKR_1TfT                          |
+    | default database | mrpdrgft                                                  |
+ 3. Last ned image fra docker hub og start image med:
+    #+begin_example
+      docker pull steinarb/ukelonn:latest
+      docker run --env JDBC_URL=jdbc:postgresql://lazzie.db.elephantsql.com:5432/mrpdrgft --env JDBC_USER=mrpdrgft --env JDBC_PASSWORD=78TPpFgp7NFwFmF1nVr1F2LnzKR_1TfT -p 8181:8181 -d steinarb/ukelonn:latest
+    #+end_example
+ 4. Åpne en nettleser mot port 8181 på vertsmaskinen http://myhost.mydomain.com:8181/ukelonn
+ 5. Logg inn med:
+    | user  | password |
+    |-------+----------|
+    | admin | admin    |
+ 6. Opprett den/de admin-brukerene du vil ha og den/de vanlige brukerene du vil ha
+
 
 * Beskrivelse av koden
 (/Beskriver versjonen fra master/)
