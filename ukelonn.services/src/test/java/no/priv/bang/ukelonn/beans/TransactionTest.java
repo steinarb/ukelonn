@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class TransactionTest {
 
     @Test
     public void testNoArgConstructor() {
-        Transaction bean = new Transaction();
+        Transaction bean = Transaction.with().build();
         assertEquals(-1, bean.getId());
         assertNull(bean.getTransactionType());
         assertNull(bean.getTransactionTime());
@@ -40,11 +40,17 @@ public class TransactionTest {
     @Test
     public void testConstructorWithArgs() {
         int id = 5;
-        TransactionType transactionType = new TransactionType();
+        TransactionType transactionType = TransactionType.with().build();
         Date transactionTime = new Date();
         double transactionAmount = 100.0;
         boolean paidOut = true;
-        Transaction bean = new Transaction(id, transactionType, transactionTime, transactionAmount, paidOut);
+        Transaction bean = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionTime(transactionTime)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertEquals(id, bean.getId());
         assertEquals(transactionType, bean.getTransactionType());
         assertEquals(transactionTime, bean.getTransactionTime());
@@ -55,18 +61,30 @@ public class TransactionTest {
     @Test
     public void testCompare() {
         int id = 5;
-        TransactionType transactionType = new TransactionType();
+        TransactionType transactionType = TransactionType.with().build();
         Date transactionTime = new Date();
         double transactionAmount = 100.0;
         boolean paidOut = true;
-        Transaction bean = new Transaction(id, transactionType, transactionTime, transactionAmount, paidOut);
-        Transaction beanCopy = new Transaction(id, transactionType, transactionTime, transactionAmount, paidOut);
+        Transaction bean = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionTime(transactionTime)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
+        Transaction beanCopy = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionTime(transactionTime)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
 
         Set<Transaction> set = new HashSet<>();
         set.add(bean);
         assertTrue(set.contains(bean));
 
-        Transaction emptyBean = new Transaction();
+        Transaction emptyBean = Transaction.with().build();
         set.add(emptyBean);
         assertTrue(set.contains(emptyBean));
 
@@ -74,23 +92,61 @@ public class TransactionTest {
         assertEquals(bean, beanCopy);
         assertNotEquals(bean, emptyBean);
         assertNotEquals(emptyBean, bean);
-        Transaction beanDifferentAmount = new Transaction(id, transactionType, transactionTime, 102.0, paidOut);
+        Transaction beanDifferentAmount = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionTime(transactionTime)
+            .transactionAmount(102.0)
+            .paidOut(paidOut)
+            .build();
         assertNotEquals(bean, beanDifferentAmount);
         final Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -1);
-        Transaction beanDifferentTime = new Transaction(id, transactionType, calendar.getTime(), transactionAmount, paidOut);
+        Transaction beanDifferentTime = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionTime(calendar.getTime())
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertNotEquals(bean, beanDifferentTime);
-        Transaction beanNullTime1 = new Transaction(id, transactionType, null, transactionAmount, paidOut);
+        Transaction beanNullTime1 = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertNotEquals(bean, beanNullTime1);
-        Transaction beanNullTime2 = new Transaction(id, transactionType, null, transactionAmount, paidOut);
+        Transaction beanNullTime2 = Transaction.with()
+            .id(id)
+            .transactionType(transactionType)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertEquals(beanNullTime1, beanNullTime2);
         assertNotEquals(beanNullTime1, bean);
-        Transaction beanWithNullType1 = new Transaction(id, null, transactionTime, transactionAmount, paidOut);
+        Transaction beanWithNullType1 = Transaction.with()
+            .id(id)
+            .transactionTime(transactionTime)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertNotEquals(beanWithNullType1, bean);
-        Transaction beanWithNullType2 = new Transaction(id, null, transactionTime, transactionAmount, paidOut);
+        Transaction beanWithNullType2 = Transaction.with()
+            .id(id)
+            .transactionTime(transactionTime)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertEquals(beanWithNullType1, beanWithNullType2);
-        TransactionType differentType = new TransactionType(1, "type", null, true, false);
-        Transaction beanWithDifferentType = new Transaction(id, differentType, transactionTime, transactionAmount, paidOut);
+        TransactionType differentType = TransactionType.with().id(1).transactionTypeName("type").transactionIsWork(true).build();
+        Transaction beanWithDifferentType = Transaction.with()
+            .id(id)
+            .transactionType(differentType)
+            .transactionTime(transactionTime)
+            .transactionAmount(transactionAmount)
+            .paidOut(paidOut)
+            .build();
         assertNotEquals(bean, beanWithDifferentType);
 
         assertThat(bean.toString()).startsWith("Transaction [id=");

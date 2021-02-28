@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,45 +49,76 @@ import no.priv.bang.ukelonn.beans.User;
  */
 public class TestUtils {
 
-    private static User jadUser = new User(1, "jad", "jane1203@gmail.no", "Jane", "Doe");
-    private static User jodUser = new User(1, "jod", "john1203@gmail.no", "John", "Doe");
-    private static Account jadAccount = new Account(1, "jad", "Jane", "Doe", 673.0);
-    private static Account jodAccount = new Account(1, "jod", "John", "Doe", 278.0);
-    private static TransactionType jobtype1 = new TransactionType(1, "Støvsuging", 45.0, true, false);
-    private static TransactionType jobtype2 = new TransactionType(3, "Tømme oppvaskmaskin", 35.0, true, false);
-    private static TransactionType jobtype3 = new TransactionType(5, "Gå med resirk", 20.0, true, false);
-    private static TransactionType jobtype4 = new TransactionType(6, "Støvsuge rommet", 15.0, true, false);
+    private static User jadUser = User.with().userId(1).username("jad").email("jane1203@gmail.no").firstname("Jane").lastname("Doe").build();
+    private static User jodUser = User.with().userId(1).username("jod").email("john1203@gmail.no").firstname("John").lastname("Doe").build();
+    private static Account jadAccount = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(673.0).build();
+    private static Account jodAccount = Account.with().accountid(1).username("jod").firstName("John").lastName("Doe").balance(278.0).build();
+    private static TransactionType jobtype1 = TransactionType.with()
+        .id(1)
+        .transactionTypeName("Støvsuging")
+        .transactionAmount(45.0)
+        .transactionIsWork(true)
+        .build();
+    private static TransactionType jobtype2 = TransactionType.with()
+        .id(3)
+        .transactionTypeName("Tømme oppvaskmaskin")
+        .transactionAmount(35.0)
+        .transactionIsWork(true)
+        .build();
+    private static TransactionType jobtype3 = TransactionType.with()
+        .id(5)
+        .transactionTypeName("Gå med resirk")
+        .transactionAmount(20.0)
+        .transactionIsWork(true)
+        .build();
+    private static TransactionType jobtype4 = TransactionType.with()
+        .id(6)
+        .transactionTypeName("Støvsuge rommet")
+        .transactionAmount(15.0)
+        .transactionIsWork(true)
+        .build();
     private static List<TransactionType> jobtypes = Arrays.asList(jobtype1, jobtype2, jobtype3, jobtype4);
-    private static TransactionType paymenttype1 = new TransactionType(2, "Inn på konto", null, false, true);
-    private static TransactionType paymenttype2 = new TransactionType(4, "Mobildata", 100.0, false, true);
+    private static TransactionType paymenttype1 = TransactionType.with()
+        .id(2)
+        .transactionTypeName("Inn på konto")
+        .transactionIsWagePayment(true)
+        .build();
+    private static TransactionType paymenttype2 = TransactionType.with()
+        .id(4)
+        .transactionTypeName("Mobildata")
+        .transactionAmount(100.0)
+        .transactionIsWagePayment(true)
+        .build();
     private static List<TransactionType> paymenttypes = Arrays.asList(paymenttype1, paymenttype2);
     private static Map<Integer, TransactionType> transactionttypes = Collections.unmodifiableMap(
         Stream.of(jobtypes, paymenttypes)
         .flatMap(Collection::stream)
         .collect(Collectors.toMap(TransactionType::getId, t -> t)));
     private static List<Transaction> jadJobs = Arrays.asList(
-        new Transaction(3, jobtype1, new Date(), 45.0, true),
-        new Transaction(4, jobtype2, new Date(), 35.0, true),
-        new Transaction(5, jobtype1, new Date(), 45.0, false),
-        new Transaction(6, jobtype3, new Date(), 20.0, false),
-        new Transaction(7, jobtype1, new Date(), 45.0, false),
-        new Transaction(8, jobtype4, new Date(), 15.0, false),
-        new Transaction(9, jobtype1, new Date(), 45.0, false),
-        new Transaction(10, jobtype2, new Date(), 35.0, false),
-        new Transaction(11, jobtype3, new Date(), 20.0, false),
-        new Transaction(12, jobtype2, new Date(), 35.0, false));
+        Transaction.with().id(3).transactionType(jobtype1).transactionTime(new Date()).transactionAmount(45.0).paidOut(true).build(),
+        Transaction.with().id(4).transactionType(jobtype2).transactionTime(new Date()).transactionAmount(35.0).paidOut(true).build(),
+        Transaction.with().id(5).transactionType(jobtype1).transactionTime(new Date()).transactionAmount(45.0).build(),
+        Transaction.with().id(6).transactionType(jobtype3).transactionTime(new Date()).transactionAmount(20.0).build(),
+        Transaction.with().id(7).transactionType(jobtype1).transactionTime(new Date()).transactionAmount(45.0).build(),
+        Transaction.with().id(8).transactionType(jobtype4).transactionTime(new Date()).transactionAmount(15.0).build(),
+        Transaction.with().id(9).transactionType(jobtype1).transactionTime(new Date()).transactionAmount(45.0).build(),
+        Transaction.with().id(10).transactionType(jobtype2).transactionTime(new Date()).transactionAmount(35.0).build(),
+        Transaction.with().id(11).transactionType(jobtype3).transactionTime(new Date()).transactionAmount(20.0).build(),
+        Transaction.with().id(12).transactionType(jobtype2).transactionTime(new Date()).transactionAmount(35.0).build());
     private static List<Transaction> jadPayments = Arrays.asList(
-        new Transaction(13, paymenttype1, new Date(), 210.0, false),
-        new Transaction(14, paymenttype1, new Date(), 130.0, false),
-        new Transaction(15, paymenttype1, new Date(), 120.0, false),
-        new Transaction(16, paymenttype1, new Date(), 270.0, false),
-        new Transaction(17, paymenttype1, new Date(), 300.0, false),
-        new Transaction(18, paymenttype1, new Date(), 210.0, false),
-        new Transaction(19, paymenttype1, new Date(), 180.0, false),
-        new Transaction(20, paymenttype1, new Date(), 70.0, false),
-        new Transaction(21, paymenttype1, new Date(), 200.0, false),
-        new Transaction(22, paymenttype1, new Date(), 250.0, false));
-    private static List<Transaction> jodJobs = Arrays.asList(new Transaction(1, jobtype1, new Date(), 45.0, false), new Transaction(2, jobtype2, new Date(), 35.0, false));
+        Transaction.with().id(13).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(210.0).build(),
+        Transaction.with().id(14).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(130.0).build(),
+        Transaction.with().id(15).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(120.0).build(),
+        Transaction.with().id(16).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(270.0).build(),
+        Transaction.with().id(17).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(300.0).build(),
+        Transaction.with().id(18).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(210.0).build(),
+        Transaction.with().id(19).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(180.0).build(),
+        Transaction.with().id(20).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(70.0).build(),
+        Transaction.with().id(21).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(200.0).build(),
+        Transaction.with().id(22).transactionType(paymenttype1).transactionTime(new Date()).transactionAmount(250.0).build());
+    private static List<Transaction> jodJobs = Arrays.asList(
+        Transaction.with().id(1).transactionType(jobtype1).transactionTime(new Date()).transactionAmount(45.0).build(),
+        Transaction.with().id(2).transactionType(jobtype2).transactionTime(new Date()).transactionAmount(35.0).build());
     private static WebSecurityManager securitymanager;
     private static SimpleAccountRealm realm;
 
@@ -137,7 +168,7 @@ public class TestUtils {
     }
 
     private static User copyUser(User user) {
-        return new User(user.getUserId(), user.getUsername(), user.getEmail(), user.getFirstname(), user.getLastname());
+        return User.with(user).build();
     }
 
     private static no.priv.bang.osgiservice.users.User copyUserForUserManagement(User user) {
@@ -145,11 +176,17 @@ public class TestUtils {
     }
 
     public static Account copyAccount(Account account) {
-        return new Account(account.getAccountId(), account.getUsername(), account.getFirstName(), account.getLastName(), account.getBalance());
+        return Account.with()
+            .accountid(account.getAccountId())
+            .username(account.getUsername())
+            .firstName(account.getFirstName())
+            .lastName(account.getLastName())
+            .balance(account.getBalance())
+            .build();
     }
 
     public static TransactionType copyTransactionType(TransactionType transactiontype) {
-        return new TransactionType(transactiontype.getId(), transactiontype.getTransactionTypeName(), transactiontype.getTransactionAmount(), transactiontype.isTransactionIsWork(), transactiontype.isTransactionIsWagePayment());
+        return TransactionType.with(transactiontype).build();
     }
 
     public static List<TransactionType> copyTransactiontypes(List<TransactionType> transactiontypes) {
@@ -157,11 +194,16 @@ public class TestUtils {
     }
 
     public static Transaction convertUpdatedTransaction(UpdatedTransaction transaction) {
-        return new Transaction(transaction.getId(), transactionttypes.get(transaction.getTransactionTypeId()), transaction.getTransactionTime(), transaction.getTransactionAmount(), false);
+        return Transaction.with()
+            .id(transaction.getId())
+            .transactionType(transactionttypes.get(transaction.getTransactionTypeId()))
+            .transactionTime(transaction.getTransactionTime())
+            .transactionAmount(transaction.getTransactionAmount())
+            .build();
     }
 
     public static Transaction copyTransaction(Transaction transaction) {
-        return new Transaction(transaction.getId(), transaction.getTransactionType(), transaction.getTransactionTime(), transaction.getTransactionAmount(), transaction.isPaidOut());
+        return Transaction.with(transaction).build();
     }
 
     public static List<Transaction> copyTransactions(List<Transaction> transactions) {

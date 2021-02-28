@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,77 +20,100 @@ import java.util.Date;
 import no.priv.bang.beans.immutable.Immutable;
 
 public class Transaction extends Immutable { // NOSONAR Immutable handles added fields
-    private int id = -1;
-    private TransactionType transactionType = null;
-    private Date transactionTime = null;
-    private double transactionAmount = 0.0;
-    private boolean paidOut = false;
+    private int id;
+    private TransactionType transactionType;
+    private Date transactionTime;
+    private double transactionAmount;
+    private boolean paidOut;
 
-    public Transaction() {
-        // No-argument constructor required by Jackson
-    }
-
-
-    public Transaction(int id,TransactionType transactionType, Date transactionTime, double transactionAmount, boolean paidOut) {
-        setId(id);
-        setTransactionType(transactionType);
-        setTransactionTime(transactionTime);
-        setTransactionAmount(transactionAmount);
-        setPaidOut(paidOut);
-    }
-
+    private Transaction() {}
 
     public int getId() {
         return id;
-    }
-
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
         return this.transactionType.getTransactionTypeName();
     }
 
-
     public TransactionType getTransactionType() {
         return transactionType;
     }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
 
     public Date getTransactionTime() {
         return transactionTime;
     }
 
-    public void setTransactionTime(Date transactionTime) {
-        this.transactionTime = transactionTime;
-    }
-
-
     public double getTransactionAmount() {
         return transactionAmount;
-    }
-
-    public void setTransactionAmount(double transactionAmount) {
-        this.transactionAmount = transactionAmount;
     }
 
     public boolean isPaidOut() {
         return paidOut;
     }
 
-    public void setPaidOut(boolean paidOut) {
-        this.paidOut = paidOut;
-    }
-
     @Override
     public String toString() {
         return "Transaction [id=" + id + ", transactionType=" + transactionType + ", transactionTime=" + transactionTime
             + ", transactionAmount=" + transactionAmount + "]";
+    }
+
+    public static TransactionBuilder with(Transaction transaction) {
+        TransactionBuilder builder = new TransactionBuilder();
+        builder.id = transaction.id;
+        builder.transactionType = transaction.transactionType;
+        builder.transactionTime = transaction.transactionTime;
+        builder.transactionAmount = transaction.transactionAmount;
+        builder.paidOut = transaction.paidOut;
+        return builder;
+    }
+
+    public static TransactionBuilder with() {
+        return new TransactionBuilder();
+    }
+
+    public static class TransactionBuilder {
+        private int id = -1;
+        private TransactionType transactionType = null;
+        private Date transactionTime = null;
+        private double transactionAmount = 0.0;
+        private boolean paidOut = false;
+
+        private TransactionBuilder() {}
+
+        public Transaction build() {
+            Transaction transaction = new Transaction();
+            transaction.id = this.id;
+            transaction.transactionType = this.transactionType;
+            transaction.transactionTime = this.transactionTime;
+            transaction.transactionAmount = this.transactionAmount;
+            transaction.paidOut = this.paidOut;
+            return transaction;
+        }
+
+        public TransactionBuilder id(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public TransactionBuilder transactionType(TransactionType transactionType) {
+            this.transactionType = transactionType;
+            return this;
+        }
+
+        public TransactionBuilder transactionTime(Date transactionTime) {
+            this.transactionTime = transactionTime;
+            return this;
+        }
+
+        public TransactionBuilder transactionAmount(double transactionAmount) {
+            this.transactionAmount = transactionAmount;
+            return this;
+        }
+
+        public TransactionBuilder paidOut(boolean paidOut) {
+            this.paidOut = paidOut;
+            return this;
+        }
     }
 }

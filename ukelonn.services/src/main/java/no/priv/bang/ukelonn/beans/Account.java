@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,23 +21,14 @@ import no.priv.bang.beans.immutable.Immutable;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Account extends Immutable { // NOSONAR Immutable handles added fields
-    int accountId;
-    String username;
-    String firstName;
-    String lastName;
-    double balance;
+    private int accountId;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private double balance;
 
-    public Account() {
+    private Account() {
         // No-arg constructor required by jackson
-    }
-
-    public Account(int accountId, String username, String firstName, String lastName, double balance) {
-        super();
-        this.accountId = accountId;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.balance = balance;
     }
 
     public int getAccountId() {
@@ -71,6 +62,55 @@ public class Account extends Immutable { // NOSONAR Immutable handles added fiel
     @Override
     public String toString() {
         return "Account [getAccountId()=" + getAccountId() + ", getUsername()=" + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
+    }
+
+    public static AccountBuilder with() {
+        return new AccountBuilder();
+    }
+
+    public static class AccountBuilder {
+        private int accountid;
+        private String username;
+        private String firstName;
+        private String lastName;
+        private double balance;
+
+        private AccountBuilder() {}
+
+        public Account build() {
+            Account account = new Account();
+            account.accountId = this.accountid;
+            account.username = this.username;
+            account.firstName = this.firstName;
+            account.lastName = this.lastName;
+            account.balance = this.balance;
+            return account;
+        }
+
+        public AccountBuilder accountid(int accountid) {
+            this.accountid = accountid;
+            return this;
+        }
+
+        public AccountBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public AccountBuilder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public AccountBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public AccountBuilder balance(double balance) {
+            this.balance = balance;
+            return this;
+        }
     }
 
 }

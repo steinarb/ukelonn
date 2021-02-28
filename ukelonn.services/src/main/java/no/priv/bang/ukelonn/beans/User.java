@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,24 +27,7 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
     private String firstname;
     private String lastname;
 
-    public User(int userId, String username, String email, String firstname, String lastname) {
-        super();
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
-        this.firstname = firstname;
-        this.lastname = lastname;
-    }
-
-    // No-arg consructor required by jackson
-    public User() {
-        super();
-        this.userId = -1;
-        this.username = "";
-        this.email = "";
-        this.firstname = "";
-        this.lastname = "";
-    }
+    private User() {}
 
     public int getUserId() {
         return userId;
@@ -54,32 +37,16 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
     public String getLastname() {
         return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
 
     public String getFullname() {
@@ -89,5 +56,64 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
     @Override
     public String toString() {
         return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+    }
+
+    public static UserBuilder with() {
+        return new UserBuilder();
+    }
+
+    public static UserBuilder with(User user) {
+        UserBuilder builder = new UserBuilder();
+        builder.userId = user.userId;
+        builder.username = user.username;
+        builder.email = user.email;
+        builder.firstname = user.firstname;
+        builder.lastname = user.lastname;
+        return builder;
+    }
+
+    public static class UserBuilder {
+        private int userId = -1;
+        private String username = "";
+        private String email = "";
+        private String firstname = "";
+        private String lastname = "";
+
+        private UserBuilder() {}
+
+        public User build() {
+            User user = new User();
+            user.userId = this.userId;
+            user.username = this.username;
+            user.email = this.email;
+            user.firstname = this.firstname;
+            user.lastname = this.lastname;
+            return user;
+        }
+
+        public UserBuilder userId(int userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder firstname(String firstname) {
+            this.firstname = firstname;
+            return this;
+        }
+
+        public UserBuilder lastname(String lastname) {
+            this.lastname = lastname;
+            return this;
+        }
     }
 }

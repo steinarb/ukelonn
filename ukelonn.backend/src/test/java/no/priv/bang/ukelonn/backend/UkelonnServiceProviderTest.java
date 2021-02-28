@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -247,7 +247,13 @@ public class UkelonnServiceProviderTest {
         no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
 
         // Add a new account to the database
-        User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
+        User userWithUserId = User.with()
+            .userId(createdUser.getUserid())
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
         Account newAccount = ukelonn.addAccount(userWithUserId);
         assertThat(newAccount.getAccountId()).isPositive();
         assertEquals(0.0, newAccount.getBalance(), 0);
@@ -311,7 +317,12 @@ public class UkelonnServiceProviderTest {
             Account account = ukelonn.getAccount(username);
             double oldBalance = account.getBalance();
             TransactionType jobtype = ukelonn.getJobTypes().get(0);
-            PerformedTransaction performedJob = new PerformedTransaction(account, jobtype.getId(), jobtype.getTransactionAmount(), new Date());
+            PerformedTransaction performedJob = PerformedTransaction.with()
+                .account(account)
+                .transactionTypeId(jobtype.getId())
+                .transactionAmount(jobtype.getTransactionAmount())
+                .transactionDate(new Date())
+                .build();
             Account updatedAccount = ukelonn.registerPerformedJob(performedJob);
             assertThat(updatedAccount.getBalance()).isGreaterThan(oldBalance);
         } finally {
@@ -348,7 +359,12 @@ public class UkelonnServiceProviderTest {
             when(statement.executeUpdate()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenThrow(SQLException.class);
             ukelonn.setDataSource(datasource);
-            PerformedTransaction performedJob = new PerformedTransaction(account, 1, 45.0, new Date());
+            PerformedTransaction performedJob = PerformedTransaction.with()
+                .account(account)
+                .transactionTypeId(1)
+                .transactionAmount(45.0)
+                .transactionDate(new Date())
+                .build();
             assertThrows(UkelonnException.class, () -> {
                     ukelonn.registerPerformedJob(performedJob);
                 });
@@ -563,7 +579,13 @@ public class UkelonnServiceProviderTest {
 
             // Create a new job object with a different jobtype and the same id
             Date now = new Date();
-            UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+            UpdatedTransaction editedJob = UpdatedTransaction.with()
+                .id(jobId)
+                .accountId(account.getAccountId())
+                .transactionTypeId(newJobType.getId())
+                .transactionTime(now)
+                .transactionAmount(newJobType.getTransactionAmount())
+                .build();
 
             List<Transaction> updatedJobs = ukelonn.updateJob(editedJob);
 
@@ -589,7 +611,7 @@ public class UkelonnServiceProviderTest {
 
         ukelonn.setDataSource(datasource);
 
-        UpdatedTransaction updatedTransaction = new UpdatedTransaction();
+        UpdatedTransaction updatedTransaction = UpdatedTransaction.with().build();
         assertThrows(UkelonnException.class, () -> {
                 ukelonn.updateJob(updatedTransaction);
             });
@@ -675,7 +697,12 @@ public class UkelonnServiceProviderTest {
         Account account = ukelonn.getAccount("jad");
         double originalBalance = account.getBalance();
         List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
-        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance(), new Date());
+        PerformedTransaction payment = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(paymenttypes.get(0).getId())
+            .transactionAmount(account.getBalance())
+            .transactionDate(new Date())
+            .build();
 
         // Run the method under test
         Account result = ukelonn.registerPayment(payment);
@@ -704,8 +731,13 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create the request
-        Account account = new Account(1, "jad", "Jane", "Doe", 2.0);
-        PerformedTransaction payment = new PerformedTransaction(account, 1, 2.0, new Date());
+        Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(2.0).build();
+        PerformedTransaction payment = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(1)
+            .transactionAmount(2.0)
+            .transactionDate(new Date())
+            .build();
 
         // Run the method under test
         Account result = ukelonn.registerPayment(payment);
@@ -786,7 +818,7 @@ public class UkelonnServiceProviderTest {
         Double originalAmount = jobtype.getTransactionAmount();
 
         // Modify the amount of the jobtype
-        jobtype.setTransactionAmount(originalAmount + 1);
+        jobtype = TransactionType.with(jobtype).transactionAmount(originalAmount + 1).build();
 
         // Update the job type in the database
         List<TransactionType> updatedJobtypes = ukelonn.modifyJobtype(jobtype);
@@ -813,7 +845,12 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create a non-existing jobtype
-        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+        TransactionType jobtype = TransactionType.with()
+            .id(-2000)
+            .transactionTypeName("Foo")
+            .transactionAmount(3.14)
+            .transactionIsWork(true)
+            .build();
 
         // Try update the jobtype in the database, which should cause an exception
         assertThrows(UkelonnException.class, () -> {
@@ -828,8 +865,13 @@ public class UkelonnServiceProviderTest {
         // Get the list of jobtypes before adding a new job type
         List<TransactionType> originalJobtypes = ukelonn.getJobTypes();
 
-        // Create new jobtyoe
-        TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+        // Create new jobtype
+        TransactionType jobtype = TransactionType.with()
+            .id(-1)
+            .transactionTypeName("Skrubb badegolv")
+            .transactionAmount(200.0)
+            .transactionIsWork(true)
+            .build();
 
         // Update the job type in the database
         List<TransactionType> updatedJobtypes = ukelonn.createJobtype(jobtype);
@@ -855,7 +897,12 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create a new jobtype
-        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+        TransactionType jobtype = TransactionType.with()
+            .id(-2000)
+            .transactionTypeName("Foo")
+            .transactionAmount(3.14)
+            .transactionIsWork(true)
+            .build();
 
         // Try update the jobtype in the database, which should cause an exception
         assertThrows(UkelonnException.class, () -> {
@@ -873,7 +920,7 @@ public class UkelonnServiceProviderTest {
         Double originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
-        paymenttype.setTransactionAmount(originalAmount + 1);
+        paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
 
         // Update the payment type in the database
         List<TransactionType> updatedPaymenttypes = ukelonn.modifyPaymenttype(paymenttype);
@@ -900,7 +947,12 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create a non-existing payment type
-        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-2001)
+            .transactionTypeName("Bar")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
 
         // Try update the payment type in the database, which should cause an exception
         assertThrows(UkelonnException.class, () -> {
@@ -916,7 +968,12 @@ public class UkelonnServiceProviderTest {
         List<TransactionType> originalPaymenttypes = ukelonn.getPaymenttypes();
 
         // Create new payment type
-        TransactionType paymenttype = new TransactionType(-1, "Vipps", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-1)
+            .transactionTypeName("Vipps")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
 
         // Update the payments type in the database
         List<TransactionType> updatedPaymenttypes = ukelonn.createPaymenttype(paymenttype);
@@ -942,7 +999,12 @@ public class UkelonnServiceProviderTest {
         ukelonn.setLogservice(logservice);
 
         // Create a new payment type
-        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-2001)
+            .transactionTypeName("Bar")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
 
         // Try creating the payment type in the database, which should cause an exception
         assertThrows(UkelonnException.class, () -> {
@@ -952,34 +1014,34 @@ public class UkelonnServiceProviderTest {
 
     @Test
     public void testPasswordsEqualAndNotEmpty() {
-        PasswordsWithUser equalPasswords = new PasswordsWithUser(null, "zekret", "zekret");
+        PasswordsWithUser equalPasswords = PasswordsWithUser.with().password("zekret").password2("zekret").build();
         assertTrue(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(equalPasswords));
-        PasswordsWithUser differentPasswords = new PasswordsWithUser(null, "zekret", "secret");
+        PasswordsWithUser differentPasswords = PasswordsWithUser.with().password("zekret").password2("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(differentPasswords));
-        PasswordsWithUser firstPasswordNull = new PasswordsWithUser(null, null, "secret");
+        PasswordsWithUser firstPasswordNull = PasswordsWithUser.with().password2("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(firstPasswordNull));
-        PasswordsWithUser secondPasswordNull = new PasswordsWithUser(null, "secret", null);
+        PasswordsWithUser secondPasswordNull = PasswordsWithUser.with().password("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordNull));
-        PasswordsWithUser bothPasswordsNull = new PasswordsWithUser(null, null, null);
+        PasswordsWithUser bothPasswordsNull = PasswordsWithUser.with().build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsNull));
-        PasswordsWithUser firstPasswordEmpty = new PasswordsWithUser(null, "", "secret");
+        PasswordsWithUser firstPasswordEmpty = PasswordsWithUser.with().password("").password2("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(firstPasswordEmpty));
-        PasswordsWithUser secondPasswordEmpty = new PasswordsWithUser(null, "secret", "");
+        PasswordsWithUser secondPasswordEmpty = PasswordsWithUser.with().password("secret").password2("").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordEmpty));
-        PasswordsWithUser bothPasswordsEmpty = new PasswordsWithUser(null, "", "");
+        PasswordsWithUser bothPasswordsEmpty = PasswordsWithUser.with().password("").password2("").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsEmpty));
     }
 
     @Test
     public void testHasUserWithNonEmptyUsername() {
-        PasswordsWithUser passwords = new PasswordsWithUser();
-        User userWithUsername = new User(1, "foo", null, null, null);
+        PasswordsWithUser passwords = PasswordsWithUser.with().build();
+        User userWithUsername = User.with().userId(1).username("foo").build();
         passwords.setUser(userWithUsername);
         assertTrue(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-        User userWithEmptyUsername = new User(1, "", null, null, null);
+        User userWithEmptyUsername = User.with().userId(1).username("").build();
         passwords.setUser(userWithEmptyUsername);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-        User userWithNullUsername = new User(1, null, null, null, null);
+        User userWithNullUsername = User.with().userId(1).username(null).build();
         passwords.setUser(userWithNullUsername);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
         passwords.setUser(null);
@@ -993,7 +1055,7 @@ public class UkelonnServiceProviderTest {
         assertThat(notificationsToJad).isEmpty();
 
         // Send notification to "jad"
-        Notification utbetalt = new Notification("Ukelønn", "150 kroner betalt til konto");
+        Notification utbetalt = Notification.with().title("Ukelønn").message("150 kroner tbetalt til konto").build();
         ukelonn.notificationTo("jad", utbetalt);
 
         // Verify that notifcations to a different user is empty
@@ -1145,7 +1207,15 @@ public class UkelonnServiceProviderTest {
         // this will show up as an active bonus
         Date julestart = Date.from(LocalDateTime.now().minusDays(3).toInstant(ZoneOffset.UTC));
         Date juleslutt = Date.from(LocalDateTime.now().plusDays(3).toInstant(ZoneOffset.UTC));
-        Bonus julebonus = new Bonus(0, true, null, "Julebonus", "Dobbelt betaling for utførte jobber", 2.0, julestart, juleslutt);
+        Bonus julebonus = Bonus.with()
+            .bonusId(0)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt betaling for utførte jobber")
+            .bonusFactor(2.0)
+            .startDate(julestart)
+            .endDate(juleslutt)
+            .build();
         Bonus enabledBonus = ukelonn.createBonus(julebonus).stream().filter(b -> "Julebonus".equals(b.getTitle())).findFirst().get();
         int bonusCountWithOneAddedBonus = ukelonn.getAllBonuses().size();
         assertThat(bonusCountWithOneAddedBonus).isGreaterThan(initialBonusCount);
@@ -1157,7 +1227,15 @@ public class UkelonnServiceProviderTest {
 
         // Add an extra active bonus to verify that two
         // concurrent bonuses will give the expected result
-        Bonus julebonus2 = ukelonn.createBonus(new Bonus(0, true, null, "Julebonuz", "Dobbelt betaling for utførte jobber", 1.25, julestart, juleslutt)).stream().filter(b -> "Julebonuz".equals(b.getTitle())).findFirst().get();
+        Bonus julebonus2 = ukelonn.createBonus(Bonus.with()
+                                               .bonusId(0)
+                                               .enabled(true)
+                                               .title("Julebonuz")
+                                               .description("Dobbelt betaling for utførte jobber")
+                                               .bonusFactor(1.25)
+                                               .startDate(julestart)
+                                               .endDate(juleslutt)
+                                               .build()).stream().filter(b -> "Julebonuz".equals(b.getTitle())).findFirst().get();
         double expectAmount2 = julebonus.getBonusFactor() * amount + julebonus2.getBonusFactor() * amount - amount;
         assertEquals(expectAmount2, ukelonn.addBonus(amount), 0.0);
         ukelonn.deleteBonus(julebonus2);
@@ -1167,7 +1245,14 @@ public class UkelonnServiceProviderTest {
         // as an active bonus
         Date paaskestart = Date.from(LocalDateTime.now().plusDays(5).toInstant(ZoneOffset.UTC));
         Date paaskeslutt = Date.from(LocalDateTime.now().plusDays(10).toInstant(ZoneOffset.UTC));
-        Bonus paaskebonus = new Bonus(0, true, null, "Påskebonus", "Dobbelt betaling for utførte jobber", 2.0, paaskestart, paaskeslutt);
+        Bonus paaskebonus = Bonus.with()
+            .enabled(true)
+            .title("Påskebonus")
+            .description("Dobbelt betaling for utførte jobber")
+            .bonusFactor(2.0)
+            .startDate(paaskestart)
+            .endDate(paaskeslutt)
+            .build();
         Bonus inactiveBonus = ukelonn.createBonus(paaskebonus).stream().filter(b -> "Påskebonus".equals(b.getTitle())).findFirst().get();
         assertThat(ukelonn.getAllBonuses().size()).isGreaterThan(bonusCountWithOneAddedBonus);
 
@@ -1260,7 +1345,7 @@ public class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.createBonus(new Bonus());
+        List<Bonus> bonuses = ukelonn.createBonus(Bonus.with().build());
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to add Bonus");
@@ -1281,7 +1366,7 @@ public class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.modifyBonus(new Bonus());
+        List<Bonus> bonuses = ukelonn.modifyBonus(Bonus.with().build());
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to update Bonus");
@@ -1302,7 +1387,7 @@ public class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.deleteBonus(new Bonus());
+        List<Bonus> bonuses = ukelonn.deleteBonus(Bonus.with().build());
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to delete Bonus");
@@ -1395,7 +1480,7 @@ public class UkelonnServiceProviderTest {
         ukelonn.setUserAdmin(useradmin);
         ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         List<LocaleBean> locales = ukelonn.availableLocales();
-        assertThat(locales).isNotEmpty().contains(new LocaleBean(ukelonn.defaultLocale()));
+        assertThat(locales).isNotEmpty().contains(LocaleBean.with().locale(ukelonn.defaultLocale()).build());
     }
 
     @Test
@@ -1409,6 +1494,6 @@ public class UkelonnServiceProviderTest {
     }
 
     private Bonus disableBonus(Bonus bonus) {
-        return new Bonus(bonus.getBonusId(), false, bonus.getIconurl(), bonus.getTitle(), bonus.getDescription(), bonus.getBonusFactor(), bonus.getStartDate(), bonus.getEndDate());
+        return Bonus.with().bonusId(bonus.getBonusId()).enabled(false).iconurl(bonus.getIconurl()).title(bonus.getTitle()).description(bonus.getDescription()).bonusFactor(bonus.getBonusFactor()).startDate(bonus.getStartDate()).endDate(bonus.getEndDate()).build();
     }
 }

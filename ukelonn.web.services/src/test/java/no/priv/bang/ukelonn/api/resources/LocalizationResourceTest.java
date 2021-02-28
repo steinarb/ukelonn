@@ -52,11 +52,11 @@ public class LocalizationResourceTest {
     public void testAvailableLocales() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
-        when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> new LocaleBean(l)).collect(Collectors.toList()));
+        when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
         LocalizationResource resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
         List<LocaleBean> availableLocales = resource.availableLocales();
-        assertThat(availableLocales).isNotEmpty().contains(new LocaleBean(ukelonn.defaultLocale()));
+        assertThat(availableLocales).isNotEmpty().contains(LocaleBean.with().locale(ukelonn.defaultLocale()).build());
     }
 
     @Test

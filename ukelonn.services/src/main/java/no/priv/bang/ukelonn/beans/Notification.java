@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,7 @@ public class Notification {
     private String title;
     private String message;
 
-    public Notification(String title, String message) {
-        this.title = title;
-        this.message = message;
-    }
-
-    public Notification() {
-        this("", "");
-        // No-args constructor required by jackson
-    }
+    private Notification() {}
 
     public String getTitle() {
         return title;
@@ -36,6 +28,34 @@ public class Notification {
 
     public String getMessage() {
         return message;
+    }
+
+    public static NotificationBuilder with() {
+        return new NotificationBuilder();
+    }
+
+    public static class NotificationBuilder {
+        private String title = "";
+        private String message = "";
+
+        private NotificationBuilder() {}
+
+        public Notification build() {
+            Notification notification = new Notification();
+            notification.title = this.title;
+            notification.message = this.message;
+            return notification;
+        }
+
+        public NotificationBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public NotificationBuilder message(String message) {
+            this.message = message;
+            return this;
+        }
     }
 
 }

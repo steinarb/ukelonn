@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -210,7 +210,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<Transaction> getPayments(int accountId) {
         List<Transaction> payments = getTransactionsFromAccount(accountId, "/sql/query/payments_last_n.sql", "payments");
-        UkelonnServiceProvider.makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
+        payments = UkelonnServiceProvider.makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
 
@@ -425,9 +425,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 statement.setString(1, username);
                 try(ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        double sum = resultSet.getDouble(1);
-                        int year = resultSet.getInt(2);
-                        statistics.add(new SumYear(sum, year));
+                        SumYear sumYear = SumYear.with()
+                            .sum(resultSet.getDouble(1))
+                            .year(resultSet.getInt(2))
+                            .build();
+                        statistics.add(sumYear);
                     }
                 }
             }
@@ -446,10 +448,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 statement.setString(1, username);
                 try(ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        double sum = resultSet.getDouble(1);
-                        int year = resultSet.getInt(2);
-                        int month = resultSet.getInt(3);
-                        statistics.add(new SumYearMonth(sum, year, month));
+                        SumYearMonth sumYearMonth = SumYearMonth.with()
+                            .sum(resultSet.getDouble(1))
+                            .year(resultSet.getInt(2))
+                            .month(resultSet.getInt(3))
+                            .build();
+                        statistics.add(sumYearMonth);
                     }
                 }
             }
@@ -583,7 +587,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<LocaleBean> availableLocales() {
-        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(LocaleBean::new).collect(Collectors.toList());
+        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList());
     }
 
     @Override
@@ -606,15 +610,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     void buildBonusFromResultSetAndAddToList(List<Bonus> allbonuses, ResultSet results) throws SQLException {
-        int id = results.getInt("bonus_id");
-        boolean enabled = results.getBoolean("enabled");
-        String iconurl = results.getString("iconurl");
-        String title = results.getString("title");
-        String description = results.getString("description");
-        double bonusFactor = results.getDouble("bonus_factor");
-        Date startDate = Date.from(results.getTimestamp("start_date").toInstant());
-        Date endDate = Date.from(results.getTimestamp("end_date").toInstant());
-        allbonuses.add(new Bonus(id, enabled, iconurl, title, description, bonusFactor, startDate, endDate));
+        Bonus bonus = Bonus.with()
+            .bonusId(results.getInt("bonus_id"))
+            .enabled(results.getBoolean("enabled"))
+            .iconurl(results.getString("iconurl"))
+            .title(results.getString("title"))
+            .description(results.getString("description"))
+            .bonusFactor(results.getDouble("bonus_factor"))
+            .startDate(Date.from(results.getTimestamp("start_date").toInstant()))
+            .endDate(Date.from(results.getTimestamp("end_date").toInstant()))
+            .build();
+        allbonuses.add(bonus);
     }
 
     static boolean passwordsEqualsAndNotEmpty(PasswordsWithUser passwords) {
@@ -716,12 +722,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public Account mapAccount(ResultSet results) throws SQLException {
         String username = results.getString(UkelonnServiceProvider.USERNAME);
         no.priv.bang.osgiservice.users.User user = useradmin.getUser(username);
-        return new Account(
-            results.getInt("account_id"),
-            username,
-            user.getFirstname(),
-            user.getLastname(),
-            results.getDouble("balance"));
+        return Account.with()
+            .accountid(results.getInt("account_id"))
+            .username(username)
+            .firstName(user.getFirstname())
+            .lastName(user.getLastname())
+            .balance(results.getDouble("balance"))
+            .build();
     }
 
     private void addRolesIfNotPresent() {
@@ -756,30 +763,33 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     static Transaction mapTransaction(ResultSet resultset) throws SQLException {
-        return
-            new Transaction(
-                resultset.getInt("transaction_id"),
-                mapTransactionType(resultset),
-                resultset.getTimestamp("transaction_time"),
-                resultset.getDouble("transaction_amount"),
-                resultset.getBoolean("paid_out"));
+        return Transaction.with()
+            .id(resultset.getInt("transaction_id"))
+            .transactionType(mapTransactionType(resultset))
+            .transactionTime(resultset.getTimestamp("transaction_time"))
+            .transactionAmount(resultset.getDouble("transaction_amount"))
+            .paidOut(resultset.getBoolean("paid_out"))
+            .build();
     }
 
-    static void makePaymentAmountsPositive(List<Transaction> payments) {
+    static List<Transaction> makePaymentAmountsPositive(List<Transaction> payments) {
+        List<Transaction> paymentsWithPositiveAmounts = new ArrayList<>(payments.size());
         for (Transaction payment : payments) {
             double amount = Math.abs(payment.getTransactionAmount());
-            payment.setTransactionAmount(amount);
+            paymentsWithPositiveAmounts.add(Transaction.with(payment).transactionAmount(amount).build());
         }
+
+        return paymentsWithPositiveAmounts;
     }
 
     static TransactionType mapTransactionType(ResultSet resultset) throws SQLException {
-        return
-            new TransactionType(
-                resultset.getInt("transaction_type_id"),
-                resultset.getString("transaction_type_name"),
-                resultset.getDouble("transaction_amount"),
-                resultset.getBoolean("transaction_is_work"),
-                resultset.getBoolean("transaction_is_wage_payment"));
+        return TransactionType.with()
+            .id(resultset.getInt("transaction_type_id"))
+            .transactionTypeName(resultset.getString("transaction_type_name"))
+            .transactionAmount(resultset.getDouble("transaction_amount"))
+            .transactionIsWork(resultset.getBoolean("transaction_is_work"))
+            .transactionIsWagePayment(resultset.getBoolean("transaction_is_wage_payment"))
+            .build();
     }
 
     Map<String, String> transformResourceBundleToMap(Locale locale) {

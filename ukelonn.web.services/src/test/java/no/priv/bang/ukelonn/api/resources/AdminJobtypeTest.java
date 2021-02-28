@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class AdminJobtypeTest {
         Double originalAmount = jobtype.getTransactionAmount();
 
         // Modify the amount of the jobtype
-        jobtype.setTransactionAmount(originalAmount + 1);
+        jobtype = TransactionType.with(jobtype).transactionAmount(originalAmount + 1).build();
         when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
 
         // Run the method that is to be tested
@@ -93,7 +93,12 @@ public class AdminJobtypeTest {
         ukelonn.setDataSource(datasource);
 
         // Create a non-existing jobtype
-        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+        TransactionType jobtype = TransactionType.with()
+            .id(-2000)
+            .transactionTypeName("Foo")
+            .transactionAmount(3.14)
+            .transactionIsWork(true)
+            .build();
 
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception
@@ -115,7 +120,12 @@ public class AdminJobtypeTest {
         List<TransactionType> newjobtypes = new ArrayList<>(originalJobtypes);
 
         // Create new jobtyoe
-        TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+        TransactionType jobtype = TransactionType.with()
+            .id(-1)
+            .transactionTypeName("Skrubb badegolv")
+            .transactionAmount(200.0)
+            .transactionIsWork(true)
+            .build();
         newjobtypes.add(jobtype);
         when(ukelonn.createJobtype(jobtype)).thenReturn(newjobtypes);
 
@@ -152,7 +162,12 @@ public class AdminJobtypeTest {
         ukelonn.setDataSource(datasource);
 
         // Create a new jobtype
-        TransactionType jobtype = new TransactionType(-2000, "Foo", 3.14, true, false);
+        TransactionType jobtype = TransactionType.with()
+            .id(-2000)
+            .transactionTypeName("Foo")
+            .transactionAmount(3.14)
+            .transactionIsWork(true)
+            .build();
 
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception

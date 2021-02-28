@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,13 @@ public class AdminUserResource {
                 throw new UkelonnException(String.format("Found no user matching %s in the users table", username));
             }
 
-            no.priv.bang.ukelonn.beans.User user = new no.priv.bang.ukelonn.beans.User(createdUser.get().getUserid(), username, createdUser.get().getEmail(), createdUser.get().getFirstname(), createdUser.get().getLastname());
+            no.priv.bang.ukelonn.beans.User user = no.priv.bang.ukelonn.beans.User.with()
+                .userId(createdUser.get().getUserid())
+                .username(username)
+                .email(createdUser.get().getEmail())
+                .firstname(createdUser.get().getFirstname())
+                .lastname(createdUser.get().getLastname())
+                .build();
             ukelonn.addAccount(user);
 
             return users;

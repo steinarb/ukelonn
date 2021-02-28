@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class AdminPaymenttypeTest {
         Double originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
-        paymenttype.setTransactionAmount(originalAmount + 1);
+        paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
         when(ukelonn.modifyPaymenttype(paymenttype)).thenReturn(Arrays.asList(paymenttype));
 
         // Run the method that is to be tested
@@ -92,7 +92,12 @@ public class AdminPaymenttypeTest {
         ukelonn.setDataSource(datasource);
 
         // Create a non-existing payment type
-        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-2001)
+            .transactionTypeName("Bar")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
 
         // Try update the payment type in the database, which should cause an
         // "500 Internal Server Error" exception
@@ -114,7 +119,12 @@ public class AdminPaymenttypeTest {
         List<TransactionType> newPaymenttypes = new ArrayList<>(originalPaymenttypes);
 
         // Create new payment type
-        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-2001)
+            .transactionTypeName("Bar")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
         newPaymenttypes.add(paymenttype);
         when(ukelonn.createPaymenttype(any())).thenReturn(newPaymenttypes);
 
@@ -151,7 +161,12 @@ public class AdminPaymenttypeTest {
         ukelonn.setDataSource(datasource);
 
         // Create new payment type
-        TransactionType paymenttype = new TransactionType(-2001, "Bar", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-2001)
+            .transactionTypeName("Bar")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
 
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception

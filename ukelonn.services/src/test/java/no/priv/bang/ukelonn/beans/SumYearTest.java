@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ public class SumYearTest {
     public void testBean() {
         double sum = 250.0;
         int year = 2016;
-        SumYear bean = new SumYear(sum, year);
+        SumYear bean = SumYear.with().sum(sum).year(year).build();
         assertEquals(sum, bean.getSum(), 0.0);
         assertEquals(year, bean.getYear());
     }
@@ -34,7 +34,7 @@ public class SumYearTest {
     public void testNoArgsConstructor() {
         double sum = 0.0;
         int year = -1;
-        SumYear bean = new SumYear();
+        SumYear bean = SumYear.with().build();
         assertEquals(sum, bean.getSum(), 0.0);
         assertEquals(year, bean.getYear());
     }
