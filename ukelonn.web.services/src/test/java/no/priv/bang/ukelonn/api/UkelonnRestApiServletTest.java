@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -586,7 +586,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
         account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
         String jobAsJson = mapper.writeValueAsString(job);
         MockHttpServletRequest request = buildPostUrl("/job/register");
@@ -626,7 +631,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request
         Account account = getJodAccount();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         MockHttpServletRequest request = buildPostUrl("/job/register");
         request.setBodyContent(jobAsJson);
@@ -660,7 +670,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
         account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         MockHttpServletRequest request = buildPostUrl("/job/register");
@@ -696,9 +711,14 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterJobNoUsername() throws Exception {
         // Create the request
-        Account account = new Account();
+        Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         MockHttpServletRequest request = buildPostUrl("/job/register");
         request.setBodyContent(jobAsJson);
@@ -758,9 +778,14 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testRegisterJobInternalServerError() throws Exception {
         // Create the request
-        Account account = new Account();
+        Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
         String jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         MockHttpServletRequest request = buildPostUrl("/job/register");
         request.setBodyContent(jobAsJson);
@@ -820,7 +845,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getJodAccount();
         List<Transaction> jobs = getJodJobs();
         List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
-        AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
+        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(jobIds).build();
         String accountWithJobIdsAsJson = ServletTestBase.mapper.writeValueAsString(accountWithJobIds);
         MockHttpServletRequest request = buildPostUrl("/admin/jobs/delete");
         request.setBodyContent(accountWithJobIdsAsJson);
@@ -859,7 +884,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Create a new job object with a different jobtype and the same id
         Date now = new Date();
-        UpdatedTransaction editedJob = new UpdatedTransaction(job.getId(), account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+        UpdatedTransaction editedJob = UpdatedTransaction.with()
+            .id(job.getId())
+            .accountId(account.getAccountId())
+            .transactionTypeId(newJobType.getId())
+            .transactionTime(now)
+            .transactionAmount(newJobType.getTransactionAmount())
+            .build();
 
         // Build the HTTP request
         String editedJobAsJson = ServletTestBase.mapper.writeValueAsString(editedJob);
@@ -952,7 +983,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
         List<TransactionType> paymentTypes = getPaymenttypes();
-        PerformedTransaction payment = new PerformedTransaction(account, paymentTypes.get(0).getId(), account.getBalance(), new Date());
+        PerformedTransaction payment = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(paymentTypes.get(0).getId())
+            .transactionAmount(paymentTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
         account.setBalance(0.0);
         String paymentAsJson = ServletTestBase.mapper.writeValueAsString(payment);
         MockHttpServletRequest request = buildPostUrl("/registerpayment");
@@ -989,7 +1025,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Double originalAmount = jobtype.getTransactionAmount();
 
         // Modify the amount of the jobtype
-        jobtype.setTransactionAmount(originalAmount + 1);
+        jobtype = TransactionType.with(jobtype).transactionAmount(originalAmount + 1).build();
 
         // Create the request
         String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(jobtype);
@@ -1025,7 +1061,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> originalJobtypes = getJobtypes();
 
         // Create new jobtyoe
-        TransactionType jobtype = new TransactionType(-1, "Skrubb badegolv", 200.0, true, false);
+        TransactionType jobtype = TransactionType.with()
+            .id(-1)
+            .transactionTypeName("Skrubb badegolv")
+            .transactionAmount(200.0)
+            .transactionIsWork(true)
+            .build();
 
         // Create the request
         String jobtypeAsJson = ServletTestBase.mapper.writeValueAsString(jobtype);
@@ -1064,7 +1105,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         Double originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
-        paymenttype.setTransactionAmount(originalAmount + 1);
+        paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
 
         // Create the request
         String paymenttypeAsJson = ServletTestBase.mapper.writeValueAsString(paymenttype);
@@ -1100,7 +1141,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         List<TransactionType> originalPaymenttypes = getPaymenttypes();
 
         // Create new payment type
-        TransactionType paymenttype = new TransactionType(-2, "Vipps", 0.0, false, true);
+        TransactionType paymenttype = TransactionType.with()
+            .id(-2)
+            .transactionTypeName("Vipps")
+            .transactionAmount(0.0)
+            .transactionIsWagePayment(true)
+            .build();
 
         // Create the request
         String paymenttypeAsJson = ServletTestBase.mapper.writeValueAsString(paymenttype);
@@ -1301,7 +1347,11 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = mock(UkelonnService.class);
-        List<SumYear> earningsSumOverYear = Arrays.asList(new SumYear(1250.0, 2016), new SumYear(2345.0, 2017), new SumYear(5467.0, 2018), new SumYear(2450.0, 2019));
+        List<SumYear> earningsSumOverYear = Arrays.asList(
+            SumYear.with().sum(1250.0).year(2016).build(),
+            SumYear.with().sum(2345.0).year(2017).build(),
+            SumYear.with().sum(5467.0).year(2018).build(),
+            SumYear.with().sum(2450.0).year(2019).build());
         when(ukelonn.earningsSumOverYear("jad")).thenReturn(earningsSumOverYear);
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
@@ -1347,7 +1397,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertThat(notificationsToJad).isEmpty();
 
         // Send a notification to user "jad" over the REST API
-        Notification utbetalt = new Notification("Ukelønn", "150 kroner betalt til konto");
+        Notification utbetalt = Notification.with().title("Ukelønn").message("150 kroner utbetalt til konto").build();
         String utbetaltAsJson = mapper.writeValueAsString(utbetalt);
         MockHttpServletRequest sendNotificationRequest = buildPostUrl("/notificationto/jad");
         sendNotificationRequest.setBodyContent(utbetaltAsJson);
@@ -1372,7 +1422,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testGetActiveBonuses() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1397,7 +1447,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testGetAllBonuses() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1421,7 +1471,15 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testPostCreateBonus() throws Exception {
         // Set up REST API servlet with mocked services
-        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        Bonus bonus = Bonus.with()
+            .bonusId(1)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt lønn for jobb")
+            .bonusFactor(2.0)
+            .startDate(new Date())
+            .endDate(new Date())
+            .build();
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.createBonus(bonus)).thenReturn(Collections.singletonList(bonus));
 
@@ -1449,7 +1507,15 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testPostUpdateBonus() throws Exception {
         // Set up REST API servlet with mocked services
-        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        Bonus bonus = Bonus.with()
+            .bonusId(1)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt lønn for jobb")
+            .bonusFactor(2.0)
+            .startDate(new Date())
+            .endDate(new Date())
+            .build();
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyBonus(bonus)).thenReturn(Collections.singletonList(bonus));
 
@@ -1477,9 +1543,17 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testPostDeleteBonus() throws Exception {
         // Set up REST API servlet with mocked services
-        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        Bonus bonus = Bonus.with()
+            .bonusId(1)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt lønn for jobb")
+            .bonusFactor(2.0)
+            .startDate(new Date())
+            .endDate(new Date())
+            .build();
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.deleteBonus(bonus)).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.deleteBonus(bonus)).thenReturn(Collections.singletonList(Bonus.with().build()));
 
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1603,7 +1677,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     public void testAvailableLocales() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> new LocaleBean(l)).collect(Collectors.toList()));
+        when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
 
@@ -1620,7 +1694,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         List<LocaleBean> availableLocales = mapper.readValue(getBinaryContent(response), new TypeReference<List<LocaleBean>>() {});
-        assertThat(availableLocales).isNotEmpty().contains(new LocaleBean(Locale.forLanguageTag("nb-NO")));
+        assertThat(availableLocales).isNotEmpty().contains(LocaleBean.with().locale(Locale.forLanguageTag("nb-NO")).build());
     }
 
     @Test

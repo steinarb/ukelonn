@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,24 +28,22 @@ public class PasswordsWithUserTest {
         String expectedEmail = "jane21@gmail.com";
         String expectedFirstname = "Jane";
         String expectedLastname = "Doe";
-        User user = new User(expectedUserId, expectedUsername, expectedEmail, expectedFirstname, expectedLastname);
+        User user = User.with()
+            .userId(expectedUserId)
+            .username(expectedUsername)
+            .email(expectedEmail)
+            .firstname(expectedFirstname)
+            .lastname(expectedLastname)
+            .build();
         String password = "zecret";
         String password2 = "zecret2";
-        PasswordsWithUser passwords = new PasswordsWithUser(user, password, password2);
+        PasswordsWithUser passwords = PasswordsWithUser.with().user(user).password(password).password2(password2).build();
         assertEquals("jad", passwords.getUser().getUsername());
         assertEquals(password, passwords.getPassword());
         assertEquals(password2, passwords.getPassword2());
-        User user2 = new User();
+        User user2 = User.with().build();
         passwords.setUser(user2);
         assertEquals(user2, passwords.getUser());
-    }
-
-    @Test
-    public void testNoArgsConstructor() {
-        PasswordsWithUser passwords = new PasswordsWithUser();
-        assertNull(passwords.getUser());
-        assertEquals("", passwords.getPassword());
-        assertEquals("", passwords.getPassword2());
     }
 
 }

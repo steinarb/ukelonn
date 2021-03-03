@@ -37,7 +37,7 @@ public class NotificationResourceTest {
         assertThat(notificationsToJad).isEmpty();
 
         // Send notification to "jad"
-        Notification utbetalt = new Notification("Ukelønn", "150 kroner betalt til konto");
+        Notification utbetalt = Notification.with().title("Ukelønn").message("150 kroner betalt til konto").build();
         resource.notificationTo("jad", utbetalt);
 
         // Verify that notifcations to a different user is empty

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,7 @@ public class PasswordsWithUser {
     private String password;
     private String password2;
 
-    public PasswordsWithUser(User user, String password, String password2) {
-        this.user = user;
-        this.password = password;
-        this.password2 = password2;
-    }
-
-    // Argument-less constructor required by jackson
-    public PasswordsWithUser() {
-        this(null, "", "");
-    }
+    private PasswordsWithUser() {}
 
     public User getUser() {
         return user;
@@ -46,6 +37,41 @@ public class PasswordsWithUser {
 
     public String getPassword2() {
         return password2;
+    }
+
+    public static PasswordsWithUserBuilder with() {
+        return new PasswordsWithUserBuilder();
+    }
+
+    public static class PasswordsWithUserBuilder {
+        private User user;
+        private String password;
+        private String password2;
+
+        private PasswordsWithUserBuilder() {}
+
+        public PasswordsWithUser build() {
+            PasswordsWithUser passwords = new PasswordsWithUser();
+            passwords.user = this.user;
+            passwords.password = this.password;
+            passwords.password2 = this.password2;
+            return passwords;
+        }
+
+        public PasswordsWithUserBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public PasswordsWithUserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public PasswordsWithUserBuilder password2(String password2) {
+            this.password2 = password2;
+            return this;
+        }
     }
 
 }

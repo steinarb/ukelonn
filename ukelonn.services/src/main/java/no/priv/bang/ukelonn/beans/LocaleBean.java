@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,7 @@ public class LocaleBean extends Immutable { // NOSONAR Immutable handles added f
     private String code;
     private String displayLanguage;
 
-    public LocaleBean(Locale locale) {
-        code = locale.toString();
-        displayLanguage = locale.getDisplayLanguage(locale);
-    }
-
-    public LocaleBean() {
-        // Jackson and Jersey require a no-args constructor
-    }
+    private LocaleBean() {}
 
     public String getCode() {
         return code;
@@ -41,4 +34,25 @@ public class LocaleBean extends Immutable { // NOSONAR Immutable handles added f
         return displayLanguage;
     }
 
+    public static LocaleBeanBuilder with() {
+        return new LocaleBeanBuilder();
+    }
+
+    public static class LocaleBeanBuilder {
+        private Locale locale;
+
+        private LocaleBeanBuilder() {}
+
+        public LocaleBean build() {
+            LocaleBean localeBean = new LocaleBean();
+            localeBean.code = locale != null ? locale.toString() : null;
+            localeBean.displayLanguage = locale != null ? locale.getDisplayLanguage(locale) : null;
+            return localeBean;
+        }
+
+        public LocaleBeanBuilder locale(Locale locale) {
+            this.locale = locale;
+            return this;
+        }
+    }
 }

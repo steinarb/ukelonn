@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,11 @@ import java.util.Date;
 public class PerformedTransaction {
 
     private Account account = null;
-    private int transactionTypeId = -1;
-    private double transactionAmount = 0.0;
-    private Date transactionDate = new Date();
+    private int transactionTypeId;
+    private double transactionAmount;
+    private Date transactionDate;
 
-    public PerformedTransaction() {
-        // Jackson needs no-argument constructor
-    }
-
-    public PerformedTransaction(Account account, int transactionTypeId, double transactionAmount, Date transactionDate) {
-        this.account = account;
-        this.transactionTypeId = transactionTypeId;
-        this.transactionAmount  = transactionAmount;
-        this.transactionDate = transactionDate;
-    }
+    private PerformedTransaction() {}
 
     public Account getAccount() {
         return account;
@@ -49,6 +40,48 @@ public class PerformedTransaction {
 
     public Date getTransactionDate() {
         return transactionDate;
+    }
+
+    public static PerformedTransactionBuilder with() {
+        return new PerformedTransactionBuilder();
+    }
+
+    public static class PerformedTransactionBuilder {
+        private Account account;
+        private Integer transactionTypeId;
+        private Double transactionAmount;
+        private Date transactionDate;
+
+        private PerformedTransactionBuilder() {}
+
+        public PerformedTransaction build() {
+            PerformedTransaction performedTransaction = new PerformedTransaction();
+            performedTransaction.account = this.account;
+            performedTransaction.transactionTypeId = this.transactionTypeId != null ? this.transactionTypeId : -1;
+            performedTransaction.transactionAmount = this.transactionAmount != null ? this.transactionAmount : 0.0;
+            performedTransaction.transactionDate = this.transactionDate != null ? this.transactionDate : new Date();
+            return performedTransaction;
+        }
+
+        public PerformedTransactionBuilder account(Account account) {
+            this.account = account;
+            return this;
+        }
+
+        public PerformedTransactionBuilder transactionTypeId(Integer transactionTypeId) {
+            this.transactionTypeId = transactionTypeId;
+            return this;
+        }
+
+        public PerformedTransactionBuilder transactionAmount(Double transactionAmount) {
+            this.transactionAmount = transactionAmount;
+            return this;
+        }
+
+        public PerformedTransactionBuilder transactionDate(Date transactionDate) {
+            this.transactionDate = transactionDate;
+            return this;
+        }
     }
 
 }

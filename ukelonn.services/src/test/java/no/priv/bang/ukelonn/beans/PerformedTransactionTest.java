@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ public class PerformedTransactionTest {
 
     @Test
     public void testNoArgsConstructor() {
-        PerformedTransaction bean = new PerformedTransaction();
+        PerformedTransaction bean = PerformedTransaction.with().build();
         assertNull(bean.getAccount());
         assertEquals(-1, bean.getTransactionTypeId());
         assertEquals(0.0, bean.getTransactionAmount(), 0.0);
@@ -33,9 +33,14 @@ public class PerformedTransactionTest {
 
     @Test
     public void testConstructorWithArgs() {
-        Account account = new Account();
+        Account account = Account.with().build();
         Date now = new Date();
-        PerformedTransaction bean = new PerformedTransaction(account, 1, 3.14, now);
+        PerformedTransaction bean = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(1)
+            .transactionAmount(3.14)
+            .transactionDate(now)
+            .build();
         assertEquals(account, bean.getAccount());
         assertEquals(1, bean.getTransactionTypeId());
         assertEquals(3.14, bean.getTransactionAmount(), 0.0);

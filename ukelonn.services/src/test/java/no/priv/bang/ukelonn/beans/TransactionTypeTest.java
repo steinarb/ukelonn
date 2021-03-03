@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class TransactionTypeTest {
 
     @Test
     public void testNoArgumentConstructor() {
-        TransactionType bean = new TransactionType();
+        TransactionType bean = TransactionType.with().build();
         assertEquals(Integer.valueOf(0), bean.getId());
         assertNull(bean.getTransactionTypeName());
         assertNull(bean.getTransactionAmount());
@@ -37,7 +37,12 @@ public class TransactionTypeTest {
 
     @Test
     public void testConstructorWithArguments() {
-        TransactionType bean = new TransactionType(1, "Vaske", 45.0, true, false);
+        TransactionType bean = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Vaske")
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .build();
         assertEquals(Integer.valueOf(1), bean.getId());
         assertEquals("Vaske", bean.getTransactionTypeName());
         assertEquals(Double.valueOf(45), bean.getTransactionAmount());
@@ -47,39 +52,78 @@ public class TransactionTypeTest {
 
     @Test
     public void testCompare() {
-        TransactionType bean = new TransactionType(1, "Vaske", 45.0, true, false);
+        TransactionType bean = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Vaske")
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .build();
         Set<TransactionType> set = new HashSet<>();
         set.add(bean);
         assertTrue(set.contains(bean));
 
-        TransactionType emptyBean = new TransactionType();
+        TransactionType emptyBean = TransactionType.with().build();
         set.add(emptyBean);
         assertTrue(set.contains(emptyBean));
 
         assertNotEquals(bean, null);
-        TransactionType beanWithNullAmount1 = new TransactionType(1, "Vaske", null, true, false);
+        TransactionType beanWithNullAmount1 = TransactionType.with().id(1).transactionTypeName("Vaske").transactionIsWork(true).build();
         assertNotEquals(beanWithNullAmount1, bean);
-        TransactionType beanWithNullAmount2 = new TransactionType(1, "Vaske", null, true, false);
+        TransactionType beanWithNullAmount2 = TransactionType.with().id(1).transactionTypeName("Vaske").transactionIsWork(true).build();
         assertEquals(beanWithNullAmount1, beanWithNullAmount2);
-        TransactionType beanDifferentAmount = new TransactionType(1, "Vaske", 42.0, true, false);
+        TransactionType beanDifferentAmount = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Vaske")
+            .transactionAmount(42.0)
+            .transactionIsWork(true)
+            .build();
         assertNotEquals(bean, beanDifferentAmount);
-        TransactionType beanCopy = new TransactionType(1, "Vaske", 45.0, true, false);
+        TransactionType beanCopy = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Vaske")
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .build();
         assertEquals(bean, beanCopy);
-        TransactionType beanFalseWork = new TransactionType(1, "Vaske", 45.0, false, false);
+        TransactionType beanFalseWork = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Vaske")
+            .transactionAmount(45.0)
+            .transactionIsWork(false)
+            .build();
         assertNotEquals(bean, beanFalseWork);
-        TransactionType beanTrueWage = new TransactionType(1, "Vaske", 45.0, true, true);
+        TransactionType beanTrueWage = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Vaske")
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .transactionIsWagePayment(true)
+            .build();
         assertNotEquals(bean, beanTrueWage);
-        TransactionType beanWithNullName1 = new TransactionType(1, null, 45.0, true, false);
+        TransactionType beanWithNullName1 = TransactionType.with()
+            .id(1)
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .build();
         assertNotEquals(beanWithNullName1, bean);
-        TransactionType beanWithNullName2 = new TransactionType(1, null, 45.0, true, false);
+        TransactionType beanWithNullName2 = TransactionType.with()
+            .id(1)
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .build();
         assertEquals(beanWithNullName1, beanWithNullName2);
-        TransactionType beanWithDifferentName = new TransactionType(1, "Tørke", 45.0, true, false);
+        TransactionType beanWithDifferentName = TransactionType.with()
+            .id(1)
+            .transactionTypeName("Tørke")
+            .transactionAmount(45.0)
+            .transactionIsWork(true)
+            .build();
         assertNotEquals(bean, beanWithDifferentName);
     }
 
     @Test
     public void testToString() {
-        TransactionType bean = new TransactionType(1, "Vaske", 45.0, true, false);
+        TransactionType bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
         assertThat(bean.toString()).startsWith("TransactionType [");
     }
 
