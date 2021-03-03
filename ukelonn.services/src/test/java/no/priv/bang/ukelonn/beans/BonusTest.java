@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,16 @@ public class BonusTest {
         double bonusFactor = 2.0;
         Date startDate = new Date();
         Date endDate = new Date();
-        Bonus bean = new Bonus(bonusId, enabled, iconurl, title, description, bonusFactor, startDate, endDate);
+        Bonus bean = Bonus.with()
+            .bonusId(bonusId)
+            .enabled(enabled)
+            .iconurl(iconurl)
+            .title(title)
+            .description(description)
+            .bonusFactor(bonusFactor)
+            .startDate(startDate)
+            .endDate(endDate)
+            .build();
         assertEquals(bonusId, bean.getBonusId());
         assertTrue(bean.isEnabled());
         assertEquals(iconurl, bean.getIconurl());
@@ -46,7 +55,7 @@ public class BonusTest {
 
     @Test
     public void testNoArgsConstructor() {
-        Bonus bean = new Bonus();
+        Bonus bean = Bonus.with().build();
         assertEquals(0, bean.getBonusId());
         assertFalse(bean.isEnabled());
         assertNull(bean.getIconurl());

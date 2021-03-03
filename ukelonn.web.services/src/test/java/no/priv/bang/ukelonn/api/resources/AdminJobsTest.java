@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class AdminJobsTest {
         Account account = getJodAccount();
         List<Transaction> jobs = getJodJobs();
         List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
-        AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, jobIds);
+        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(jobIds).build();
 
         // Do the delete
         List<Transaction> jobsAfterDelete = resource.delete(accountWithJobIds);
@@ -73,7 +73,7 @@ public class AdminJobsTest {
         Account account = getJodAccount();
         List<Transaction> jobs = getJodJobs();
         List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
-        AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, idsOfJobsToDelete);
+        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
 
         // Do the delete
         List<Transaction> jobsAfterDelete = resource.delete(accountWithJobIds);
@@ -94,7 +94,7 @@ public class AdminJobsTest {
 
         // Delete with an empty argument
         List<Integer> idsOfJobsToDelete = Collections.emptyList();
-        AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, idsOfJobsToDelete);
+        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
         List<Transaction> jobsAfterDelete = resource.delete(accountWithJobIds);
 
         // Verify that nothing has been deleted
@@ -126,7 +126,7 @@ public class AdminJobsTest {
         // trying to delete jobs here will throw a Jersey Internal Error exception
         Account account = getJodAccount();
         List<Integer> idsOfJobsToDelete = Arrays.asList(1);
-        AccountWithJobIds accountWithJobIds = new AccountWithJobIds(account, idsOfJobsToDelete);
+        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
         resource.delete(accountWithJobIds);
         fail("Should never get here!");
     }

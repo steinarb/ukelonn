@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class BonusesTest {
     @Test
     public void testGetActiveBonuses() {
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
         Bonuses resource = new Bonuses();
         resource.ukelonn = ukelonn;
@@ -45,7 +45,7 @@ public class BonusesTest {
     @Test
     public void testGetAllBonuses() {
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
         Bonuses resource = new Bonuses();
         resource.ukelonn = ukelonn;
@@ -56,7 +56,15 @@ public class BonusesTest {
 
     @Test
     public void testCreateBonus() {
-        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        Bonus bonus = Bonus.with()
+            .bonusId(1)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt lønn for jobb")
+            .bonusFactor(2.0)
+            .startDate(new Date())
+            .endDate(new Date())
+            .build();
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.createBonus(any())).thenReturn(Collections.singletonList(bonus));
 
@@ -69,7 +77,15 @@ public class BonusesTest {
 
     @Test
     public void testModifyBonus() {
-        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        Bonus bonus = Bonus.with()
+            .bonusId(1)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt lønn for jobb")
+            .bonusFactor(2.0)
+            .startDate(new Date())
+            .endDate(new Date())
+            .build();
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyBonus(any())).thenReturn(Collections.singletonList(bonus));
 
@@ -82,9 +98,17 @@ public class BonusesTest {
 
     @Test
     public void testDeleteBonus() {
-        Bonus bonus = new Bonus(1, true, null, "Julebonus", "Dobbelt lønn for jobb", 2.0, new Date(), new Date());
+        Bonus bonus = Bonus.with()
+            .bonusId(1)
+            .enabled(true)
+            .title("Julebonus")
+            .description("Dobbelt lønn for jobb")
+            .bonusFactor(2.0)
+            .startDate(new Date())
+            .endDate(new Date())
+            .build();
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.deleteBonus(any())).thenReturn(Collections.singletonList(new Bonus()));
+        when(ukelonn.deleteBonus(any())).thenReturn(Collections.singletonList(Bonus.with().build()));
 
         Bonuses resource = new Bonuses();
         resource.ukelonn = ukelonn;

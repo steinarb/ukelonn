@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,12 @@ public class JobResourceTest extends ServletTestBase {
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -108,7 +113,12 @@ public class JobResourceTest extends ServletTestBase {
         // Create the request
         Account account = getJodAccount();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -146,7 +156,12 @@ public class JobResourceTest extends ServletTestBase {
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -182,9 +197,14 @@ public class JobResourceTest extends ServletTestBase {
     @Test(expected=ForbiddenException.class)
     public void testRegisterJobNoUsername() throws Exception {
         // Create the request
-        Account account = new Account();
+        Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
 
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -221,9 +241,14 @@ public class JobResourceTest extends ServletTestBase {
     @Test(expected=InternalServerErrorException.class)
     public void testRegisterJobInternalServerError() throws Exception {
         // Create the request
-        Account account = new Account();
+        Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = new PerformedTransaction(account, jobTypes.get(0).getId(), jobTypes.get(0).getTransactionAmount(), new Date());
+        PerformedTransaction job = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(jobTypes.get(0).getId())
+            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionDate(new Date())
+            .build();
 
         // Create the object to be tested
         JobResource resource = new JobResource();
@@ -268,7 +293,13 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create a new job object with a different jobtype and the same id
         Date now = new Date();
-        UpdatedTransaction editedJob = new UpdatedTransaction(jobId, account.getAccountId(), newJobType.getId(), now, newJobType.getTransactionAmount());
+        UpdatedTransaction editedJob = UpdatedTransaction.with()
+            .id(jobId)
+            .accountId(account.getAccountId())
+            .transactionTypeId(newJobType.getId())
+            .transactionTime(now)
+            .transactionAmount(newJobType.getTransactionAmount())
+            .build();
         when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
 
         List<Transaction> updatedJobs = resource.doUpdateJob(editedJob);
@@ -298,7 +329,7 @@ public class JobResourceTest extends ServletTestBase {
         MockLogService logservice = new MockLogService();
         resource.logservice = logservice;
 
-        resource.doUpdateJob(new UpdatedTransaction());
+        resource.doUpdateJob(UpdatedTransaction.with().build());
         fail("Should never get here");
     }
 

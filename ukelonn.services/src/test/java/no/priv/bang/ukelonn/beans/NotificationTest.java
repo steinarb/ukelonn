@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ public class NotificationTest {
 
     @Test
     public void testGetters() {
-        Notification bean = new Notification("Ukelønn", "150 kroner utbetalt til konto");
+        Notification bean = Notification.with().title("Ukelønn").message("150 kroner utbetalt til konto").build();
         assertEquals("Ukelønn", bean.getTitle());
         assertEquals("150 kroner utbetalt til konto", bean.getMessage());
     }
 
     @Test
     public void testNoArgsConstructor() {
-        Notification bean = new Notification();
+        Notification bean = Notification.with().build();
         assertEquals("", bean.getTitle());
         assertEquals("", bean.getMessage());
     }

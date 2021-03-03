@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,18 +28,7 @@ public class UpdatedTransaction {
     private Date transactionTime;
     private double transactionAmount;
 
-    public UpdatedTransaction(int id, int accountId, int transactionTypeId, Date transactionTime, double transactionAmount) {
-        this.id = id;
-        this.accountId = accountId;
-        this.transactionTypeId = transactionTypeId;
-        this.transactionTime = transactionTime;
-        this.transactionAmount = transactionAmount;
-    }
-
-    public UpdatedTransaction() {
-        this(-1, -1, -1, null, 0.0);
-        // No-args constructor required by jackson
-    }
+    private UpdatedTransaction() {}
 
     public int getId() {
         return id;
@@ -59,6 +48,55 @@ public class UpdatedTransaction {
 
     public double getTransactionAmount() {
         return transactionAmount;
+    }
+
+    public static UpdatedTransactionBuilder with() {
+        return new UpdatedTransactionBuilder();
+    }
+
+    public static class UpdatedTransactionBuilder {
+        private int id = -1;
+        private int accountId = -1;
+        private int transactionTypeId = -1;
+        private Date transactionTime = null;
+        private double transactionAmount = 0.0;
+
+        private UpdatedTransactionBuilder() {}
+
+        public UpdatedTransaction build() {
+            UpdatedTransaction updatedTransaction = new UpdatedTransaction();
+            updatedTransaction.id = this.id;
+            updatedTransaction.accountId = this.accountId;
+            updatedTransaction.transactionTypeId = this.transactionTypeId;
+            updatedTransaction.transactionTime = this.transactionTime;
+            updatedTransaction.transactionAmount = this.transactionAmount;
+            return updatedTransaction;
+        }
+
+        public UpdatedTransactionBuilder id(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public UpdatedTransactionBuilder accountId(int accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public UpdatedTransactionBuilder transactionTypeId(int transactionTypeId) {
+            this.transactionTypeId = transactionTypeId;
+            return this;
+        }
+
+        public UpdatedTransactionBuilder transactionTime(Date transactionTime) {
+            this.transactionTime = transactionTime;
+            return this;
+        }
+
+        public UpdatedTransactionBuilder transactionAmount(double transactionAmount) {
+            this.transactionAmount = transactionAmount;
+            return this;
+        }
     }
 
 }

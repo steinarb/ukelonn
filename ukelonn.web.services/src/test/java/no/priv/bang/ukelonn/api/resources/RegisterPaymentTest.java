@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,12 @@ public class RegisterPaymentTest {
         double originalBalance = account.getBalance();
         account.setBalance(0.0);
         List<TransactionType> paymenttypes = getPaymenttypes();
-        PerformedTransaction payment = new PerformedTransaction(account, paymenttypes.get(0).getId(), account.getBalance(), new Date());
+        PerformedTransaction payment = PerformedTransaction.with()
+            .account(account)
+            .transactionTypeId(paymenttypes.get(0).getId())
+            .transactionAmount(account.getBalance())
+            .transactionDate(new Date())
+            .build();
 
         // Create the object to be tested
         RegisterPayment resource = new RegisterPayment();

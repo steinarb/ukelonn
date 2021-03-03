@@ -1,9 +1,5 @@
-package no.priv.bang.ukelonn.beans;
-
-import static org.junit.Assert.*;
-
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +13,10 @@ import static org.junit.Assert.*;
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
+package no.priv.bang.ukelonn.beans;
+
+import static org.junit.Assert.*;
+
 import java.util.Date;
 
 import org.junit.Test;
@@ -26,7 +26,13 @@ public class UpdatedTransactionTest {
     @Test
     public void testCreate() {
         Date now = new Date();
-        UpdatedTransaction bean = new UpdatedTransaction(31, 2, 2, now, 3.14);
+        UpdatedTransaction bean = UpdatedTransaction.with()
+            .id(31)
+            .accountId(2)
+            .transactionTypeId(2)
+            .transactionTime(now)
+            .transactionAmount(3.14)
+            .build();
         assertEquals(31, bean.getId());
         assertEquals(2, bean.getAccountId());
         assertEquals(2, bean.getTransactionTypeId());
@@ -36,7 +42,7 @@ public class UpdatedTransactionTest {
 
     @Test
     public void testNoArgsConstructor() {
-        UpdatedTransaction bean = new UpdatedTransaction();
+        UpdatedTransaction bean = UpdatedTransaction.with().build();
         assertEquals(-1, bean.getId());
         assertEquals(-1, bean.getTransactionTypeId());
         assertEquals(-1, bean.getTransactionTypeId());

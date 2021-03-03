@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,16 @@ public class AccountWithJobIdsTest {
 
     @Test
     public void testDefaultValues() {
-        AccountWithJobIds bean = new AccountWithJobIds();
+        AccountWithJobIds bean = AccountWithJobIds.with().build();
         assertNull(bean.getAccount());
         assertEquals(0, bean.getJobIds().size());
     }
 
     @Test
     public void testConstructorWithParameters() {
-        Account account = new Account();
+        Account account = Account.with().build();
         List<Integer> ids = Arrays.asList(1, 2, 3, 4);
-        AccountWithJobIds bean = new AccountWithJobIds(account, ids);
+        AccountWithJobIds bean = AccountWithJobIds.with().account(account).jobIds(ids).build();
         assertEquals(account, bean.getAccount());
         assertEquals(4, bean.getJobIds().size());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class StatisticsTest {
     public void testEarningsSumOverYear() {
         Statistics resource = new Statistics();
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.earningsSumOverYear("jad")).thenReturn(Arrays.asList(new SumYear(1250.0, 2016)));
+        when(ukelonn.earningsSumOverYear("jad")).thenReturn(Arrays.asList(SumYear.with().sum(1250.0).year(2016).build()));
         resource.ukelonn = ukelonn;
 
         String username = "jad";
@@ -47,7 +47,7 @@ public class StatisticsTest {
     public void testEarningsSumOverMonth() {
         Statistics resource = new Statistics();
         UkelonnService ukelonn = mock(UkelonnService.class);
-        when(ukelonn.earningsSumOverMonth("jad")).thenReturn(Arrays.asList(new SumYearMonth(125.0, 2016, 7)));
+        when(ukelonn.earningsSumOverMonth("jad")).thenReturn(Arrays.asList(SumYearMonth.with().sum(125.0).year(2016).month(7).build()));
         resource.ukelonn = ukelonn;
 
         String username = "jad";
