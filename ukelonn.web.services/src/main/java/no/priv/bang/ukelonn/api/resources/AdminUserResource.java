@@ -138,10 +138,10 @@ public class AdminUserResource {
 
             if (status.isAdministrator()) {
                 // admin role is missing, add the role
-                useradmin.addUserRoles(new UserRoles(status.getUser(), Arrays.asList(ukelonnadmin.get())));
+                useradmin.addUserRoles(UserRoles.with().user(status.getUser()).roles(Arrays.asList(ukelonnadmin.get())).build());
             } else {
                 // admin role is present, remove the role
-                useradmin.removeUserRoles(new UserRoles(status.getUser(), Arrays.asList(ukelonnadmin.get())));
+                useradmin.removeUserRoles(UserRoles.with().user(status.getUser()).roles(Arrays.asList(ukelonnadmin.get())).build());
             }
         }
 

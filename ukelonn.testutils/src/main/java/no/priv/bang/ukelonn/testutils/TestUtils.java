@@ -172,7 +172,13 @@ public class TestUtils {
     }
 
     private static no.priv.bang.osgiservice.users.User copyUserForUserManagement(User user) {
-        return new no.priv.bang.osgiservice.users.User(user.getUserId(), user.getUsername(), user.getEmail(), user.getFirstname(), user.getLastname());
+        return no.priv.bang.osgiservice.users.User.with()
+            .userid(user.getUserId())
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .firstname(user.getFirstname())
+            .lastname(user.getLastname())
+            .build();
     }
 
     public static Account copyAccount(Account account) {

@@ -1214,7 +1214,12 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         String modifiedEmailaddress = "wizard@hotmail.com";
         String modifiedFirstname = "Gandalf";
         String modifiedLastname = "Grey";
-        User user = new User(userOriginal.getUserid(), modifiedUsername, modifiedEmailaddress, modifiedFirstname, modifiedLastname);
+        User user = User.with(userOriginal)
+            .username(modifiedUsername)
+            .email(modifiedEmailaddress)
+            .firstname(modifiedFirstname)
+            .lastname(modifiedLastname)
+            .build();
 
         // Create the request
         String userAsJson = ServletTestBase.mapper.writeValueAsString(user);
@@ -1258,10 +1263,16 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create the request
         String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
@@ -1310,7 +1321,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         User user = users.get(1);
 
         // Create a passwords object containing the user and with valid passwords
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create the request
         String passwordsAsJson = ServletTestBase.mapper.writeValueAsString(passwords);
@@ -1584,7 +1595,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
@@ -1594,7 +1605,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create the request and response
         MockHttpServletRequest request = buildPostUrl("/admin/user/adminstatus");
@@ -1619,7 +1636,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         UkelonnService ukelonn = mock(UkelonnService.class);
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
 
         UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
@@ -1629,7 +1646,13 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
         AdminStatus status = new AdminStatus(user, true);
 
         // Create the request and response
