@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,13 @@ public class AdminUserResourceTest {
         String modifiedEmailaddress = "wizard@hotmail.com";
         String modifiedFirstname = "Gandalf";
         String modifiedLastname = "Grey";
-        User user = new User(1, modifiedUsername, modifiedEmailaddress, modifiedFirstname, modifiedLastname);
+        User user = User.with()
+            .userid(1)
+            .username(modifiedUsername)
+            .email(modifiedEmailaddress)
+            .firstname(modifiedFirstname)
+            .lastname(modifiedLastname)
+            .build();
         when(useradmin.modifyUser(user)).thenReturn(Arrays.asList(user));
 
         // Save the modification
@@ -107,7 +113,7 @@ public class AdminUserResourceTest {
         useradmin.setDataSource(datasource);
 
         // Create a user bean
-        User user = new User();
+        User user = User.with().build();
 
         // Save the modification
         resource.modify(user);
@@ -137,12 +143,22 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
         originalUsersPlusOne.add(user);
         when(useradmin.addUser(any())).thenReturn(originalUsersPlusOne);
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with()
+            .user(user)
+            .password1("zecret")
+            .password2("zecret")
+            .build();
 
         // Create a user
         List<User> updatedUsers = resource.create(passwords);
@@ -169,7 +185,11 @@ public class AdminUserResourceTest {
         resource.logservice = logservice;
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(new User(), "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with()
+            .user(User.with().build())
+            .password1("zecret")
+            .password2("zecret")
+            .build();
 
         // Create a user
         resource.create(passwords);
@@ -179,7 +199,7 @@ public class AdminUserResourceTest {
     public void testAdminStatusWhenUserIsAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
         resource.useradmin = useradmin;
 
@@ -188,7 +208,13 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         AdminStatus status = resource.adminStatus(user);
         assertEquals(user, status.getUser());
@@ -199,7 +225,7 @@ public class AdminUserResourceTest {
     public void testAdminStatusWhenUserIsNotAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, "ukelonnuser", "ukelonn user");
+        Role adminrole = Role.with().id(1).rolename("ukelonnuser").description("ukelonn user").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
         resource.useradmin = useradmin;
 
@@ -208,8 +234,13 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
-
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
         AdminStatus status = resource.adminStatus(user);
         assertEquals(user, status.getUser());
         assertFalse(status.isAdministrator());
@@ -219,7 +250,7 @@ public class AdminUserResourceTest {
     public void testChangeAdminStatusMakeUserAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(adminrole));
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.emptyList()).thenReturn(Collections.singletonList(adminrole));
         resource.useradmin = useradmin;
@@ -229,7 +260,13 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         AdminStatus status = new AdminStatus(user, true);
         AdminStatus changedStatus = resource.changeAdminStatus(status);
@@ -241,7 +278,7 @@ public class AdminUserResourceTest {
     public void testChangeAdminStatusMakeUserNotAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(adminrole));
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole)).thenReturn(Collections.emptyList());
         resource.useradmin = useradmin;
@@ -251,7 +288,13 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         AdminStatus status = new AdminStatus(user, false);
         AdminStatus changedStatus = resource.changeAdminStatus(status);
@@ -263,7 +306,7 @@ public class AdminUserResourceTest {
     public void testChangeAdminStatusSetUserAdministratorWhenUserAlreadyAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn adminstrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(adminrole));
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
         resource.useradmin = useradmin;
@@ -273,7 +316,13 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         AdminStatus status = new AdminStatus(user, true);
         AdminStatus changedStatus = resource.changeAdminStatus(status);
@@ -293,7 +342,13 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         AdminStatus status = new AdminStatus(user, true);
         AdminStatus changedStatus = resource.changeAdminStatus(status);
@@ -326,10 +381,21 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "secret", true);
+        UserAndPasswords passwords = UserAndPasswords.with()
+            .user(user)
+            .password1("zecret")
+            .password2("secret")
+            .passwordsNotIdentical(true)
+            .build();
 
         // Create a user
         List<User> updatedUsers = resource.create(passwords);
@@ -369,10 +435,16 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Creating user should fail
         resource.create(passwords);
@@ -406,10 +478,16 @@ public class AdminUserResourceTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        User user = new User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        User user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create a user
         List<User> updatedUsers = resource.create(passwords);
@@ -437,7 +515,7 @@ public class AdminUserResourceTest {
 
         // Create a passwords object containing the user and with
         // valid and identical passwords
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Change the password
         List<User> updatedUsers = resource.password(passwords);
@@ -462,7 +540,7 @@ public class AdminUserResourceTest {
 
         // Create a passwords object containing the user and with
         // valid and identical passwords
-        UserAndPasswords passwords = new UserAndPasswords(null, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().password1("zecret").password2("zecret").build();
 
         // Changing the password should fail
         resource.password(passwords);
@@ -489,7 +567,7 @@ public class AdminUserResourceTest {
 
         // Create a passwords object containing the user and with
         // valid but non-identical passwords
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "secret", true);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("secret").build();
 
         // Changing the password should fail
         resource.password(passwords);
@@ -522,11 +600,11 @@ public class AdminUserResourceTest {
         useradmin.setDataSource(datasource);
 
         // Create a user object with a valid username
-        User user = new User(0, "validusername", null, null, null);
+        User user = User.with().username("validusername").build();
 
         // Create a passwords object containing the user and with
         // valid and identical passwords
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Changing the password should fail
         resource.password(passwords);

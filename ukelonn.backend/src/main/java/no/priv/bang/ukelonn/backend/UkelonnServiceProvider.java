@@ -741,7 +741,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         List<Role> roles = useradmin.getRoles();
         Optional<Role> existingRole = roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
         if (!existingRole.isPresent()) {
-            roles = useradmin.addRole(new Role(-1, rolename, description));
+            roles = useradmin.addRole(Role.with().rolename(rolename).description(description).build());
             return roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
         }
 
@@ -754,7 +754,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 no.priv.bang.osgiservice.users.User admin = useradmin.getUser("admin");
                 List<Role> roles = useradmin.getRolesForUser("admin");
                 if (roles.stream().noneMatch(r -> ukelonnadmin.get().equals(r))) {
-                    useradmin.addUserRoles(new UserRoles(admin, Arrays.asList(ukelonnadmin.get())));
+                    useradmin.addUserRoles(UserRoles.with().user(admin).roles(Arrays.asList(ukelonnadmin.get())).build());
                 }
             } catch (AuthserviceException e) {
                 // No admin user, skip and continue
