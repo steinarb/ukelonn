@@ -81,7 +81,13 @@ public class UkelonnServiceProviderTest {
     public void testGetAccounts() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username("jad")
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         provider.setUserAdmin(useradmin);
         List<Account> accounts = provider.getAccounts();
@@ -153,7 +159,13 @@ public class UkelonnServiceProviderTest {
     public void testGetAccount() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username("jad")
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         provider.setUserAdmin(useradmin);
         Account account = provider.getAccount("jad");
@@ -237,10 +249,16 @@ public class UkelonnServiceProviderTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create a user in the database, and retrieve it (to get the user id)
         List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
@@ -281,10 +299,16 @@ public class UkelonnServiceProviderTest {
         String newEmailaddress = "strider@hotmail.com";
         String newFirstname = "Aragorn";
         String newLastname = "McArathorn";
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(0, newUsername, newEmailaddress, newFirstname, newLastname);
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = new UserAndPasswords(user, "zecret", "zecret", false);
+        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create a user in the database, expected to fail
         assertThrows(AuthserviceException.class, () -> {
@@ -297,7 +321,13 @@ public class UkelonnServiceProviderTest {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
         UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username(username)
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount(username);
@@ -311,7 +341,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jad@gmail.com")
+                .firstname("Jane")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -345,7 +381,13 @@ public class UkelonnServiceProviderTest {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username("jad")
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount("jad");
@@ -381,7 +423,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jod@gmail.com")
+                .firstname("John")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -406,7 +454,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jod@gmail.com")
+                .firstname("John")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -453,7 +507,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jod@gmail.com")
+                .firstname("John")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -479,7 +539,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jod@gmail.com")
+                .firstname("John")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -509,7 +575,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jod@gmail.com", "John", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jod@gmail.com")
+                .firstname("John")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -562,7 +634,13 @@ public class UkelonnServiceProviderTest {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
             UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+                .userid(1)
+                .username(username)
+                .email("jad@gmail.com")
+                .firstname("Jane")
+                .lastname("Doe")
+                .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             Account account = ukelonn.getAccount(username);
@@ -626,7 +704,13 @@ public class UkelonnServiceProviderTest {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
         UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, username, "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username(username)
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
         Account account = ukelonn.getAccount(username);
@@ -689,7 +773,13 @@ public class UkelonnServiceProviderTest {
     public void testRegisterPayment() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username("jad")
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
 
@@ -1073,7 +1163,13 @@ public class UkelonnServiceProviderTest {
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
         UserManagementServiceProvider useradmin = mock(UserManagementServiceProvider.class);
-        no.priv.bang.osgiservice.users.User user = new no.priv.bang.osgiservice.users.User(1, "jad", "jad@gmail.com", "Jane", "Doe");
+        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            .userid(1)
+            .username("jad")
+            .email("jad@gmail.com")
+            .firstname("Jane")
+            .lastname("Doe")
+            .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         ukelonn.setUserAdmin(useradmin);
@@ -1396,8 +1492,8 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testAddRoleIfNotPresentWhenRoleIsPresent() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
-        Role userrole = new Role(2, UKELONNUSER_ROLE, "ukelonn user");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        Role userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
         when(useradmin.getRoles()).thenReturn(Arrays.asList(userrole, adminrole));
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
@@ -1410,8 +1506,8 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testAddRoleIfNotPresentWhenRoleIsNotPresent() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
-        Role userrole = new Role(2, UKELONNUSER_ROLE, "ukelonn user");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        Role userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(userrole));
         when(useradmin.addRole(any())).thenReturn(Arrays.asList(userrole, adminrole));
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1424,7 +1520,7 @@ public class UkelonnServiceProviderTest {
 
     @Test
     public void testAddAdminroleToUserAdminWhenRoleIsMissing() {
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
@@ -1437,7 +1533,7 @@ public class UkelonnServiceProviderTest {
 
     @Test
     public void testAddAdminroleToUserAdminWhenRoleIsPresent() {
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1452,7 +1548,7 @@ public class UkelonnServiceProviderTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testAddAdminroleToUserAdminWhenAdminUserIsNotPresent() {
-        Role adminrole = new Role(1, UKELONNADMIN_ROLE, "ukelonn administrator");
+        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
