@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <maven.bundle.plugin.version>5.1.1</maven.bundle.plugin.version>
-        <karaf.version>4.2.11</karaf.version>
+        <karaf.version>4.3.0</karaf.version>
         <mockrunner.version>2.0.4</mockrunner.version>
         <liquibase.version>3.8.0</liquibase.version>
         <derby.version>10.11.1.1</derby.version>
