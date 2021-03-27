@@ -69,7 +69,7 @@
             <artifactId>osgiservice.users</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
-            <version>${osgi-service.version}</version>
+            <version>${bang-osgi-service}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
