@@ -77,11 +77,6 @@
             <artifactId>osgiservice.users</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.log</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
             <artifactId>service-mocks</artifactId>
             <scope>compile</scope>
