@@ -105,11 +105,11 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>logservice</artifactId>
+            <artifactId>adapters.logservice</artifactId>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>logservice</artifactId>
+            <artifactId>adapters.logservice</artifactId>
             <version>${osgi-service-adaptors.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
