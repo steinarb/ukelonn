@@ -13,7 +13,6 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <repository>mvn:no.priv.bang.karaf/liquibase-core-karaf/${liquibase.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.test/${project.version}/xml/features</repository>
