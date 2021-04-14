@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package no.priv.bang.ukelonn.backend;
 
 import static org.junit.Assert.*;
-import static org.mockito.internal.util.reflection.Whitebox.*;
+
+import java.lang.reflect.Field;
+
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 import org.junit.AfterClass;
@@ -67,6 +69,11 @@ public class KarafReleaseLiquibaseLockCommandTest {
 
         // Verify expected results
         assertNull(result);
+    }
+
+    private void setInternalState(Object object, String fieldName, Object value) throws Exception {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.set(object, value);
     }
 
 }
