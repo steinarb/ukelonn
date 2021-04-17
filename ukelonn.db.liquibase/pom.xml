@@ -49,7 +49,6 @@
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
             <artifactId>authservice.db.liquibase</artifactId>
-            <version>${authservice.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

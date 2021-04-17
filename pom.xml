@@ -47,8 +47,7 @@
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <osgi-service-adaptors.version>1.1.2</osgi-service-adaptors.version>
-        <authservice.version>1.13.1</authservice.version>
-        <dependency.shiro.version>1.7.0</dependency.shiro.version>
+        <authservice.version>1.13.2</authservice.version>
         <bang-osgi-service>1.7.2</bang-osgi-service>
         <bang-servlet.version>1.5.3</bang-servlet.version>
         <datasourceproxy.version>1.1.0</datasourceproxy.version>
@@ -86,6 +85,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice-bom</artifactId>
+                <version>${authservice.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>no.priv.bang.osgiservice</groupId>
                 <artifactId>osgiservice-bom</artifactId>
                 <version>${bang-osgi-service}</version>
@@ -98,48 +104,6 @@
                 <version>${osgi-service-adaptors.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.definitions</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.db.liquibase</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.users</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.web.security.dbrealm</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.web.security.memorysession</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-core</artifactId>
-                <version>${dependency.shiro.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-web</artifactId>
-                <version>${dependency.shiro.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.jdbc</groupId>
