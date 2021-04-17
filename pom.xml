@@ -50,7 +50,7 @@
         <authservice.version>1.13.1</authservice.version>
         <dependency.shiro.version>1.7.0</dependency.shiro.version>
         <bang-osgi-service>1.7.2</bang-osgi-service>
-        <bang-servlet.version>1.5.1</bang-servlet.version>
+        <bang-servlet.version>1.5.3</bang-servlet.version>
         <datasourceproxy.version>1.1.0</datasourceproxy.version>
         <beans.version>1.1.2</beans.version>
         <jackson.version>2.12.1</jackson.version>
@@ -75,6 +75,13 @@
                 <groupId>no.priv.bang.beans</groupId>
                 <artifactId>beans-bom</artifactId>
                 <version>${beans.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.servlet</groupId>
+                <artifactId>servlet-bom</artifactId>
+                <version>${bang-servlet.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -123,18 +130,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>no.priv.bang.servlet</groupId>
-                <artifactId>servlet.frontend</artifactId>
-                <version>${bang-servlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.servlet</groupId>
-                <artifactId>servlet.jersey</artifactId>
-                <version>${bang-servlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-core</artifactId>
                 <version>${dependency.shiro.version}</version>
@@ -150,30 +145,6 @@
                 <groupId>no.priv.bang.jdbc</groupId>
                 <artifactId>jdbc.datasourceproxy</artifactId>
                 <version>${datasourceproxy.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-servlet</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

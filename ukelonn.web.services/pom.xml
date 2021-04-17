@@ -182,7 +182,6 @@
         <dependency>
             <groupId>no.priv.bang.servlet</groupId>
             <artifactId>servlet.jersey</artifactId>
-            <version>${bang-servlet.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

@@ -13,10 +13,8 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <repository>mvn:no.priv.bang.servlet/karaf/${bang-servlet.version}/xml/features</repository>
     <feature name="ukelonn-web-frontend">
         <feature prerequisite="true">wrap</feature>
-        <feature>frontend-servlet</feature>
         <feature>pax-http-whiteboard</feature>
         <feature>scr</feature>
     </feature>
