@@ -121,7 +121,6 @@
         <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
             <artifactId>adapters.logservice</artifactId>
-            <version>${osgi-service-adaptors.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

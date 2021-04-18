@@ -46,7 +46,7 @@
 
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-        <osgi-service-adaptors.version>1.1.1</osgi-service-adaptors.version>
+        <osgi-service-adaptors.version>1.1.2</osgi-service-adaptors.version>
         <authservice.version>1.13.1</authservice.version>
         <dependency.shiro.version>1.7.0</dependency.shiro.version>
         <bang-osgi-service>1.7.2</bang-osgi-service>
@@ -87,9 +87,10 @@
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.osgi.service.adapters</groupId>
-                <artifactId>adapters.logservice</artifactId>
+                <artifactId>adapters-bom</artifactId>
                 <version>${osgi-service-adaptors.version}</version>
-                <scope>provided</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.authservice</groupId>
@@ -120,12 +121,6 @@
                 <artifactId>authservice.web.security.memorysession</artifactId>
                 <version>${authservice.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.osgi.service.adapters</groupId>
-                <artifactId>service-mocks</artifactId>
-                <version>${osgi-service-adaptors.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.servlet</groupId>
