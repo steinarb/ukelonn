@@ -49,7 +49,7 @@
         <osgi-service-adaptors.version>1.1.1</osgi-service-adaptors.version>
         <authservice.version>1.13.1</authservice.version>
         <dependency.shiro.version>1.7.0</dependency.shiro.version>
-        <bang-osgi-service>1.7.1</bang-osgi-service>
+        <bang-osgi-service>1.7.2</bang-osgi-service>
         <bang-servlet.version>1.5.1</bang-servlet.version>
         <datasourceproxy.version>1.1.0</datasourceproxy.version>
         <beans.version>1.1.2</beans.version>
@@ -79,15 +79,16 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>no.priv.bang.osgiservice</groupId>
+                <artifactId>osgiservice-bom</artifactId>
+                <version>${bang-osgi-service}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>no.priv.bang.osgi.service.adapters</groupId>
                 <artifactId>adapters.logservice</artifactId>
                 <version>${osgi-service-adaptors.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.osgiservice</groupId>
-                <artifactId>osgiservice.users</artifactId>
-                <version>${bang-osgi-service}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
