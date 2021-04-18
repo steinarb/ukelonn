@@ -52,7 +52,7 @@
         <bang-osgi-service>1.7.1</bang-osgi-service>
         <bang-servlet.version>1.5.1</bang-servlet.version>
         <datasourceproxy.version>1.1.0</datasourceproxy.version>
-        <beans.version>1.1.1</beans.version>
+        <beans.version>1.1.2</beans.version>
         <jackson.version>2.12.1</jackson.version>
         <jersey.version>2.33</jersey.version>
         <open-iconic.version>1.1.1</open-iconic.version>
@@ -68,6 +68,13 @@
                 <groupId>org.apache.karaf</groupId>
                 <artifactId>karaf-bom</artifactId>
                 <version>${karaf.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.beans</groupId>
+                <artifactId>beans-bom</artifactId>
+                <version>${beans.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -141,12 +148,6 @@
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-web</artifactId>
                 <version>${dependency.shiro.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.beans</groupId>
-                <artifactId>beans.immutable</artifactId>
-                <version>${beans.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
