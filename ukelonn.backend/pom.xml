@@ -51,6 +51,11 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.definitions</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
             <artifactId>authservice.db.liquibase</artifactId>
             <scope>test</scope>
         </dependency>
@@ -70,7 +75,6 @@
             <artifactId>osgiservice.users</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
-            <version>${bang-osgi-service}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
@@ -146,6 +150,12 @@
             <groupId>no.priv.bang.beans</groupId>
             <artifactId>beans.immutable</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
