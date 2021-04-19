@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-pom</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.3</version>
     </parent>
     <groupId>no.priv.bang.ukelonn</groupId>
     <artifactId>ukelonn</artifactId>
@@ -46,13 +46,12 @@
 
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-        <osgi-service-adaptors.version>1.1.1</osgi-service-adaptors.version>
-        <authservice.version>1.13.1</authservice.version>
-        <dependency.shiro.version>1.7.0</dependency.shiro.version>
-        <bang-osgi-service>1.7.1</bang-osgi-service>
-        <bang-servlet.version>1.5.1</bang-servlet.version>
+        <osgi-service-adaptors.version>1.1.2</osgi-service-adaptors.version>
+        <authservice.version>1.13.2</authservice.version>
+        <bang-osgi-service>1.7.2</bang-osgi-service>
+        <bang-servlet.version>1.5.3</bang-servlet.version>
         <datasourceproxy.version>1.1.0</datasourceproxy.version>
-        <beans.version>1.1.1</beans.version>
+        <beans.version>1.1.2</beans.version>
         <jackson.version>2.12.1</jackson.version>
         <jersey.version>2.33</jersey.version>
         <open-iconic.version>1.1.1</open-iconic.version>
@@ -72,117 +71,44 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>3.9.0</version>
-                <scope>test</scope>
+                <groupId>no.priv.bang.beans</groupId>
+                <artifactId>beans-bom</artifactId>
+                <version>${beans.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>no.priv.bang.osgi.service.adapters</groupId>
-                <artifactId>adapters.logservice</artifactId>
-                <version>${osgi-service-adaptors.version}</version>
-                <scope>provided</scope>
+                <groupId>no.priv.bang.servlet</groupId>
+                <artifactId>servlet-bom</artifactId>
+                <version>${bang-servlet.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.authservice</groupId>
+                <artifactId>authservice-bom</artifactId>
+                <version>${authservice.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.osgiservice</groupId>
-                <artifactId>osgiservice.users</artifactId>
+                <artifactId>osgiservice-bom</artifactId>
                 <version>${bang-osgi-service}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.definitions</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.db.liquibase</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.users</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.web.security.dbrealm</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.authservice</groupId>
-                <artifactId>authservice.web.security.memorysession</artifactId>
-                <version>${authservice.version}</version>
-                <scope>provided</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.osgi.service.adapters</groupId>
-                <artifactId>service-mocks</artifactId>
+                <artifactId>adapters-bom</artifactId>
                 <version>${osgi-service-adaptors.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.servlet</groupId>
-                <artifactId>servlet.frontend</artifactId>
-                <version>${bang-servlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.servlet</groupId>
-                <artifactId>servlet.jersey</artifactId>
-                <version>${bang-servlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-core</artifactId>
-                <version>${dependency.shiro.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-web</artifactId>
-                <version>${dependency.shiro.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.beans</groupId>
-                <artifactId>beans.immutable</artifactId>
-                <version>${beans.version}</version>
-                <scope>provided</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.jdbc</groupId>
                 <artifactId>jdbc.datasourceproxy</artifactId>
                 <version>${datasourceproxy.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-servlet</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
