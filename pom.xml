@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-pom</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     <groupId>no.priv.bang.ukelonn</groupId>
     <artifactId>ukelonn</artifactId>
@@ -47,9 +47,9 @@
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <osgi-service-adaptors.version>1.1.2</osgi-service-adaptors.version>
-        <authservice.version>1.13.2</authservice.version>
+        <authservice.version>1.13.3</authservice.version>
         <bang-osgi-service>1.7.2</bang-osgi-service>
-        <bang-servlet.version>1.5.3</bang-servlet.version>
+        <bang-servlet.version>1.5.4</bang-servlet.version>
         <datasourceproxy.version>1.1.0</datasourceproxy.version>
         <beans.version>1.1.2</beans.version>
         <jackson.version>2.12.1</jackson.version>
