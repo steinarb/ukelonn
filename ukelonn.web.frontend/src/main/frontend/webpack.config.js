@@ -18,12 +18,11 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/,
-                query: {
+                loader: ['babel-loader?' + JSON.stringify({
                     cacheDirectory: true,
                     presets: ['@babel/preset-react']
-                }
+                }), 'eslint-loader'],
+                exclude: /node_modules/
             },
             {
                 test: /\.css$/,
