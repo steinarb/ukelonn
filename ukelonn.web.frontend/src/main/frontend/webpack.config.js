@@ -10,18 +10,19 @@ module.exports = {
         path: PATHS.build,
         filename: 'bundle.js'
     },
+    devtool: 'source-map',
     resolve: {
         extensions: ['.js', '.jsx']
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/,
                 query: {
                     cacheDirectory: true,
-                    presets: ['react']
+                    presets: ['@babel/preset-react']
                 }
             },
             {
