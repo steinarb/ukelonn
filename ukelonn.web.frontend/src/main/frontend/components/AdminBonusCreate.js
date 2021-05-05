@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -19,7 +19,6 @@ function AdminBonusCreate(props) {
 
     const {
         text,
-        bonuses,
         bonus,
         onUpdateEnabled,
         onUpdateIconurl,
@@ -108,7 +107,7 @@ function AdminBonusCreate(props) {
             <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
-};
+}
 
 function mapStateToProps(state) {
     return {

@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     AVAILABLE_LOCALES_REQUEST,
@@ -16,7 +16,7 @@ function doAvailableLocales() {
 }
 
 // worker saga
-function* receiveAvailableLocalesSaga(action) {
+function* receiveAvailableLocalesSaga() {
     try {
         const response = yield call(doAvailableLocales);
         const availableLocales = (response.headers['content-type'] == 'application/json') ? response.data : [];

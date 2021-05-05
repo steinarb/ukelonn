@@ -20,5 +20,5 @@ export function* setLocaleCookieIfNotPresentAndPutCookieValueAsLocale(action) {
 }
 
 function* updateLocaleCookie(action) {
-    Cookies.set('locale', action.payload);
+    yield Cookies.set('locale', action.payload);
 }

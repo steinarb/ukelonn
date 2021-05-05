@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     PAYMENTTYPES_REQUEST,
@@ -16,7 +16,7 @@ function doPaymenttypes() {
 }
 
 // worker saga
-function* receivePaymenttypesSaga(action) {
+function* receivePaymenttypesSaga() {
     try {
         const response = yield call(doPaymenttypes);
         const paymenttypes = (response.headers['content-type'] === 'application/json') ? response.data : [];

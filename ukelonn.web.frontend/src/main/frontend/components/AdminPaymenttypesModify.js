@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -18,8 +18,6 @@ function AdminPaymenttypesModify(props) {
     }
 
     let { text, transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
-
-    const reduceHeaderRowPadding = { padding: '0 0 0 0' };
 
     return (
         <div>
@@ -80,7 +78,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPaymenttypeFieldChange: (selectedValue, paymenttypes, account, performedpayment) => {
+        onPaymenttypeFieldChange: (selectedValue, paymenttypes) => {
             const selectedValueInt = parseInt(selectedValue, 10);
             let paymenttype = paymenttypes.find(pt => selectedValueInt == pt.id);
             dispatch(UPDATE_TRANSACTIONTYPE({ ...paymenttype }));

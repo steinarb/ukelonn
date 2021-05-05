@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -12,7 +12,6 @@ import {
 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
-import Amount from './Amount';
 
 function AdminUsersChangePassword(props) {
     if (userIsNotLoggedIn(props)) {

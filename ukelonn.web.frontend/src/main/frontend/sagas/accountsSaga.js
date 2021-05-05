@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     ACCOUNTS_REQUEST,
@@ -16,7 +16,7 @@ function doAccounts() {
 }
 
 // worker saga
-function* receiveAccountsSaga(action) {
+function* receiveAccountsSaga() {
     try {
         const response = yield call(doAccounts);
         const accounts = (response.headers['content-type'] == 'application/json') ? response.data : [];

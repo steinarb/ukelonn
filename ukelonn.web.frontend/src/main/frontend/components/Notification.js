@@ -1,5 +1,4 @@
 import { spawnNotification } from './spawnnotification.js';
-import React from 'react';
 import { connect } from 'react-redux';
 import {
     UPDATE_NOTIFICATIONMESSAGE,
@@ -17,7 +16,7 @@ function Notification(props) {
     }
 
     return null;
-};
+}
 
 function mapStateToProps(state) {
     return {

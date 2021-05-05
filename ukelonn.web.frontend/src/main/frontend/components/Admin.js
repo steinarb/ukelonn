@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -6,12 +6,10 @@ import { stringify } from 'qs';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_FIRSTTIMEAFTERLOGIN,
     UPDATE_ACCOUNT,
     UPDATE_PAYMENT,
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
-import { emptyAccount } from '../constants';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
@@ -29,7 +27,6 @@ function Admin(props) {
         account = {},
         payment,
         paymenttype,
-        amount,
         accounts,
         paymenttypes,
         onAccountsFieldChange,
@@ -178,6 +175,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-Admin = connect(mapStateToProps, mapDispatchToProps)(Admin);
-
-export default Admin;
+export default connect(mapStateToProps, mapDispatchToProps)(Admin);

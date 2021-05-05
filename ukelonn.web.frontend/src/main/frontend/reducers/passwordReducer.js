@@ -7,8 +7,8 @@ import {
 
 const passwordReducer = createReducer(null, {
     [UPDATE_PASSWORD]: (state, action) => action.payload,
-    [LOGIN_RECEIVE]: (state, action) => '',
-    [INITIAL_LOGIN_STATE_RECEIVE]: (state, action) => '',
+    [LOGIN_RECEIVE]: () => '',
+    [INITIAL_LOGIN_STATE_RECEIVE]: () => '',
 });
 
 export default passwordReducer;
