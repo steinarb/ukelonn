@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,6 @@ import {
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
-import Jobtypes from './Jobtypes';
 import Amount from './Amount';
 
 function AdminJobtypesCreate(props) {
@@ -17,7 +16,7 @@ function AdminJobtypesCreate(props) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { text, jobtypes, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
+    let { text, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
@@ -59,13 +58,6 @@ function AdminJobtypesCreate(props) {
         </div>
     );
 };
-
-const emptyJobtype = {
-    id: -1,
-    transactionName: '',
-    transactionAmount: 0.0
-};
-
 
 function mapStateToProps(state) {
     return {

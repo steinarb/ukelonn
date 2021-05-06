@@ -14,10 +14,10 @@ const passwordsReducer = createReducer({ ...emptyPasswords }, {
         const passwordsNotIdentical = checkIfPasswordsAreNotIdentical(updatedState);
         return { ...updatedState, passwordsNotIdentical };
     },
-    [MODIFY_USER_RECEIVE]: (state, action) => ({ ...emptyPasswords }),
-    [CREATE_USER_RECEIVE]: (state, action) => ({ ...emptyPasswords }),
-    [MODIFY_USER_PASSWORD_RECEIVE]: (state, action) => ({ ...emptyPasswords }),
-    [CLEAR_USER_AND_PASSWORD]: (state, action) => ({ ...emptyPasswords }),
+    [MODIFY_USER_RECEIVE]: () => ({ ...emptyPasswords }),
+    [CREATE_USER_RECEIVE]: () => ({ ...emptyPasswords }),
+    [MODIFY_USER_PASSWORD_RECEIVE]: () => ({ ...emptyPasswords }),
+    [CLEAR_USER_AND_PASSWORD]: () => ({ ...emptyPasswords }),
 });
 
 export default passwordsReducer;

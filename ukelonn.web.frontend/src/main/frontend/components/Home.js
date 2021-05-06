@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -17,7 +17,7 @@ function Home(props) {
             <h1>Ukelønn hjem</h1>
         </div>
     );
-};
+}
 
 function mapStateToProps(state) {
     return {

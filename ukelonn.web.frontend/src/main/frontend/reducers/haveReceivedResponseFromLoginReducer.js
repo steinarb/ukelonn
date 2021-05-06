@@ -8,9 +8,9 @@ import {
 
 const haveReceivedResponseFromLoginReducer = createReducer(false, {
     [UPDATE_FIRSTTIMEAFTERLOGIN]: (state, action) => action.payload ? true : state,
-    [LOGIN_RECEIVE]: (state, action) => true,
-    [LOGOUT_RECEIVE]: (state, action) => true,
-    [INITIAL_LOGIN_STATE_RECEIVE]: (state, action) => true,
+    [LOGIN_RECEIVE]: () => true,
+    [LOGOUT_RECEIVE]: () => true,
+    [INITIAL_LOGIN_STATE_RECEIVE]: () => true,
 });
 
 export default haveReceivedResponseFromLoginReducer;

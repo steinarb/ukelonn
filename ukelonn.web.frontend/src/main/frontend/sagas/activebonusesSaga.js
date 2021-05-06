@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     GET_ACTIVE_BONUSES,
@@ -16,7 +16,7 @@ function doActivebonuses() {
 }
 
 // worker saga
-function* receiveActivebonusesSaga(action) {
+function* receiveActivebonusesSaga() {
     try {
         const response = yield call(doActivebonuses);
         const activebonuses = (response.headers['content-type'] == 'application/json') ? response.data : [];

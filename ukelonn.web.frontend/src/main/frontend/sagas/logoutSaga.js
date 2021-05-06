@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     LOGOUT_REQUEST,
@@ -17,7 +17,7 @@ function doLogout() {
 }
 
 // worker saga
-function* receiveLogoutSaga(action) {
+function* receiveLogoutSaga() {
     try {
         const response = yield call(doLogout);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;

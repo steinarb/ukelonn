@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     DEFAULT_LOCALE_REQUEST,
@@ -16,7 +16,7 @@ function doDefaultLocale() {
 }
 
 // worker saga
-function* receiveDefaultLocaleSaga(action) {
+function* receiveDefaultLocaleSaga() {
     try {
         const response = yield call(doDefaultLocale);
         const defaultLocale = (response.headers['content-type'] == 'application/json') ? response.data : '';

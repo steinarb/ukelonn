@@ -1,4 +1,4 @@
-import { takeLatest, call, put, fork } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     JOBTYPELIST_REQUEST,
@@ -16,7 +16,7 @@ function doJobtypeList() {
 }
 
 // worker saga
-function* receiveJobtypeListSaga(action) {
+function* receiveJobtypeListSaga() {
     try {
         const response = yield call(doJobtypeList);
         const jobtypes = (response.headers['content-type'] == 'application/json') ? response.data : [];

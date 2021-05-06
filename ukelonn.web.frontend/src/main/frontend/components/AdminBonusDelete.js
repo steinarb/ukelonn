@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -10,12 +10,6 @@ import {
 } from '../actiontypes';
 import Locale from './Locale';
 import { emptyBonus } from '../constants';
-
-function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadBonuses) {
-    if (oldAccount !== newAccount) {
-        loadBonuses(newAccount);
-    }
-}
 
 function AdminBonusesDelete(props) {
     if (userIsNotLoggedIn(props)) {

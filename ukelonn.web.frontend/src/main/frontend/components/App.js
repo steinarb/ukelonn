@@ -1,10 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Switch, Route, NavLink } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'connected-react-router';
-import {
-    INITIAL_LOGIN_STATE_REQUEST,
-} from '../actiontypes';
 import Home from './Home';
 import Login from './Login';
 import User from './User';

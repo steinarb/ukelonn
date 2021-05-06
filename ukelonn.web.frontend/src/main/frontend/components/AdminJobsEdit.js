@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -7,7 +7,6 @@ import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_JOBS,
     UPDATE_ACCOUNT,
     UPDATE_SELECTEDJOB,
     UPDATE_JOB_REQUEST,
@@ -16,12 +15,6 @@ import {
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
-
-function reloadJobListWhenAccountHasChanged(oldAccount, newAccount, loadJobs) {
-    if (oldAccount !== newAccount) {
-        loadJobs(newAccount);
-    }
-}
 
 function AdminJobsEdit(props) {
     if (userIsNotLoggedIn(props)) {

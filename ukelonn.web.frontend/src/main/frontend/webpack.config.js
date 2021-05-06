@@ -10,19 +10,19 @@ module.exports = {
         path: PATHS.build,
         filename: 'bundle.js'
     },
+    devtool: 'source-map',
     resolve: {
         extensions: ['.js', '.jsx']
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/,
-                query: {
+                loader: ['babel-loader?' + JSON.stringify({
                     cacheDirectory: true,
-                    presets: ['react']
-                }
+                    presets: ['@babel/preset-react']
+                }), 'eslint-loader'],
+                exclude: /node_modules/
             },
             {
                 test: /\.css$/,
