@@ -57,7 +57,7 @@ function AdminJobtypesCreate(props) {
             <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
-};
+}
 
 function mapStateToProps(state) {
     return {
