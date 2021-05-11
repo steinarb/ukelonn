@@ -1,4 +1,5 @@
 var path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const PATHS = {
     build: path.join(__dirname, '..', '..', '..', 'target', 'classes')
@@ -14,19 +15,20 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx']
     },
+    plugins: [new ESLintPlugin()],
     module: {
         rules: [
             {
                 test: /\.jsx?$/,
-                loader: ['babel-loader?' + JSON.stringify({
+                exclude: /node_modules/,
+                use: 'babel-loader?' + JSON.stringify({
                     cacheDirectory: true,
                     presets: ['@babel/preset-react']
-                }), 'eslint-loader'],
-                exclude: /node_modules/
+                }),
             },
             {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader'
+                use: [ { loader: 'style-loader' }, { loader: 'css-loader' } ]
             },
         ]
     }
