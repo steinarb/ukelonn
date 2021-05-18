@@ -62,7 +62,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Get first user and modify all properties except id
         String modifiedUsername = "gandalf";
@@ -100,7 +100,7 @@ public class AdminUserResourceTest {
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
         resource.useradmin = useradmin;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a mock datasource that throws exceptions and inject the datasource
@@ -132,7 +132,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Save the number of users before adding a user
         int originalUserCount = getUsers().size();
@@ -182,7 +182,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Create a passwords object containing the user
         UserAndPasswords passwords = UserAndPasswords.with()
@@ -370,7 +370,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Save the number of users before adding a user
@@ -428,7 +428,7 @@ public class AdminUserResourceTest {
         // Inject OSGi services into the resource
         resource.ukelonn = ukelonn;
         resource.useradmin = useradmin;
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Create a user object
         String newUsername = "aragorn";
@@ -470,7 +470,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a user object
@@ -507,7 +507,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Get first user and modify all properties except id
         List<User> users = getUsersForUserManagement();
@@ -535,7 +535,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a passwords object containing the user and with
@@ -558,7 +558,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Get first user to get a user with valid username
@@ -586,7 +586,7 @@ public class AdminUserResourceTest {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 

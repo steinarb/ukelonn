@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
@@ -38,14 +39,14 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 @Component(immediate=true, property = "name=ukelonndb")
 public class ProductionLiquibaseRunner implements PreHook {
     static final String INITIAL_DATA_DEFAULT_RESOURCE_NAME = "db-changelog/db-changelog.xml";
-    private LogService logService;
+    private Logger logger;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
     private String databaselanguage;
 
     @Reference
     public void setLogService(LogService logService) {
-        this.logService = logService;
+        this.logger = logService.getLogger(getClass());
     }
 
     @Activate
@@ -66,7 +67,7 @@ public class ProductionLiquibaseRunner implements PreHook {
                 connect.setAutoCommit(true);
             }
         } catch (Exception e) {
-            logService.log(LogService.LOG_ERROR, "Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
+            logger.error("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
         }
     }
 
@@ -78,7 +79,7 @@ public class ProductionLiquibaseRunner implements PreHook {
             liquibase.update("");
             return true;
         } catch (Exception e) {
-            logService.log(LogService.LOG_ERROR, "Failed to fill ukelonn PostgreSQL database with initial data.", e);
+            logger.error("Failed to fill ukelonn PostgreSQL database with initial data.", e);
             return false;
         }
     }
@@ -124,7 +125,7 @@ public class ProductionLiquibaseRunner implements PreHook {
 
         String resourceName = INITIAL_DATA_DEFAULT_RESOURCE_NAME.replace(".xml", "_" + databaselanguage + ".xml");
         if (getClass().getClassLoader().getResource(resourceName) == null) {
-            logService.log(LogService.LOG_WARNING, String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
+            logger.warn(String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
             return INITIAL_DATA_DEFAULT_RESOURCE_NAME;
         }
 

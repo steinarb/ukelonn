@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.osgiservice.users.User;
@@ -37,15 +38,19 @@ public class Users {
     @Inject
     UserManagementService useradmin;
 
+    Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @GET
     public List<User> get() {
         try {
             return useradmin.getUsers();
         } catch (AuthserviceException e) {
-            logservice.log(LogService.LOG_ERROR, "REST API endpoint /ukelonn/api/users failed with exception", e);
+            logger.error("REST API endpoint /ukelonn/api/users failed with exception", e);
             throw new InternalServerErrorException("See log file for details");
         }
     }

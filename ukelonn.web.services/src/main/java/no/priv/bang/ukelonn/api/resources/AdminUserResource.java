@@ -29,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.authservice.definitions.AuthservicePasswordEmptyException;
@@ -53,8 +54,12 @@ public class AdminUserResource {
     @Inject
     UkelonnService ukelonn;
 
+    Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @Path("modify")
     @POST
@@ -63,7 +68,7 @@ public class AdminUserResource {
         try {
             return useradmin.modifyUser(user);
         } catch (AuthserviceException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.getUserid()));
+            logger.error(String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.getUserid()));
             throw new InternalServerErrorException("See log for details");
         }
     }
@@ -93,7 +98,7 @@ public class AdminUserResource {
 
             return users;
         } catch (AuthserviceException e) {
-            logservice.log(LogService.LOG_ERROR, "REST endpoint /ukelonn/api/admin/user/create got error from the database", e);
+            logger.error("REST endpoint /ukelonn/api/admin/user/create got error from the database", e);
             throw new InternalServerErrorException("See log for error cause");
         }
     }
@@ -105,13 +110,13 @@ public class AdminUserResource {
         try {
             return useradmin.updatePassword(passwords);
         } catch (AuthservicePasswordEmptyException e) {
-            logservice.log(LogService.LOG_WARNING, "REST endpoint /ukelonn/api/admin/user/password received empty password");
+            logger.warn("REST endpoint /ukelonn/api/admin/user/password received empty password");
             throw new BadRequestException(e.getMessage());
         } catch (AuthservicePasswordsNotIdenticalException e) {
-            logservice.log(LogService.LOG_WARNING, "REST endpoint /ukelonn/api/admin/user/password received passwords that weren't identical");
+            logger.warn("REST endpoint /ukelonn/api/admin/user/password received passwords that weren't identical");
             throw new BadRequestException(e.getMessage());
         } catch (AuthserviceException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /ukelonn/api/admin/user/password got bad request: %s", e.getMessage()));
+            logger.error(String.format("REST endpoint /ukelonn/api/admin/user/password got bad request: %s", e.getMessage()));
             throw new InternalServerErrorException("See log for error details");
         }
     }

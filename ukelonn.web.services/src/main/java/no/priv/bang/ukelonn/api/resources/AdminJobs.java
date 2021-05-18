@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
@@ -38,8 +39,12 @@ public class AdminJobs {
     @Inject
     UkelonnService ukelonn;
 
+    Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @Path("delete")
     @POST
@@ -49,7 +54,7 @@ public class AdminJobs {
             return ukelonn.deleteJobsFromAccount(accountWithJobIds.getAccount().getAccountId(), accountWithJobIds.getJobIds());
         } catch (Exception e) {
             String message = "REST endpoint /ukelonn/admin/jobs/delete failed with exception";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(String.format("%s, see log for details", message));
         }
     }

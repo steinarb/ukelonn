@@ -80,7 +80,7 @@ public class AdminJobtypeTest {
 
         // Inject a fake OSGi log service
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
@@ -149,7 +149,7 @@ public class AdminJobtypeTest {
 
         // Inject a fake OSGi log service
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it

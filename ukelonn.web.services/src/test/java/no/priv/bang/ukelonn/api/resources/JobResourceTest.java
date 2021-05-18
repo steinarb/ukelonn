@@ -85,7 +85,7 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -134,7 +134,7 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -177,7 +177,7 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -219,7 +219,7 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -255,7 +255,7 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         UkelonnService ukelonn = mock(UkelonnService.class);
@@ -276,7 +276,7 @@ public class JobResourceTest extends ServletTestBase {
 
         // Create mock OSGi services to inject and inject it
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
 
         Account account = getJadAccount();
@@ -327,7 +327,7 @@ public class JobResourceTest extends ServletTestBase {
         JobResource resource = new JobResource();
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         resource.doUpdateJob(UpdatedTransaction.with().build());
         fail("Should never get here");

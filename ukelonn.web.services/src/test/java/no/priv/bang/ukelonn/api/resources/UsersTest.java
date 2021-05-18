@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class UsersTest {
 
         // Inject a log service
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Do a get operation that will fail
