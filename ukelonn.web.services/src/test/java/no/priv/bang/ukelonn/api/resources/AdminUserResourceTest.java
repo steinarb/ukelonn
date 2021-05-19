@@ -89,7 +89,6 @@ public class AdminUserResourceTest {
         assertEquals(modifiedLastname, firstUser.getLastname());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testModifyInternalServerError() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -356,7 +355,6 @@ public class AdminUserResourceTest {
         assertFalse(changedStatus.isAdministrator());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testCreatePasswordsNotIdentical() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -404,7 +402,6 @@ public class AdminUserResourceTest {
         assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testCreateDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -575,7 +572,6 @@ public class AdminUserResourceTest {
         fail("Should never get here!");
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testPasswordDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();

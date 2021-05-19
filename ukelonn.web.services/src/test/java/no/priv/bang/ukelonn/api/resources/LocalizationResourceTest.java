@@ -72,7 +72,6 @@ public class LocalizationResourceTest {
         assertThat(displayTexts).isNotEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected = WebApplicationException.class)
     public void testDisplayTextsWithUnknownLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);

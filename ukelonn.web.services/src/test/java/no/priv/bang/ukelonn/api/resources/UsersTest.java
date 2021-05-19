@@ -52,7 +52,6 @@ public class UsersTest {
         assertThat(users).isNotEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testGetWithSqlException() throws Exception {
         // Create the resource to be tested

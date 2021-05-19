@@ -67,7 +67,6 @@ public class AdminPaymenttypeTest {
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testModifyPaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
@@ -135,7 +134,6 @@ public class AdminPaymenttypeTest {
         assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testCreatePaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested

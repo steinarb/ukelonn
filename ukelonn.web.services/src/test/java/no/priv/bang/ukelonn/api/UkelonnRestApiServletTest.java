@@ -551,7 +551,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(404, response.getStatus());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request
@@ -1747,7 +1746,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertThat(displayTexts).isNotEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDisplayTextsWithUnknownLocale() throws Exception {
         // Set up REST API servlet with mocked services

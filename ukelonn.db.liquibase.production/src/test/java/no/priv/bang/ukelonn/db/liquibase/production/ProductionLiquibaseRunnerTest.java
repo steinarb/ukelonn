@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,6 @@ public class ProductionLiquibaseRunnerTest {
         assertEquals(0, logservice.getLogmessages().size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testPrepareWhenSQLExceptionIsThrown() throws Exception {
         // Create the object under test
@@ -83,7 +82,6 @@ public class ProductionLiquibaseRunnerTest {
         assertEquals(1, logservice.getLogmessages().size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testInsertInitialDataInDatabaseFailToCreateLiquibase() throws Exception {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();

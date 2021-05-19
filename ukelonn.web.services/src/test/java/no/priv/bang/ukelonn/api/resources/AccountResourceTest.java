@@ -166,7 +166,6 @@ public class AccountResourceTest extends ServletTestBase {
             });
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request and response for the Shiro login
