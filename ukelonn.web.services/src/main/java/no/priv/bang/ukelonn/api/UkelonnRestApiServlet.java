@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,23 @@ package no.priv.bang.ukelonn.api;
 
 import javax.servlet.Servlet;
 
-import org.glassfish.jersey.server.ServerProperties;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
+
+import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.servlet.jersey.JerseyServlet;
 import no.priv.bang.ukelonn.UkelonnService;
 
-@Component(
-    property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/api/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=ukelonn)",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=ukelonnapi",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX+ServerProperties.PROVIDER_PACKAGES+"=no.priv.bang.ukelonn.api.resources"},
-    service=Servlet.class,
-    immediate=true
-)
+@Component(service=Servlet.class, immediate=true)
+@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=ukelonn)")
+@HttpWhiteboardServletName("ukelonnapi")
+@HttpWhiteboardServletPattern("/api/*")
 @SuppressWarnings("serial")
 public class UkelonnRestApiServlet extends JerseyServlet {
 
