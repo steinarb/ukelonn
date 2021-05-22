@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,14 @@
 package no.priv.bang.ukelonn.api.beans;
 
 public class LoginResult {
-    private String username = "";
-    private String[] roles = {};
-    private String errorMessage = "";
+    private String username;
+    private String[] roles;
+    private String errorMessage;
 
-    public LoginResult() {
-        // No-arg constructor for Jackson
-    }
+    private LoginResult() {}
 
-    public LoginResult(String username, String[] roles) {
-        this.username = username;
-        this.roles = roles;
-    }
-
-    public LoginResult(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public static LoginResultBuilder with() {
+        return new LoginResultBuilder();
     }
 
     public String getUsername() {
@@ -43,6 +36,37 @@ public class LoginResult {
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public static class LoginResultBuilder {
+        private String username = "";
+        private String[] roles = {};
+        private String errorMessage = "";
+
+        private LoginResultBuilder() {}
+
+        public LoginResult build() {
+            LoginResult loginResult = new LoginResult();
+            loginResult.username = this.username;
+            loginResult.roles = this.roles;
+            loginResult.errorMessage = this.errorMessage;
+            return loginResult;
+        }
+
+        public LoginResultBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public LoginResultBuilder roles(String[] roles) {
+            this.roles = roles;
+            return this;
+        }
+        public LoginResultBuilder errorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+            return this;
+        }
+
     }
 
 }

@@ -267,7 +267,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertTrue(changedStatus.isAdministrator());
@@ -295,7 +295,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, false);
+        AdminStatus status = AdminStatus.with().user(user).administrator(false).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertFalse(changedStatus.isAdministrator());
@@ -323,7 +323,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertTrue(changedStatus.isAdministrator());
@@ -349,7 +349,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertFalse(changedStatus.isAdministrator());

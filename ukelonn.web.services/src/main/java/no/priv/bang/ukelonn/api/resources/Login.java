@@ -65,16 +65,24 @@ public class Login {
             return createLoginResultFromSubject(subject);
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
-            return new LoginResult("Unknown account");
+            return LoginResult.with()
+                .errorMessage("Unknown account")
+                .build();
         } catch (IncorrectCredentialsException  e) {
             logger.warn("Login error: wrong password", e);
-            return new LoginResult("Wrong password");
+            return LoginResult.with()
+                .errorMessage("Wrong password")
+                .build();
         } catch (LockedAccountException  e) {
             logger.warn("Login error: locked account", e);
-            return new LoginResult("Locked account");
+            return LoginResult.with()
+                .errorMessage("Locked account")
+                .build();
         } catch (AuthenticationException e) {
             logger.warn("Login error: general authentication error", e);
-            return new LoginResult("Unknown error");
+            return LoginResult.with()
+                .errorMessage("Unknown error")
+                .build();
         } catch (Exception e) {
             logger.error("Login error: internal server error", e);
             throw new InternalServerErrorException();
@@ -91,10 +99,13 @@ public class Login {
             }
 
             String username = (String) subject.getPrincipal();
-            return new LoginResult(username, roles);
+            return LoginResult.with()
+                .username(username)
+                .roles(roles)
+                .build();
         }
 
-        return new LoginResult();
+        return LoginResult.with().build();
     }
 
 }

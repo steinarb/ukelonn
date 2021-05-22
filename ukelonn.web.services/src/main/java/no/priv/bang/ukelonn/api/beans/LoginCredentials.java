@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,10 @@ public class LoginCredentials {
     private String username;
     private String password;
 
-    public LoginCredentials() {
-        username = "";
-        password = ""; // NOSONAR The word who cannot be named
-    }
+    private LoginCredentials() {}
 
-    public LoginCredentials(String username, String password) {
-        super();
-        this.username = username;
-        this.password = password;
+    public static LoginCredentialsBuilder with() {
+        return new LoginCredentialsBuilder();
     }
 
     public String getUsername() {
@@ -36,5 +31,29 @@ public class LoginCredentials {
 
     public String getPassword() {
         return password;
+    }
+
+    public static class LoginCredentialsBuilder {
+        private String username;
+        private String password;
+
+        private LoginCredentialsBuilder() {}
+
+        public LoginCredentials build() {
+            LoginCredentials loginCredentials = new LoginCredentials();
+            loginCredentials.username = this.username;
+            loginCredentials.password = this.password;
+            return loginCredentials;
+        }
+
+        public LoginCredentialsBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public LoginCredentialsBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
     }
 }

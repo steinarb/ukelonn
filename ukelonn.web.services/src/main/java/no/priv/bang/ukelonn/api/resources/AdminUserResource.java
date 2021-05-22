@@ -126,7 +126,10 @@ public class AdminUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public AdminStatus adminStatus(User user) {
         boolean administrator = userIsAdministrator(user);
-        return new AdminStatus(user, administrator);
+        return AdminStatus.with()
+            .user(user)
+            .administrator(administrator)
+            .build();
     }
 
     @Path("changeadminstatus")
@@ -138,7 +141,10 @@ public class AdminUserResource {
             if (!ukelonnadmin.isPresent()) {
                 // If no ukelonn admin role is present in the auth service
                 // administrator will always be false
-                return new AdminStatus(status.getUser(), false);
+                return AdminStatus.with()
+                    .user(status.getUser())
+                    .administrator(false)
+                    .build();
             }
 
             if (status.isAdministrator()) {
@@ -150,7 +156,10 @@ public class AdminUserResource {
             }
         }
 
-        return new AdminStatus(status.getUser(), userIsAdministrator(status.getUser()));
+        return AdminStatus.with()
+            .user(status.getUser())
+            .administrator(userIsAdministrator(status.getUser()))
+            .build();
     }
 
     boolean userIsAdministrator(User user) {
