@@ -41,6 +41,7 @@ public class UkelonnServlet extends FrontendServlet {
         setRoutes(
             "/",
             "/login",
+            "/unauthorized",
             "/user",
             "/performedjobs",
             "/performedpayments",
