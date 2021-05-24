@@ -15,19 +15,19 @@ function Unauthorized(props) {
 
     return (
         <div>
-            <nav>
-                <a href="./">&lt;&nbsp;{text.goHome}!</a>
+            <nav className="navbar navbar-light bg-light">
+                <a className="btn btn-primary left-align-cell" href="./"><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;{text.goHome}!</a>
                 <h1>{text.unauthorized}</h1>
                 <Locale />
             </nav>
-            <div>
+            <div className="container">
                 <p>{text.hello} {loginResponse.username}! {text.youHaveNoAccess}</p>
                 <p>{text.click} &quot;{text.goHome}&quot; {text.toNavigateOutOrLogout}</p>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div>
-                        <div/>
-                        <div>
-                            <button onClick={onLogout}>{text.logout}</button>
+                    <div className="form-group row">
+                        <div className="col-5"/>
+                        <div className="col-7">
+                            <button className="btn btn-primary" onClick={onLogout}>{text.logout}</button>
                         </div>
                     </div>
                 </form>
