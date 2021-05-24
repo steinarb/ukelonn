@@ -62,7 +62,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Get first user and modify all properties except id
         String modifiedUsername = "gandalf";
@@ -89,7 +89,6 @@ public class AdminUserResourceTest {
         assertEquals(modifiedLastname, firstUser.getLastname());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testModifyInternalServerError() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -100,7 +99,7 @@ public class AdminUserResourceTest {
         UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
         resource.useradmin = useradmin;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a mock datasource that throws exceptions and inject the datasource
@@ -132,7 +131,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Save the number of users before adding a user
         int originalUserCount = getUsers().size();
@@ -182,7 +181,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Create a passwords object containing the user
         UserAndPasswords passwords = UserAndPasswords.with()
@@ -268,7 +267,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertTrue(changedStatus.isAdministrator());
@@ -296,7 +295,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, false);
+        AdminStatus status = AdminStatus.with().user(user).administrator(false).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertFalse(changedStatus.isAdministrator());
@@ -324,7 +323,7 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertTrue(changedStatus.isAdministrator());
@@ -350,13 +349,12 @@ public class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
 
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
         AdminStatus changedStatus = resource.changeAdminStatus(status);
         assertEquals(user, changedStatus.getUser());
         assertFalse(changedStatus.isAdministrator());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testCreatePasswordsNotIdentical() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -370,7 +368,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Save the number of users before adding a user
@@ -404,7 +402,6 @@ public class AdminUserResourceTest {
         assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testCreateDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -428,7 +425,7 @@ public class AdminUserResourceTest {
         // Inject OSGi services into the resource
         resource.ukelonn = ukelonn;
         resource.useradmin = useradmin;
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Create a user object
         String newUsername = "aragorn";
@@ -470,7 +467,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a user object
@@ -507,7 +504,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // Get first user and modify all properties except id
         List<User> users = getUsersForUserManagement();
@@ -535,7 +532,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a passwords object containing the user and with
@@ -558,7 +555,7 @@ public class AdminUserResourceTest {
         UkelonnService ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Get first user to get a user with valid username
@@ -575,7 +572,6 @@ public class AdminUserResourceTest {
         fail("Should never get here!");
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testPasswordDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
@@ -586,7 +582,7 @@ public class AdminUserResourceTest {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         resource.ukelonn = ukelonn;
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 

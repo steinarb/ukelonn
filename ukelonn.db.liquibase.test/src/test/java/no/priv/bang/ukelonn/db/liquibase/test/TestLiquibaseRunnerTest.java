@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,7 +219,6 @@ public class TestLiquibaseRunnerTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testFailToInsertMockData() throws SQLException {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
@@ -275,7 +274,6 @@ public class TestLiquibaseRunnerTest {
         expectedStatusAfterRollback.assertAll();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testFailToRollbackMockData() throws Exception {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();

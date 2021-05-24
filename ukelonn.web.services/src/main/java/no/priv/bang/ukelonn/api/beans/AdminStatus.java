@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,10 @@ public class AdminStatus {
     private User user;
     private boolean administrator;
 
-    public AdminStatus(User user, boolean administrator) {
-        this.user = user;
-        this.administrator = administrator;
-    }
+    private AdminStatus() {}
 
-    public AdminStatus() {
-        // jackson and jersey require noargs constructors
+    public static AdminStatusBuilder with() {
+        return new AdminStatusBuilder();
     }
 
     public User getUser() {
@@ -37,6 +34,31 @@ public class AdminStatus {
 
     public boolean isAdministrator() {
         return administrator;
+    }
+
+    public static class AdminStatusBuilder {
+        private User user;
+        private boolean administrator;
+
+        private AdminStatusBuilder() {}
+
+        public AdminStatus build() {
+            AdminStatus adminStatus = new AdminStatus();
+            adminStatus.user = this.user;
+            adminStatus.administrator = this.administrator;
+            return adminStatus;
+        }
+
+        public AdminStatusBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public AdminStatusBuilder administrator(boolean administrator) {
+            this.administrator = administrator;
+            return this;
+        }
+
     }
 
 }

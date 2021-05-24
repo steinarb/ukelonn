@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,10 @@ public class LoginTest extends ServletTestBase {
     @Test
     public void testLoginOk() throws Exception {
         // Set up the login request
-        LoginCredentials credentials = new LoginCredentials("jad", "1ad");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password("1ad")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -58,7 +61,7 @@ public class LoginTest extends ServletTestBase {
 
         // Create the resource and do the login
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         LoginResult result = resource.doLogin(credentials);
 
@@ -70,7 +73,10 @@ public class LoginTest extends ServletTestBase {
     @Test
     public void testAdminLoginOk() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("admin", "admin");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("admin")
+            .password("admin")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -80,7 +86,7 @@ public class LoginTest extends ServletTestBase {
 
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         LoginResult result = resource.doLogin(credentials);
 
@@ -92,7 +98,10 @@ public class LoginTest extends ServletTestBase {
     @Test
     public void testLoginUnknownUser() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("unknown", "unknown");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("unknown")
+            .password("unknown")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -102,7 +111,7 @@ public class LoginTest extends ServletTestBase {
 
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         LoginResult result = resource.doLogin(credentials);
 
@@ -114,7 +123,10 @@ public class LoginTest extends ServletTestBase {
     @Test
     public void testLoginWrongPassword() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password("wrong")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -124,7 +136,7 @@ public class LoginTest extends ServletTestBase {
 
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         LoginResult result = resource.doLogin(credentials);
 
@@ -138,7 +150,10 @@ public class LoginTest extends ServletTestBase {
         try {
             lockAccount("jad");
             // Set up the request
-            LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+            LoginCredentials credentials = LoginCredentials.with()
+                .username("jad")
+                .password("wrong")
+                .build();
             MockHttpServletRequest request = buildPostUrl("/login");
             request.setBodyContent(mapper.writeValueAsString(credentials));
             HttpServletResponse response = mock(HttpServletResponse.class);
@@ -146,7 +161,7 @@ public class LoginTest extends ServletTestBase {
             MockLogService logservice = new MockLogService();
             // Create the servlet and do the login
             Login resource = new Login();
-            resource.logservice = logservice;
+            resource.setLogservice(logservice);
             createSubjectAndBindItToThread(request, response);
             LoginResult result = resource.doLogin(credentials);
             // Check the response
@@ -160,12 +175,15 @@ public class LoginTest extends ServletTestBase {
     @Test
     public void testLoginWithAuthenticationException() {
         createSubjectThrowingExceptionAndBindItToThread(AuthenticationException.class);
-        LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password("wrong")
+            .build();
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         LoginResult result = resource.doLogin(credentials);
         // Check the response
         assertEquals(0, result.getRoles().length);
@@ -175,12 +193,15 @@ public class LoginTest extends ServletTestBase {
     @Test
     public void testLoginWithUnexpectedException() {
         createSubjectThrowingExceptionAndBindItToThread(IllegalArgumentException.class);
-        LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password("wrong")
+            .build();
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.doLogin(credentials);
             });
@@ -212,7 +233,7 @@ public class LoginTest extends ServletTestBase {
 
         // Create the resource and check the login state with HTTP GET
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         LoginResult result = resource.loginStatus();
 
         // Check the response
@@ -245,7 +266,7 @@ public class LoginTest extends ServletTestBase {
 
         // Create the resource and check the login state with HTTP GET
         Login resource = new Login();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         LoginResult result = resource.loginStatus();
 
         // Check the response

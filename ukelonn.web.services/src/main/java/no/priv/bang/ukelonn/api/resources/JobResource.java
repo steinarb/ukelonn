@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -39,11 +40,18 @@ import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 @Produces(MediaType.APPLICATION_JSON)
 public class JobResource extends ResourceBase {
 
-    @Inject
-    LogService logservice;
+    private LogService logservice;
+
+    Logger logger;
 
     @Inject
     UkelonnService ukelonn;
+
+    @Inject
+    void setLogservice(LogService logservice) {
+        this.logservice = logservice;
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @Path("/register")
     @POST
@@ -51,7 +59,7 @@ public class JobResource extends ResourceBase {
     public Account doRegisterJob(PerformedTransaction performedJob) {
         String username = performedJob.getAccount().getUsername();
         if (!isCurrentUserOrAdmin(username, logservice)) {
-            logservice.log(LogService.LOG_WARNING, String.format("REST Endpoint /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
+            logger.warn(String.format("REST Endpoint /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
             throw new ForbiddenException();
         }
 
@@ -65,9 +73,8 @@ public class JobResource extends ResourceBase {
         try {
             return ukelonn.updateJob(editedJob);
         } catch (UkelonnException e) {
-            logservice.log(LogService.LOG_ERROR, "REST endpoint /api/job/update failed", e);
+            logger.error("REST endpoint /api/job/update failed", e);
             throw new InternalServerErrorException("See log for details");
         }
     }
-
 }

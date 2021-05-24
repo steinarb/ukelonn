@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
@@ -39,8 +40,12 @@ import no.priv.bang.ukelonn.api.beans.LoginResult;
 @Produces(MediaType.APPLICATION_JSON)
 public class Login {
 
+    Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @GET
     public LoginResult loginStatus() {
@@ -59,19 +64,27 @@ public class Login {
 
             return createLoginResultFromSubject(subject);
         } catch(UnknownAccountException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
-            return new LoginResult("Unknown account");
+            logger.warn("Login error: unknown account", e);
+            return LoginResult.with()
+                .errorMessage("Unknown account")
+                .build();
         } catch (IncorrectCredentialsException  e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
-            return new LoginResult("Wrong password");
+            logger.warn("Login error: wrong password", e);
+            return LoginResult.with()
+                .errorMessage("Wrong password")
+                .build();
         } catch (LockedAccountException  e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
-            return new LoginResult("Locked account");
+            logger.warn("Login error: locked account", e);
+            return LoginResult.with()
+                .errorMessage("Locked account")
+                .build();
         } catch (AuthenticationException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
-            return new LoginResult("Unknown error");
+            logger.warn("Login error: general authentication error", e);
+            return LoginResult.with()
+                .errorMessage("Unknown error")
+                .build();
         } catch (Exception e) {
-            logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
+            logger.error("Login error: internal server error", e);
             throw new InternalServerErrorException();
         } finally {
             token.clear();
@@ -86,10 +99,13 @@ public class Login {
             }
 
             String username = (String) subject.getPrincipal();
-            return new LoginResult(username, roles);
+            return LoginResult.with()
+                .username(username)
+                .roles(roles)
+                .build();
         }
 
-        return new LoginResult();
+        return LoginResult.with().build();
     }
 
 }

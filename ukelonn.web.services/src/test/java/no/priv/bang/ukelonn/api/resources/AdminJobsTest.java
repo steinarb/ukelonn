@@ -59,7 +59,6 @@ public class AdminJobsTest {
         assertEquals(0, jobsAfterDelete.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDeleteSomeJobsOfUser() {
         AdminJobs resource = new AdminJobs();
@@ -80,7 +79,6 @@ public class AdminJobsTest {
         assertEquals(1, jobsAfterDelete.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void verifyDeletingNoJobsOfUserHasNoEffect() {
         AdminJobs resource = new AdminJobs();
@@ -121,7 +119,7 @@ public class AdminJobsTest {
 
         // Inject fake OSGi services
         resource.ukelonn = ukelonn;
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
 
         // trying to delete jobs here will throw a Jersey Internal Error exception
         Account account = getJodAccount();

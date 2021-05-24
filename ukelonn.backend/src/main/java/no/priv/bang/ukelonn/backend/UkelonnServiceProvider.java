@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -78,6 +79,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     private DataSource datasource;
     private UserManagementService useradmin;
     private LogService logservice;
+    private Logger logger;
     private ConcurrentHashMap<String, ConcurrentLinkedQueue<Notification>> notificationQueues = new ConcurrentHashMap<>();
     private Locale defaultLocale;
     static final String LAST_NAME = "last_name";
@@ -110,6 +112,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Reference
     public void setLogservice(LogService logservice) {
         this.logservice = logservice;
+        this.logger = logservice.getLogger(getClass());
     }
 
     @Override
@@ -261,7 +264,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             statement.setInt(2, accountId);
         } catch (SQLException e) {
             String message = "Caught exception adding parameters to job delete statement";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new UkelonnException(message, e);
         }
     }
@@ -412,7 +415,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             return getAccount(user.getUsername());
         } catch (SQLException e) {
             String message = "Database exception when account for new user";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new UkelonnException(message, e);
         }
     }
@@ -674,11 +677,11 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     private void logError(String message, Exception e) {
-        logservice.log(LogService.LOG_ERROR, message, e);
+        logger.error(message, e);
     }
 
     private void logWarning(String message, Exception e) {
-        logservice.log(LogService.LOG_WARNING, message, e);
+        logger.warn(message, e);
     }
 
     /**

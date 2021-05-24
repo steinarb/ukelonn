@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2029 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,6 @@ public class UkelonnServletTest {
         assertEquals(500, response.getStatus());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         MockLogService logservice = new MockLogService();

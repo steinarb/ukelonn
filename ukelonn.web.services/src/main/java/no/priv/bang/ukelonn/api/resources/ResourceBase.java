@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 public class ResourceBase {
 
@@ -30,11 +31,12 @@ public class ResourceBase {
     }
 
     protected boolean isCurrentUserOrAdmin(String username, LogService logservice) {
+        Logger logger = logservice.getLogger(getClass());
         try {
             Subject subject = SecurityUtils.getSubject();
             if (subject.getPrincipal() == null) {
                 String message = "No user available from Shiro";
-                logservice.log(LogService.LOG_ERROR, message);
+                logger.error(message);
                 throw new InternalServerErrorException(message);
             }
 
@@ -43,7 +45,7 @@ public class ResourceBase {
                 subject.hasRole("ukelonnadmin");
         } catch (Exception e) {
             String message = "Failure retrieving Shiro subject";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(message);
         }
     }

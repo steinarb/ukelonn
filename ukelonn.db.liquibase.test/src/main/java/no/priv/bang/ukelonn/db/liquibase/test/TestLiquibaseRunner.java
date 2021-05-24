@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import liquibase.Liquibase;
 import liquibase.changelog.ChangeLogHistoryServiceFactory;
@@ -47,13 +48,13 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 @Component(immediate=true, property = "name=ukelonndb")
 public class TestLiquibaseRunner implements PreHook {
     static final String DEFAULT_DUMMY_DATA_CHANGELOG = "sql/data/db-initial-changelog.xml";
-    private LogService logService;
+    private Logger logger;
     private boolean initialChangelog = false;
     private String databaselanguage;
 
     @Reference
     public void setLogService(LogService logService) {
-        this.logService = logService;
+        this.logger = logService.getLogger(getClass());
     }
 
     @Activate
@@ -74,7 +75,7 @@ public class TestLiquibaseRunner implements PreHook {
                 connect.setAutoCommit(true);
             }
         } catch (Exception e) {
-            logService.log(LogService.LOG_ERROR, "Failed to create derby test database schema", e);
+            logger.error("Failed to create derby test database schema", e);
         }
     }
 
@@ -94,7 +95,7 @@ public class TestLiquibaseRunner implements PreHook {
             }
             return true;
         } catch (Exception e) {
-            logService.log(LogService.LOG_ERROR, "Failed to fill derby test database with data.", e);
+            logger.error("Failed to fill derby test database with data.", e);
             return false;
         }
     }
@@ -131,7 +132,7 @@ public class TestLiquibaseRunner implements PreHook {
             }
             return true;
         } catch (Exception e) {
-            logService.log(LogService.LOG_ERROR, "Failed to roll back mock data from derby test database.", e);
+            logger.error("Failed to roll back mock data from derby test database.", e);
             return false;
         }
     }
@@ -152,7 +153,7 @@ public class TestLiquibaseRunner implements PreHook {
                 StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
                 return logHistoryService.getRanChangeSets();
             } catch (Exception e) {
-                logService.log(LogService.LOG_ERROR, "Failed to create derby test database schema", e);
+                logger.error("Failed to create derby test database schema", e);
             } finally {
                 databaseConnection.close();
             }
@@ -168,7 +169,7 @@ public class TestLiquibaseRunner implements PreHook {
 
         String resourceName = DEFAULT_DUMMY_DATA_CHANGELOG.replace(".xml", "_" + databaselanguage + ".xml");
         if (getClass().getClassLoader().getResource(resourceName) == null) {
-            logService.log(LogService.LOG_WARNING, String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
+            logger.warn(String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
             return DEFAULT_DUMMY_DATA_CHANGELOG;
         }
 

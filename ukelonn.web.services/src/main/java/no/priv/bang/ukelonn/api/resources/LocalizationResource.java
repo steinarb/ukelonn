@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.LocaleBean;
@@ -39,8 +40,12 @@ public class LocalizationResource extends ResourceBase {
     @Inject
     UkelonnService ukelonn;
 
+    Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @GET
     @Path("defaultlocale")
@@ -64,7 +69,7 @@ public class LocalizationResource extends ResourceBase {
             return ukelonn.displayTexts(Locale.forLanguageTag(locale.replace('_', '-')));
         } catch (MissingResourceException e) {
             String message = String.format("Unknown locale '%s' used when fetching GUI texts", locale);
-            logservice.log(LogService.LOG_ERROR, message);
+            logger.error(message);
             throw new WebApplicationException(response(500, message));
         }
     }
