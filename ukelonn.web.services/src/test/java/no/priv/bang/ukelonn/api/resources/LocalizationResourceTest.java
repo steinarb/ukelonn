@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,14 +72,13 @@ public class LocalizationResourceTest {
         assertThat(displayTexts).isNotEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected = WebApplicationException.class)
     public void testDisplayTextsWithUnknownLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.displayTexts(any())).thenThrow(MissingResourceException.class);
         LocalizationResource resource = new LocalizationResource();
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
         Map<String, String> displayTexts = resource.displayTexts("en_UK");
         assertThat(displayTexts).isNotEmpty();

@@ -68,7 +68,6 @@ public class AdminJobtypeTest {
         assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testModifyJobtypeFailure() throws Exception {
         // Create the resource that is to be tested
@@ -80,7 +79,7 @@ public class AdminJobtypeTest {
 
         // Inject a fake OSGi log service
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
@@ -136,7 +135,6 @@ public class AdminJobtypeTest {
         assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=InternalServerErrorException.class)
     public void testCreateJobtypeFailure() throws Exception {
         // Create the resource that is to be tested
@@ -149,7 +147,7 @@ public class AdminJobtypeTest {
 
         // Inject a fake OSGi log service
         MockLogService logservice = new MockLogService();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it

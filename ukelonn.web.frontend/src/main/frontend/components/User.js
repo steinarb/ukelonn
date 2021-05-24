@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -105,13 +105,6 @@ function User(props) {
         </div>
     );
 }
-
-const emptyJob = {
-    account: { accountId: -1 },
-    id: -1,
-    transactionName: '',
-    transactionAmount: 0.0
-};
 
 function mapStateToProps(state) {
     return {

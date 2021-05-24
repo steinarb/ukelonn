@@ -97,7 +97,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testLoginOk() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("jad", "1ad");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password("1ad")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
 
@@ -126,7 +129,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testAdminLoginOk() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("admin", "admin");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("admin")
+            .password("admin")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
 
@@ -156,7 +162,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testLoginUnknownUser() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("unknown", "unknown");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("unknown")
+            .password("unknown")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
 
@@ -185,7 +194,10 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     public void testLoginWrongPassword() throws Exception {
         // Set up the request
-        LoginCredentials credentials = new LoginCredentials("jad", "wrong");
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password("wrong")
+            .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
 
@@ -551,7 +563,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(404, response.getStatus());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request
@@ -1653,7 +1664,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
             .firstname(newFirstname)
             .lastname(newLastname)
             .build();
-        AdminStatus status = new AdminStatus(user, true);
+        AdminStatus status = AdminStatus.with().user(user).administrator(true).build();
 
         // Create the request and response
         MockHttpServletRequest request = buildPostUrl("/admin/user/changeadminstatus");
@@ -1747,7 +1758,6 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertThat(displayTexts).isNotEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDisplayTextsWithUnknownLocale() throws Exception {
         // Set up REST API servlet with mocked services

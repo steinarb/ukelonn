@@ -21,7 +21,7 @@ import { findUsername } from '../common/login';
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
-    const { pathname = '', search = '' } = location;
+    const { pathname = '' } = location;
 
     if (pathname === '/ukelonn/user') {
         const username = yield select(findUsername);
@@ -32,14 +32,14 @@ function* locationChange(action) {
 
     if (pathname === '/ukelonn/performedjobs') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
-        const { username, accountId, parentTitle } = queryParams;
+        const { username, accountId } = queryParams;
         yield put(ACCOUNT_REQUEST(username));
         yield put(RECENTJOBS_REQUEST(accountId));
     }
 
     if (pathname === '/ukelonn/performedpayments') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
-        const { username, accountId, parentTitle } = queryParams;
+        const { username, accountId } = queryParams;
         yield put(ACCOUNT_REQUEST(username));
         yield put(RECENTPAYMENTS_REQUEST(accountId));
     }

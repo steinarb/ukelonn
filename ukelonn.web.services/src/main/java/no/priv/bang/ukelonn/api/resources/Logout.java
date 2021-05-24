@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class Logout {
         Subject subject = SecurityUtils.getSubject();
 
         subject.logout();
-        return new LoginResult("");
+        return LoginResult.with().build();
     }
 
 }

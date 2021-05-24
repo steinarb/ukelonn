@@ -5,7 +5,6 @@ import {
     DELETE_JOBS_RECEIVE,
     UPDATE_JOB_RECEIVE,
 } from '../actiontypes';
-import { emptyPerformedTransaction } from './constants';
 
 const paymenttypeReducer = createReducer([], {
     [UPDATE_JOBS]: (state, action) => action.payload,

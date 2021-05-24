@@ -12,7 +12,7 @@ import { isAdmin } from '../common/roles';
 const paymentReducer = createReducer({ ...emptyPerformedTransaction }, {
     [UPDATE_ACCOUNT]: (state, action) => ({ ...state, transactionTypeId: bankAccount, transactionAmount: action.payload.balance, account: { ...action.payload } }),
     [UPDATE_PAYMENT]: (state, action) => ({ ...state, ...action.payload }),
-    [REGISTERPAYMENT_RECEIVE]: (state, action) => ({ ...emptyPerformedTransaction }),
+    [REGISTERPAYMENT_RECEIVE]: () => ({ ...emptyPerformedTransaction }),
     [INITIAL_LOGIN_STATE_RECEIVE]: (state, action) => isAdmin(action) ? { ...emptyPerformedTransaction } : state,
     [LOGIN_RECEIVE]: (state, action) => isAdmin(action) ? { ...emptyPerformedTransaction } : state,
 });

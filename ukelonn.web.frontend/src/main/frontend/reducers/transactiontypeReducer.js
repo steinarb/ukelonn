@@ -12,12 +12,12 @@ import { emptyTransactionType } from './constants';
 
 const transactiontypeReducer = createReducer({ ...emptyTransactionType }, {
     [UPDATE_TRANSACTIONTYPE]: (state, action) => ({ ...state, ...action.payload }),
-    [JOBTYPELIST_RECEIVE]: (state, action) => ({ ...emptyTransactionType }),
-    [MODIFY_JOBTYPE_RECEIVE]: (state, action) => ({ ...emptyTransactionType }),
-    [CREATE_JOBTYPE_RECEIVE]: (state, action) => ({ ...emptyTransactionType }),
-    [PAYMENTTYPES_RECEIVE]: (state, action) => ({ ...emptyTransactionType }),
-    [MODIFY_PAYMENTTYPE_RECEIVE]: (state, action) => ({ ...emptyTransactionType }),
-    [CREATE_PAYMENTTYPE_RECEIVE]: (state, action) => ({ ...emptyTransactionType }),
+    [JOBTYPELIST_RECEIVE]: () => ({ ...emptyTransactionType }),
+    [MODIFY_JOBTYPE_RECEIVE]: () => ({ ...emptyTransactionType }),
+    [CREATE_JOBTYPE_RECEIVE]: () => ({ ...emptyTransactionType }),
+    [PAYMENTTYPES_RECEIVE]: () => ({ ...emptyTransactionType }),
+    [MODIFY_PAYMENTTYPE_RECEIVE]: () => ({ ...emptyTransactionType }),
+    [CREATE_PAYMENTTYPE_RECEIVE]: () => ({ ...emptyTransactionType }),
 });
 
 export default transactiontypeReducer;

@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Switch, Route, NavLink } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'connected-react-router';
-import {
-    INITIAL_LOGIN_STATE_REQUEST,
-} from '../actiontypes';
 import Home from './Home';
 import Login from './Login';
+import Unauthorized from './Unauthorized';
 import User from './User';
 import PerformedJobs from './PerformedJobs';
 import PerformedPayments from './PerformedPayments';
@@ -40,6 +37,7 @@ function App(props) {
             <Switch>
                 <Route exact path="/ukelonn/" component={Home} />
                 <Route path="/ukelonn/login*" component={Login} />
+                <Route path="/ukelonn/unauthorized*" component={Unauthorized} />
                 <Route path="/ukelonn/user" component={User} />
                 <Route path="/ukelonn/performedjobs" component={PerformedJobs} />
                 <Route path="/ukelonn/performedpayments" component={PerformedPayments} />

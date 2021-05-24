@@ -103,7 +103,6 @@ public class UkelonnServiceProviderTest {
      *
      * @throws SQLException
      */
-    @SuppressWarnings("unchecked")
     @Test()
     public void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -211,7 +210,6 @@ public class UkelonnServiceProviderTest {
      *
      * @throws SQLException
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -277,7 +275,6 @@ public class UkelonnServiceProviderTest {
         assertEquals(0.0, newAccount.getBalance(), 0);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -375,7 +372,6 @@ public class UkelonnServiceProviderTest {
      *
      * @throws SQLException
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -725,7 +721,6 @@ public class UkelonnServiceProviderTest {
         assertEquals(2, paymenttypes.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetPaymenttypesWithDatabasePreparestatementFailure() throws Exception {
         // Swap the real derby database with a mock
@@ -802,7 +797,6 @@ public class UkelonnServiceProviderTest {
         assertThat(result.getBalance()).isLessThan(originalBalance);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testRegisterPaymentWithDatabaseFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -874,7 +868,6 @@ public class UkelonnServiceProviderTest {
      *
      * @throws SQLException
      */
-    @SuppressWarnings("unchecked")
     @Test()
     public void testGetJobTypesWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -918,7 +911,6 @@ public class UkelonnServiceProviderTest {
         assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testModifyJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -970,7 +962,6 @@ public class UkelonnServiceProviderTest {
         assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreateJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1020,7 +1011,6 @@ public class UkelonnServiceProviderTest {
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testModifyPaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1072,7 +1062,6 @@ public class UkelonnServiceProviderTest {
         assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreatePaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1187,7 +1176,6 @@ public class UkelonnServiceProviderTest {
      *
      * @throws SQLException
      */
-    @SuppressWarnings("unchecked")
     @Test()
     public void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
@@ -1228,7 +1216,6 @@ public class UkelonnServiceProviderTest {
         assertEquals(2016, firstYear.getYear());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testEarningsSumOverYearWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1264,7 +1251,6 @@ public class UkelonnServiceProviderTest {
         assertEquals(7, firstYear.getMonth());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testEarningsSumOverMonthWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1384,7 +1370,6 @@ public class UkelonnServiceProviderTest {
         assertEquals(initialBonusCount, bonuses.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetActiveBonusesWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1405,7 +1390,6 @@ public class UkelonnServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get list of active bonuses");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetAllBonusesWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1426,7 +1410,6 @@ public class UkelonnServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get list of all bonuses");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testAddBonusWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1447,7 +1430,6 @@ public class UkelonnServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to add Bonus");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testUpdateBonusWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1468,7 +1450,6 @@ public class UkelonnServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to update Bonus");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDeleteBonusWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1545,7 +1526,6 @@ public class UkelonnServiceProviderTest {
         verify(useradmin, times(0)).addUserRoles(any());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testAddAdminroleToUserAdminWhenAdminUserIsNotPresent() {
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();

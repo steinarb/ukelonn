@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -38,8 +39,12 @@ public class AdminPaymenttype {
     @Inject
     UkelonnService ukelonn;
 
+    Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @Path("modify")
     @POST
@@ -48,7 +53,7 @@ public class AdminPaymenttype {
         try {
             return ukelonn.modifyPaymenttype(paymenttype);
         } catch (UkelonnException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /api/paymenttype/modify failed to modify payment type %d in the database", paymenttype.getId()), e);
+            logger.error(String.format("REST endpoint /api/paymenttype/modify failed to modify payment type %d in the database", paymenttype.getId()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }
@@ -60,7 +65,7 @@ public class AdminPaymenttype {
         try {
             return ukelonn.createPaymenttype(paymenttype);
         } catch (UkelonnException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("REST endpoint /api/jobtype/modify failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName()), e);
+            logger.error(String.format("REST endpoint /api/jobtype/modify failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }

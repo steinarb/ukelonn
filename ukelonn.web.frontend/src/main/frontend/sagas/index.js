@@ -1,4 +1,4 @@
-import { fork } from 'redux-saga/effects';
+import { fork, all } from 'redux-saga/effects';
 import { requestInitialLoginStateSaga, requestLoginSaga } from './loginSaga';
 import { requestLogoutSaga } from './logoutSaga';
 import locationSaga from './locationSaga';
@@ -36,7 +36,7 @@ import availableLocalesSaga from './availableLocalesSaga';
 import displayTextsSaga from './displayTextsSaga';
 
 export function* rootSaga() {
-    yield [
+    yield all([
         fork(requestInitialLoginStateSaga),
         fork(requestLoginSaga),
         fork(requestLogoutSaga),
@@ -73,5 +73,5 @@ export function* rootSaga() {
         fork(localeSaga),
         fork(availableLocalesSaga),
         fork(displayTextsSaga),
-    ];
-};
+    ]);
+}
