@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package no.priv.bang.ukelonn;
 
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
@@ -29,12 +29,12 @@ import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
  * @author Steinar Bang
  *
  */
-public class UkelonnServiceTest {
+class UkelonnServiceTest {
     /**
      * Test fetching a {@link UkelonnService}.
      */
     @Test
-    public void testGetUkelonnServices() {
+    void testGetUkelonnServices() {
         UkelonnService ukelonnService = new UkelonnServiceProvider();
         assertNotNull(ukelonnService);
         assertEquals("Hello world!", ukelonnService.getMessage());

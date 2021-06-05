@@ -15,14 +15,14 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PasswordsWithUserTest {
+class PasswordsWithUserTest {
 
     @Test
-    public void testProperties() {
+    void testProperties() {
         int expectedUserId = 1;
         String expectedUsername = "jad";
         String expectedEmail = "jane21@gmail.com";

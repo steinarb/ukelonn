@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
@@ -23,12 +23,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TransactionTest {
+class TransactionTest {
 
     @Test
-    public void testNoArgConstructor() {
+    void testNoArgConstructor() {
         Transaction bean = Transaction.with().build();
         assertEquals(-1, bean.getId());
         assertNull(bean.getTransactionType());
@@ -38,7 +38,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void testConstructorWithArgs() {
+    void testConstructorWithArgs() {
         int id = 5;
         TransactionType transactionType = TransactionType.with().build();
         Date transactionTime = new Date();
@@ -59,7 +59,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void testCompare() {
+    void testCompare() {
         int id = 5;
         TransactionType transactionType = TransactionType.with().build();
         Date transactionTime = new Date();

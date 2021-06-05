@@ -16,22 +16,22 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Bonus;
 
-public class BonusesTest {
+class BonusesTest {
 
     @Test
-    public void testGetActiveBonuses() {
+    void testGetActiveBonuses() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
@@ -43,7 +43,7 @@ public class BonusesTest {
     }
 
     @Test
-    public void testGetAllBonuses() {
+    void testGetAllBonuses() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
@@ -55,7 +55,7 @@ public class BonusesTest {
     }
 
     @Test
-    public void testCreateBonus() {
+    void testCreateBonus() {
         Bonus bonus = Bonus.with()
             .bonusId(1)
             .enabled(true)
@@ -76,7 +76,7 @@ public class BonusesTest {
     }
 
     @Test
-    public void testModifyBonus() {
+    void testModifyBonus() {
         Bonus bonus = Bonus.with()
             .bonusId(1)
             .enabled(true)
@@ -97,7 +97,7 @@ public class BonusesTest {
     }
 
     @Test
-    public void testDeleteBonus() {
+    void testDeleteBonus() {
         Bonus bonus = Bonus.with()
             .bonusId(1)
             .enabled(true)

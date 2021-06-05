@@ -15,16 +15,16 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class BonusTest {
+class BonusTest {
 
     @Test
-    public void testCreate() {
+    void testCreate() {
         int bonusId = 1;
         boolean enabled = true;
         String iconurl = "http//images.com/juletre.jpg";
@@ -54,7 +54,7 @@ public class BonusTest {
     }
 
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         Bonus bean = Bonus.with().build();
         assertEquals(0, bean.getBonusId());
         assertFalse(bean.isEnabled());

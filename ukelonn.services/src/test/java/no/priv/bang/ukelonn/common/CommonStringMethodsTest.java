@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package no.priv.bang.ukelonn.common;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CommonStringMethodsTest {
+class CommonStringMethodsTest {
 
     @Test
-    public void testStringIsNullEmptyOrBlank() {
+    void testStringIsNullEmptyOrBlank() {
         assertTrue(CommonStringMethods.isNullEmptyOrBlank(null));
         assertTrue(CommonStringMethods.isNullEmptyOrBlank(""));
         assertTrue(CommonStringMethods.isNullEmptyOrBlank(" \t\r\n"));
@@ -31,7 +31,7 @@ public class CommonStringMethodsTest {
     }
 
     @Test
-    public void testStringSafeTrim() {
+    void testStringSafeTrim() {
         assertNull(CommonStringMethods.safeTrim(null));
         assertEquals("", CommonStringMethods.safeTrim(""));
         assertEquals("abc", CommonStringMethods.safeTrim("abc"));
@@ -39,7 +39,7 @@ public class CommonStringMethodsTest {
     }
 
     @Test
-    public void testNullSafeEquals() {
+    void testNullSafeEquals() {
         assertTrue(CommonStringMethods.nullSafeEquals(null, null));
         assertFalse(CommonStringMethods.nullSafeEquals(null, ""));
         assertFalse(CommonStringMethods.nullSafeEquals("", null));

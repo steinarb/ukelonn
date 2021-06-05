@@ -1,32 +1,32 @@
 package no.priv.bang.ukelonn.web.security;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.authservice.web.security.dbrealm.AuthserviceDbRealm;
 import no.priv.bang.authservice.web.security.memorysession.MemorySession;
 
-public class UkelonnShiroFilterTest {
+class UkelonnShiroFilterTest {
 
-    @BeforeClass
-    public static void setupClass() throws Exception {
+    @BeforeAll
+    static void setupClass() throws Exception {
         setupFakeOsgiServices();
     }
 
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
+    @AfterAll
+    static void teardownForAllTests() throws Exception {
         releaseFakeOsgiServices();
     }
 
     @Test
-    public void testAuthenticate() {
+    void testAuthenticate() {
         UkelonnShiroFilter shirofilter = new UkelonnShiroFilter();
         AuthserviceDbRealm realm = new AuthserviceDbRealm();
         MemorySession session = new MemorySession();

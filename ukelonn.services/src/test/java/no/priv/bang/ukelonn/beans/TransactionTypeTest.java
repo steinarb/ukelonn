@@ -15,18 +15,18 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TransactionTypeTest {
+class TransactionTypeTest {
 
     @Test
-    public void testNoArgumentConstructor() {
+    void testNoArgumentConstructor() {
         TransactionType bean = TransactionType.with().build();
         assertEquals(Integer.valueOf(0), bean.getId());
         assertNull(bean.getTransactionTypeName());
@@ -36,7 +36,7 @@ public class TransactionTypeTest {
     }
 
     @Test
-    public void testConstructorWithArguments() {
+    void testConstructorWithArguments() {
         TransactionType bean = TransactionType.with()
             .id(1)
             .transactionTypeName("Vaske")
@@ -51,7 +51,7 @@ public class TransactionTypeTest {
     }
 
     @Test
-    public void testCompare() {
+    void testCompare() {
         TransactionType bean = TransactionType.with()
             .id(1)
             .transactionTypeName("Vaske")
@@ -122,7 +122,7 @@ public class TransactionTypeTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         TransactionType bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
         assertThat(bean.toString()).startsWith("TransactionType [");
     }

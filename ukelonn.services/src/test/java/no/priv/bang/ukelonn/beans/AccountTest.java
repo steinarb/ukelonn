@@ -15,14 +15,14 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AccountTest {
+class AccountTest {
 
     @Test
-    public void testProperties() {
+    void testProperties() {
         int expectedAccountId = 1;
         String expectedUsername = "jad";
         String expectedFirstname = "Jane";
@@ -48,7 +48,7 @@ public class AccountTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
         Account accountDifferentAccountId = Account.with().accountid(2).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
         assertNotEquals(account, accountDifferentAccountId);
@@ -68,7 +68,7 @@ public class AccountTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
         assertEquals("Account [getAccountId()=1, getUsername()=jad, getFirstName()=Jane, getLastName()=Doe]", account.toString());
         Account accountWithNullStrings = Account.with().accountid(1).build();

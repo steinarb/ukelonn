@@ -15,9 +15,9 @@
  */
 package no.priv.bang.ukelonn.web.frontend;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
@@ -31,10 +31,10 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
-public class UkelonnServletTest {
+class UkelonnServletTest {
 
     @Test
-    public void testGet() throws Exception {
+    void testGet() throws Exception {
         MockLogService logservice = new MockLogService();
         UkelonnServlet servlet = new UkelonnServlet();
         ServletConfig servletConfig = mock(ServletConfig.class);
@@ -56,7 +56,7 @@ public class UkelonnServletTest {
 
 
     @Test
-    public void testDoGetAddTrailingSlash() throws Exception {
+    void testDoGetAddTrailingSlash() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -74,7 +74,7 @@ public class UkelonnServletTest {
     }
 
     @Test
-    public void testDoGetResponseThrowsIOException() throws Exception {
+    void testDoGetResponseThrowsIOException() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -96,7 +96,7 @@ public class UkelonnServletTest {
     }
 
     @Test
-    public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
+    void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -116,7 +116,7 @@ public class UkelonnServletTest {
     }
 
     @Test
-    public void testDoGetResourceNotFound() throws Exception {
+    void testDoGetResourceNotFound() throws Exception {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");

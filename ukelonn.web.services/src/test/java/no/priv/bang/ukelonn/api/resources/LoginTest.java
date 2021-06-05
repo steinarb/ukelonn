@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -29,7 +29,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 
@@ -39,14 +39,14 @@ import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
-public class LoginTest extends ServletTestBase {
+class LoginTest extends ServletTestBase {
 
-    public LoginTest() {
+    LoginTest() {
         super("/ukelonn", "/api");
     }
 
     @Test
-    public void testLoginOk() throws Exception {
+    void testLoginOk() throws Exception {
         // Set up the login request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
@@ -71,7 +71,7 @@ public class LoginTest extends ServletTestBase {
     }
 
     @Test
-    public void testAdminLoginOk() throws Exception {
+    void testAdminLoginOk() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("admin")
@@ -96,7 +96,7 @@ public class LoginTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginUnknownUser() throws Exception {
+    void testLoginUnknownUser() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("unknown")
@@ -121,7 +121,7 @@ public class LoginTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginWrongPassword() throws Exception {
+    void testLoginWrongPassword() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
@@ -146,7 +146,7 @@ public class LoginTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginLockedAccount() throws Exception {
+    void testLoginLockedAccount() throws Exception {
         try {
             lockAccount("jad");
             // Set up the request
@@ -173,7 +173,7 @@ public class LoginTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginWithAuthenticationException() {
+    void testLoginWithAuthenticationException() {
         createSubjectThrowingExceptionAndBindItToThread(AuthenticationException.class);
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
@@ -191,7 +191,7 @@ public class LoginTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginWithUnexpectedException() {
+    void testLoginWithUnexpectedException() {
         createSubjectThrowingExceptionAndBindItToThread(IllegalArgumentException.class);
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
@@ -216,7 +216,7 @@ public class LoginTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetLoginStateWhenLoggedIn() throws Exception {
+    void testGetLoginStateWhenLoggedIn() throws Exception {
         // Set up the request
         HttpSession session = mock(HttpSession.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -250,7 +250,7 @@ public class LoginTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetLoginStateWhenNotLoggedIn() throws Exception {
+    void testGetLoginStateWhenNotLoggedIn() throws Exception {
         // Set up the request
         HttpSession session = mock(HttpSession.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
