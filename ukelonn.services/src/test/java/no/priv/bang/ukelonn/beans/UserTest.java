@@ -70,28 +70,6 @@ class UserTest {
     }
 
     @Test
-    void testEquals() {
-        User user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        User userDifferentUserId = User.with().userId(2).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertNotEquals(user, userDifferentUserId);
-        User userDifferentUsername = User.with().userId(1).username("jadd").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertNotEquals(user, userDifferentUsername);
-        User userDifferentEmail = User.with().userId(1).username("jad").email("jane22@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertNotEquals(user, userDifferentEmail);
-        User userDifferentFirstname = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Julie").lastname("Doe").build();
-        assertNotEquals(user, userDifferentFirstname);
-        User userDifferentLastname = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Deer").build();
-        assertNotEquals(user, userDifferentLastname);
-        User equalUser = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertEquals(user, equalUser);
-        assertEquals(user, user);
-        User userWithNullStrings = User.with().userId(1).username(null).email(null).firstname(null).lastname(null).build();
-        assertNotEquals(userWithNullStrings, user);
-        assertNotEquals(user, null);
-        assertNotEquals(user, "");
-    }
-
-    @Test
     void testToString() {
         User user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
         assertEquals("User [userId=1, username=jad, email=jane21@gmail.com, firstname=Jane, lastname=Doe]", user.toString());

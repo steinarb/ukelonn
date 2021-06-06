@@ -48,26 +48,6 @@ class AccountTest {
     }
 
     @Test
-    void testEquals() {
-        Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
-        Account accountDifferentAccountId = Account.with().accountid(2).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
-        assertNotEquals(account, accountDifferentAccountId);
-        Account accountDifferentUsername = Account.with().accountid(1).username("jadd").firstName("Jane").lastName("Doe").balance(1).build();
-        assertNotEquals(account, accountDifferentUsername);
-        Account accountDifferentFirstname = Account.with().accountid(1).username("jad").firstName("Julie").lastName("Doe").balance(1).build();
-        assertNotEquals(account, accountDifferentFirstname);
-        Account accountDifferentLastname = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Deer").balance(1).build();
-        assertNotEquals(account, accountDifferentLastname);
-        Account equalAccount = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
-        assertEquals(account, equalAccount);
-        assertEquals(account, account);
-        Account accountWithNullStrings = Account.with().accountid(1).balance(1).build();
-        assertNotEquals(accountWithNullStrings, account);
-        assertNotEquals(account, null);
-        assertNotEquals(account, "");
-    }
-
-    @Test
     void testToString() {
         Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
         assertEquals("Account [getAccountId()=1, getUsername()=jad, getFirstName()=Jane, getLastName()=Doe]", account.toString());
