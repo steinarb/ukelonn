@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.db.liquibase.test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,8 +40,8 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import liquibase.Liquibase;
@@ -55,10 +55,10 @@ import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 
-public class TestLiquibaseRunnerTest {
+class TestLiquibaseRunnerTest {
 
     @Test
-    public void testPrepareDatabase() throws SQLException, DatabaseException {
+    void testPrepareDatabase() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
@@ -99,7 +99,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testPrepareDatabaseWithConfiguredLanguage() throws SQLException, DatabaseException {
+    void testPrepareDatabaseWithConfiguredLanguage() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         Properties derbyMemoryCredentials = createDerbyMemoryCredentials("en");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
@@ -140,7 +140,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testPrepareDatabaseWithConfiguredLanguageNotFound() throws SQLException, DatabaseException {
+    void testPrepareDatabaseWithConfiguredLanguageNotFound() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         Properties derbyMemoryCredentials = createDerbyMemoryCredentials("uk");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
@@ -181,7 +181,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testInsert() throws SQLException {
+    void testInsert() throws SQLException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
@@ -220,7 +220,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testFailToInsertMockData() throws SQLException {
+    void testFailToInsertMockData() throws SQLException {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         DataSource datasource = mock(DataSource.class);
@@ -231,7 +231,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testRollbackMockData() throws Exception {
+    void testRollbackMockData() throws Exception {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
@@ -275,7 +275,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testFailToRollbackMockData() throws Exception {
+    void testFailToRollbackMockData() throws Exception {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
@@ -287,7 +287,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testDummyDataResourceNameNoLanguageSet() {
+    void testDummyDataResourceNameNoLanguageSet() {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -298,7 +298,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testDummyDataResourceNameWithLanguageSet() {
+    void testDummyDataResourceNameWithLanguageSet() {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -309,7 +309,7 @@ public class TestLiquibaseRunnerTest {
     }
 
     @Test
-    public void testDummyDataResourceNameWithNotFoundLanguageSet() {
+    void testDummyDataResourceNameWithNotFoundLanguageSet() {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -324,7 +324,7 @@ public class TestLiquibaseRunnerTest {
      * the test database and generate salt.
      */
     @Test
-    public void testCreateHashedPasswords() {
+    void testCreateHashedPasswords() {
         String[] usernames = { "on", "kn", "jad", "jod" };
         String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
         RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
@@ -367,9 +367,9 @@ public class TestLiquibaseRunnerTest {
      * @throws SQLException
      * @throws LiquibaseException
      */
-    @Ignore("Not an actual unit test. This test is a convenient way to populate a derby network server running on localhost, with the ukelonn schema and test data, using liquibase.")
+    @Disabled("Not an actual unit test. This test is a convenient way to populate a derby network server running on localhost, with the ukelonn schema and test data, using liquibase.")
     @Test
-    public void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException { // NOSONAR This isn't an actual test, see the comments
+    void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException { // NOSONAR This isn't an actual test, see the comments
         boolean createUkelonnDatabase = true;
         ClientConnectionPoolDataSource dataSource = new ClientConnectionPoolDataSource();
         dataSource.setServerName("localhost");

@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
@@ -29,7 +29,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -38,10 +38,10 @@ import no.priv.bang.ukelonn.beans.AccountWithJobIds;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
-public class AdminJobsTest {
+class AdminJobsTest {
 
     @Test
-    public void testDeleteAllJobsOfUser() {
+    void testDeleteAllJobsOfUser() {
         AdminJobs resource = new AdminJobs();
 
         // Inject fake OSGi service UkelonnService
@@ -60,7 +60,7 @@ public class AdminJobsTest {
     }
 
     @Test
-    public void testDeleteSomeJobsOfUser() {
+    void testDeleteSomeJobsOfUser() {
         AdminJobs resource = new AdminJobs();
 
         // Inject fake OSGi service UkelonnService
@@ -80,7 +80,7 @@ public class AdminJobsTest {
     }
 
     @Test
-    public void verifyDeletingNoJobsOfUserHasNoEffect() {
+    void verifyDeletingNoJobsOfUserHasNoEffect() {
         AdminJobs resource = new AdminJobs();
 
         // Inject fake OSGi service UkelonnService
@@ -99,8 +99,8 @@ public class AdminJobsTest {
         assertEquals(2, jobsAfterDelete.size());
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
+    @Test
+    void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -125,8 +125,7 @@ public class AdminJobsTest {
         Account account = getJodAccount();
         List<Integer> idsOfJobsToDelete = Arrays.asList(1);
         AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
-        resource.delete(accountWithJobIds);
-        fail("Should never get here!");
+        assertThrows(InternalServerErrorException.class, () -> resource.delete(accountWithJobIds));
     }
 
 }

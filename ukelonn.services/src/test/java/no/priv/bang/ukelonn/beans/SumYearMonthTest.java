@@ -15,14 +15,14 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SumYearMonthTest {
+class SumYearMonthTest {
 
     @Test
-    public void test() {
+    void test() {
         double sum = 250.0;
         int year = 2016;
         int month = 11;
@@ -33,7 +33,7 @@ public class SumYearMonthTest {
     }
 
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         double sum = 0.0;
         int year = -1;
         int month = -1;

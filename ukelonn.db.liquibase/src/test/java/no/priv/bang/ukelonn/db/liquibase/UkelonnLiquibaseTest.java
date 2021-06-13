@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.db.liquibase;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,18 +26,18 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 
-public class UkelonnLiquibaseTest {
+class UkelonnLiquibaseTest {
 
     private static DataSource dataSource;
 
-    @BeforeClass
-    static public void beforeAllTests() throws Exception {
+    @BeforeAll
+    static void beforeAllTests() throws Exception {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
@@ -45,7 +45,7 @@ public class UkelonnLiquibaseTest {
     }
 
     @Test
-    public void testCreateSchema() throws Exception {
+    void testCreateSchema() throws Exception {
         try(Connection connection = createConnection()) {
             UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
             handleregLiquibase.createInitialSchema(connection);
@@ -71,7 +71,7 @@ public class UkelonnLiquibaseTest {
     }
 
     @Test
-    public void testForceReleaseLocks() throws Exception {
+    void testForceReleaseLocks() throws Exception {
         try(Connection connection = createConnection()) {
             UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
             handleregLiquibase.forceReleaseLocks(connection);

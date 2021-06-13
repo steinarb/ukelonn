@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class LocaleBeanTest {
+class LocaleBeanTest {
 
     @Test
-    public void testUK() {
+    void testUK() {
         LocaleBean bean = LocaleBean.with().locale(Locale.UK).build();
         assertEquals("en_GB", bean.getCode());
         assertEquals("English", bean.getDisplayLanguage());
     }
 
     @Test
-    public void testNO() {
+    void testNO() {
         Locale norsk = Locale.forLanguageTag("nb-NO");
         LocaleBean bean = LocaleBean.with().locale(norsk).build();
         assertEquals("nb_NO", bean.getCode());
@@ -39,7 +39,7 @@ public class LocaleBeanTest {
     }
 
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         LocaleBean bean = LocaleBean.with().build();
         assertNull(bean.getCode());
         assertNull(bean.getDisplayLanguage());

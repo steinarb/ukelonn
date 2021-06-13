@@ -15,30 +15,30 @@
  */
 package no.priv.bang.ukelonn.backend;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
 
 /*
  * Unit tests for {@link KarafReleaseLiquibaseLockCommand}.
  */
-public class KarafReleaseLiquibaseLockCommandTest {
+class KarafReleaseLiquibaseLockCommandTest {
 
-    @BeforeClass
-    public static void setupForAllTests() throws Exception {
+    @BeforeAll
+    static void setupForAllTests() throws Exception {
         setupFakeOsgiServices();
     }
 
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
+    @AfterAll
+    static void teardownForAllTests() throws Exception {
         releaseFakeOsgiServices();
     }
 
@@ -47,7 +47,7 @@ public class KarafReleaseLiquibaseLockCommandTest {
      * a NullPointerException will abort the command.
      */
     @Test
-    public void testExecuteNullDatabaseOsgiService() throws Exception {
+    void testExecuteNullDatabaseOsgiService() throws Exception {
         KarafReleaseLiquibaseLockCommand action = new KarafReleaseLiquibaseLockCommand();
         try {
             action.execute();
@@ -57,7 +57,7 @@ public class KarafReleaseLiquibaseLockCommandTest {
     }
 
     @Test
-    public void testExecute() throws Exception {
+    void testExecute() throws Exception {
         KarafReleaseLiquibaseLockCommand action = new KarafReleaseLiquibaseLockCommand();
         UkelonnService ukelonn = getUkelonnServiceSingleton();
 

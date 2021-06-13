@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,18 @@
  */
 package no.priv.bang.ukelonn.db.as.authservicedb;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UkelonndbAsAuthservicedbTest {
+class UkelonndbAsAuthservicedbTest {
 
     @Test
-    public void testActivate() throws Exception {
+    void testActivate() throws Exception {
         DataSource ukelonndb = mock(DataSource.class);
         Connection connection = mock(Connection.class);
         when(ukelonndb.getConnection()).thenReturn(connection);

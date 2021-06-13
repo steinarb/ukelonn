@@ -15,18 +15,15 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-public class TransactionTypeTest {
+class TransactionTypeTest {
 
     @Test
-    public void testNoArgumentConstructor() {
+    void testNoArgumentConstructor() {
         TransactionType bean = TransactionType.with().build();
         assertEquals(Integer.valueOf(0), bean.getId());
         assertNull(bean.getTransactionTypeName());
@@ -36,7 +33,7 @@ public class TransactionTypeTest {
     }
 
     @Test
-    public void testConstructorWithArguments() {
+    void testConstructorWithArguments() {
         TransactionType bean = TransactionType.with()
             .id(1)
             .transactionTypeName("Vaske")
@@ -51,78 +48,7 @@ public class TransactionTypeTest {
     }
 
     @Test
-    public void testCompare() {
-        TransactionType bean = TransactionType.with()
-            .id(1)
-            .transactionTypeName("Vaske")
-            .transactionAmount(45.0)
-            .transactionIsWork(true)
-            .build();
-        Set<TransactionType> set = new HashSet<>();
-        set.add(bean);
-        assertTrue(set.contains(bean));
-
-        TransactionType emptyBean = TransactionType.with().build();
-        set.add(emptyBean);
-        assertTrue(set.contains(emptyBean));
-
-        assertNotEquals(bean, null);
-        TransactionType beanWithNullAmount1 = TransactionType.with().id(1).transactionTypeName("Vaske").transactionIsWork(true).build();
-        assertNotEquals(beanWithNullAmount1, bean);
-        TransactionType beanWithNullAmount2 = TransactionType.with().id(1).transactionTypeName("Vaske").transactionIsWork(true).build();
-        assertEquals(beanWithNullAmount1, beanWithNullAmount2);
-        TransactionType beanDifferentAmount = TransactionType.with()
-            .id(1)
-            .transactionTypeName("Vaske")
-            .transactionAmount(42.0)
-            .transactionIsWork(true)
-            .build();
-        assertNotEquals(bean, beanDifferentAmount);
-        TransactionType beanCopy = TransactionType.with()
-            .id(1)
-            .transactionTypeName("Vaske")
-            .transactionAmount(45.0)
-            .transactionIsWork(true)
-            .build();
-        assertEquals(bean, beanCopy);
-        TransactionType beanFalseWork = TransactionType.with()
-            .id(1)
-            .transactionTypeName("Vaske")
-            .transactionAmount(45.0)
-            .transactionIsWork(false)
-            .build();
-        assertNotEquals(bean, beanFalseWork);
-        TransactionType beanTrueWage = TransactionType.with()
-            .id(1)
-            .transactionTypeName("Vaske")
-            .transactionAmount(45.0)
-            .transactionIsWork(true)
-            .transactionIsWagePayment(true)
-            .build();
-        assertNotEquals(bean, beanTrueWage);
-        TransactionType beanWithNullName1 = TransactionType.with()
-            .id(1)
-            .transactionAmount(45.0)
-            .transactionIsWork(true)
-            .build();
-        assertNotEquals(beanWithNullName1, bean);
-        TransactionType beanWithNullName2 = TransactionType.with()
-            .id(1)
-            .transactionAmount(45.0)
-            .transactionIsWork(true)
-            .build();
-        assertEquals(beanWithNullName1, beanWithNullName2);
-        TransactionType beanWithDifferentName = TransactionType.with()
-            .id(1)
-            .transactionTypeName("Tørke")
-            .transactionAmount(45.0)
-            .transactionIsWork(true)
-            .build();
-        assertNotEquals(bean, beanWithDifferentName);
-    }
-
-    @Test
-    public void testToString() {
+    void testToString() {
         TransactionType bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
         assertThat(bean.toString()).startsWith("TransactionType [");
     }

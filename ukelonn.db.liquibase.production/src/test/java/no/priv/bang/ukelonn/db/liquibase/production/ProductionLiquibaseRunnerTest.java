@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.db.liquibase.production;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -25,17 +25,17 @@ import java.sql.SQLException;
 import java.util.Collections;
 
 import javax.sql.DataSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import static no.priv.bang.ukelonn.db.liquibase.production.ProductionLiquibaseRunner.*;
 
-public class ProductionLiquibaseRunnerTest {
+class ProductionLiquibaseRunnerTest {
 
     @Test
-    public void testPrepare() throws Exception {
+    void testPrepare() throws Exception {
         // Create the object under test
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
 
@@ -65,7 +65,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testPrepareWhenSQLExceptionIsThrown() throws Exception {
+    void testPrepareWhenSQLExceptionIsThrown() throws Exception {
         // Create the object under test
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
@@ -83,7 +83,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testInsertInitialDataInDatabaseFailToCreateLiquibase() throws Exception {
+    void testInsertInitialDataInDatabaseFailToCreateLiquibase() throws Exception {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -95,7 +95,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testCreateLiquibase() throws Exception {
+    void testCreateLiquibase() throws Exception {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -107,7 +107,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testCreateUkelonnLiquibaseDefault() throws Exception {
+    void testCreateUkelonnLiquibaseDefault() throws Exception {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -117,7 +117,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testInitialDataResourceNameNoLanguageSet() {
+    void testInitialDataResourceNameNoLanguageSet() {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -128,7 +128,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testInitialDataResourceNameWithLanguageSet() {
+    void testInitialDataResourceNameWithLanguageSet() {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
@@ -139,7 +139,7 @@ public class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    public void testInitialDataResourceNameWithNotFoundLanguageSet() {
+    void testInitialDataResourceNameWithNotFoundLanguageSet() {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);

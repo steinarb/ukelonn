@@ -16,8 +16,7 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
@@ -40,7 +39,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.util.ThreadContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -52,14 +51,14 @@ import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 
-public class JobResourceTest extends ServletTestBase {
+class JobResourceTest extends ServletTestBase {
 
-    public JobResourceTest() {
+    JobResourceTest() {
         super("/ukelonn", "/api");
     }
 
     @Test
-    public void testRegisterJob() throws Exception {
+    void testRegisterJob() throws Exception {
         // Create the request
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
@@ -108,8 +107,8 @@ public class JobResourceTest extends ServletTestBase {
      *
      * @throws Exception
      */
-    @Test(expected=ForbiddenException.class)
-    public void testRegisterJobOtherUsername() throws Exception {
+    @Test
+    void testRegisterJobOtherUsername() throws Exception {
         // Create the request
         Account account = getJodAccount();
         List<TransactionType> jobTypes = getJobtypes();
@@ -141,7 +140,7 @@ public class JobResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        resource.doRegisterJob(job);
+        assertThrows(ForbiddenException.class, () -> resource.doRegisterJob(job));
     }
 
     /**
@@ -151,7 +150,7 @@ public class JobResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
+    void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
@@ -194,8 +193,8 @@ public class JobResourceTest extends ServletTestBase {
         assertThat(result.getBalance()).isGreaterThan(originalBalance);
     }
 
-    @Test(expected=ForbiddenException.class)
-    public void testRegisterJobNoUsername() throws Exception {
+    @Test
+    void testRegisterJobNoUsername() throws Exception {
         // Create the request
         Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
@@ -226,7 +225,7 @@ public class JobResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        resource.doRegisterJob(job);
+        assertThrows(ForbiddenException.class, () -> resource.doRegisterJob(job));
     }
 
     /**
@@ -238,8 +237,8 @@ public class JobResourceTest extends ServletTestBase {
      *
      * @throws Exception
      */
-    @Test(expected=InternalServerErrorException.class)
-    public void testRegisterJobInternalServerError() throws Exception {
+    @Test
+    void testRegisterJobInternalServerError() throws Exception {
         // Create the request
         Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
@@ -266,11 +265,11 @@ public class JobResourceTest extends ServletTestBase {
         ThreadContext.remove();
 
         // Run the method under test
-        resource.doRegisterJob(job);
+        assertThrows(InternalServerErrorException.class, () -> resource.doRegisterJob(job));
     }
 
     @Test
-    public void testUpdateJob() {
+    void testUpdateJob() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         JobResource resource = new JobResource();
 
@@ -311,8 +310,8 @@ public class JobResourceTest extends ServletTestBase {
         assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testUpdateJobGetSQLException() throws Exception {
+    @Test
+    void testUpdateJobGetSQLException() throws Exception {
         // Create an ukelonn service with a mock database that throws exception
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
@@ -329,8 +328,8 @@ public class JobResourceTest extends ServletTestBase {
         MockLogService logservice = new MockLogService();
         resource.setLogservice(logservice);
 
-        resource.doUpdateJob(UpdatedTransaction.with().build());
-        fail("Should never get here");
+        UpdatedTransaction emptyTransaction = UpdatedTransaction.with().build();
+        assertThrows(InternalServerErrorException.class, () -> resource.doUpdateJob(emptyTransaction));
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {

@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
@@ -29,16 +29,16 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
-public class UsersTest {
+class UsersTest {
 
     @Test
-    public void testGet() {
+    void testGet() {
         // Create the resource to be tested
         Users resource = new Users();
 
@@ -52,8 +52,8 @@ public class UsersTest {
         assertThat(users).isNotEmpty();
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testGetWithSqlException() throws Exception {
+    @Test
+    void testGetWithSqlException() throws Exception {
         // Create the resource to be tested
         Users resource = new Users();
 
@@ -79,9 +79,7 @@ public class UsersTest {
         useradmin.setLogservice(logservice);
 
         // Do a get operation that will fail
-        resource.get();
-
-        fail("Should never get here");
+        assertThrows(InternalServerErrorException.class, () -> resource.get());
     }
 
 }

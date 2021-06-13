@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -33,17 +33,17 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
-public class AdminJobtypeTest {
+class AdminJobtypeTest {
 
     @Test
-    public void testModifyJobtype() {
+    void testModifyJobtype() {
         // Create the resource that is to be tested
         AdminJobtype resource = new AdminJobtype();
 
@@ -68,8 +68,8 @@ public class AdminJobtypeTest {
         assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testModifyJobtypeFailure() throws Exception {
+    @Test
+    void testModifyJobtypeFailure() throws Exception {
         // Create the resource that is to be tested
         AdminJobtype resource = new AdminJobtype();
 
@@ -101,12 +101,11 @@ public class AdminJobtypeTest {
 
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception
-        resource.modify(jobtype);
-        fail("Should never get here!");
+        assertThrows(InternalServerErrorException.class, () -> resource.modify(jobtype));
     }
 
     @Test
-    public void testCreateJobtype() {
+    void testCreateJobtype() {
         // Create the resource that is to be tested
         AdminJobtype resource = new AdminJobtype();
 
@@ -135,8 +134,8 @@ public class AdminJobtypeTest {
         assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testCreateJobtypeFailure() throws Exception {
+    @Test
+    void testCreateJobtypeFailure() throws Exception {
         // Create the resource that is to be tested
         AdminJobtype resource = new AdminJobtype();
 
@@ -169,8 +168,7 @@ public class AdminJobtypeTest {
 
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception
-        resource.create(jobtype);
-        fail("Should never get here!");
+        assertThrows(InternalServerErrorException.class, () -> resource.create(jobtype));
     }
 
 }
