@@ -45,7 +45,7 @@
     </modules>
 
     <properties>
-        <authservice.version>1.13.5</authservice.version>
+        <authservice.version>1.13.7</authservice.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
@@ -85,6 +85,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>no.priv.bang.karaf</groupId>
+                <artifactId>jersey-feature-bom</artifactId>
+                <version>${jersey-feature.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>no.priv.bang.authservice</groupId>
                 <artifactId>authservice-bom</artifactId>
                 <version>${authservice.version}</version>
@@ -110,6 +117,13 @@
                 <artifactId>jdbc.datasourceproxy</artifactId>
                 <version>${datasourceproxy.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.webjars.bower</groupId>
