@@ -15,23 +15,23 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.SumYear;
 import no.priv.bang.ukelonn.beans.SumYearMonth;
 
-public class StatisticsTest {
+class StatisticsTest {
 
     @Test
-    public void testEarningsSumOverYear() {
+    void testEarningsSumOverYear() {
         Statistics resource = new Statistics();
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.earningsSumOverYear("jad")).thenReturn(Arrays.asList(SumYear.with().sum(1250.0).year(2016).build()));
@@ -44,7 +44,7 @@ public class StatisticsTest {
     }
 
     @Test
-    public void testEarningsSumOverMonth() {
+    void testEarningsSumOverMonth() {
         Statistics resource = new Statistics();
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.earningsSumOverMonth("jad")).thenReturn(Arrays.asList(SumYearMonth.with().sum(125.0).year(2016).month(7).build()));

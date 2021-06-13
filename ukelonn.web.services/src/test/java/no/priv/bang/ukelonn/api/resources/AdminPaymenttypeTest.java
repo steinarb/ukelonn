@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -32,17 +32,17 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
-public class AdminPaymenttypeTest {
+class AdminPaymenttypeTest {
 
     @Test
-    public void testModifyPaymenttype() {
+    void testModifyPaymenttype() {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -67,8 +67,8 @@ public class AdminPaymenttypeTest {
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testModifyPaymenttypeFailure() throws Exception {
+    @Test
+    void testModifyPaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -100,12 +100,11 @@ public class AdminPaymenttypeTest {
 
         // Try update the payment type in the database, which should cause an
         // "500 Internal Server Error" exception
-        resource.modify(paymenttype);
-        fail("Should never get here!");
+        assertThrows(InternalServerErrorException.class, () -> resource.modify(paymenttype));
     }
 
     @Test
-    public void testCreatePaymenttype() {
+    void testCreatePaymenttype() {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -134,8 +133,8 @@ public class AdminPaymenttypeTest {
         assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testCreatePaymenttypeFailure() throws Exception {
+    @Test
+    void testCreatePaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
         AdminPaymenttype resource = new AdminPaymenttype();
 
@@ -168,8 +167,7 @@ public class AdminPaymenttypeTest {
 
         // Try update the jobtype in the database, which should cause an
         // "500 Internal Server Error" exception
-        resource.create(paymenttype);
-        fail("Should never get here!");
+        assertThrows(InternalServerErrorException.class, () -> resource.create(paymenttype));
     }
 
 }

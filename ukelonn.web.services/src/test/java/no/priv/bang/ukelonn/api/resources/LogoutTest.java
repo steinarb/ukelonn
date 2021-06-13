@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,27 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
 
-public class LogoutTest extends ServletTestBase {
+class LogoutTest extends ServletTestBase {
 
-    public LogoutTest() {
+    LogoutTest() {
         super("/ukelonn", "/api");
     }
 
     @Test
-    public void testLogoutOk() throws Exception {
+    void testLogoutOk() throws Exception {
         // Set up the request
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
@@ -64,7 +64,7 @@ public class LogoutTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testLogoutNotLoggedIn() throws Exception {
+    void testLogoutNotLoggedIn() throws Exception {
         // Set up the request and response used to do the login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);

@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.api;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -39,8 +39,8 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 import org.glassfish.jersey.server.ServerProperties;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.log.LogService;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -83,19 +83,19 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  *  Sort of a lightweight integration test.
  *
  */
-public class UkelonnRestApiServletTest extends ServletTestBase {
+class UkelonnRestApiServletTest extends ServletTestBase {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
     private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
 
-    public UkelonnRestApiServletTest() {
+    UkelonnRestApiServletTest() {
         super("/ukelonn", "/api");
     }
 
-    public static final ObjectMapper mapper = new ObjectMapper()
+    static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Test
-    public void testLoginOk() throws Exception {
+    void testLoginOk() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
@@ -127,7 +127,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testAdminLoginOk() throws Exception {
+    void testAdminLoginOk() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("admin")
@@ -158,9 +158,9 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("", result.getErrorMessage());
     }
 
-    @Ignore("Gets wrong password exception instead of unknown user exception, don't know why")
+    @Disabled("Gets wrong password exception instead of unknown user exception, don't know why")
     @Test
-    public void testLoginUnknownUser() throws Exception {
+    void testLoginUnknownUser() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("unknown")
@@ -192,7 +192,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginWrongPassword() throws Exception {
+    void testLoginWrongPassword() throws Exception {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
@@ -224,7 +224,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testLoginWrongJson() throws Exception {
+    void testLoginWrongJson() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent("xxxyzzy");
@@ -256,7 +256,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetLoginStateWhenLoggedIn() throws Exception {
+    void testGetLoginStateWhenLoggedIn() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildGetUrl("/login");
 
@@ -297,7 +297,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetLoginStateWhenNotLoggedIn() throws Exception {
+    void testGetLoginStateWhenNotLoggedIn() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildGetUrl("/login");
 
@@ -329,7 +329,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testLogoutOk() throws Exception {
+    void testLogoutOk() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildPostUrl("/logout");
 
@@ -361,7 +361,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testLogoutNotLoggedIn() throws Exception {
+    void testLogoutNotLoggedIn() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildPostUrl("/logout");
 
@@ -391,7 +391,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetJobtypes() throws Exception {
+    void testGetJobtypes() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildGetUrl("/jobtypes");
 
@@ -418,7 +418,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccounts() throws Exception {
+    void testGetAccounts() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildGetUrl("/accounts");
 
@@ -445,7 +445,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccount() throws Exception {
+    void testGetAccount() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildGetUrl("/account/jad");
 
@@ -480,7 +480,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetAccountOtherUsername() throws Exception {
+    void testGetAccountOtherUsername() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildGetUrl("/account/jod");
 
@@ -508,7 +508,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
+    void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildGetUrl("/account/jad");
 
@@ -537,7 +537,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccountNoUsername() throws Exception {
+    void testGetAccountNoUsername() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildGetUrl("/account");
 
@@ -564,7 +564,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
+    void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildGetUrl("/account/unknownuse");
 
@@ -592,7 +592,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testRegisterJob() throws Exception {
+    void testRegisterJob() throws Exception {
         // Create the request
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
@@ -638,7 +638,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testRegisterJobOtherUsername() throws Exception {
+    void testRegisterJobOtherUsername() throws Exception {
         // Create the request
         Account account = getJodAccount();
         List<TransactionType> jobTypes = getJobtypes();
@@ -676,7 +676,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
+    void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
@@ -720,7 +720,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testRegisterJobNoUsername() throws Exception {
+    void testRegisterJobNoUsername() throws Exception {
         // Create the request
         Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
@@ -755,7 +755,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testRegisterJobUnparsablePostData() throws Exception {
+    void testRegisterJobUnparsablePostData() throws Exception {
         // Create the request
         MockHttpServletRequest request = buildPostUrl("/job/register");
         request.setBodyContent("this is not json");
@@ -787,7 +787,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testRegisterJobInternalServerError() throws Exception {
+    void testRegisterJobInternalServerError() throws Exception {
         // Create the request
         Account account = Account.with().build();
         List<TransactionType> jobTypes = getJobtypes();
@@ -823,7 +823,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetJobs() throws Exception {
+    void testGetJobs() throws Exception {
         // Set up the request
         Account account = getJadAccount();
         MockHttpServletRequest request = buildGetUrl(String.format("/jobs/%d", account.getAccountId()));
@@ -851,7 +851,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testDeleteJobs() throws Exception {
+    void testDeleteJobs() throws Exception {
         // Set up the request
         Account account = getJodAccount();
         List<Transaction> jobs = getJodJobs();
@@ -882,7 +882,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testUpdateJob() throws Exception {
+    void testUpdateJob() throws Exception {
         // Find the job that is to be modified
         Account account = getJodAccount();
         Transaction job = getJodJobs().get(0);
@@ -934,7 +934,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetPayments() throws Exception {
+    void testGetPayments() throws Exception {
         // Set up the request
         Account account = getJadAccount();
         MockHttpServletRequest request = buildGetUrl(String.format("/payments/%d", account.getAccountId()));
@@ -962,7 +962,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetPaymenttypes() throws Exception {
+    void testGetPaymenttypes() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildGetUrl("/paymenttypes");
 
@@ -989,7 +989,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testRegisterPayments() throws Exception {
+    void testRegisterPayments() throws Exception {
         // Create the request
         Account account = getJadAccount();
         double originalBalance = account.getBalance();
@@ -1029,7 +1029,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testModifyJobtype() throws Exception {
+    void testModifyJobtype() throws Exception {
         // Find a jobtype to modify
         List<TransactionType> jobtypes = getJobtypes();
         TransactionType jobtype = jobtypes.get(0);
@@ -1067,7 +1067,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testCreateJobtype() throws Exception {
+    void testCreateJobtype() throws Exception {
         // Save the jobtypes before adding a new jobtype
         List<TransactionType> originalJobtypes = getJobtypes();
 
@@ -1109,7 +1109,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testModifyPaymenttype() throws Exception {
+    void testModifyPaymenttype() throws Exception {
         // Find a payment type to modify
         List<TransactionType> paymenttypes = getPaymenttypes();
         TransactionType paymenttype = paymenttypes.get(1);
@@ -1147,7 +1147,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testCreatePaymenttype() throws Exception {
+    void testCreatePaymenttype() throws Exception {
         // Save the payment types before adding a new payment type
         List<TransactionType> originalPaymenttypes = getPaymenttypes();
 
@@ -1189,7 +1189,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetUsers() throws Exception {
+    void testGetUsers() throws Exception {
         // Set up the request
         MockHttpServletRequest request = buildGetUrl("/users");
 
@@ -1216,7 +1216,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testModifyUser() throws Exception {
+    void testModifyUser() throws Exception {
         // Get a user and modify all properties except id
         int userToModify = 0;
         List<User> users = getUsersForUserManagement();
@@ -1265,7 +1265,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testCreateUser() throws Exception {
+    void testCreateUser() throws Exception {
         // Save the number of users before adding a user
         int originalUserCount = getUsers().size();
 
@@ -1322,7 +1322,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testChangePassword() throws Exception {
+    void testChangePassword() throws Exception {
         List<User> users = getUsersForUserManagement();
 
         // Save the number of users before adding a user
@@ -1364,7 +1364,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testStatisticsEarningsSumOverYear() throws Exception {
+    void testStatisticsEarningsSumOverYear() throws Exception {
         // Set up REST API servlet with mocked services
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -1396,7 +1396,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testNotifications() throws Exception {
+    void testNotifications() throws Exception {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnService ukelonn = new UkelonnServiceProvider();
@@ -1441,7 +1441,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetActiveBonuses() throws Exception {
+    void testGetActiveBonuses() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
@@ -1466,7 +1466,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAllBonuses() throws Exception {
+    void testGetAllBonuses() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
@@ -1491,7 +1491,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testPostCreateBonus() throws Exception {
+    void testPostCreateBonus() throws Exception {
         // Set up REST API servlet with mocked services
         Bonus bonus = Bonus.with()
             .bonusId(1)
@@ -1527,7 +1527,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testPostUpdateBonus() throws Exception {
+    void testPostUpdateBonus() throws Exception {
         // Set up REST API servlet with mocked services
         Bonus bonus = Bonus.with()
             .bonusId(1)
@@ -1563,7 +1563,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testPostDeleteBonus() throws Exception {
+    void testPostDeleteBonus() throws Exception {
         // Set up REST API servlet with mocked services
         Bonus bonus = Bonus.with()
             .bonusId(1)
@@ -1601,7 +1601,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testPostAdminStatus() throws Exception {
+    void testPostAdminStatus() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         MockLogService logservice = new MockLogService();
@@ -1642,7 +1642,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testPostChangeAdminStatus() throws Exception {
+    void testPostChangeAdminStatus() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         MockLogService logservice = new MockLogService();
@@ -1684,7 +1684,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testDefaultLocale() throws Exception {
+    void testDefaultLocale() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
@@ -1708,7 +1708,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testAvailableLocales() throws Exception {
+    void testAvailableLocales() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
@@ -1732,7 +1732,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testDisplayTexts() throws Exception {
+    void testDisplayTexts() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         Map<String, String> texts = new HashMap<>();
@@ -1759,7 +1759,7 @@ public class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testDisplayTextsWithUnknownLocale() throws Exception {
+    void testDisplayTextsWithUnknownLocale() throws Exception {
         // Set up REST API servlet with mocked services
         UkelonnService ukelonn = mock(UkelonnService.class);
         Map<String, String> texts = new HashMap<>();

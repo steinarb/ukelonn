@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package no.priv.bang.ukelonn;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UkelonnBadRequestExceptionTest {
+class UkelonnBadRequestExceptionTest {
 
     @Test
-    public void testMessage() {
+    void testMessage() {
         UkelonnBadRequestException exception = new UkelonnBadRequestException("Test");
         assertEquals("Test", exception.getMessage());
         assertNull(exception.getCause());
     }
 
     @Test
-    public void testMessageAndCause() {
+    void testMessageAndCause() {
         NullPointerException cause = new NullPointerException();
         UkelonnBadRequestException exception = new UkelonnBadRequestException("Test", cause);
         assertEquals("Test", exception.getMessage());
@@ -37,7 +37,7 @@ public class UkelonnBadRequestExceptionTest {
     }
 
     @Test
-    public void testCause() {
+    void testCause() {
         NullPointerException cause = new NullPointerException();
         UkelonnBadRequestException exception = new UkelonnBadRequestException(cause);
         assertEquals(cause.getClass().getName(), exception.getMessage());

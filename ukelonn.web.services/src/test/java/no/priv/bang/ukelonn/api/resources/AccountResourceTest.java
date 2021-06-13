@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
@@ -34,14 +34,14 @@ import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.beans.Account;
 
-public class AccountResourceTest extends ServletTestBase {
+class AccountResourceTest extends ServletTestBase {
 
-    public AccountResourceTest() {
+    AccountResourceTest() {
         super("/ukelonn", "/api");
     }
 
     @Test
-    public void testGetAccount() throws Exception {
+    void testGetAccount() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
@@ -78,7 +78,7 @@ public class AccountResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetAccountOtherUsername() throws Exception {
+    void testGetAccountOtherUsername() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
@@ -112,7 +112,7 @@ public class AccountResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    public void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
+    void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
@@ -143,7 +143,7 @@ public class AccountResourceTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccountNoUsername() throws Exception {
+    void testGetAccountNoUsername() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
@@ -167,7 +167,7 @@ public class AccountResourceTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccountUsernameNotPresentInDatabase() throws Exception {
+    void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request and response for the Shiro login
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
@@ -196,7 +196,7 @@ public class AccountResourceTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetAccountWhenSubjectHasNullPrincipal() {
+    void testGetAccountWhenSubjectHasNullPrincipal() {
         createSubjectWithNullPrincipalAndBindItToThread();
 
         // Create the object to be tested

@@ -15,24 +15,24 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AccountWithJobIdsTest {
+class AccountWithJobIdsTest {
 
     @Test
-    public void testDefaultValues() {
+    void testDefaultValues() {
         AccountWithJobIds bean = AccountWithJobIds.with().build();
         assertNull(bean.getAccount());
         assertEquals(0, bean.getJobIds().size());
     }
 
     @Test
-    public void testConstructorWithParameters() {
+    void testConstructorWithParameters() {
         Account account = Account.with().build();
         List<Integer> ids = Arrays.asList(1, 2, 3, 4);
         AccountWithJobIds bean = AccountWithJobIds.with().account(account).jobIds(ids).build();

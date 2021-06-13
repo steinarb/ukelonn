@@ -15,21 +15,21 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class NotificationTest {
+class NotificationTest {
 
     @Test
-    public void testGetters() {
+    void testGetters() {
         Notification bean = Notification.with().title("Ukelønn").message("150 kroner utbetalt til konto").build();
         assertEquals("Ukelønn", bean.getTitle());
         assertEquals("150 kroner utbetalt til konto", bean.getMessage());
     }
 
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         Notification bean = Notification.with().build();
         assertEquals("", bean.getTitle());
         assertEquals("", bean.getMessage());

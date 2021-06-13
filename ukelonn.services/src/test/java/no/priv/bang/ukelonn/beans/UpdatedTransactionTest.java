@@ -15,16 +15,16 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UpdatedTransactionTest {
+class UpdatedTransactionTest {
 
     @Test
-    public void testCreate() {
+    void testCreate() {
         Date now = new Date();
         UpdatedTransaction bean = UpdatedTransaction.with()
             .id(31)
@@ -41,7 +41,7 @@ public class UpdatedTransactionTest {
     }
 
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         UpdatedTransaction bean = UpdatedTransaction.with().build();
         assertEquals(-1, bean.getId());
         assertEquals(-1, bean.getTransactionTypeId());

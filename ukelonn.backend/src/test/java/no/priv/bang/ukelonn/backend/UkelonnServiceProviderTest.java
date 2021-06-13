@@ -16,7 +16,7 @@
 package no.priv.bang.ukelonn.backend;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -38,9 +38,9 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
@@ -64,21 +64,21 @@ import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 import no.priv.bang.ukelonn.beans.User;
 import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
-public class UkelonnServiceProviderTest {
+class UkelonnServiceProviderTest {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
 
-    @BeforeClass
-    public static void setupForAllTests() throws Exception {
+    @BeforeAll
+    static void setupForAllTests() throws Exception {
         setupFakeOsgiServices();
     }
 
-    @AfterClass
-    public static void teardownForAllTests() throws Exception {
+    @AfterAll
+    static void teardownForAllTests() throws Exception {
         releaseFakeOsgiServices();
     }
 
     @Test
-    public void testGetAccounts() {
+    void testGetAccounts() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
         no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
@@ -104,7 +104,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @Test()
-    public void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
+    void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -119,7 +119,7 @@ public class UkelonnServiceProviderTest {
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
             List<Account> accounts = ukelonn.getAccounts();
-            assertEquals("Expected a non-null, empty list", 0, accounts.size());
+            assertEquals(0, accounts.size(), "Expected a non-null, empty list");
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -135,7 +135,7 @@ public class UkelonnServiceProviderTest {
      * @throws Exception
      */
     @Test()
-    public void testGetAccountsNullResultSet() throws Exception {
+    void testGetAccountsNullResultSet() throws Exception {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -147,7 +147,7 @@ public class UkelonnServiceProviderTest {
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setDataSource(datasource);
             List<Account> accounts = ukelonn.getAccounts();
-            assertEquals("Expected a non-null, empty list", 0, accounts.size());
+            assertEquals(0, accounts.size(), "Expected a non-null, empty list");
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -155,7 +155,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetAccount() {
+    void testGetAccount() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
         no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
@@ -182,7 +182,7 @@ public class UkelonnServiceProviderTest {
      * (the query result is empty)
      */
     @Test
-    public void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
+    void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
         UkelonnServiceProvider provider = getUkelonnServiceSingleton();
         assertThrows(UkelonnException.class, () -> {
                 provider.getAccount("on");
@@ -194,7 +194,7 @@ public class UkelonnServiceProviderTest {
      * account for a username that isn't present in the database
      */
     @Test
-    public void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
+    void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         assertThrows(UkelonnException.class, () -> {
                 ukelonn.getAccount("unknownuser");
@@ -211,7 +211,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @Test
-    public void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+    void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -235,7 +235,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddAccount() {
+    void testAddAccount() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
         usermanagement.setLogservice(ukelonn.getLogservice());
@@ -276,7 +276,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
+    void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
         usermanagement.setDataSource(getUkelonnServiceSingleton().getDataSource());
@@ -314,7 +314,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetJobs() {
+    void testGetJobs() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -333,7 +333,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testRegisterPerformedJob() throws Exception {
+    void testRegisterPerformedJob() throws Exception {
         try {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
@@ -373,7 +373,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @Test
-    public void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
+    void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -413,7 +413,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testDeleteAllJobsOfUser() throws Exception {
+    void testDeleteAllJobsOfUser() throws Exception {
         try {
             // Create the delete arguments
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
@@ -444,7 +444,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testDeleteSomeJobsOfUser() throws Exception {
+    void testDeleteSomeJobsOfUser() throws Exception {
         try {
             // Create the delete arguments
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
@@ -475,7 +475,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testDeleteJobsWithErrorOnClosingStatement() throws Exception {
+    void testDeleteJobsWithErrorOnClosingStatement() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database with a prepared statement that will fail on close
@@ -494,11 +494,11 @@ public class UkelonnServiceProviderTest {
 
         assertEquals(0, logservice.getLogmessages().size());
         ukelonn.deleteJobsFromAccount(1, Arrays.asList(1, 2, 3));
-        assertEquals("Expected the errors to be logged", 2, logservice.getLogmessages().size());
+        assertEquals(2, logservice.getLogmessages().size(), "Expected the errors to be logged");
     }
 
     @Test
-    public void verifyDeletingNoJobsOfUserHasNoEffect() throws Exception {
+    void verifyDeletingNoJobsOfUserHasNoEffect() throws Exception {
         try {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
@@ -530,7 +530,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void verifyThatTryingToDeletePaymentsAsJobsWillDoNothing() throws Exception {
+    void verifyThatTryingToDeletePaymentsAsJobsWillDoNothing() throws Exception {
         try {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
@@ -566,7 +566,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void verifyThatTryingToDeleteJobsOfDifferentAccountWillDoNothing() throws Exception {
+    void verifyThatTryingToDeleteJobsOfDifferentAccountWillDoNothing() throws Exception {
         try {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jod";
@@ -604,7 +604,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
+    void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -625,7 +625,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testUpdateJob() throws Exception {
+    void testUpdateJob() throws Exception {
         try {
             UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
             String username = "jad";
@@ -674,7 +674,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testUpdateJobGetSQLException() throws Exception {
+    void testUpdateJobGetSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
         Connection connection = mock(Connection.class);
@@ -696,7 +696,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetPayments() {
+    void testGetPayments() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         String username = "jad";
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -715,14 +715,14 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetPaymenttypes() {
+    void testGetPaymenttypes() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
         List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
         assertEquals(2, paymenttypes.size());
     }
 
     @Test
-    public void testGetPaymenttypesWithDatabasePreparestatementFailure() throws Exception {
+    void testGetPaymenttypesWithDatabasePreparestatementFailure() throws Exception {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -736,8 +736,8 @@ public class UkelonnServiceProviderTest {
             ukelonn.setDataSource(datasource);
             assertEquals(0, logservice.getLogmessages().size()); // Verify precondition: no logmessages
             List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
-            assertEquals("Expected empty list", 0, paymenttypes.size());
-            assertEquals("Expect database error to be logged", 1, logservice.getLogmessages().size());
+            assertEquals(0, paymenttypes.size(), "Expected empty list");
+            assertEquals(1, logservice.getLogmessages().size(), "Expect database error to be logged");
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -745,7 +745,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetPaymenttypesWithDatabaseFailure() throws Exception {
+    void testGetPaymenttypesWithDatabaseFailure() throws Exception {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -757,7 +757,7 @@ public class UkelonnServiceProviderTest {
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setDataSource(datasource);
             List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
-            assertEquals("Expected empty list", 0, paymenttypes.size());
+            assertEquals(0, paymenttypes.size(), "Expected empty list");
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -765,7 +765,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testRegisterPayment() {
+    void testRegisterPayment() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         UserManagementService useradmin = mock(UserManagementService.class);
         no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
@@ -798,7 +798,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testRegisterPaymentWithDatabaseFailure() throws Exception {
+    void testRegisterPaymentWithDatabaseFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -840,7 +840,7 @@ public class UkelonnServiceProviderTest {
      * @throws Exception
      */
     @Test()
-    public void testGetJobTypesNullResultSet() throws Exception {
+    void testGetJobTypesNullResultSet() throws Exception {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -852,7 +852,7 @@ public class UkelonnServiceProviderTest {
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setDataSource(database);
             List<TransactionType> jobtypes = ukelonn.getJobTypes();
-            assertEquals("Expected a non-null, empty list", 0, jobtypes.size());
+            assertEquals(0, jobtypes.size(), "Expected a non-null, empty list");
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -869,7 +869,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @Test()
-    public void testGetJobTypesWhenSQLExceptionIsThrown() throws SQLException {
+    void testGetJobTypesWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -884,7 +884,7 @@ public class UkelonnServiceProviderTest {
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
             List<TransactionType> jobtypes = ukelonn.getJobTypes();
-            assertEquals("Expected a non-null, empty map", 0, jobtypes.size());
+            assertEquals(0, jobtypes.size(), "Expected a non-null, empty map");
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -892,7 +892,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testModifyJobtype() {
+    void testModifyJobtype() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
 
         // Find a jobtyoe
@@ -912,7 +912,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testModifyJobtypeFailure() throws Exception {
+    void testModifyJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -941,7 +941,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testCreateJobtype() {
+    void testCreateJobtype() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
 
         // Get the list of jobtypes before adding a new job type
@@ -963,7 +963,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testCreateJobtypeFailure() throws Exception {
+    void testCreateJobtypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -992,7 +992,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testModifyPaymenttype() {
+    void testModifyPaymenttype() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
 
         // Find a payment type
@@ -1012,7 +1012,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testModifyPaymenttypeFailure() throws Exception {
+    void testModifyPaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -1041,7 +1041,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testCreatePaymenttype() {
+    void testCreatePaymenttype() {
         UkelonnService ukelonn = getUkelonnServiceSingleton();
 
         // Get the list of payment types before adding a new job type
@@ -1063,7 +1063,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testCreatePaymenttypeFailure() throws Exception {
+    void testCreatePaymenttypeFailure() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -1092,7 +1092,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testPasswordsEqualAndNotEmpty() {
+    void testPasswordsEqualAndNotEmpty() {
         PasswordsWithUser equalPasswords = PasswordsWithUser.with().password("zekret").password2("zekret").build();
         assertTrue(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(equalPasswords));
         PasswordsWithUser differentPasswords = PasswordsWithUser.with().password("zekret").password2("secret").build();
@@ -1112,7 +1112,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testHasUserWithNonEmptyUsername() {
+    void testHasUserWithNonEmptyUsername() {
         PasswordsWithUser passwords = PasswordsWithUser.with().build();
         User userWithUsername = User.with().userId(1).username("foo").build();
         passwords.setUser(userWithUsername);
@@ -1128,7 +1128,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testNotifications() {
+    void testNotifications() {
         UkelonnService ukelonn = new UkelonnServiceProvider();
         List<Notification> notificationsToJad = ukelonn.notificationsTo("jad");
         assertThat(notificationsToJad).isEmpty();
@@ -1145,7 +1145,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testJoinIds() {
+    void testJoinIds() {
         assertEquals("", UkelonnServiceProvider.joinIds(null).toString());
         assertEquals("", UkelonnServiceProvider.joinIds(Collections.emptyList()).toString());
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
@@ -1177,7 +1177,7 @@ public class UkelonnServiceProviderTest {
      * @throws SQLException
      */
     @Test()
-    public void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
+    void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         DataSource originalDatasource = ukelonn.getDataSource();
@@ -1198,7 +1198,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetResourceAsStringNoResource() {
+    void testGetResourceAsStringNoResource() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         MockLogService logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
@@ -1207,7 +1207,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testEarningsSumOverYear() {
+    void testEarningsSumOverYear() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
         assertThat(statistics.size()).isPositive();
@@ -1217,7 +1217,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testEarningsSumOverYearWhenSqlExceptionIsThrown() throws Exception {
+    void testEarningsSumOverYearWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -1241,7 +1241,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testEarningsSumOverMonth() {
+    void testEarningsSumOverMonth() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
         assertThat(statistics.size()).isPositive();
@@ -1252,7 +1252,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testEarningsSumOverMonthWhenSqlExceptionIsThrown() throws Exception {
+    void testEarningsSumOverMonthWhenSqlExceptionIsThrown() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
@@ -1276,7 +1276,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetCreateModifyAndDeleteBonuses() {
+    void testGetCreateModifyAndDeleteBonuses() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         int initialBonusCount = ukelonn.getAllBonuses().size();
 
@@ -1371,7 +1371,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetActiveBonusesWithSQLException() throws Exception {
+    void testGetActiveBonusesWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -1391,7 +1391,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testGetAllBonusesWithSQLException() throws Exception {
+    void testGetAllBonusesWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -1411,7 +1411,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddBonusWithSQLException() throws Exception {
+    void testAddBonusWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -1431,7 +1431,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testUpdateBonusWithSQLException() throws Exception {
+    void testUpdateBonusWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -1451,7 +1451,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testDeleteBonusWithSQLException() throws Exception {
+    void testDeleteBonusWithSQLException() throws Exception {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -1471,7 +1471,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddRoleIfNotPresentWhenRoleIsPresent() {
+    void testAddRoleIfNotPresentWhenRoleIsPresent() {
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         Role userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
@@ -1485,7 +1485,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddRoleIfNotPresentWhenRoleIsNotPresent() {
+    void testAddRoleIfNotPresentWhenRoleIsNotPresent() {
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         Role userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
@@ -1500,7 +1500,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddAdminroleToUserAdminWhenRoleIsMissing() {
+    void testAddAdminroleToUserAdminWhenRoleIsMissing() {
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         UserManagementService useradmin = mock(UserManagementService.class);
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -1513,7 +1513,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddAdminroleToUserAdminWhenRoleIsPresent() {
+    void testAddAdminroleToUserAdminWhenRoleIsPresent() {
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
@@ -1527,7 +1527,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAddAdminroleToUserAdminWhenAdminUserIsNotPresent() {
+    void testAddAdminroleToUserAdminWhenAdminUserIsNotPresent() {
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
@@ -1541,7 +1541,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testDefaultLocale() {
+    void testDefaultLocale() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setUserAdmin(useradmin);
@@ -1550,7 +1550,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testAvailableLocales() {
+    void testAvailableLocales() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setUserAdmin(useradmin);
@@ -1560,7 +1560,7 @@ public class UkelonnServiceProviderTest {
     }
 
     @Test
-    public void testDisplayTextsForDefaultLocale() {
+    void testDisplayTextsForDefaultLocale() {
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         ukelonn.setUserAdmin(useradmin);

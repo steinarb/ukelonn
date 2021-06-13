@@ -15,7 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -30,16 +30,16 @@ import javax.ws.rs.WebApplicationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.LocaleBean;
 
-public class LocalizationResourceTest {
+class LocalizationResourceTest {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     @Test
-    public void testDefaultLocale() {
+    void testDefaultLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         LocalizationResource resource = new LocalizationResource();
@@ -49,7 +49,7 @@ public class LocalizationResourceTest {
     }
 
     @Test
-    public void testAvailableLocales() {
+    void testAvailableLocales() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
@@ -60,7 +60,7 @@ public class LocalizationResourceTest {
     }
 
     @Test
-    public void testDisplayTextsForDefaultLocale() {
+    void testDisplayTextsForDefaultLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         Map<String, String> texts = new HashMap<>();
@@ -72,16 +72,15 @@ public class LocalizationResourceTest {
         assertThat(displayTexts).isNotEmpty();
     }
 
-    @Test(expected = WebApplicationException.class)
-    public void testDisplayTextsWithUnknownLocale() {
+    @Test
+    void testDisplayTextsWithUnknownLocale() {
         UkelonnService ukelonn = mock(UkelonnService.class);
         when(ukelonn.displayTexts(any())).thenThrow(MissingResourceException.class);
         LocalizationResource resource = new LocalizationResource();
         MockLogService logservice = new MockLogService();
         resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
-        Map<String, String> displayTexts = resource.displayTexts("en_UK");
-        assertThat(displayTexts).isNotEmpty();
+        assertThrows(WebApplicationException.class, () -> resource.displayTexts("en_UK"));
     }
 
 }

@@ -15,14 +15,14 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UserTest {
+class UserTest {
 
     @Test
-    public void testNoArgConstructor() {
+    void testNoArgConstructor() {
         User bean = User.with().build();
         assertEquals(-1, bean.getUserId());
         assertEquals("", bean.getUsername());
@@ -33,7 +33,7 @@ public class UserTest {
     }
 
     @Test
-    public void testProperties() {
+    void testProperties() {
         int expectedUserId = 1;
         String expectedUsername = "jad";
         String expectedEmail = "jane21@gmail.com";
@@ -70,29 +70,7 @@ public class UserTest {
     }
 
     @Test
-    public void testEquals() {
-        User user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        User userDifferentUserId = User.with().userId(2).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertNotEquals(user, userDifferentUserId);
-        User userDifferentUsername = User.with().userId(1).username("jadd").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertNotEquals(user, userDifferentUsername);
-        User userDifferentEmail = User.with().userId(1).username("jad").email("jane22@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertNotEquals(user, userDifferentEmail);
-        User userDifferentFirstname = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Julie").lastname("Doe").build();
-        assertNotEquals(user, userDifferentFirstname);
-        User userDifferentLastname = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Deer").build();
-        assertNotEquals(user, userDifferentLastname);
-        User equalUser = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertEquals(user, equalUser);
-        assertEquals(user, user);
-        User userWithNullStrings = User.with().userId(1).username(null).email(null).firstname(null).lastname(null).build();
-        assertNotEquals(userWithNullStrings, user);
-        assertNotEquals(user, null);
-        assertNotEquals(user, "");
-    }
-
-    @Test
-    public void testToString() {
+    void testToString() {
         User user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
         assertEquals("User [userId=1, username=jad, email=jane21@gmail.com, firstname=Jane, lastname=Doe]", user.toString());
         User userWithNullStrings = User.with().userId(1).username(null).email(null).firstname(null).lastname(null).build();

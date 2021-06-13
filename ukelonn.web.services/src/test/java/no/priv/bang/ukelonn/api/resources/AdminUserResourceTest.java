@@ -17,7 +17,7 @@ package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -36,7 +36,7 @@ import javax.sql.DataSource;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -50,10 +50,10 @@ import no.priv.bang.ukelonn.api.beans.AdminStatus;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
-public class AdminUserResourceTest {
+class AdminUserResourceTest {
 
     @Test
-    public void testModify() {
+    void testModify() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -89,8 +89,8 @@ public class AdminUserResourceTest {
         assertEquals(modifiedLastname, firstUser.getLastname());
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testModifyInternalServerError() throws Exception {
+    @Test
+    void testModifyInternalServerError() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -115,14 +115,11 @@ public class AdminUserResourceTest {
         User user = User.with().build();
 
         // Save the modification
-        resource.modify(user);
-
-        // Verify that the update fails
-        fail("Should never get here!");
+        assertThrows(InternalServerErrorException.class, () -> resource.modify(user));
     }
 
     @Test
-    public void testCreate() {
+    void testCreate() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -171,8 +168,8 @@ public class AdminUserResourceTest {
         assertEquals(newLastname, lastUser.getLastname());
     }
 
-    @Test(expected = UkelonnException.class)
-    public void testCreateAndFailToFindUser() {
+    @Test
+    void testCreateAndFailToFindUser() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -191,11 +188,11 @@ public class AdminUserResourceTest {
             .build();
 
         // Create a user
-        resource.create(passwords);
+        assertThrows(UkelonnException.class, () -> resource.create(passwords));
     }
 
     @Test
-    public void testAdminStatusWhenUserIsAdministrator() {
+    void testAdminStatusWhenUserIsAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
@@ -221,7 +218,7 @@ public class AdminUserResourceTest {
     }
 
     @Test
-    public void testAdminStatusWhenUserIsNotAdministrator() {
+    void testAdminStatusWhenUserIsNotAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename("ukelonnuser").description("ukelonn user").build();
@@ -246,7 +243,7 @@ public class AdminUserResourceTest {
     }
 
     @Test
-    public void testChangeAdminStatusMakeUserAdministrator() {
+    void testChangeAdminStatusMakeUserAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
@@ -274,7 +271,7 @@ public class AdminUserResourceTest {
     }
 
     @Test
-    public void testChangeAdminStatusMakeUserNotAdministrator() {
+    void testChangeAdminStatusMakeUserNotAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
@@ -302,7 +299,7 @@ public class AdminUserResourceTest {
     }
 
     @Test
-    public void testChangeAdminStatusSetUserAdministratorWhenUserAlreadyAdministrator() {
+    void testChangeAdminStatusSetUserAdministratorWhenUserAlreadyAdministrator() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
@@ -330,7 +327,7 @@ public class AdminUserResourceTest {
     }
 
     @Test
-    public void testChangeAdminStatusAdminRoleNotPresent() {
+    void testChangeAdminStatusAdminRoleNotPresent() {
         AdminUserResource resource = new AdminUserResource();
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getRoles()).thenReturn(Collections.emptyList());
@@ -355,8 +352,8 @@ public class AdminUserResourceTest {
         assertFalse(changedStatus.isAdministrator());
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testCreatePasswordsNotIdentical() throws Exception {
+    @Test
+    void testCreatePasswordsNotIdentical() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -370,9 +367,6 @@ public class AdminUserResourceTest {
         MockLogService logservice = new MockLogService();
         resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
-
-        // Save the number of users before adding a user
-        int originalUserCount = getUsers().size();
 
         // Create a user object
         String newUsername = "aragorn";
@@ -396,14 +390,11 @@ public class AdminUserResourceTest {
             .build();
 
         // Create a user
-        List<User> updatedUsers = resource.create(passwords);
-
-        // Should never get here
-        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        assertThrows(InternalServerErrorException.class, () -> resource.create(passwords));
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testCreateDatabaseException() throws Exception {
+    @Test
+    void testCreateDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
@@ -444,13 +435,11 @@ public class AdminUserResourceTest {
         UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Creating user should fail
-        resource.create(passwords);
-
-        fail("Should never get here");
+        assertThrows(InternalServerErrorException.class, () -> resource.create(passwords));
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testCreateWhenUseridToCreateAccountCantBeFound() throws Exception {
+    @Test
+    void testCreateWhenUseridToCreateAccountCantBeFound() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -487,14 +476,11 @@ public class AdminUserResourceTest {
         UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create a user
-        List<User> updatedUsers = resource.create(passwords);
-
-        // Should never get here
-        assertThat(updatedUsers).isNotEmpty();
+        assertThrows(InternalServerErrorException.class, () -> resource.create(passwords));
     }
 
     @Test
-    public void testPassword() {
+    void testPassword() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -522,8 +508,8 @@ public class AdminUserResourceTest {
         assertEquals(users.size(), updatedUsers.size());
     }
 
-    @Test(expected=BadRequestException.class)
-    public void testPasswordWithEmptyUsername() {
+    @Test
+    void testPasswordWithEmptyUsername() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -540,13 +526,11 @@ public class AdminUserResourceTest {
         UserAndPasswords passwords = UserAndPasswords.with().password1("zecret").password2("zecret").build();
 
         // Changing the password should fail
-        resource.password(passwords);
-
-        fail("Should never get here!");
+        assertThrows(BadRequestException.class, () -> resource.password(passwords));
     }
 
-    @Test(expected=BadRequestException.class)
-    public void testPasswordWhenPasswordsDontMatch() {
+    @Test
+    void testPasswordWhenPasswordsDontMatch() {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -567,13 +551,11 @@ public class AdminUserResourceTest {
         UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("secret").build();
 
         // Changing the password should fail
-        resource.password(passwords);
-
-        fail("Should never get here!");
+        assertThrows(BadRequestException.class, () -> resource.password(passwords));
     }
 
-    @Test(expected=InternalServerErrorException.class)
-    public void testPasswordDatabaseException() throws Exception {
+    @Test
+    void testPasswordDatabaseException() throws Exception {
         AdminUserResource resource = new AdminUserResource();
 
         // Inject OSGi services into the resource
@@ -603,9 +585,7 @@ public class AdminUserResourceTest {
         UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Changing the password should fail
-        resource.password(passwords);
-
-        fail("Should never get here");
+        assertThrows(InternalServerErrorException.class, () -> resource.password(passwords));
     }
 
 }
