@@ -114,9 +114,10 @@
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.jdbc</groupId>
-                <artifactId>jdbc.datasourceproxy</artifactId>
+                <artifactId>jdbc-bom</artifactId>
                 <version>${datasourceproxy.version}</version>
-                <scope>provided</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>

@@ -67,6 +67,12 @@
             <artifactId>jdbc.datasourceproxy</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>no.priv.bang.jdbc</groupId>
+            <artifactId>jdbc.datasourceproxy</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
     </dependencies>
 
     <build>
