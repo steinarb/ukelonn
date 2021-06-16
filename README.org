@@ -165,7 +165,6 @@ Framgangsmåten er som følger:
     | admin | admin    |
  6. Opprett den/de admin-brukerene du vil ha og den/de vanlige brukerene du vil ha
 
-
 * Beskrivelse av koden
 (/Beskriver versjonen fra master/)
 
