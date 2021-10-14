@@ -18,7 +18,6 @@ package no.priv.bang.ukelonn.api;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
