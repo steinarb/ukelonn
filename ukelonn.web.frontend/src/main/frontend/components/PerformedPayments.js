@@ -34,17 +34,17 @@ function PerformedPayments(props) {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th className="transaction-table-col transaction-table-col1">{text.date}</th>
-                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">{text.paymentType}</th>
-                            <th className="transaction-table-col transaction-table-col3b">{text.amount}</th>
+                            <th className="transaction-table-col1">{text.date}</th>
+                            <th className="transaction-table-col-hide-overflow transaction-table-col2">{text.paymentType}</th>
+                            <th className="transaction-table-col3b">{text.amount}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {payments.map((payment) =>
                              <tr key={payment.id}>
-                                 <td className="transaction-table-col">{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
-                                 <td className="transaction-table-col">{payment.name}</td>
-                                 <td className="transaction-table-col">{payment.transactionAmount}</td>
+                                 <td>{moment(payment.transactionTime).format("YYYY-MM-DD")}</td>
+                                 <td>{payment.name}</td>
+                                 <td>{payment.transactionAmount}</td>
                              </tr>
                         )}
                     </tbody>

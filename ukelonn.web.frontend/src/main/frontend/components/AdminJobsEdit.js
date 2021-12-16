@@ -49,17 +49,17 @@ function AdminJobsEdit(props) {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th className="transaction-table-col transaction-table-col1">{text.date}Dato</th>
-                            <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col2">{text.jobs}</th>
-                            <th className="transaction-table-col transaction-table-col3">{text.amount}</th>
+                            <th className="transaction-table-col1">{text.date}Dato</th>
+                            <th className="transaction-table-col-hide-overflow transaction-table-col2">{text.jobs}</th>
+                            <th className="transaction-table-col3">{text.amount}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {jobs.map((job) =>
                             <tr onClick={ ()=>onRowClick(account, job) } key={job.id}>
-                                 <td className="transaction-table-col">{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
-                                 <td className="transaction-table-col transaction-table-col-hide-overflow">{job.name}</td>
-                                 <td className="transaction-table-col">{job.transactionAmount}</td>
+                                 <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
+                                 <td className="transaction-table-col-hide-overflow">{job.name}</td>
+                                 <td>{job.transactionAmount}</td>
                             </tr>
                         )}
                      </tbody>
