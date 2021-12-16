@@ -10,9 +10,6 @@
 
 .table-fixed { table-layout: fixed }
 
-.transaction-table-col {
-    max-width: 0;
-}
 .transaction-table-col-hide-overflow {
     overflow: hidden;
     text-overflow: ellipsis;
