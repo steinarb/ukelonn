@@ -71,7 +71,7 @@ function User(props) {
                     <div>
                         <label htmlFor="date">{text.date}</label>
                         <div>
-                            <DatePicker selected={performedjob.transactionDate} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} readOnly={true} />
+                            <DatePicker selected={moment(performedjob.transactionDate).toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} />
                         </div>
                     </div>
                     <div>

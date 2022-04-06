@@ -75,7 +75,7 @@ function AdminJobsEdit(props) {
                         <div>
                             <label htmlFor="date">{text.date}</label>
                             <div>
-                                <DatePicker selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
+                                <DatePicker selected={selectedjob.transactionTime.toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} />
                             </div>
                         </div>
                         <div>
@@ -133,7 +133,7 @@ function mapDispatchToProps(dispatch) {
             const { id: transactionTypeId, transactionAmount } = jobtype;
             dispatch(UPDATE_SELECTEDJOB({ transactionTypeId, transactionAmount }));
         },
-        onDateFieldChange: (selectedValue) => dispatch(UPDATE_SELECTEDJOB({ transactionTime: selectedValue })),
+        onDateFieldChange: (selectedValue) => dispatch(UPDATE_SELECTEDJOB({ transactionTime: moment(selectedValue) })),
         onSaveEditedJob: (selectedjob) => {
             dispatch(UPDATE_JOB_REQUEST({ selectedjob }));
             let changedField = {

@@ -97,13 +97,13 @@ function AdminBonusesModify(props) {
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker selected={startDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateStartDate(bonus, d)} readOnly={true} />
+                            <DatePicker selected={startDate.toDate()} dateFormat="yyyy-MM-dd" onChange={d => onUpdateStartDate(bonus, d)} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker selected={endDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateEndDate(bonus, d)} readOnly={true} />
+                            <DatePicker selected={endDate.toDate()} dateFormat="yyyy-MM-dd" onChange={d => onUpdateEndDate(bonus, d)} />
                         </div>
                     </div>
                     <div>
