@@ -75,7 +75,7 @@ function AdminJobsEdit(props) {
                         <div>
                             <label htmlFor="date">{text.date}</label>
                             <div>
-                                <DatePicker selected={selectedjob.transactionTime.toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} />
+                                <DatePicker selected={selectedjob.transactionTime.toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} onFocus={e => e.target.blur()} />
                             </div>
                         </div>
                         <div>

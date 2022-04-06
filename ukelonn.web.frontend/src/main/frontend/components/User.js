@@ -71,7 +71,7 @@ function User(props) {
                     <div>
                         <label htmlFor="date">{text.date}</label>
                         <div>
-                            <DatePicker selected={moment(performedjob.transactionDate).toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} />
+                            <DatePicker selected={moment(performedjob.transactionDate).toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
