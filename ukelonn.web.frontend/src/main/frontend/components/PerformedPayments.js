@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
-import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
@@ -42,7 +41,7 @@ function PerformedPayments(props) {
                     <tbody>
                         {payments.map((payment) =>
                                       <tr key={payment.id}>
-                                          <td>{moment(payment.transactionTime).format('YYYY-MM-DD')}</td>
+                                          <td>{new Date(payment.transactionTime).toISOString().split('T')[0]}</td>
                                           <td>{payment.name}</td>
                                           <td>{payment.transactionAmount}</td>
                                       </tr>

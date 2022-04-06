@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
-import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
@@ -43,7 +42,7 @@ function PerformedJobs(props) {
                     <tbody>
                         {jobs.map((job) =>
                                   <tr key={job.id}>
-                                      <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
+                                      <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
                                       <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>

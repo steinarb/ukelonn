@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
@@ -85,13 +84,13 @@ function AdminBonusCreate(props) {
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker selected={startDate.toDate()} dateFormat="yyyy-MM-dd" onChange={d => onUpdateStartDate(bonus, d)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(startDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateStartDate(bonus, d)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker selected={endDate.toDate()} dateFormat="yyyy-MM-dd" onChange={d => onUpdateEndDate(bonus, d)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(endDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateEndDate(bonus, d)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
@@ -127,8 +126,8 @@ function mapDispatchToProps(dispatch) {
         onUpdateTitle: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, title: e.target.value })),
         onUpdateDescription: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, description: e.target.value })),
         onUpdateBonusFactor: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, bonusFactor: e.target.value })),
-        onUpdateStartDate: (bonus, startDate) => dispatch(UPDATE_BONUS({ ...bonus, startDate: moment(startDate) })),
-        onUpdateEndDate: (bonus, endDate) => dispatch(UPDATE_BONUS({ ...bonus, endDate: moment(endDate) })),
+        onUpdateStartDate: (bonus, startDate) => dispatch(UPDATE_BONUS({ ...bonus, startDate })),
+        onUpdateEndDate: (bonus, endDate) => dispatch(UPDATE_BONUS({ ...bonus, endDate })),
         onCreateBonus: bonus => {
             dispatch(CREATE_BONUS(bonus));
             dispatch(UPDATE_BONUS({ ...emptyBonus }));

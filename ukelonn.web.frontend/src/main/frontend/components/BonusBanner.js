@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 function BonusBanner(props) {
     const { text, activebonuses } = props;
@@ -27,7 +26,7 @@ export default connect(mapStateToProps)(BonusBanner);
 
 function renderBonus(bonus, idx, text) {
     const key = 'bonus' + idx.toString();
-    const daysRemaining = moment(bonus.endDate).diff(moment(), 'days');
+    const daysRemaining = dateDayDiff(new Date(bonus.endDate), new Date());
     return (
         <div key={key}>
             <div><BonusIcon bonus={bonus}/>{bonus.title} {text.active}! ({daysRemaining} {text.daysRemaining})</div>
@@ -43,4 +42,9 @@ function BonusIcon(props) {
     }
 
     return (<img src={bonus.iconurl}/>);
+}
+
+function dateDayDiff(d1, d2) {
+    const difference = d1.getTime() - d2.getTime();
+    return Math.ceil(difference / (1000 * 36000 * 2));
 }

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
@@ -71,7 +70,7 @@ function User(props) {
                     <div>
                         <label htmlFor="date">{text.date}</label>
                         <div>
-                            <DatePicker selected={moment(performedjob.transactionDate).toDate()} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(performedjob.transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
@@ -130,7 +129,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(UPDATE_PERFORMEDJOB({
                 transactionTypeId: selectedValue,
                 transactionAmount: jobtype.transactionAmount,
-                transactionDate: moment(),
+                transactionDate: new Date().toISOString(),
             }));
         },
         onDateFieldChange: (selectedValue) => {
