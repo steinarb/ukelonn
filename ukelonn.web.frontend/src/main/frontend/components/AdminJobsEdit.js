@@ -80,7 +80,7 @@ function AdminJobsEdit(props) {
                         <div>
                             <div/>
                             <div>
-                                <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJobType}</button>
+                                <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJob}</button>
                             </div>
                         </div>
                     </div>
