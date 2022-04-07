@@ -1,10 +1,10 @@
-import moment from 'moment';
 
 export const bankAccount = 4;
 
 export const emptyPerformedTransaction = {
     transactionTypeId: -1,
-    transactionAmount: 0.0
+    transactionAmount: 0.0,
+    transactionDate: new Date().toISOString(),
 };
 
 export const emptyTransactionType = {
@@ -17,7 +17,7 @@ export const emptyTransaction = {
     id: -1,
     transactionType: { ...emptyTransactionType },
     transactionAmount: 0.0,
-    transactionTime: moment(),
+    transactionTime: new Date().toISOString(),
 };
 
 export const emptyUser = {
