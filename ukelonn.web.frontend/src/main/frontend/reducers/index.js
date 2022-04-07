@@ -1,31 +1,31 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
-import usernameReducer from './usernameReducer';
-import passwordReducer from './passwordReducer';
-import notificationAvailableReducer from './notificationAvailableReducer';
-import notificationMessageReducer from './notificationMessageReducer';
-import accountReducer from './accountReducer';
-import paymentReducer from './paymentReducer';
-import jobsReducer from './jobsReducer';
-import paymentsReducer from './paymentsReducer';
-import jobtypesReducer from './jobtypesReducer';
-import haveReceivedResponseFromLoginReducer from './haveReceivedResponseFromLoginReducer';
-import loginResponseReducer from './loginResponseReducer';
-import performedjobReducer from './performedjobReducer';
-import selectedjobReducer from './selectedjobReducer';
-import accountsReducer from './accountsReducer';
-import paymenttypesReducer from './paymenttypesReducer';
-import transactiontypeReducer from './transactiontypeReducer';
-import usersReducer from './usersReducer';
-import usernamesReducer from './usernamesReducer';
-import userReducer from './userReducer';
-import passwordsReducer from './passwordsReducer';
+import username from './usernameReducer';
+import password from './passwordReducer';
+import notificationAvailable from './notificationAvailableReducer';
+import notificationMessage from './notificationMessageReducer';
+import account from './accountReducer';
+import payment from './paymentReducer';
+import jobs from './jobsReducer';
+import payments from './paymentsReducer';
+import jobtypes from './jobtypesReducer';
+import haveReceivedResponseFromLogin from './haveReceivedResponseFromLoginReducer';
+import loginResponse from './loginResponseReducer';
+import performedjob from './performedjobReducer';
+import selectedjob from './selectedjobReducer';
+import accounts from './accountsReducer';
+import paymenttypes from './paymenttypesReducer';
+import transactiontype from './transactiontypeReducer';
+import users from './usersReducer';
+import usernames from './usernamesReducer';
+import user from './userReducer';
+import passwords from './passwordsReducer';
 import userIsAdministrator from './userIsAdministratorReducer';
-import activebonusesReducer from './activebonusesReducer';
-import allbonusesReducer from './allbonusesReducer';
-import bonusReducer from './bonusReducer';
-import earningsSumOverYearReducer from './earningsSumOverYearReducer';
-import earningsSumOverMonthReducer from './earningsSumOverMonthReducer';
+import activebonuses from './activebonusesReducer';
+import allbonuses from './allbonusesReducer';
+import bonus from './bonusReducer';
+import earningsSumOverYear from './earningsSumOverYearReducer';
+import earningsSumOverMonth from './earningsSumOverMonthReducer';
 import locale from './localeReducer';
 import availableLocales from './availableLocalesReducer';
 import displayTexts from './displayTextsReducer';
@@ -35,30 +35,30 @@ export default (history) => combineReducers({
     locale,
     availableLocales,
     displayTexts,
-    username: usernameReducer,
-    password: passwordReducer,
-    notificationAvailable: notificationAvailableReducer,
-    notificationMessage: notificationMessageReducer,
-    account: accountReducer,
-    payment: paymentReducer,
-    jobs: jobsReducer,
-    payments: paymentsReducer,
-    jobtypes: jobtypesReducer,
-    haveReceivedResponseFromLogin: haveReceivedResponseFromLoginReducer,
-    loginResponse: loginResponseReducer,
-    performedjob: performedjobReducer,
-    selectedjob: selectedjobReducer,
-    accounts: accountsReducer,
-    paymenttypes: paymenttypesReducer,
-    transactiontype: transactiontypeReducer,
-    users: usersReducer,
-    usernames: usernamesReducer,
-    user: userReducer,
-    passwords: passwordsReducer,
+    username,
+    password,
+    notificationAvailable,
+    notificationMessage,
+    account,
+    payment,
+    jobs,
+    payments,
+    jobtypes,
+    haveReceivedResponseFromLogin,
+    loginResponse,
+    performedjob,
+    selectedjob,
+    accounts,
+    paymenttypes,
+    transactiontype,
+    users,
+    usernames,
+    user,
+    passwords,
     userIsAdministrator,
-    activebonuses: activebonusesReducer,
-    allbonuses: allbonusesReducer,
-    bonus: bonusReducer,
-    earningsSumOverYear: earningsSumOverYearReducer,
-    earningsSumOverMonth: earningsSumOverMonthReducer,
+    activebonuses,
+    allbonuses,
+    bonus,
+    earningsSumOverYear,
+    earningsSumOverMonth,
 });
