@@ -125,7 +125,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(UPDATE_ACCOUNT(account));
             dispatch(RECENTJOBS_REQUEST(account.accountId));
         },
-        onRowClick: (job) => dispatch(UPDATE_SELECTEDJOB({ ...job, transactionTypeId: job.transactionType.id, transactionTime: new Date(job.transactionTime).toISOString() })),
+        onRowClick: (account, job) => dispatch(UPDATE_SELECTEDJOB({ ...job, transactionTypeId: job.transactionType.id, transactionTime: new Date(job.transactionTime).toISOString() })),
         onJobtypeFieldChange: (selectedValue, jobtypes) => {
             const selectedValueInt = parseInt(selectedValue, 10);
             const jobtype = jobtypes.find(j => j.id === selectedValueInt);
