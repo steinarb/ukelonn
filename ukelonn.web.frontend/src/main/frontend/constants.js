@@ -1,4 +1,3 @@
-import moment from 'moment';
 
 export const emptyAccount = {
     accountId: -1,
@@ -16,6 +15,6 @@ export const emptyBonus = {
     title: '',
     description: '',
     bonusFactor: 1.0,
-    startDate: moment(),
-    endDate: moment(),
+    startDate: new Date().toISOString(),
+    endDate: new Date().toISOString(),
 };

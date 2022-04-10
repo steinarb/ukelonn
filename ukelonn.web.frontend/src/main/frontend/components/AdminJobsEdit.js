@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
@@ -57,12 +56,12 @@ function AdminJobsEdit(props) {
                     <tbody>
                         {jobs.map((job) =>
                             <tr onClick={ ()=>onRowClick(account, job) } key={job.id}>
-                                 <td>{moment(job.transactionTime).format("YYYY-MM-DD")}</td>
-                                 <td className="transaction-table-col-hide-overflow">{job.name}</td>
-                                 <td>{job.transactionAmount}</td>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td className="transaction-table-col-hide-overflow">{job.name}</td>
+                                <td>{job.transactionAmount}</td>
                             </tr>
                         )}
-                     </tbody>
+                    </tbody>
                 </table>
             </div>
             <h2>Endre jobb</h2>
@@ -82,7 +81,7 @@ function AdminJobsEdit(props) {
                 <div className="form-group row">
                     <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                     <div className="col-7">
-                        <DatePicker id="date" selected={selectedjob.transactionTime} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} readOnly={true} />
+                        <DatePicker selected={new Date(selectedjob.transactionTime)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} onFocus={e => e.target.blur()} />
                     </div>
                 </div>
             </div>
@@ -114,7 +113,7 @@ const emptyJob = {
     transactionType: { transactionTypeName: '' },
     transactionTypeId: -1,
     transactionAmount: 0.0,
-    transactionTime: moment(),
+    transactionTime: new Date().toISOString(),
 };
 
 function mapDispatchToProps(dispatch) {
@@ -126,7 +125,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(UPDATE_ACCOUNT(account));
             dispatch(RECENTJOBS_REQUEST(account.accountId));
         },
-        onRowClick: (job) => dispatch(UPDATE_SELECTEDJOB({ ...job, transactionTypeId: job.transactionType.id, transactionTime: moment(job.transactionTime) })),
+        onRowClick: (account, job) => dispatch(UPDATE_SELECTEDJOB({ ...job, transactionTypeId: job.transactionType.id, transactionTime: new Date(job.transactionTime).toISOString() })),
         onJobtypeFieldChange: (selectedValue, jobtypes) => {
             const selectedValueInt = parseInt(selectedValue, 10);
             const jobtype = jobtypes.find(j => j.id === selectedValueInt);

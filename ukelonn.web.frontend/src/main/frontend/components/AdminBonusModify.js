@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
@@ -40,8 +39,8 @@ function AdminBonusesModify(props) {
     const title = bonus.title || '';
     const description = bonus.description || '';
     const bonusFactor = bonus.bonusFactor || 0;
-    const startDate = moment(bonus.startDate);
-    const endDate = moment(bonus.endDate);
+    const startDate = new Date(bonus.startDate).toISOString();
+    const endDate = new Date(bonus.endDate).toISOString();
 
     return (
         <div>
@@ -99,13 +98,13 @@ function AdminBonusesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="startdate" className="col-form-label col-5">{text.startDate}</label>
                         <div className="col-7">
-                            <DatePicker selected={startDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateStartDate(bonus, d)} readOnly={true} />
+                            <DatePicker selected={new Date(startDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateStartDate(bonus, d)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="enddate" className="col-form-label col-5">{text.endDate}</label>
                         <div className="col-7">
-                            <DatePicker selected={endDate} dateFormat="YYYY-MM-DD" onChange={d => onUpdateEndDate(bonus, d)} readOnly={true} />
+                            <DatePicker selected={new Date(endDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateEndDate(bonus, d)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div className="form-group row">
