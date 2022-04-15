@@ -6,17 +6,11 @@ import {
     ACCOUNTS_FAILURE,
 } from '../actiontypes';
 
-// watcher saga
-export function* requestAccountsSaga() {
-    yield takeLatest(ACCOUNTS_REQUEST, receiveAccountsSaga);
-}
-
 function doAccounts() {
     return axios.get('/ukelonn/api/accounts');
 }
 
-// worker saga
-function* receiveAccountsSaga() {
+function* requestReceiveAccountsSaga() {
     try {
         const response = yield call(doAccounts);
         const accounts = (response.headers['content-type'] == 'application/json') ? response.data : [];
@@ -24,4 +18,8 @@ function* receiveAccountsSaga() {
     } catch (error) {
         yield put(ACCOUNTS_FAILURE(error));
     }
+}
+
+export default function* accountsSaga() {
+    yield takeLatest(ACCOUNTS_REQUEST, requestReceiveAccountsSaga);
 }

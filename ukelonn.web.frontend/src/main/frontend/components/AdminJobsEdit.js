@@ -6,21 +6,33 @@ import DatePicker from 'react-datepicker';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_ACCOUNT,
-    UPDATE_SELECTEDJOB,
+    JOB_TABLE_ROW_CLICK,
+    MODIFY_JOB_DATE,
     UPDATE_JOB_REQUEST,
-    RECENTJOBS_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 
 function AdminJobsEdit(props) {
+    const {
+        text,
+        accountId,
+        firstname,
+        transactionId,
+        transactionTypeId,
+        transactionAmount,
+        transactionTime,
+        jobs,
+        onLogout,
+        onRowClick,
+        onDateFieldChange,
+        onSaveEditedJob,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, account, jobs, accounts, jobtypes, selectedjob, onLogout, onJobtypeFieldChange, onAccountsFieldChange, onRowClick, onDateFieldChange, onSaveEditedJob } = props;
 
     return (
         <div>
@@ -30,12 +42,12 @@ function AdminJobsEdit(props) {
                     &nbsp;
                     {text.administrateJobsAndJobTypes}
                 </Link>
-                <h1>{text.modifyJobsFor} {account.firstName}</h1>
+                <h1>{text.modifyJobsFor} {firstname}</h1>
                 <Locale />
             </nav>
             <div>
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
-                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+                <Accounts id="account-selector" />
                 <br/>
 
                 <table className="table table-bordered">
@@ -62,25 +74,25 @@ function AdminJobsEdit(props) {
                         <div>
                             <label htmlFor="jobtype">{text.jobType}</label>
                             <div>
-                                <Jobtypes id="jobtype" value={selectedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+                                <Jobtypes id="jobtype" />
                             </div>
                         </div>
                         <div>
                             <label htmlFor="amount">{text.amount}</label>
                             <div>
-                                <input id="amount" type="text" value={selectedjob.transactionAmount} readOnly={true} />
+                                <input id="amount" type="text" value={transactionAmount} readOnly={true} />
                             </div>
                         </div>
                         <div>
                             <label htmlFor="date">{text.date}</label>
                             <div>
-                                <DatePicker selected={new Date(selectedjob.transactionTime)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, selectedjob)} onFocus={e => e.target.blur()} />
+                                <DatePicker selected={new Date(transactionTime)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
                             </div>
                         </div>
                         <div>
                             <div/>
                             <div>
-                                <button onClick={() => onSaveEditedJob(selectedjob)}>{text.saveChangesToJob}</button>
+                                <button onClick={() => onSaveEditedJob({ id: transactionId, accountId, transactionTypeId, transactionAmount, transactionTime })}>{text.saveChangesToJob}</button>
                             </div>
                         </div>
                     </div>
@@ -98,51 +110,22 @@ function AdminJobsEdit(props) {
 function mapStateToProps(state) {
     return {
         text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        account: state.account,
+        accountId: state.accountId,
+        firstname: state.accountFirstname,
+        transactionId: state.transactionId,
+        transactionTypeId: state.transactionTypeId,
+        transactionAmount: state.transactionAmount,
+        transactionTime: state.transactionDate,
         jobs: state.jobs,
-        accounts: state.accounts,
-        jobtypes: state.jobtypes,
-        selectedjob: state.selectedjob,
     };
 }
-
-const emptyJob = {
-    accountId: -1,
-    transactionType: { transactionTypeName: '' },
-    transactionTypeId: -1,
-    transactionAmount: 0.0,
-    transactionTime: new Date().toISOString(),
-};
 
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccountsFieldChange: (selectedValue, accounts) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let account = accounts.find(account => account.accountId === selectedValueInt);
-            dispatch(UPDATE_ACCOUNT(account));
-            dispatch(RECENTJOBS_REQUEST(account.accountId));
-        },
-        onRowClick: (job) => dispatch(UPDATE_SELECTEDJOB({ ...job, transactionTypeId: job.transactionType.id, transactionTime: new Date(job.transactionTime).toISOString() })),
-        onJobtypeFieldChange: (selectedValue, jobtypes) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            const jobtype = jobtypes.find(j => j.id === selectedValueInt);
-            const { id: transactionTypeId, transactionAmount } = jobtype;
-            dispatch(UPDATE_SELECTEDJOB({ transactionTypeId, transactionAmount }));
-        },
-        onDateFieldChange: (selectedValue) => dispatch(UPDATE_SELECTEDJOB({ transactionTime: selectedValue })),
-        onSaveEditedJob: (selectedjob) => {
-            dispatch(UPDATE_JOB_REQUEST({ selectedjob }));
-            let changedField = {
-                selectedjob: {
-                    ...emptyJob,
-                    transactionType: { transactionTypeName: '' },
-                }
-            };
-            dispatch(UPDATE_SELECTEDJOB(changedField));
-        },
+        onRowClick: (job) => dispatch(JOB_TABLE_ROW_CLICK({ ...job })),
+        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
+        onSaveEditedJob: (modifiedJob) => dispatch(UPDATE_JOB_REQUEST(modifiedJob)),
     };
 }
 

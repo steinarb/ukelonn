@@ -6,16 +6,10 @@ import {
     USERS_FAILURE,
 } from '../actiontypes';
 
-// watcher saga
-export function* requestUsersSaga() {
-    yield takeLatest(USERS_REQUEST, receiveUsersSaga);
-}
-
 function doUsers() {
     return axios.get('/ukelonn/api/users');
 }
 
-// worker saga
 function* receiveUsersSaga() {
     try {
         const response = yield call(doUsers);
@@ -24,4 +18,8 @@ function* receiveUsersSaga() {
     } catch (error) {
         yield put(USERS_FAILURE(error));
     }
+}
+
+export default function* usersSaga() {
+    yield takeLatest(USERS_REQUEST, receiveUsersSaga);
 }

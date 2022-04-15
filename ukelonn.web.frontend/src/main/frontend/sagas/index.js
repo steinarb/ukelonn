@@ -4,29 +4,34 @@ import { requestLogoutSaga } from './logoutSaga';
 import locationSaga from './locationSaga';
 import accountSaga from './accountSaga';
 import { requestJobtypeListSaga } from './jobtypelistSaga';
-import { requestRegisterJobSaga } from './registerjobSaga';
+import registerJobSaga from './registerJobSaga';
+import jobSaga from './jobSaga';
+import paymentSaga from './paymentSaga';
 import { requestRecentJobsSaga } from './recentjobsSaga';
 import { requestRecentPaymentsSaga } from  './recentpaymentsSaga';
-import { requestAccountsSaga } from './accountsSaga';
-import { requestPaymenttypesSaga } from './paymenttypesSaga';
-import { requestRegisterPaymentSaga } from './registerpaymentSaga';
-import { requestModifyJobtypeSaga } from './modifyjobtypeSaga';
-import { requestCreatePaymenttypeSaga } from './createpaymenttypeSaga';
-import { requestCreateJobtypeSaga } from './createjobtypeSaga';
-import { requestDeleteJobsSaga } from './deletejobsSaga';
-import { requestUpdateJobSaga } from './updatejobSaga';
-import { requestModifyPaymenttypeSaga } from './modifypaymenttypeSaga';
-import { requestUsersSaga } from './usersSaga';
-import { requestModifyUserSaga } from './modifyuserSaga';
-import { requestCreateUserSaga } from './createuserSaga';
+import accountsSaga from './accountsSaga';
+import paymenttypesSaga from './paymenttypesSaga';
+import registerPaymentSaga from './registerPaymentSaga';
+import modifyJobtypeSaga from './modifyJobtypeSaga';
+import createPaymenttypeSaga from './createpaymenttypeSaga';
+import createJobtypeSaga from './createJobtypeSaga';
+import deleteJobsSaga from './deleteJobsSaga';
+import updateJobSaga from './updateJobSaga';
+import modifyPaymenttypeSaga from './modifyPaymenttypeSaga';
+import usersSaga from './usersSaga';
+import userSaga from './userSaga';
+import modifyUserSaga from './modifyUserSaga';
+import createUserSaga from './createUserSaga';
 import adminstatusSaga from './adminstatusSaga';
 import changeadminstatusSaga from './changeadminstatusSaga';
 import { requestActivebonusesSaga } from './activebonusesSaga';
 import { requestAllbonusesSaga } from './allbonusesSaga';
-import modifybonusSaga from './modifybonusSaga';
-import createbonusSaga from './createbonusSaga';
-import deletebonusSaga from './deletebonusSaga';
-import { requestChangePasswordSaga } from './modifyuserpasswordSaga';
+import bonusSaga from './bonusSaga';
+import modifyBonusSaga from './modifyBonusSaga';
+import createBonusSaga from './createBonusSaga';
+import deleteBonusSaga from './deleteBonusSaga';
+import changeUserPasswordSaga from './changeUserPasswordSaga';
+import passwordSaga from './passwordSaga';
 import { startNotificationListening } from './notificationSaga';
 import earningsSumOverYearSaga from './earningsSumOverYearSaga';
 import earningsSumOverMonthSaga from './earningsSumOverMonthSaga';
@@ -43,29 +48,34 @@ export function* rootSaga() {
         fork(locationSaga),
         fork(accountSaga),
         fork(requestJobtypeListSaga),
-        fork(requestRegisterJobSaga),
+        fork(registerJobSaga),
+        fork(jobSaga),
+        fork(paymentSaga),
         fork(requestRecentJobsSaga),
         fork(requestRecentPaymentsSaga),
-        fork(requestAccountsSaga),
-        fork(requestPaymenttypesSaga),
-        fork(requestRegisterPaymentSaga),
-        fork(requestModifyJobtypeSaga),
-        fork(requestCreateJobtypeSaga),
-        fork(requestDeleteJobsSaga),
-        fork(requestUpdateJobSaga),
-        fork(requestModifyPaymenttypeSaga),
-        fork(requestCreatePaymenttypeSaga),
-        fork(requestUsersSaga),
-        fork(requestModifyUserSaga),
+        fork(accountsSaga),
+        fork(paymenttypesSaga),
+        fork(registerPaymentSaga),
+        fork(modifyJobtypeSaga),
+        fork(createJobtypeSaga),
+        fork(deleteJobsSaga),
+        fork(updateJobSaga),
+        fork(modifyPaymenttypeSaga),
+        fork(createPaymenttypeSaga),
+        fork(usersSaga),
+        fork(userSaga),
+        fork(modifyUserSaga),
         fork(adminstatusSaga),
         fork(changeadminstatusSaga),
         fork(requestActivebonusesSaga),
         fork(requestAllbonusesSaga),
-        fork(modifybonusSaga),
-        fork(createbonusSaga),
-        fork(deletebonusSaga),
-        fork(requestCreateUserSaga),
-        fork(requestChangePasswordSaga),
+        fork(bonusSaga),
+        fork(modifyBonusSaga),
+        fork(createBonusSaga),
+        fork(deleteBonusSaga),
+        fork(createUserSaga),
+        fork(changeUserPasswordSaga),
+        fork(passwordSaga),
         fork(startNotificationListening),
         fork(earningsSumOverYearSaga),
         fork(earningsSumOverMonthSaga),

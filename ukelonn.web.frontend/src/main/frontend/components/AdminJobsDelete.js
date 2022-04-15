@@ -6,19 +6,25 @@ import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     RECENTJOBS_REQUEST,
-    UPDATE_JOBS,
-    UPDATE_ACCOUNT,
-    DELETE_JOBS_REQUEST,
+    MODIFY_MARK_JOB_FOR_DELETE,
+    DELETE_SELECTED_JOBS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
 
 function AdminJobsDelete(props) {
+    const {
+        text,
+        accountFirstName,
+        jobs,
+        onLogout,
+        onCheckboxTicked,
+        onDeleteMarkedJobsButtonClicked,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, account, jobs, accounts, onLogout, onAccountsFieldChange, onCheckboxTicked, onDeleteMarkedJobs } = props;
 
     return (
         <div>
@@ -28,7 +34,7 @@ function AdminJobsDelete(props) {
                     &nbsp;
                     {text.administrateJobsAndJobTypes}
                 </Link>
-                <h1>{text.deleteErronouslyRegisteredJobsFor} {account.firstName}</h1>
+                <h1>{text.deleteErronouslyRegisteredJobsFor} {accountFirstName}</h1>
                 <Locale />
             </nav>
 
@@ -38,7 +44,7 @@ function AdminJobsDelete(props) {
                     <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
 
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
-                <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+                <Accounts id="account-selector" />
 
                 <table className="table table-bordered">
                     <thead>
@@ -52,15 +58,15 @@ function AdminJobsDelete(props) {
                     <tbody>
                         {jobs.map((job) =>
                                   <tr key={job.id}>
-                                      <td><input type="checkbox" checked={job.delete} onChange={(e) => onCheckboxTicked(e.target.checked, job, jobs)}/></td>
-                                      <td>{job.transactionTime}</td>
+                                      <td><input type="checkbox" checked={job.delete} onChange={e => onCheckboxTicked({ ...job, delete: e.target.checked })}/></td>
+                                      <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
                                   </tr>
                                  )}
                     </tbody>
                 </table>
-                <button onClick={() => onDeleteMarkedJobs(account, jobs)}>{text.deleteMarkedJobs}</button>
+                <button onClick={onDeleteMarkedJobsButtonClicked}>{text.deleteMarkedJobs}</button>
             </div>
             <br/>
             <br/>
@@ -76,7 +82,6 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        account: state.account,
         jobs: state.jobs,
         accounts: state.accounts,
     };
@@ -86,20 +91,8 @@ function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
         onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
-        onAccountsFieldChange: (selectedValue, accounts) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let account = accounts.find(account => account.accountId === selectedValueInt);
-            dispatch(UPDATE_ACCOUNT(account));
-            dispatch(RECENTJOBS_REQUEST(account.accountId));
-        },
-        onCheckboxTicked: (deleteChecked, job, origJobs) => {
-            const jobs = origJobs.map(j => (j.id === job.id) ? { ...job, delete: deleteChecked } : j);
-            dispatch(UPDATE_JOBS(jobs));
-        },
-        onDeleteMarkedJobs: (account, jobs) => {
-            const jobsToDelete = jobs.filter(job => job.delete);
-            dispatch(DELETE_JOBS_REQUEST({ account, jobsToDelete }));
-        },
+        onCheckboxTicked: job => dispatch(MODIFY_MARK_JOB_FOR_DELETE(job)),
+        onDeleteMarkedJobsButtonClicked: () => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED()),
     };
 }
 

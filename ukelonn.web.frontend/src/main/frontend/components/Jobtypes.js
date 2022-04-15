@@ -1,9 +1,16 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { SELECT_JOB_TYPE } from '../actiontypes';
 
 function Jobtypes(props) {
-    const {id, className, value, jobtypes, onJobtypeFieldChange } = props;
+    const { id, className } = props;
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
+    const jobtypes = useSelector(state => state.jobtypes);
+    const dispatch = useDispatch();
+
     return (
-        <select id={id} className={className} onChange={(event) => onJobtypeFieldChange(event.target.value, jobtypes)} value={value}>
+        <select id={id} className={className} onChange={e => dispatch(SELECT_JOB_TYPE(parseInt(e.target.value)))} value={transactionTypeId}>
+            <option key="-1" value="-1" />
             {jobtypes.map((val) => <option key={val.id} value={val.id}>{val.transactionTypeName}</option>)}
         </select>
     );

@@ -8,8 +8,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_PERFORMEDJOB,
-    REGISTERJOB_REQUEST,
+    MODIFY_JOB_DATE,
+    REGISTER_JOB_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
@@ -18,15 +18,26 @@ import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
 
 function User(props) {
+    const {
+        text,
+        accountId,
+        firstname,
+        username,
+        accountBalance,
+        transactionAmount,
+        transactionDate,
+        notificationMessage,
+        onDateFieldChange,
+        onRegisterJob,
+        onLogout,
+    } = props;
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { text, account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = props;
-    const title = text.weeklyAllowanceFor + ' ' + account.firstName;
-    const username = account.username;
-    const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
-    const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+    const title = text.weeklyAllowanceFor + ' ' + firstname;
+    const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });
+    const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId, username, parentTitle: title });
     const statistics = '/ukelonn/statistics?' + stringify({ username });
 
     return (
@@ -45,7 +56,7 @@ function User(props) {
                             <label>{text.owedAmount}</label>
                         </div>
                         <div>
-                            {account.balance}
+                            {accountBalance}
                         </div>
                     </div>
                     <div>
@@ -58,25 +69,25 @@ function User(props) {
                     <div>
                         <label htmlFor="jobtype">{text.chooseJob}</label>
                         <div>
-                            <Jobtypes id="jobtype" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            <Jobtypes id="jobtype" />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.amount}</label>
                         <div>
-                            <input id="amount" type="text" value={performedjob.transactionAmount} readOnly={true} />
+                            <input id="amount" type="text" value={transactionAmount} readOnly={true} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="date">{text.date}</label>
                         <div>
-                            <DatePicker selected={new Date(performedjob.transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onRegisterJob(performedjob)}>{text.registerJob}</button>
+                            <button onClick={onRegisterJob}>{text.registerJob}</button>
                         </div>
                     </div>
                 </div>
@@ -113,9 +124,12 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        account: state.account,
-        jobtypes: state.jobtypes,
-        performedjob: state.performedjob,
+        accountId: state.accountId,
+        firstname: state.accountFirstname,
+        username: state.accountUsername,
+        accountBalance: state.accountBalance,
+        transactionAmount: state.transactionAmount,
+        transactionDate: state.transactionDate,
         notificationMessage: state.notificationMessage,
     };
 }
@@ -123,21 +137,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onJobtypeFieldChange: (selectedValue, jobtypes) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
-            dispatch(UPDATE_PERFORMEDJOB({
-                transactionTypeId: selectedValue,
-                transactionAmount: jobtype.transactionAmount,
-                transactionDate: new Date().toISOString(),
-            }));
-        },
-        onDateFieldChange: (selectedValue) => {
-            dispatch(UPDATE_PERFORMEDJOB({
-                transactionDate: selectedValue,
-            }));
-        },
-        onRegisterJob: (performedjob) => dispatch(REGISTERJOB_REQUEST(performedjob)),
+        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
+        onRegisterJob: () => dispatch(REGISTER_JOB_BUTTON_CLICKED()),
     };
 }
 

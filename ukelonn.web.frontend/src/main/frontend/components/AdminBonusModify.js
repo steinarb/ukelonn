@@ -6,22 +6,31 @@ import DatePicker from 'react-datepicker';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_BONUS,
-    MODIFY_BONUS,
+    SELECT_BONUS,
+    MODIFY_BONUS_ENABLED,
+    MODIFY_BONUS_ICONURL,
+    MODIFY_BONUS_TITLE,
+    MODIFY_BONUS_DESCRIPTION,
+    MODIFY_BONUS_FACTOR,
+    MODIFY_BONUS_START_DATE,
+    MODIFY_BONUS_END_DATE,
+    SAVE_BONUS_CHANGES_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
-import { emptyBonus } from '../constants';
 
 function AdminBonusesModify(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
-    let {
+    const {
         text,
         allbonuses,
-        bonus,
-        onUpdateBonus,
+        bonusId,
+        bonusEnabled,
+        bonusIconurl,
+        bonusTitle,
+        bonusDescription,
+        bonusFactor,
+        bonusStartDate,
+        bonusEndDate,
+        onSelectBonus,
         onUpdateEnabled,
         onUpdateIconurl,
         onUpdateTitle,
@@ -29,18 +38,13 @@ function AdminBonusesModify(props) {
         onUpdateBonusFactor,
         onUpdateStartDate,
         onUpdateEndDate,
-        onModifyBonus,
+        onSaveModifyBonusButtonClicked,
         onLogout,
     } = props;
-    const bonuses = [emptyBonus].concat(allbonuses);
-    const bonusId = bonus.bonusId;
-    const enabled = bonus.enabled;
-    const iconurl = bonus.iconurl || '';
-    const title = bonus.title || '';
-    const description = bonus.description || '';
-    const bonusFactor = bonus.bonusFactor || 0;
-    const startDate = new Date(bonus.startDate).toISOString();
-    const endDate = new Date(bonus.endDate).toISOString();
+
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
     return (
         <div>
@@ -58,57 +62,58 @@ function AdminBonusesModify(props) {
                     <div>
                         <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
-                            <select id="bonus" value={bonusId} onChange={e => onUpdateBonus(bonuses.find(b => b.bonusId === parseInt(e.target.value)))}>
-                                {bonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
+                            <select id="bonus" value={bonusId} onChange={onSelectBonus}>
+                                <option key="-1" value="-1" />
+                                {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enabled">{text.activated}</label>
                         <div>
-                            <input id="enabled" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
+                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="iconurl">{text.iconURL}</label>
                         <div>
-                            <input id="iconurl" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
+                            <input id="iconurl" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input id="title" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
+                            <input id="title" type="text" value={bonusTitle} onChange={onUpdateTitle} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input id="description" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
+                            <input id="description" type="text" value={bonusDescription} onChange={onUpdateDescription} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="bonusfactor">{text.bonusFactor}</label>
                         <div>
-                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
+                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker selected={new Date(startDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateStartDate(bonus, d)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(bonusStartDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateStartDate} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker selected={new Date(endDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateEndDate(bonus, d)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(bonusEndDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateEndDate} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onModifyBonus(bonus)}>{text.saveChangesToBonus}</button>
+                            <button onClick={onSaveModifyBonusButtonClicked}>{text.saveChangesToBonus}</button>
                         </div>
                     </div>
                 </div>
@@ -125,26 +130,28 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,
-        bonus: state.bonus || {},
+        bonusId: state.bonusId,
+        bonusEnabled: state.bonusEnabled,
+        bonusIconurl: state.bonusIconurl,
+        bonusTitle: state.bonusTitle,
+        bonusDescription: state.bonusDescription,
+        bonusFactor: state.bonusFactor,
+        bonusStartDate: state.bonusStartDate,
+        bonusEndDate: state.bonusEndDate,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUpdateBonus: bonus => dispatch(UPDATE_BONUS(bonus)),
-        onUpdateEnabled: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, enabled: e.target.checked })),
-        onUpdateIconurl: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, iconurl: e.target.value })),
-        onUpdateTitle: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, title: e.target.value })),
-        onUpdateDescription: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, description: e.target.value })),
-        onUpdateBonusFactor: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, bonusFactor: e.target.value })),
-        onUpdateStartDate: (bonus, startDate) => dispatch(UPDATE_BONUS({ ...bonus, startDate })),
-        onUpdateEndDate: (bonus, endDate) => dispatch(UPDATE_BONUS({ ...bonus, endDate })),
-        onModifyBonus: bonus => {
-            if (parseInt(bonus.bonusId) !== emptyBonus.bonusId) {
-                dispatch(MODIFY_BONUS(bonus));
-                dispatch(UPDATE_BONUS({ ...emptyBonus }));
-            }
-        },
+        onSelectBonus: e => dispatch(SELECT_BONUS(parseInt(e.target.value))),
+        onUpdateEnabled: e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked)),
+        onUpdateIconurl: e => dispatch(MODIFY_BONUS_ICONURL(e.target.value)),
+        onUpdateTitle: e => dispatch(MODIFY_BONUS_TITLE(e.target.value)),
+        onUpdateDescription: e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value)),
+        onUpdateBonusFactor: e => dispatch(MODIFY_BONUS_FACTOR(e.target.value)),
+        onUpdateStartDate: d => dispatch(MODIFY_BONUS_START_DATE(d)),
+        onUpdateEndDate: d => dispatch(MODIFY_BONUS_END_DATE(d)),
+        onSaveModifyBonusButtonClicked: () => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED()),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

@@ -4,20 +4,29 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
-    UPDATE_TRANSACTIONTYPE,
+    MODIFY_TRANSACTION_TYPE_NAME,
+    MODIFY_JOB_AMOUNT,
     MODIFY_JOBTYPE_REQUEST,
+    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
-import Amount from './Amount';
 
 function AdminJobtypesModify(props) {
+    const {
+        text,
+        transactionTypeId,
+        transactionAmount,
+        transactionTypeName,
+        onNameFieldChange,
+        onAmountFieldChange,
+        onSaveUpdatedJobType,
+        onLogout
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
@@ -35,25 +44,25 @@ function AdminJobtypesModify(props) {
                     <div>
                         <label htmlFor="jobtype">{text.chooseJobType}</label>
                         <div>
-                            <JobtypesBox id="jobtype" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            <JobtypesBox id="jobtype" />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.modifyNameOfJobType}</label>
                         <div>
-                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.modifyAmountOfJobType}</label>
                         <div>
-                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.saveChangesToJobType}</button>
+                            <button onClick={() => onSaveUpdatedJobType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToJobType}</button>
                         </div>
                     </div>
             </form>
@@ -71,21 +80,16 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        jobtypes: state.jobtypes,
-        transactiontype: state.transactiontype,
+        transactionAmount: state.transactionAmount,
+        transactionTypeName: state.transactionTypeName,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onJobtypeFieldChange: (selectedValue, jobtypes) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
-            dispatch(UPDATE_TRANSACTIONTYPE({ ...jobtype }));
-        },
-        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
-        onSaveUpdatedJobType: (transactiontype) => dispatch(MODIFY_JOBTYPE_REQUEST(transactiontype)),
+        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
+        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
+        onSaveUpdatedJobType: jobtype => dispatch(MODIFY_JOBTYPE_REQUEST(jobtype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

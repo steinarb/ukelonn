@@ -4,19 +4,27 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE_TRANSACTIONTYPE,
+    MODIFY_TRANSACTION_TYPE_NAME,
+    MODIFY_JOB_AMOUNT,
     CREATE_JOBTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
-import Amount from './Amount';
 
 function AdminJobtypesCreate(props) {
+    const {
+        text,
+        transactionTypeName,
+        transactionAmount,
+        onNameFieldChange,
+        onAmountFieldChange,
+        onSaveUpdatedJobType,
+        onLogout,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
@@ -34,19 +42,19 @@ function AdminJobtypesCreate(props) {
                     <div>
                         <label htmlFor="amount">{text.nameOfJobType}</label>
                         <div>
-                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.amountForJobType}</label>
                         <div>
-                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.createNewJobType}</button>
+                            <button onClick={() => onSaveUpdatedJobType({ transactionTypeName, transactionAmount })}>{text.createNewJobType}</button>
                         </div>
                     </div>
                 </div>
@@ -62,18 +70,16 @@ function AdminJobtypesCreate(props) {
 function mapStateToProps(state) {
     return {
         text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        jobtypes: state.jobtypes,
-        transactiontype: state.transactiontype,
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
-        onSaveUpdatedJobType: (transactiontype) => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
+        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
+        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
+        onSaveUpdatedJobType: transactiontype => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

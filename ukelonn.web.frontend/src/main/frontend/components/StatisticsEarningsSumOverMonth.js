@@ -63,7 +63,6 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        account: state.account,
         earningsSumOverMonth: state.earningsSumOverMonth,
     };
 }

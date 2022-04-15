@@ -5,29 +5,26 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_BONUS,
-    DELETE_BONUS,
+    SELECT_BONUS,
+    DELETE_SELECTED_BONUS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
-import { emptyBonus } from '../constants';
 
 function AdminBonusesDelete(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
-    let {
+    const {
         text,
         allbonuses,
-        bonus,
-        onUpdateBonus,
+        bonusId,
+        bonusTitle,
+        bonusDescription,
+        onSelectBonus,
         onDeleteBonus,
         onLogout,
     } = props;
-    const bonuses = [emptyBonus].concat(allbonuses);
-    const bonusId = bonus.bonusId;
-    const title = bonus.title || '';
-    const description = bonus.description || '';
+
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
     return (
         <div>
@@ -46,27 +43,28 @@ function AdminBonusesDelete(props) {
                     <div>
                         <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
-                            <select id="bonus" value={bonusId} onChange={e => onUpdateBonus(bonuses.find(b => b.bonusId === parseInt(e.target.value)))}>
-                                {bonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
+                            <select id="bonus" value={bonusId} onChange={onSelectBonus}>
+                                <option key="-1" value="-1" />
+                                {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
                         </div>
                     </div>
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input readOnly id="title" type="text" value={title} />
+                            <input readOnly id="title" type="text" value={bonusTitle} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input readOnly id="description" type="text" value={description} />
+                            <input readOnly id="description" type="text" value={bonusDescription} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onDeleteBonus(bonus)}>{text.deleteSelectedBonus}</button>
+                            <button onClick={() => onDeleteBonus()}>{text.deleteSelectedBonus}</button>
                         </div>
                     </div>
                 </div>
@@ -85,19 +83,16 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,
-        bonus: state.bonus || {},
+        bonusId: state.bonusId,
+        bonusTitle: state.bonusTitle,
+        bonusDescription: state.bonusDescription,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUpdateBonus: bonus => dispatch(UPDATE_BONUS(bonus)),
-        onDeleteBonus: bonus => {
-            if (parseInt(bonus.bonusId) !== emptyBonus.bonusId) {
-                dispatch(DELETE_BONUS(bonus));
-                dispatch(UPDATE_BONUS({ ...emptyBonus }));
-            }
-        },
+        onSelectBonus: e => dispatch(SELECT_BONUS(parseInt(e.target.value))),
+        onDeleteBonus: () => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED()),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

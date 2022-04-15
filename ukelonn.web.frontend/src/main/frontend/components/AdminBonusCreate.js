@@ -6,11 +6,16 @@ import DatePicker from 'react-datepicker';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_BONUS,
-    CREATE_BONUS,
+    MODIFY_BONUS_ENABLED,
+    MODIFY_BONUS_ICONURL,
+    MODIFY_BONUS_TITLE,
+    MODIFY_BONUS_DESCRIPTION,
+    MODIFY_BONUS_FACTOR,
+    MODIFY_BONUS_START_DATE,
+    MODIFY_BONUS_END_DATE,
+    CREATE_NEW_BONUS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
-import { emptyBonus } from '../constants';
 
 function AdminBonusCreate(props) {
     if (userIsNotLoggedIn(props)) {
@@ -19,7 +24,13 @@ function AdminBonusCreate(props) {
 
     const {
         text,
-        bonus,
+        bonusEnabled,
+        bonusIconurl,
+        bonusTitle,
+        bonusDescription,
+        bonusFactor,
+        bonusStartDate,
+        bonusEndDate,
         onUpdateEnabled,
         onUpdateIconurl,
         onUpdateTitle,
@@ -27,16 +38,9 @@ function AdminBonusCreate(props) {
         onUpdateBonusFactor,
         onUpdateStartDate,
         onUpdateEndDate,
-        onCreateBonus,
+        onSaveCreatedBonusClicked,
         onLogout,
     } = props;
-    const enabled = bonus.enabled;
-    const iconurl = bonus.iconurl || '';
-    const title = bonus.title || '';
-    const description = bonus.description || '';
-    const bonusFactor = bonus.bonusFactor || 0;
-    const startDate = bonus.startDate;
-    const endDate = bonus.endDate;
 
     return (
         <div>
@@ -54,49 +58,49 @@ function AdminBonusCreate(props) {
                     <div>
                         <label htmlFor="enabled">{text.activated}</label>
                         <div>
-                            <input id="enabled" type="checkbox" checked={enabled} onChange={e => onUpdateEnabled(bonus, e)} />
+                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="iconurl">{text.iconURL}</label>
                         <div>
-                            <input id="iconurl" type="text" value={iconurl} onChange={e => onUpdateIconurl(bonus, e)} />
+                            <input id="iconurl" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input id="title" type="text" value={title} onChange={e => onUpdateTitle(bonus, e)} />
+                            <input id="title" type="text" value={bonusTitle} onChange={onUpdateTitle} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input id="description" type="text" value={description} onChange={e => onUpdateDescription(bonus, e)} />
+                            <input id="description" type="text" value={bonusDescription} onChange={onUpdateDescription} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="bonusfactor">{text.bonusFactor}</label>
                         <div>
-                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => onUpdateBonusFactor(bonus, e)} />
+                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker selected={new Date(startDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateStartDate(bonus, d)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(bonusStartDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateStartDate} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker selected={new Date(endDate)} dateFormat="yyyy-MM-dd" onChange={d => onUpdateEndDate(bonus, d)} onFocus={e => e.target.blur()} />
+                            <DatePicker selected={new Date(bonusEndDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateEndDate} onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onCreateBonus(bonus)}>{text.createNewBonus}</button>
+                            <button onClick={() => onSaveCreatedBonusClicked()}>{text.createNewBonus}</button>
                         </div>
                     </div>
                 </div>
@@ -115,23 +119,26 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         allbonuses: state.allbonuses,
-        bonus: state.bonus,
+        bonusEnabled: state.bonusEnabled,
+        bonusIconurl: state.bonusIconurl,
+        bonusTitle: state.bonusTitle,
+        bonusDescription: state.bonusDescription,
+        bonusFactor: state.bonusFactor,
+        bonusStartDate: state.bonusStartDate,
+        bonusEndDate: state.bonusEndDate,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUpdateEnabled: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, enabled: e.target.checked })),
-        onUpdateIconurl: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, iconurl: e.target.value })),
-        onUpdateTitle: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, title: e.target.value })),
-        onUpdateDescription: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, description: e.target.value })),
-        onUpdateBonusFactor: (bonus, e) => dispatch(UPDATE_BONUS({ ...bonus, bonusFactor: e.target.value })),
-        onUpdateStartDate: (bonus, startDate) => dispatch(UPDATE_BONUS({ ...bonus, startDate })),
-        onUpdateEndDate: (bonus, endDate) => dispatch(UPDATE_BONUS({ ...bonus, endDate })),
-        onCreateBonus: bonus => {
-            dispatch(CREATE_BONUS(bonus));
-            dispatch(UPDATE_BONUS({ ...emptyBonus }));
-        },
+        onUpdateEnabled: e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked)),
+        onUpdateIconurl: e => dispatch(MODIFY_BONUS_ICONURL(e.target.value)),
+        onUpdateTitle: e => dispatch(MODIFY_BONUS_TITLE(e.target.value)),
+        onUpdateDescription: e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value)),
+        onUpdateBonusFactor: e => dispatch(MODIFY_BONUS_FACTOR(e.target.value)),
+        onUpdateStartDate: d => dispatch(MODIFY_BONUS_START_DATE(d)),
+        onUpdateEndDate: d => dispatch(MODIFY_BONUS_END_DATE(d)),
+        onSaveCreatedBonusClicked: () => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED()),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
