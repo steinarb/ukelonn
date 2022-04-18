@@ -4,19 +4,11 @@ import {
     MODIFY_JOBTYPE_RECEIVE,
     CREATE_JOBTYPE_RECEIVE,
 } from '../actiontypes';
-import { emptyTransactionType } from './constants';
 
 const jobtypesReducer = createReducer([], {
-    [JOBTYPELIST_RECEIVE]: (state, action) => addEmptyTransactionTypeToJobtypeslist(action),
-    [MODIFY_JOBTYPE_RECEIVE]: (state, action) => addEmptyTransactionTypeToJobtypeslist(action),
-    [CREATE_JOBTYPE_RECEIVE]: (state, action) => addEmptyTransactionTypeToJobtypeslist(action),
+    [JOBTYPELIST_RECEIVE]: (state, action) => action.payload,
+    [MODIFY_JOBTYPE_RECEIVE]: (state, action) => action.payload,
+    [CREATE_JOBTYPE_RECEIVE]: (state, action) => action.payload,
 });
 
 export default jobtypesReducer;
-
-function addEmptyTransactionTypeToJobtypeslist(action) {
-    if (!action.payload.find((job) => job.id === -1)) {
-        action.payload.unshift(emptyTransactionType);
-    }
-    return action.payload;
-}

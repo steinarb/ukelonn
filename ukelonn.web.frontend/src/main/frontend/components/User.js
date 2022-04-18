@@ -8,8 +8,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_PERFORMEDJOB,
-    REGISTERJOB_REQUEST,
+    MODIFY_JOB_DATE,
+    REGISTER_JOB_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
@@ -18,15 +18,26 @@ import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
 
 function User(props) {
+    const {
+        text,
+        accountId,
+        firstname,
+        username,
+        accountBalance,
+        transactionAmount,
+        transactionDate,
+        notificationMessage,
+        onDateFieldChange,
+        onRegisterJob,
+        onLogout,
+    } = props;
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { text, account, jobtypes, performedjob, notificationMessage, onJobtypeFieldChange, onDateFieldChange, onRegisterJob, onLogout } = props;
-    const title = text.weeklyAllowanceFor + ' ' + account.firstName;
-    const username = account.username;
-    const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId: account.accountId, username, parentTitle: title });
-    const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId: account.accountId, username, parentTitle: title });
+    const title = text.weeklyAllowanceFor + ' ' + firstname;
+    const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });
+    const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId, username, parentTitle: title });
     const statistics = '/ukelonn/statistics?' + stringify({ username });
 
     return (
@@ -44,8 +55,8 @@ function User(props) {
                         <div className="col">
                             <label>{text.owedAmount}:</label>
                         </div>
-                        <div className="col">
-                            { account.balance }
+                        <div>
+                            {accountBalance}
                         </div>
                     </div>
                     <div className="row">
@@ -57,25 +68,25 @@ function User(props) {
                         <div className="form-group row">
                             <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJob}</label>
                             <div className="col-7">
-                                <Jobtypes id="jobtype" className="form-control" value={performedjob.transactionTypeId} jobtypes={jobtypes} onJobtypeFieldChange={onJobtypeFieldChange} />
+                                <Jobtypes id="jobtype" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="amount" className="col-form-label col-5">{text.amount}</label>
                             <div className="col-7">
-                                <input id="amount" className="form-control" type="text" value={performedjob.transactionAmount} readOnly={true} /><br/>
+                                <input id="amount" type="text" value={transactionAmount} readOnly={true} />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                             <div className="col-7">
-                                <DatePicker selected={new Date(performedjob.transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue, performedjob)} onFocus={e => e.target.blur()} />
+                                <DatePicker selected={new Date(transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
                             </div>
                         </div>
                         <div className="form-group row">
                             <div className="col-5"/>
                             <div className="col-7">
-                                <button className="btn btn-primary" onClick={() => onRegisterJob(performedjob)}>{text.registerJob}</button>
+                            <button onClick={onRegisterJob}>{text.registerJob}</button>
                             </div>
                         </div>
                     </div>
@@ -110,9 +121,12 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        account: state.account,
-        jobtypes: state.jobtypes,
-        performedjob: state.performedjob,
+        accountId: state.accountId,
+        firstname: state.accountFirstname,
+        username: state.accountUsername,
+        accountBalance: state.accountBalance,
+        transactionAmount: state.transactionAmount,
+        transactionDate: state.transactionDate,
         notificationMessage: state.notificationMessage,
     };
 }
@@ -120,21 +134,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onJobtypeFieldChange: (selectedValue, jobtypes) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
-            dispatch(UPDATE_PERFORMEDJOB({
-                transactionTypeId: selectedValue,
-                transactionAmount: jobtype.transactionAmount,
-                transactionDate: new Date().toISOString(),
-            }));
-        },
-        onDateFieldChange: (selectedValue) => {
-            dispatch(UPDATE_PERFORMEDJOB({
-                transactionDate: selectedValue,
-            }));
-        },
-        onRegisterJob: (performedjob) => dispatch(REGISTERJOB_REQUEST(performedjob)),
+        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
+        onRegisterJob: () => dispatch(REGISTER_JOB_BUTTON_CLICKED()),
     };
 }
 

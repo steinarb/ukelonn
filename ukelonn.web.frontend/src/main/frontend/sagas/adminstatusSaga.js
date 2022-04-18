@@ -6,14 +6,10 @@ import {
     RECEIVE_ADMIN_STATUS_ERROR,
 } from '../actiontypes';
 
-export default function* () {
-    yield takeLatest(REQUEST_ADMIN_STATUS, requestAdminStatus);
-}
-
 function* requestAdminStatus(action) {
-    const user = action.payload;
+    const username = action.payload;
     try {
-        const response = yield call(fetchAdminStatus, user);
+        const response = yield call(fetchAdminStatus, { username });
         const adminStatus = (response.headers['content-type'] === 'application/json') ? response.data : {};
         yield put(RECEIVE_ADMIN_STATUS(adminStatus));
     } catch (error) {
@@ -23,4 +19,8 @@ function* requestAdminStatus(action) {
 
 function fetchAdminStatus(user) {
     return axios.post('/ukelonn/api/admin/user/adminstatus', user);
+}
+
+export default function* adminStatusSaga() {
+    yield takeLatest(REQUEST_ADMIN_STATUS, requestAdminStatus);
 }

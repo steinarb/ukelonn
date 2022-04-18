@@ -4,19 +4,27 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE_TRANSACTIONTYPE,
+    MODIFY_TRANSACTION_TYPE_NAME,
+    MODIFY_JOB_AMOUNT,
     CREATE_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
-import Amount from './Amount';
 
 function AdminPaymenttypesCreate(props) {
+    const {
+        text,
+        transactionTypeName,
+        transactionAmount,
+        onNameFieldChange,
+        onAmountFieldChange,
+        onSaveUpdatedPaymentType,
+        onLogout,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
     return (
         <div>
@@ -34,19 +42,19 @@ function AdminPaymenttypesCreate(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-5">{text.paymentTypeName}</label>
                         <div className="col-7">
-                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-5">{text.paymentTypeAmount}</label>
                         <div className="col-7">
-                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.createNewPaymentType}</button>
+                            <button onClick={() => onSaveUpdatedPaymentType({ transactionTypeName, transactionAmount })}>{text.createNewPaymentType}</button>
                         </div>
                     </div>
                 </div>
@@ -62,6 +70,8 @@ function AdminPaymenttypesCreate(props) {
 function mapStateToProps(state) {
     return {
         text: state.displayTexts,
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         transactiontype: state.transactiontype,
@@ -70,8 +80,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
+        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
+        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
         onSaveUpdatedPaymentType: (transactiontype) => dispatch(CREATE_PAYMENTTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

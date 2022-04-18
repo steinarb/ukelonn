@@ -4,24 +4,26 @@ import {
     PAYMENTTYPES_REQUEST,
     PAYMENTTYPES_RECEIVE,
     PAYMENTTYPES_FAILURE,
+    SELECT_PAYMENT_TYPE,
 } from '../actiontypes';
-
-// watcher saga
-export function* requestPaymenttypesSaga() {
-    yield takeLatest(PAYMENTTYPES_REQUEST, receivePaymenttypesSaga);
-}
 
 function doPaymenttypes() {
     return axios.get('/ukelonn/api/paymenttypes');
 }
 
-// worker saga
 function* receivePaymenttypesSaga() {
     try {
         const response = yield call(doPaymenttypes);
         const paymenttypes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(PAYMENTTYPES_RECEIVE(paymenttypes));
+        if (paymenttypes.length) {
+            yield put(SELECT_PAYMENT_TYPE(paymenttypes[0].id));
+        }
     } catch (error) {
         yield put(PAYMENTTYPES_FAILURE(error));
     }
+}
+
+export default function* paymenttypesSaga() {
+    yield takeLatest(PAYMENTTYPES_REQUEST, receivePaymenttypesSaga);
 }

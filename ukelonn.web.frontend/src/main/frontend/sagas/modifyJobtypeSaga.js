@@ -4,18 +4,13 @@ import {
     MODIFY_JOBTYPE_REQUEST,
     MODIFY_JOBTYPE_RECEIVE,
     MODIFY_JOBTYPE_FAILURE,
+    CLEAR_JOB_TYPE_FORM,
 } from '../actiontypes';
-
-// watcher saga
-export function* requestModifyJobtypeSaga() {
-    yield takeLatest(MODIFY_JOBTYPE_REQUEST, receiveModifyJobtypeSaga);
-}
 
 function doModifyJobtype(jobtype) {
     return axios.post('/ukelonn/api/admin/jobtype/modify', jobtype);
 }
 
-// worker saga
 function* receiveModifyJobtypeSaga(action) {
     try {
         const response = yield call(doModifyJobtype, action.payload);
@@ -24,4 +19,13 @@ function* receiveModifyJobtypeSaga(action) {
     } catch (error) {
         yield put(MODIFY_JOBTYPE_FAILURE(error));
     }
+}
+
+function* clearJobtypeForm() {
+    yield put(CLEAR_JOB_TYPE_FORM());
+}
+
+export default function* modifyJobtypeSaga() {
+    yield takeLatest(MODIFY_JOBTYPE_REQUEST, receiveModifyJobtypeSaga);
+    yield takeLatest(MODIFY_JOBTYPE_RECEIVE, clearJobtypeForm);
 }

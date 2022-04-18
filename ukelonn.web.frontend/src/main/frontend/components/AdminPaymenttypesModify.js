@@ -4,20 +4,32 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE_TRANSACTIONTYPE,
+    SELECT_PAYMENT_TYPE_FOR_EDIT,
+    MODIFY_TRANSACTION_TYPE_NAME,
+    MODIFY_PAYMENT_AMOUNT,
     MODIFY_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
-import Amount from './Amount';
 
 function AdminPaymenttypesModify(props) {
+    const {
+        text,
+        paymenttypes,
+        transactionTypeId,
+        transactionTypeName,
+        transactionAmount,
+        onPaymenttypeFieldChange,
+        onNameFieldChange,
+        onAmountFieldChange,
+        onSaveUpdatedPaymentType,
+        onLogout,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, transactiontype, paymenttypes, onPaymenttypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
     return (
         <div>
@@ -37,25 +49,25 @@ function AdminPaymenttypesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="paymenttype" className="col-form-label col-5">{text.choosePaymentType}</label>
                         <div className="col-7">
-                            <PaymenttypesBox id="paymenttype" className="form-control" value={transactiontype.id}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            <PaymenttypesBox id="paymenttype" value={transactionTypeId}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyPaymentTypeName}</label>
                         <div className="col-7">
-                            <input id="name" className="form-control" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyPaymentTypeAmount}</label>
                         <div className="col-7">
-                            <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.saveChangesToPaymentType}</button>
+                            <button onClick={() => onSaveUpdatedPaymentType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToPaymentType}</button>
                         </div>
                     </div>
                 </div>
@@ -73,20 +85,18 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         paymenttypes: state.paymenttypes,
-        transactiontype: state.transactiontype,
+        transactionTypeId: state.transactionTypeId,
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPaymenttypeFieldChange: (selectedValue, paymenttypes) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let paymenttype = paymenttypes.find(pt => selectedValueInt == pt.id);
-            dispatch(UPDATE_TRANSACTIONTYPE({ ...paymenttype }));
-        },
-        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
-        onSaveUpdatedPaymentType: (transactiontype) => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
+        onPaymenttypeFieldChange: selectedValue => dispatch(SELECT_PAYMENT_TYPE_FOR_EDIT(parseInt(selectedValue))),
+        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
+        onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
+        onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
