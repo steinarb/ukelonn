@@ -1,7 +1,5 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
-import username from './usernameReducer';
-import password from './passwordReducer';
 import notificationAvailable from './notificationAvailableReducer';
 import notificationMessage from './notificationMessageReducer';
 import accountId from './accountIdReducer';
@@ -54,8 +52,6 @@ export default (history) => combineReducers({
     locale,
     availableLocales,
     displayTexts,
-    username,
-    password,
     notificationAvailable,
     notificationMessage,
     accountId,
