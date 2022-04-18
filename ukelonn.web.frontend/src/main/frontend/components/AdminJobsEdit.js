@@ -51,7 +51,7 @@ function AdminJobsEdit(props) {
                 <div className="form-group row">
                     <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseAccount}:</label>
                     <div className="col-7">
-                        <Accounts id="account-selector" />
+                        <Accounts id="account-selector" className="form-control" />
                     </div>
                 </div>
             </div>

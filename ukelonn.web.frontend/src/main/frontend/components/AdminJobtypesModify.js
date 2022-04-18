@@ -44,25 +44,25 @@ function AdminJobtypesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJobType}</label>
                         <div className="col-7">
-                            <JobtypesBox id="jobtype" />
+                            <JobtypesBox id="jobtype" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyNameOfJobType}</label>
                         <div className="col-7">
-                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" className="form-control" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyAmountOfJobType}</label>
                         <div className="col-7">
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onSaveUpdatedJobType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToJobType}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToJobType}</button>
                         </div>
                     </div>
                 </div>

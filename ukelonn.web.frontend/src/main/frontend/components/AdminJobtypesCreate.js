@@ -42,19 +42,19 @@ function AdminJobtypesCreate(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.nameOfJobType}</label>
                         <div className="col-7">
-                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" className="form-control" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.amountForJobType}</label>
                         <div className="col-7">
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onSaveUpdatedJobType({ transactionTypeName, transactionAmount })}>{text.createNewJobType}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType({ transactionTypeName, transactionAmount })}>{text.createNewJobType}</button>
                         </div>
                     </div>
                 </div>

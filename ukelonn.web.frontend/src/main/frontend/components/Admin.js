@@ -53,7 +53,7 @@ function Admin(props) {
                     <div className="form-group row">
                         <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseWhoToPayTo}:</label>
                         <div className="col-7">
-                            <Accounts id="account-selector" />
+                            <Accounts id="account-selector" className="form-control" />
                         </div>
                     </div>
                     <div className="row">
@@ -62,25 +62,25 @@ function Admin(props) {
                     <div className="form-group row">
                         <label htmlFor="account-balance" className="col-form-label col-5">{text.owedAmount}:</label>
                         <div className="col-7">
-                            <input id="account-balance" type="text" value={balance} readOnly={true} />
+                            <input id="account-balance" className="form-control" type="text" value={balance} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="paymenttype-selector" className="col-form-label col-5">{text.paymentType}:</label>
                         <div className="col-7">
-                            <Paymenttypes id="paymenttype-selector" />
+                            <Paymenttypes id="paymenttype-selector" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.amount}:</label>
                         <div className="col-7">
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5" />
                         <div className="col-7">
-                            <button disabled={noUser} onClick={() => onRegisterPayment({ account: { accountId, username }, transactionTypeId, transactionAmount })}>{text.registerPayment}</button>
+                            <button className="btn btn-primary" disabled={noUser} onClick={() => onRegisterPayment({ account: { accountId, username }, transactionTypeId, transactionAmount })}>{text.registerPayment}</button>
                         </div>
                     </div>
                 </div>

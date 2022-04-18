@@ -55,7 +55,7 @@ function User(props) {
                         <div className="col">
                             <label>{text.owedAmount}:</label>
                         </div>
-                        <div>
+                        <div className="col">
                             {accountBalance}
                         </div>
                     </div>
@@ -68,13 +68,13 @@ function User(props) {
                         <div className="form-group row">
                             <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJob}</label>
                             <div className="col-7">
-                                <Jobtypes id="jobtype" />
+                                <Jobtypes id="jobtype" className="form-control" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label htmlFor="amount" className="col-form-label col-5">{text.amount}</label>
                             <div className="col-7">
-                                <input id="amount" type="text" value={transactionAmount} readOnly={true} />
+                                <input id="amount" className="form-control" type="text" value={transactionAmount} readOnly={true} />
                             </div>
                         </div>
                         <div className="form-group row">
@@ -86,7 +86,7 @@ function User(props) {
                         <div className="form-group row">
                             <div className="col-5"/>
                             <div className="col-7">
-                            <button onClick={onRegisterJob}>{text.registerJob}</button>
+                                <button className="btn btn-primary" onClick={onRegisterJob}>{text.registerJob}</button>
                             </div>
                         </div>
                     </div>

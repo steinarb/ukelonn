@@ -47,6 +47,10 @@ function AdminUsersCreate(props) {
 
     const usernameEmpty = !userUsername;
     const usernameExists = usernames.indexOf(userUsername) > -1;
+    const emailIsNotValid = userEmail && !isEmail(userEmail);
+    const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
+    const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
+    const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
     return (
         <div>
@@ -64,47 +68,47 @@ function AdminUsersCreate(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
-                            <input id="username" type="text" value={userUsername} onChange={onUsernameChange} />
-                            { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
-                            { usernameExists && <span>{text.usernameExists}</span> }
+                            <input id="username" className={usernameInputClass} type="text" value={userUsername} onChange={onUsernameChange} />
+                            { usernameEmpty && <span className="invalid-feedback d-block">{text.usernameCanNotBeEmpty}</span> }
+                            { usernameExists && <span className="invalid-feedback d-block">{text.usernameExists}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
-                            <input id="email" type="text" value={userEmail} onChange={onEmailChange} />
-                            { userEmail && !isEmail(userEmail) && <span>{text.notAValidEmailAddress}</span> }
+                            <input id="email" className={emailInputClass} type="text" value={userEmail} onChange={onEmailChange} />
+                            { userEmail && !isEmail(userEmail) && <span className="invalid-feedback d-block">{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
-                            <input id="firstname" type="text" value={userFirstname} onChange={onFirstnameChange} />
+                            <input id="firstname" className="form-control" type="text" value={userFirstname} onChange={onFirstnameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
-                            <input id="lastname" type="text" value={userLastname} onChange={onLastnameChange} />
+                            <input id="lastname" className="form-control" type="text" value={userLastname} onChange={onLastnameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
-                            <input id="password1" type='password' value={password1} onChange={onPassword1Change} />
+                            <input id="password1" className={passwordGroupClass} type='password' value={password1} onChange={onPassword1Change} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
-                            <input id="password2" type="password" value={password2} onChange={onPassword2Change}/>
-                            { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
+                            <input id="password2" className={passwordGroupClass} type="password" value={password2} onChange={onPassword2Change}/>
+                            { passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div clasName="row">
                         <div className="col">
                             <div className="form-check">
-                                <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
+                                <input id="administrator" className="form-check-input" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
                                 <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
                         </div>
@@ -112,7 +116,7 @@ function AdminUsersCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onSaveCreatedUser()}>{text.createUser}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveCreatedUser()}>{text.createUser}</button>
                         </div>
                     </div>
                 </div>

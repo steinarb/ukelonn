@@ -73,7 +73,7 @@ function AdminJobsDelete(props) {
                     </tbody>
                 </table>
             </div>
-            <button onClick={onDeleteMarkedJobsButtonClicked}>{text.deleteMarkedJobs}</button>
+            <button className="btn btn-default" onClick={onDeleteMarkedJobsButtonClicked}>{text.deleteMarkedJobs}</button>
             <br/>
             <br/>
             <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>

@@ -43,7 +43,7 @@ function AdminBonusesDelete(props) {
                     <div className="form-group row">
                         <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
-                            <select id="bonus" value={bonusId} onChange={onSelectBonus}>
+                            <select id="bonus" className="form-control" value={bonusId} onChange={onSelectBonus}>
                                 <option key="-1" value="-1" />
                                 {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
@@ -52,19 +52,19 @@ function AdminBonusesDelete(props) {
                     <div className="form-group row">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
-                            <input readOnly id="title" type="text" value={bonusTitle} />
+                            <input readOnly id="title" className="form-control" type="text" value={bonusTitle} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
-                            <input readOnly id="description" type="text" value={bonusDescription} />
+                            <input readOnly id="description" className="form-control" type="text" value={bonusDescription} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onDeleteBonus()}>{text.deleteSelectedBonus}</button>
+                            <button className="btn btn-primary" onClick={() => onDeleteBonus()}>{text.deleteSelectedBonus}</button>
                         </div>
                     </div>
                 </div>

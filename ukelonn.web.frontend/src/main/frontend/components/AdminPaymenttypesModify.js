@@ -49,25 +49,25 @@ function AdminPaymenttypesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="paymenttype" className="col-form-label col-5">{text.choosePaymentType}</label>
                         <div className="col-7">
-                            <PaymenttypesBox id="paymenttype" value={transactionTypeId}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            <PaymenttypesBox id="paymenttype" className="form-control" value={transactionTypeId}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyPaymentTypeName}</label>
                         <div className="col-7">
-                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" className="form-control" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyPaymentTypeAmount}</label>
                         <div className="col-7">
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onSaveUpdatedPaymentType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToPaymentType}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToPaymentType}</button>
                         </div>
                     </div>
                 </div>

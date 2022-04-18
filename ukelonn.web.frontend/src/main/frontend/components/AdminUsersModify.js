@@ -52,37 +52,37 @@ function AdminUsersModify(props) {
                     <div className="form-group row">
                         <label htmlFor="users" className="col-form-label col-5">{text.chooseUser}</label>
                         <div className="col-7">
-                            <Users id="users" />
+                            <Users id="users" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
-                            <input id="username" type="text" value={userUsername} onChange={onUsernameChange} />
+                            <input id="username" className="form-control" type="text" value={userUsername} onChange={onUsernameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
-                            <input id="email" type="text" value={userEmail} onChange={onEmailChange} />
+                            <input id="email" className="form-control" type="text" value={userEmail} onChange={onEmailChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
-                            <input id="firstname" type="text" value={userFirstname} onChange={onFirstnameChange} />
+                            <input id="firstname" className="form-control" type="text" value={userFirstname} onChange={onFirstnameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
-                            <input id="lastname" type="text" value={userLastname} onChange={onLastnameChange} />
+                            <input id="lastname" className="form-control" type="text" value={userLastname} onChange={onLastnameChange} />
                         </div>
                     </div>
                     <div clasName="row">
                         <div className="col">
                             <div className="form-check">
-                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
+                                <input id="administrator" className="form-check-input" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
                                 <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
                         </div>
@@ -90,7 +90,7 @@ function AdminUsersModify(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={onSaveUserButtonClicked}>{text.saveUserModifications}</button>
+                            <button className="btn btn-primary" onClick={onSaveUserButtonClicked}>{text.saveUserModifications}</button>
                         </div>
                     </div>
                 </div>

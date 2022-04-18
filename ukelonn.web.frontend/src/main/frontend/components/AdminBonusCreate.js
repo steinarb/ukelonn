@@ -59,7 +59,7 @@ function AdminBonusCreate(props) {
                         <div className="col">
                             <div className="form-check">
                                 <div className="form-check">
-                                    <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
+                                    <input id="enabled" className="form-check-input" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
                                     <label htmlFor="enabled" className="form-check-label">{text.activated}</label>
                                 </div>
                             </div>
@@ -68,25 +68,25 @@ function AdminBonusCreate(props) {
                     <div className="form-group row">
                         <label htmlFor="iconurl" className="col-form-label col-5">{text.iconURL}</label>
                         <div className="col-7">
-                            <input id="iconurl" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
+                            <input id="iconurl" className="form-control" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
-                            <input id="title" type="text" value={bonusTitle} onChange={onUpdateTitle} />
+                            <input id="title" className="form-control" type="text" value={bonusTitle} onChange={onUpdateTitle} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
-                            <input id="description" type="text" value={bonusDescription} onChange={onUpdateDescription} />
+                            <input id="description" className="form-control" type="text" value={bonusDescription} onChange={onUpdateDescription} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="bonusfactor" className="col-form-label col-5">{text.bonusFactor}</label>
                         <div className="col-7">
-                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
+                            <input id="bonusfactor" className="form-control" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -104,7 +104,7 @@ function AdminBonusCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onSaveCreatedBonusClicked()}>{text.createNewBonus}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveCreatedBonusClicked()}>{text.createNewBonus}</button>
                         </div>
                     </div>
                 </div>

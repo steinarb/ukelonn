@@ -24,6 +24,7 @@ function AdminUsersChangePassword(props) {
         onSaveUpdatedPassword,
         onLogout,
     } = props;
+    const passwordInputClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
@@ -45,26 +46,26 @@ function AdminUsersChangePassword(props) {
                     <div className="form-group row">
                         <label htmlFor="users" className="col-form-label col-5">{text.chooseUser}</label>
                         <div className="col-7">
-                            <Users id="users" />
+                            <Users id="users" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
-                            <input id="password1" type='password' value={password1} onChange={onPassword1Change} />
+                            <input id="password1" className="form-control" type='password' value={password1} onChange={onPassword1Change} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
-                            <input id="password2" type='password' value={password2} onChange={onPassword2Change} />
-                            { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
+                            <input id="password2" className={passwordInputClass} type='password' value={password2} onChange={onPassword2Change} />
+                            { passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={onSaveUpdatedPassword}>{text.changePassword}</button>
+                            <button className="btn btn-primary" onClick={onSaveUpdatedPassword}>{text.changePassword}</button>
                         </div>
                     </div>
                 </div>

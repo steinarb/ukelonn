@@ -54,7 +54,7 @@ function AdminPaymenttypesCreate(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => onSaveUpdatedPaymentType({ transactionTypeName, transactionAmount })}>{text.createNewPaymentType}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType({ transactionTypeName, transactionAmount })}>{text.createNewPaymentType}</button>
                         </div>
                     </div>
                 </div>
