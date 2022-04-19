@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
     SELECT_BONUS,
     MODIFY_BONUS_ENABLED,
     MODIFY_BONUS_ICONURL,
@@ -17,6 +16,7 @@ import {
     SAVE_BONUS_CHANGES_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function AdminBonusesModify(props) {
     const {
@@ -39,7 +39,6 @@ function AdminBonusesModify(props) {
         onUpdateStartDate,
         onUpdateEndDate,
         onSaveModifyBonusButtonClicked,
-        onLogout,
     } = props;
 
     if (userIsNotLoggedIn(props)) {
@@ -119,7 +118,7 @@ function AdminBonusesModify(props) {
                 </div>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
         </div>
     );
 }
@@ -152,7 +151,6 @@ function mapDispatchToProps(dispatch) {
         onUpdateStartDate: d => dispatch(MODIFY_BONUS_START_DATE(d)),
         onUpdateEndDate: d => dispatch(MODIFY_BONUS_END_DATE(d)),
         onSaveModifyBonusButtonClicked: () => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 

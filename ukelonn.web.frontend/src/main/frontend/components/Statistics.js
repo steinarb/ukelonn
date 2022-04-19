@@ -5,17 +5,16 @@ import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import { findUsernameFromAccountOrQueryParameter } from '../common/account';
 import { userIsNotLoggedIn } from '../common/login';
-import {
-    LOGOUT_REQUEST,
-} from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function Statistics(props) {
+    const { text } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
 
-    let { text, onLogout } = props;
     const username = findUsernameFromAccountOrQueryParameter(props);
     const sumoveryear = '/ukelonn/statistics/earnings/sumoveryear?' + stringify({ username });
     const sumovermonth = '/ukelonn/statistics/earnings/sumovermonth?' + stringify({ username });
@@ -46,7 +45,7 @@ function Statistics(props) {
                 <br/>
             </div>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../..">{text.returnToTop}</a>
         </div>
@@ -61,10 +60,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Statistics);
+export default connect(mapStateToProps)(Statistics);

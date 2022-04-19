@@ -7,7 +7,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
     MODIFY_JOB_DATE,
     REGISTER_JOB_BUTTON_CLICKED,
 } from '../actiontypes';
@@ -16,6 +15,7 @@ import BonusBanner from './BonusBanner';
 import Jobtypes from './Jobtypes';
 import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
+import Logout from './Logout';
 
 function User(props) {
     const {
@@ -29,7 +29,6 @@ function User(props) {
         notificationMessage,
         onDateFieldChange,
         onRegisterJob,
-        onLogout,
     } = props;
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
@@ -113,7 +112,7 @@ function User(props) {
                 <br/>
             </div>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
         </div>
     );
@@ -136,7 +135,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
         onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
         onRegisterJob: () => dispatch(REGISTER_JOB_BUTTON_CLICKED()),
     };

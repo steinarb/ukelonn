@@ -8,10 +8,10 @@ import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
     MODIFY_PAYMENTTYPE_REQUEST,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
+import Logout from './Logout';
 
 function AdminPaymenttypesModify(props) {
     const {
@@ -24,7 +24,6 @@ function AdminPaymenttypesModify(props) {
         onNameFieldChange,
         onAmountFieldChange,
         onSaveUpdatedPaymentType,
-        onLogout,
     } = props;
 
     if (userIsNotLoggedIn(props)) {
@@ -71,7 +70,7 @@ function AdminPaymenttypesModify(props) {
                 </div>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout/>
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -96,7 +95,6 @@ function mapDispatchToProps(dispatch) {
         onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
         onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
         onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 

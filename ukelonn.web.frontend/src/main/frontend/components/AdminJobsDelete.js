@@ -4,20 +4,19 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
     RECENTJOBS_REQUEST,
     MODIFY_MARK_JOB_FOR_DELETE,
     DELETE_SELECTED_JOBS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
+import Logout from './Logout';
 
 function AdminJobsDelete(props) {
     const {
         text,
         accountFirstName,
         jobs,
-        onLogout,
         onCheckboxTicked,
         onDeleteMarkedJobsButtonClicked,
     } = props;
@@ -70,7 +69,7 @@ function AdminJobsDelete(props) {
             </div>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -89,7 +88,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
         onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
         onCheckboxTicked: job => dispatch(MODIFY_MARK_JOB_FOR_DELETE(job)),
         onDeleteMarkedJobsButtonClicked: () => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED()),

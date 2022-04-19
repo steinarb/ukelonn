@@ -8,10 +8,10 @@ import {
     MODIFY_PASSWORD1,
     MODIFY_PASSWORD2,
     CHANGE_PASSWORD_BUTTON_CLICKED,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
+import Logout from './Logout';
 
 function AdminUsersChangePassword(props) {
     const {
@@ -22,7 +22,6 @@ function AdminUsersChangePassword(props) {
         onPassword1Change,
         onPassword2Change,
         onSaveUpdatedPassword,
-        onLogout,
     } = props;
 
     if (userIsNotLoggedIn(props)) {
@@ -70,7 +69,7 @@ function AdminUsersChangePassword(props) {
                 </div>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -94,7 +93,6 @@ function mapDispatchToProps(dispatch) {
         onPassword1Change: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
         onPassword2Change: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
         onSaveUpdatedPassword: () => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 

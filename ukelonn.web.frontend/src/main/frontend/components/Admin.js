@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
     MODIFY_PAYMENT_AMOUNT,
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
@@ -14,6 +13,7 @@ import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
 import EarningsMessage from './EarningsMessage';
+import Logout from './Logout';
 
 function Admin(props) {
     const {
@@ -25,7 +25,6 @@ function Admin(props) {
         transactionAmount,
         onAmountFieldChange,
         onRegisterPayment,
-        onLogout
     } = props;
 
     if (userIsNotLoggedIn(props)) {
@@ -128,7 +127,7 @@ function Admin(props) {
                 <br/>
             </div>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
         </div>
     );
@@ -149,7 +148,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
         onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
         onRegisterPayment: (payment) => dispatch(REGISTERPAYMENT_REQUEST(payment)),
     };

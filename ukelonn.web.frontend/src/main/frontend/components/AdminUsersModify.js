@@ -10,17 +10,13 @@ import {
     MODIFY_USER_LASTNAME,
     MODIFY_USER_IS_ADMINISTRATOR,
     SAVE_USER_BUTTON_CLICKED,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
+import Logout from './Logout';
 
 function AdminUsersModify(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
-    let {
+    const {
         text,
         userUsername,
         userEmail,
@@ -33,8 +29,11 @@ function AdminUsersModify(props) {
         onLastnameChange,
         onUpdateUserIsAdministrator,
         onSaveUserButtonClicked,
-        onLogout,
     } = props;
+
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
     return (
         <div>
@@ -94,7 +93,7 @@ function AdminUsersModify(props) {
                 </div>
             </form>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -122,7 +121,6 @@ function mapDispatchToProps(dispatch) {
         onLastnameChange: e => dispatch(MODIFY_USER_LASTNAME(e.target.value)),
         onUpdateUserIsAdministrator: e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked)),
         onSaveUserButtonClicked: () => dispatch(SAVE_USER_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 
