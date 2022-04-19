@@ -5,32 +5,30 @@ import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     USERS_REQUEST,
-    UPDATE_USER,
-    UPDATE_PASSWORDS,
-    MODIFY_USER_PASSWORD_REQUEST,
+    MODIFY_PASSWORD1,
+    MODIFY_PASSWORD2,
+    CHANGE_PASSWORD_BUTTON_CLICKED,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
 
 function AdminUsersChangePassword(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
-    let {
+    const {
         text,
-        users,
-        user,
-        passwords,
-        onUsersFieldChange,
+        password1,
+        password2,
+        passwordsNotIdentical,
         onPassword1Change,
         onPassword2Change,
         onSaveUpdatedPassword,
         onLogout,
     } = props;
+    const passwordInputClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
-    const passwordInputClass = 'form-control' + (passwords.passwordsNotIdentical ? ' is-invalid' : '');
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
     return (
         <div>
@@ -48,26 +46,26 @@ function AdminUsersChangePassword(props) {
                     <div className="form-group row">
                         <label htmlFor="users" className="col-form-label col-5">{text.chooseUser}</label>
                         <div className="col-7">
-                            <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
+                            <Users id="users" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
-                            <input id="password1" className="form-control" type='password' value={passwords.password1} onChange={(event) => onPassword1Change(event.target.value)} />
+                            <input id="password1" className="form-control" type='password' value={password1} onChange={onPassword1Change} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
-                            <input id="password2" className={passwordInputClass} type='password' value={passwords.password2} onChange={(event) => onPassword2Change(event.target.value)} />
-                            { passwords.passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
+                            <input id="password2" className={passwordInputClass} type='password' value={password2} onChange={onPassword2Change} />
+                            { passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPassword(user, passwords)}>{text.changePassword}</button>
+                            <button className="btn btn-primary" onClick={onSaveUpdatedPassword}>{text.changePassword}</button>
                         </div>
                     </div>
                 </div>
@@ -83,23 +81,18 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        users: state.users,
-        user: state.user,
-        passwords: state.passwords,
+        password1: state.password1,
+        password2: state.password2,
+        passwordsNotIdentical: state.passwordsNotIdentical,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         onUserList: () => dispatch(USERS_REQUEST()),
-        onUsersFieldChange: (selectedValue, users) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let user = users.find(u => u.userid === selectedValueInt);
-            dispatch(UPDATE_USER({ ...user }));
-        },
-        onPassword1Change: (password1) => dispatch(UPDATE_PASSWORDS({ password1 })),
-        onPassword2Change: (password2) => dispatch(UPDATE_PASSWORDS({ password2 })),
-        onSaveUpdatedPassword: (user, passwords) => dispatch(MODIFY_USER_PASSWORD_REQUEST({ user, passwords })),
+        onPassword1Change: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
+        onPassword2Change: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
+        onSaveUpdatedPassword: () => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED()),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

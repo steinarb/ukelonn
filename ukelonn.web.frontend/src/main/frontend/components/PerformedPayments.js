@@ -10,13 +10,18 @@ import {
 import Locale from './Locale';
 
 function PerformedPayments(props) {
+    const {
+        text,
+        accountFirstname,
+        payments,
+        onLogout
+    } = props;
+    let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
+    const { parentTitle } = queryParams;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, account, payments, onLogout } = props;
-    let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
-    const { parentTitle } = queryParams;
 
     return (
         <div>
@@ -26,7 +31,7 @@ function PerformedPayments(props) {
                     &nbsp;
                     {parentTitle}
                 </Link>
-                <h1>{text.performedPaymentsFor} {account.firstName}</h1>
+                <h1>{text.performedPaymentsFor} {accountFirstname}</h1>
                 <Locale />
             </nav>
             <div className="table-responsive table-sm table-striped">
@@ -62,7 +67,7 @@ function mapStateToProps(state) {
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         parentTitle: state.parentTitle,
-        account: state.account,
+        accountFirstname: state.accountFirstname,
         payments: state.payments,
     };
 }

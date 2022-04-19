@@ -4,20 +4,29 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
-    UPDATE_TRANSACTIONTYPE,
+    MODIFY_TRANSACTION_TYPE_NAME,
+    MODIFY_JOB_AMOUNT,
     MODIFY_JOBTYPE_REQUEST,
+    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
-import Amount from './Amount';
 
 function AdminJobtypesModify(props) {
+    const {
+        text,
+        transactionTypeId,
+        transactionAmount,
+        transactionTypeName,
+        onNameFieldChange,
+        onAmountFieldChange,
+        onSaveUpdatedJobType,
+        onLogout
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, jobtypes, transactiontype, onJobtypeFieldChange, onNameFieldChange, onAmountFieldChange, onSaveUpdatedJobType, onLogout } = props;
 
     return (
         <div>
@@ -35,25 +44,25 @@ function AdminJobtypesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJobType}</label>
                         <div className="col-7">
-                            <JobtypesBox id="jobtype" className="form-control" jobtypes={jobtypes} value={transactiontype.id} onJobtypeFieldChange={onJobtypeFieldChange} />
+                            <JobtypesBox id="jobtype" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyNameOfJobType}</label>
                         <div className="col-7">
-                            <input id="name" type="text" className="form-control" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value, transactiontype)} />
+                            <input id="name" className="form-control" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyAmountOfJobType}</label>
                         <div className="col-7">
-                            <Amount id="amount" className="form-control" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType(transactiontype)}>{text.saveChangesToJobType}</button>
+                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToJobType}</button>
                         </div>
                     </div>
                 </div>
@@ -69,21 +78,16 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        jobtypes: state.jobtypes,
-        transactiontype: state.transactiontype,
+        transactionAmount: state.transactionAmount,
+        transactionTypeName: state.transactionTypeName,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onJobtypeFieldChange: (selectedValue, jobtypes) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let jobtype = jobtypes.find(jobtype => jobtype.id === selectedValueInt);
-            dispatch(UPDATE_TRANSACTIONTYPE({ ...jobtype }));
-        },
-        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
-        onSaveUpdatedJobType: (transactiontype) => dispatch(MODIFY_JOBTYPE_REQUEST(transactiontype)),
+        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
+        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
+        onSaveUpdatedJobType: jobtype => dispatch(MODIFY_JOBTYPE_REQUEST(jobtype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

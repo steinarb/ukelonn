@@ -9,11 +9,14 @@ import {
 import Locale from './Locale';
 
 function AdminUsers(props) {
+    const {
+        text,
+        onLogout,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, onLogout } = props;
 
     return (
         <div>
