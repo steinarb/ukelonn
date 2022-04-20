@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    SELECT_PAYMENT_TYPE_FOR_EDIT,
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
     MODIFY_PAYMENTTYPE_REQUEST,
@@ -16,11 +15,9 @@ import Logout from './Logout';
 function AdminPaymenttypesModify(props) {
     const {
         text,
-        paymenttypes,
         transactionTypeId,
         transactionTypeName,
         transactionAmount,
-        onPaymenttypeFieldChange,
         onNameFieldChange,
         onAmountFieldChange,
         onSaveUpdatedPaymentType,
@@ -46,7 +43,7 @@ function AdminPaymenttypesModify(props) {
                     <div>
                         <label htmlFor="paymenttype">{text.choosePaymentType}</label>
                         <div>
-                            <PaymenttypesBox id="paymenttype" value={transactionTypeId}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            <PaymenttypesBox id="paymenttype" />
                         </div>
                     </div>
                     <div>
@@ -82,7 +79,6 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        paymenttypes: state.paymenttypes,
         transactionTypeId: state.transactionTypeId,
         transactionTypeName: state.transactionTypeName,
         transactionAmount: state.transactionAmount,
@@ -91,7 +87,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPaymenttypeFieldChange: selectedValue => dispatch(SELECT_PAYMENT_TYPE_FOR_EDIT(parseInt(selectedValue))),
         onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
         onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
         onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
