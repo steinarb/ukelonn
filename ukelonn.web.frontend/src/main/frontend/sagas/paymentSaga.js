@@ -2,8 +2,8 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import {
     SELECT_PAYMENT_TYPE,
     SELECT_PAYMENT_TYPE_FOR_EDIT,
+    SELECTED_PAYMENT_TYPE,
     MODIFY_PAYMENT_AMOUNT,
-    MODIFY_TRANSACTION_TYPE_NAME,
     CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 
@@ -31,8 +31,7 @@ function* selectPaymentTypeForEdit(action) {
     const paymenttypes = yield select(state => state.paymenttypes);
     const paymenttype = paymenttypes.find(p => p.id === transactionTypeId);
     if (paymenttype) {
-        yield put(MODIFY_PAYMENT_AMOUNT(paymenttype.transactionAmount));
-        yield put(MODIFY_TRANSACTION_TYPE_NAME(paymenttype.transactionTypeName));
+        yield put(SELECTED_PAYMENT_TYPE(paymenttype));
     }
 }
 
