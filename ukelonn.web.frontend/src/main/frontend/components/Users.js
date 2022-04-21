@@ -11,7 +11,7 @@ function Users(props) {
     return (
         <select id={id} className={className} onChange={e => dispatch(SELECT_USER(parseInt(e.target.value)))} value={userid}>
             <option key="user_-1" value="-1" />
-            {users.map((val) => <option key={'user_' + val.userid} value={val.userid}>{val.fullname}</option>)}
+            {users.map((val) => <option key={'user_' + val.userid} value={val.userid}>{val.firstname + ' ' + val.lastname}</option>)}
         </select>
     );
 }

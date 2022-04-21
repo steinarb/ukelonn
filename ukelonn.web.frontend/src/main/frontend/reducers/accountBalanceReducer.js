@@ -3,16 +3,18 @@ import {
     ACCOUNT_RECEIVE,
     REGISTERJOB_RECEIVE,
     REGISTERPAYMENT_RECEIVE,
-    MODIFY_ACCOUNT_BALANCE,
+    SELECTED_ACCOUNT,
     CLEAR_ACCOUNT,
 } from '../actiontypes';
+import { isUnselected } from '../common/reducers';
+
 const defaultValue = 0;
 
 const accountBalanceReducer = createReducer(defaultValue, {
     [ACCOUNT_RECEIVE]: (state, action) => action.payload.balance,
     [REGISTERJOB_RECEIVE]: (state, action) => action.payload.balance,
     [REGISTERPAYMENT_RECEIVE]: (state, action) => action.payload.balance,
-    [MODIFY_ACCOUNT_BALANCE]: (state, action) => action.payload,
+    [SELECTED_ACCOUNT]: (state, action) => isUnselected(action.payload.accountId) ? defaultValue : action.payload.balance,
     [CLEAR_ACCOUNT]: () => defaultValue,
 });
 

@@ -1,11 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import { userIsNotLoggedIn } from '../common/login';
 import {
-    LOGOUT_REQUEST,
     JOB_TABLE_ROW_CLICK,
     MODIFY_JOB_DATE,
     UPDATE_JOB_REQUEST,
@@ -13,6 +10,7 @@ import {
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
+import Logout from './Logout';
 
 function AdminJobsEdit(props) {
     const {
@@ -24,15 +22,10 @@ function AdminJobsEdit(props) {
         transactionAmount,
         transactionTime,
         jobs,
-        onLogout,
         onRowClick,
         onDateFieldChange,
         onSaveEditedJob,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>
@@ -100,7 +93,7 @@ function AdminJobsEdit(props) {
             <button onClick={() => onSaveEditedJob({ id: transactionId, accountId, transactionTypeId, transactionAmount, transactionTime })}>{text.saveChangesToJob}</button>
             <br/>
             <br/>
-            <button onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -122,7 +115,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
         onRowClick: (job) => dispatch(JOB_TABLE_ROW_CLICK({ ...job })),
         onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
         onSaveEditedJob: (modifiedJob) => dispatch(UPDATE_JOB_REQUEST(modifiedJob)),

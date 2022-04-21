@@ -1,19 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
-import {
-    LOGOUT_REQUEST,
-} from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function AdminJobtypes(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
-    let { text, onLogout } = props;
+    let { text } = props;
 
     return (
         <div>
@@ -50,7 +42,7 @@ function AdminJobtypes(props) {
             </div>
             <br/>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../..">{text.returnToTop}</a>
         </div>
@@ -65,10 +57,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobtypes);
+export default connect(mapStateToProps)(AdminJobtypes);

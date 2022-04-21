@@ -6,8 +6,8 @@ import {
     CHANGE_ADMIN_STATUS_ERROR,
 } from '../actiontypes';
 
-export default function* () {
-    yield takeLatest(CHANGE_ADMIN_STATUS, changeAdminStatus);
+function fetchAdminStatus(user) {
+    return axios.post('/ukelonn/api/admin/user/changeadminstatus', user);
 }
 
 function* changeAdminStatus(action) {
@@ -21,6 +21,6 @@ function* changeAdminStatus(action) {
     }
 }
 
-function fetchAdminStatus(user) {
-    return axios.post('/ukelonn/api/admin/user/changeadminstatus', user);
+export default function* () {
+    yield takeLatest(CHANGE_ADMIN_STATUS, changeAdminStatus);
 }

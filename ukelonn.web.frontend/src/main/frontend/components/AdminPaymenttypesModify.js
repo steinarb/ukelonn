@@ -1,35 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
-    SELECT_PAYMENT_TYPE_FOR_EDIT,
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
     MODIFY_PAYMENTTYPE_REQUEST,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
+import Logout from './Logout';
 
 function AdminPaymenttypesModify(props) {
     const {
         text,
-        paymenttypes,
         transactionTypeId,
         transactionTypeName,
         transactionAmount,
-        onPaymenttypeFieldChange,
         onNameFieldChange,
         onAmountFieldChange,
         onSaveUpdatedPaymentType,
-        onLogout,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>
@@ -49,7 +39,7 @@ function AdminPaymenttypesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="paymenttype" className="col-form-label col-5">{text.choosePaymentType}</label>
                         <div className="col-7">
-                            <PaymenttypesBox id="paymenttype" className="form-control" value={transactionTypeId}  paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            <PaymenttypesBox id="paymenttype" className="form-control" />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -74,7 +64,7 @@ function AdminPaymenttypesModify(props) {
                 <br/>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout/>
         </div>
     );
 }
@@ -84,7 +74,6 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        paymenttypes: state.paymenttypes,
         transactionTypeId: state.transactionTypeId,
         transactionTypeName: state.transactionTypeName,
         transactionAmount: state.transactionAmount,
@@ -93,11 +82,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPaymenttypeFieldChange: selectedValue => dispatch(SELECT_PAYMENT_TYPE_FOR_EDIT(parseInt(selectedValue))),
         onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
         onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
         onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 

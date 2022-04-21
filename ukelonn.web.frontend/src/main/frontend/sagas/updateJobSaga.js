@@ -23,7 +23,7 @@ function* requestReceiveUpdateJobSaga(action) {
 
 function* clearEditJobForm() {
     yield put(CLEAR_EDIT_JOB_FORM());
- }
+}
 
 export default function* updateJobSaga() {
     yield takeLatest(UPDATE_JOB_REQUEST, requestReceiveUpdateJobSaga);

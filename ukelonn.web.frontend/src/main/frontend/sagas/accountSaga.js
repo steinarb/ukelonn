@@ -2,13 +2,7 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     SELECT_ACCOUNT,
-    CLEAR_ACCOUNT,
-    MODIFY_ACCOUNT_ID,
-    MODIFY_ACCOUNT_USERNAME,
-    MODIFY_ACCOUNT_FIRSTNAME,
-    MODIFY_ACCOUNT_LASTNAME,
-    MODIFY_ACCOUNT_BALANCE,
-    MODIFY_ACCOUNT_FULLNAME,
+    SELECTED_ACCOUNT,
     ACCOUNT_REQUEST,
     ACCOUNT_RECEIVE,
     ACCOUNT_FAILURE,
@@ -44,18 +38,13 @@ function* requestReceiveAccountSaga(action) {
 function* selectAccountSaga(action) {
     const accountId = action.payload;
     if (accountId === -1) {
-        yield put(CLEAR_ACCOUNT());
+        yield put(SELECTED_ACCOUNT({ accountId }));
     } else {
         const accounts = yield select(state => state.accounts);
         const account = accounts.find(a => a.accountId === accountId);
         if (account) {
-            yield put(MODIFY_ACCOUNT_ID(account.accountId));
+            yield put(SELECTED_ACCOUNT(account));
             const { accountId, username } = account;
-            yield put(MODIFY_ACCOUNT_USERNAME(username));
-            yield put(MODIFY_ACCOUNT_FIRSTNAME(account.firstName));
-            yield put(MODIFY_ACCOUNT_LASTNAME(account.lastName));
-            yield put(MODIFY_ACCOUNT_BALANCE(account.balance));
-            yield put(MODIFY_ACCOUNT_FULLNAME(account.fullName));
             if (username) {
                 yield put(EARNINGS_SUM_OVER_YEAR_REQUEST(username));
                 yield put(EARNINGS_SUM_OVER_MONTH_REQUEST(username));

@@ -1,27 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
-import { userIsNotLoggedIn } from '../common/login';
-import {
-    LOGOUT_REQUEST,
-} from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function PerformedPayments(props) {
     const {
         text,
         accountFirstname,
         payments,
-        onLogout
     } = props;
     let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parentTitle } = queryParams;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>
@@ -54,7 +45,7 @@ function PerformedPayments(props) {
                     </tbody>
                 </table>
             </div>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout/>
             <br/>
             <a href="../..">{text.returnToTop}</a>
         </div>
@@ -72,10 +63,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PerformedPayments);
+export default connect(mapStateToProps)(PerformedPayments);

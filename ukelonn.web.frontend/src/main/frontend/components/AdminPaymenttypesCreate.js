@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_JOB_AMOUNT,
     CREATE_PAYMENTTYPE_REQUEST,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function AdminPaymenttypesCreate(props) {
     const {
@@ -19,12 +17,7 @@ function AdminPaymenttypesCreate(props) {
         onNameFieldChange,
         onAmountFieldChange,
         onSaveUpdatedPaymentType,
-        onLogout,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>
@@ -60,7 +53,7 @@ function AdminPaymenttypesCreate(props) {
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -83,7 +76,6 @@ const mapDispatchToProps = dispatch => {
         onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
         onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
         onSaveUpdatedPaymentType: (transactiontype) => dispatch(CREATE_PAYMENTTYPE_REQUEST(transactiontype)),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 };
 
