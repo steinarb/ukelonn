@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     MODIFY_PAYMENT_AMOUNT,
     REGISTERPAYMENT_REQUEST,
@@ -26,10 +24,6 @@ function Admin(props) {
         onAmountFieldChange,
         onRegisterPayment,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;

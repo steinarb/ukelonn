@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     SELECT_BONUS,
@@ -21,10 +19,6 @@ function AdminBonusesDelete(props) {
         onDeleteBonus,
         onLogout,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>

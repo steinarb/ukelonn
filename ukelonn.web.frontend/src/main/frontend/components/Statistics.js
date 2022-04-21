@@ -1,19 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import { findUsernameFromAccountOrQueryParameter } from '../common/account';
-import { userIsNotLoggedIn } from '../common/login';
 import Locale from './Locale';
 import Logout from './Logout';
 
 function Statistics(props) {
     const { text } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     const username = findUsernameFromAccountOrQueryParameter(props);
     const sumoveryear = '/ukelonn/statistics/earnings/sumoveryear?' + stringify({ username });

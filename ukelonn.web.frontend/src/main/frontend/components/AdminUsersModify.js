@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     MODIFY_USER_USERNAME,
     MODIFY_USER_EMAIL,
@@ -30,10 +28,6 @@ function AdminUsersModify(props) {
         onUpdateUserIsAdministrator,
         onSaveUserButtonClicked,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>

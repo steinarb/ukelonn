@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { isEmail } from 'validator';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORDS,
     MODIFY_USER_USERNAME,
@@ -39,10 +37,6 @@ function AdminUsersCreate(props) {
         onUpdateUserIsAdministrator,
         onSaveCreatedUser,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     const usernameEmpty = !userUsername;
     const usernameExists = usernames.indexOf(userUsername) > -1;

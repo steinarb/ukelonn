@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     MODIFY_JOB_DATE,
     REGISTER_JOB_BUTTON_CLICKED,
@@ -30,9 +28,6 @@ function User(props) {
         onDateFieldChange,
         onRegisterJob,
     } = props;
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     const title = text.weeklyAllowanceFor + ' ' + firstname;
     const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });

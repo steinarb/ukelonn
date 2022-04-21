@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
     MODIFY_BONUS_ENABLED,
@@ -18,10 +16,6 @@ import {
 import Locale from './Locale';
 
 function AdminBonusCreate(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
     const {
         text,
         bonusEnabled,

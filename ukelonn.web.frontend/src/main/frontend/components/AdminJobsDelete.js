@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     RECENTJOBS_REQUEST,
     MODIFY_MARK_JOB_FOR_DELETE,
@@ -20,10 +18,6 @@ function AdminJobsDelete(props) {
         onCheckboxTicked,
         onDeleteMarkedJobsButtonClicked,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>

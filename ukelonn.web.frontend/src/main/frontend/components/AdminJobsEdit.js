@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     JOB_TABLE_ROW_CLICK,
     MODIFY_JOB_DATE,
@@ -28,10 +26,6 @@ function AdminJobsEdit(props) {
         onDateFieldChange,
         onSaveEditedJob,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>

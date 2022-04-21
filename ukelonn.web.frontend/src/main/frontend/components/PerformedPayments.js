@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
-import { userIsNotLoggedIn } from '../common/login';
 import Locale from './Locale';
 import Logout from './Logout';
 
@@ -15,10 +13,6 @@ function PerformedPayments(props) {
     } = props;
     let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parentTitle } = queryParams;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>
