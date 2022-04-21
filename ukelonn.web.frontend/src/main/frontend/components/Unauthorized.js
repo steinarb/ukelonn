@@ -1,14 +1,12 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import {
-    LOGOUT_REQUEST,
-} from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 
 function Unauthorized(props) {
-    const { haveReceivedResponseFromLogin, loginResponse, text, onLogout } = props;
+    const { haveReceivedResponseFromLogin, loginResponse, text } = props;
     if (haveReceivedResponseFromLogin && !loginResponse.roles.length) {
         return <Redirect to="/ukelonn/login" />;
     }
@@ -27,7 +25,7 @@ function Unauthorized(props) {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={onLogout}>{text.logout}</button>
+                            <Logout/>
                         </div>
                     </div>
                 </form>
@@ -44,10 +42,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Unauthorized);
+export default connect(mapStateToProps)(Unauthorized);
