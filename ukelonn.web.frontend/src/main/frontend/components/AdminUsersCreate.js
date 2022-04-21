@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { isEmail } from 'validator';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     CLEAR_USER_AND_PASSWORDS,
     MODIFY_USER_USERNAME,
@@ -14,9 +12,9 @@ import {
     MODIFY_PASSWORD2,
     MODIFY_USER_IS_ADMINISTRATOR,
     CREATE_USER_BUTTON_CLICKED,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function AdminUsersCreate(props) {
     const {
@@ -38,12 +36,7 @@ function AdminUsersCreate(props) {
         onPassword2Change,
         onUpdateUserIsAdministrator,
         onSaveCreatedUser,
-        onLogout,
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     const usernameEmpty = !userUsername;
     const usernameExists = usernames.indexOf(userUsername) > -1;
@@ -122,7 +115,7 @@ function AdminUsersCreate(props) {
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.returnToTop}</button>
+            <Logout />
         </div>
     );
 }
@@ -155,7 +148,6 @@ function mapDispatchToProps(dispatch) {
         onPassword2Change: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
         onUpdateUserIsAdministrator: e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked)),
         onSaveCreatedUser: () => dispatch(CREATE_USER_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 

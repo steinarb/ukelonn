@@ -3,16 +3,18 @@ import {
     ACCOUNT_RECEIVE,
     REGISTERJOB_RECEIVE,
     REGISTERPAYMENT_RECEIVE,
-    MODIFY_ACCOUNT_USERNAME,
+    SELECTED_ACCOUNT,
     CLEAR_ACCOUNT,
 } from '../actiontypes';
+import { isUnselected } from '../common/reducers';
+
 const defaultValue = '';
 
 const accountUsernameReducer = createReducer(defaultValue, {
     [ACCOUNT_RECEIVE]: (state, action) => action.payload.username,
     [REGISTERJOB_RECEIVE]: (state, action) => action.payload.username,
     [REGISTERPAYMENT_RECEIVE]: (state, action) => action.payload.username,
-    [MODIFY_ACCOUNT_USERNAME]: (state, action) => action.payload,
+    [SELECTED_ACCOUNT]: (state, action) => isUnselected(action.payload.accountId) ? defaultValue : action.payload.username,
     [CLEAR_ACCOUNT]: () => defaultValue,
 });
 

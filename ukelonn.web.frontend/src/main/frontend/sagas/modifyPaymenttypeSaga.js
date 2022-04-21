@@ -4,6 +4,7 @@ import {
     MODIFY_PAYMENTTYPE_REQUEST,
     MODIFY_PAYMENTTYPE_RECEIVE,
     MODIFY_PAYMENTTYPE_FAILURE,
+    CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 
 function doModifyPaymenttype(paymenttype) {
@@ -20,6 +21,11 @@ function* requestReceiveModifyPaymenttypeSaga(action) {
     }
 }
 
+function* clearPaymenttypeForm() {
+    yield put(CLEAR_PAYMENT_TYPE_FORM());
+}
+
 export default function* modifyPaymenttypeSaga() {
     yield takeLatest(MODIFY_PAYMENTTYPE_REQUEST, requestReceiveModifyPaymenttypeSaga);
+    yield takeLatest(MODIFY_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
 }

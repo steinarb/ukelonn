@@ -1,13 +1,7 @@
 import { takeLatest, put, select } from 'redux-saga/effects';
 import {
     SELECT_BONUS,
-    MODIFY_BONUS_ENABLED,
-    MODIFY_BONUS_ICONURL,
-    MODIFY_BONUS_TITLE,
-    MODIFY_BONUS_DESCRIPTION,
-    MODIFY_BONUS_FACTOR,
-    MODIFY_BONUS_START_DATE,
-    MODIFY_BONUS_END_DATE,
+    SELECTED_BONUS,
     SAVE_BONUS_CHANGES_BUTTON_CLICKED,
     MODIFY_BONUS_REQUEST,
     MODIFY_BONUS_RECEIVE,
@@ -23,24 +17,19 @@ import {
 function* selectBonus(action) {
     const bonusId = action.payload;
     if (bonusId === -1) {
-        yield put(CLEAR_BONUS());
+        yield put(SELECTED_BONUS({ bonusId }));
     } else {
         const bonuses = yield select(state => state.allbonuses);
         const bonus = bonuses.find(u => u.bonusId === bonusId);
         if (bonus) {
-            yield put(MODIFY_BONUS_ENABLED(bonus.enabled));
-            yield put(MODIFY_BONUS_ICONURL(bonus.iconurl));
-            yield put(MODIFY_BONUS_TITLE(bonus.title));
-            yield put(MODIFY_BONUS_DESCRIPTION(bonus.description));
-            yield put(MODIFY_BONUS_FACTOR(bonus.bonusFactor));
-            yield put(MODIFY_BONUS_START_DATE(bonus.startDate));
-            yield put(MODIFY_BONUS_END_DATE(bonus.endDate));
+            yield put(SELECTED_BONUS(bonus));
         }
     }
 }
 
 function* saveModifiedBonus() {
     const bonusId = yield select(state => state.bonusId);
+    const iconurl = yield select(state => state.bonusIconurl);
     const enabled = yield select(state => state.bonusEnabled);
     const title = yield select(state => state.bonusTitle);
     const description = yield select(state => state.bonusDescription);
@@ -50,6 +39,7 @@ function* saveModifiedBonus() {
     const bonus = {
         bonusId,
         enabled,
+        iconurl,
         title,
         description,
         bonusFactor,

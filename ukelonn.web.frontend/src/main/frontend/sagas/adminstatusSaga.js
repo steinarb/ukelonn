@@ -7,9 +7,8 @@ import {
 } from '../actiontypes';
 
 function* requestAdminStatus(action) {
-    const username = action.payload;
     try {
-        const response = yield call(fetchAdminStatus, { username });
+        const response = yield call(fetchAdminStatus, action.payload);
         const adminStatus = (response.headers['content-type'] === 'application/json') ? response.data : {};
         yield put(RECEIVE_ADMIN_STATUS(adminStatus));
     } catch (error) {

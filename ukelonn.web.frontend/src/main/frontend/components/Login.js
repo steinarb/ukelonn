@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import {
-    UPDATE_USERNAME,
-    UPDATE_PASSWORD,
-    LOGIN_REQUEST,
-} from '../actiontypes';
+import { LOGIN_REQUEST } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
 function Login(props) {
-    const { username, password, loginResponse, onUsernameChange, onPasswordChange, onLogin } = props;
+    const {
+        loginResponse,
+        onLogin,
+    } = props;
+    const [ username, setUsername ] = useState('');
+    const [ password, setPassword ] = useState('');
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return (<Redirect to="/ukelonn/admin" />);
@@ -30,13 +31,13 @@ function Login(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Brukernavn:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type='text' name='username' onChange={(event) => onUsernameChange(event.target.value)}></input>
+                            <input id="username" className="form-control" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Passord:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type='password' name='password' onChange={(event) => onPasswordChange(event.target.value)}/>
+                            <input id="password" className="form-control" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -56,16 +57,12 @@ function Login(props) {
 
 function mapStateToProps(state) {
     return {
-        username: state.username,
-        password: state.password,
         loginResponse: state.loginResponse
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUsernameChange: username => dispatch(UPDATE_USERNAME(username)),
-        onPasswordChange: password => dispatch(UPDATE_PASSWORD(password)),
         onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
     };
 }

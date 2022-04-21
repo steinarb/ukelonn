@@ -2,11 +2,16 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     MODIFY_USER_IS_ADMINISTRATOR,
     RECEIVE_ADMIN_STATUS,
-    CHANGE_ADMIN_STATUS_RESPONSE,
+    SELECTED_USER,
+    CLEAR_USER,
 } from '../actiontypes';
+import { isUnselected } from '../common/reducers';
 
-export default createReducer(false, {
+const defaultValue = false;
+
+export default createReducer(defaultValue, {
     [MODIFY_USER_IS_ADMINISTRATOR]: (state, action) => action.payload,
     [RECEIVE_ADMIN_STATUS]: (state, action) => action.payload.administrator,
-    [CHANGE_ADMIN_STATUS_RESPONSE]: () => false,
+    [SELECTED_USER]: (state, action) => isUnselected(action.payload.userid) ? defaultValue : state,
+    [CLEAR_USER]: () => defaultValue,
 });

@@ -1,16 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_JOB_AMOUNT,
     MODIFY_JOBTYPE_REQUEST,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
+import Logout from './Logout';
 
 function AdminJobtypesModify(props) {
     const {
@@ -21,12 +19,7 @@ function AdminJobtypesModify(props) {
         onNameFieldChange,
         onAmountFieldChange,
         onSaveUpdatedJobType,
-        onLogout
     } = props;
-
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
 
     return (
         <div>
@@ -68,7 +61,7 @@ function AdminJobtypesModify(props) {
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout/>
         </div>
     );
 }
@@ -88,7 +81,6 @@ function mapDispatchToProps(dispatch) {
         onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
         onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
         onSaveUpdatedJobType: jobtype => dispatch(MODIFY_JOBTYPE_REQUEST(jobtype)),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 

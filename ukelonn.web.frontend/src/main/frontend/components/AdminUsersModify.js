@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-import { userIsNotLoggedIn } from '../common/login';
 import {
     MODIFY_USER_USERNAME,
     MODIFY_USER_EMAIL,
@@ -10,17 +8,13 @@ import {
     MODIFY_USER_LASTNAME,
     MODIFY_USER_IS_ADMINISTRATOR,
     SAVE_USER_BUTTON_CLICKED,
-    LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
+import Logout from './Logout';
 
 function AdminUsersModify(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
-    let {
+    const {
         text,
         userUsername,
         userEmail,
@@ -33,7 +27,6 @@ function AdminUsersModify(props) {
         onLastnameChange,
         onUpdateUserIsAdministrator,
         onSaveUserButtonClicked,
-        onLogout,
     } = props;
 
     return (
@@ -97,7 +90,7 @@ function AdminUsersModify(props) {
                 <br/>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
         </div>
     );
 }
@@ -123,7 +116,6 @@ function mapDispatchToProps(dispatch) {
         onLastnameChange: e => dispatch(MODIFY_USER_LASTNAME(e.target.value)),
         onUpdateUserIsAdministrator: e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked)),
         onSaveUserButtonClicked: () => dispatch(SAVE_USER_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }
 
