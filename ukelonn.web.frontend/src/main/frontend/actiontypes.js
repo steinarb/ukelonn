@@ -49,6 +49,7 @@ export const LOGIN_FAILURE = createAction('LOGIN_FAILURE');
 export const LOGOUT_REQUEST = createAction('LOGOUT_REQUEST');
 export const LOGOUT_RECEIVE = createAction('LOGOUT_RECEIVE');
 export const LOGOUT_FAILURE = createAction('LOGOUT_FAILURE');
+export const RELOAD_WEB_PAGE = createAction('RELOAD_WEB_PAGE');
 export const ACCOUNT_REQUEST = createAction('ACCOUNT_REQUEST');
 export const ACCOUNT_RECEIVE = createAction('ACCOUNT_RECEIVE');
 export const ACCOUNT_FAILURE = createAction('ACCOUNT_FAILURE');
