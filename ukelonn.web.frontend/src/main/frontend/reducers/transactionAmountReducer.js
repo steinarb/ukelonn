@@ -13,7 +13,6 @@ import {
     CLEAR_JOB_TYPE_FORM,
     CLEAR_JOB_TYPE_CREATE_FORM,
     CLEAR_PAYMENT_TYPE_FORM,
-    CLEAR_ACCOUNT,
 } from '../actiontypes';
 import { isUnselected } from '../common/reducers';
 
@@ -33,7 +32,6 @@ const transactionAmountReducer = createReducer(defaultValue, {
     [CLEAR_JOB_TYPE_FORM]: () => defaultValue,
     [CLEAR_JOB_TYPE_CREATE_FORM]: () => defaultValue,
     [CLEAR_PAYMENT_TYPE_FORM]: () => defaultValue,
-    [CLEAR_ACCOUNT]: () => defaultValue,
 });
 
 export default transactionAmountReducer;
