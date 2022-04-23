@@ -1,16 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import Locale from './Locale';
 import Logout from './Logout';
 
-function PerformedJobs(props) {
-    const {
-        text,
-        accountFirstname,
-        jobs,
-    } = props;
+export default function PerformedJobs(props) {
+    const text = useSelector(state => state.displayTexts);
+    const accountFirstname = useSelector(state => state.accountFirstname);
+    const jobs = useSelector(state => state.jobs);
     let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parentTitle } = queryParams;
 
@@ -55,16 +53,3 @@ function PerformedJobs(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        parentTitle: state.parentTitle,
-        accountFirstname: state.accountFirstname,
-        jobs: state.jobs,
-    };
-}
-
-export default connect(mapStateToProps)(PerformedJobs);

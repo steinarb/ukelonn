@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     SELECT_BONUS,
@@ -8,14 +8,12 @@ import {
 import Locale from './Locale';
 import Logout from './Logout';
 
-function AdminBonusesDelete(props) {
-    const {
-        text,
-        allbonuses,
-        bonusId,
-        bonusTitle,
-        bonusDescription,
-    } = props;
+export default function AdminBonusesDelete() {
+    const text = useSelector(state => state.displayTexts);
+    const allbonuses = useSelector(state => state.allbonuses);
+    const bonusId = useSelector(state => state.bonusId);
+    const bonusTitle = useSelector(state => state.bonusTitle);
+    const bonusDescription = useSelector(state => state.bonusDescription);
     const dispatch = useDispatch();
 
     return (
@@ -68,17 +66,3 @@ function AdminBonusesDelete(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        allbonuses: state.allbonuses,
-        bonusId: state.bonusId,
-        bonusTitle: state.bonusTitle,
-        bonusDescription: state.bonusDescription,
-    };
-}
-
-export default connect(mapStateToProps)(AdminBonusesDelete);

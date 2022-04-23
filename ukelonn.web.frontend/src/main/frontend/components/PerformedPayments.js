@@ -1,16 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { parse } from 'qs';
 import Locale from './Locale';
 import Logout from './Logout';
 
-function PerformedPayments(props) {
-    const {
-        text,
-        accountFirstname,
-        payments,
-    } = props;
+export default function PerformedPayments(props) {
+    const text = useSelector(state => state.displayTexts);
+    const accountFirstname = useSelector(state => state.accountFirstname);
+    const payments = useSelector(state => state.payments);
     let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parentTitle } = queryParams;
 
@@ -53,16 +51,3 @@ function PerformedPayments(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        parentTitle: state.parentTitle,
-        accountFirstname: state.accountFirstname,
-        payments: state.payments,
-    };
-}
-
-export default connect(mapStateToProps)(PerformedPayments);

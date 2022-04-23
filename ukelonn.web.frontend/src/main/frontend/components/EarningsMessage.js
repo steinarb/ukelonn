@@ -1,8 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-function EarningsMessage(props) {
-    const { text, earningsSumOverYear, earningsSumOverMonth } = props;
+export default function EarningsMessage() {
+    const text = useSelector(state => state.displayTexts);
+    const earningsSumOverYear = useSelector(state => state.earningsSumOverYear);
+    const earningsSumOverMonth = useSelector(state => state.earningsSumOverMonth);
 
     if (!(earningsSumOverYear.length || earningsSumOverMonth.length)) {
         return '';
@@ -42,17 +44,3 @@ function messageForEarningsCurrentMonthAndPreviousMonth(earningsSumOverMonth, te
 
     return (<div>{message}</div>);
 }
-
-
-function mapStateToProps(state) {
-    const earningsSumOverYear = state.earningsSumOverYear || [];
-    const earningsSumOverMonth = state.earningsSumOverMonth || [];
-    return {
-        text: state.displayTexts,
-        earningsSumOverYear,
-        earningsSumOverMonth,
-    };
-}
-
-
-export default connect(mapStateToProps)(EarningsMessage);

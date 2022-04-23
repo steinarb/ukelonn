@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
@@ -9,12 +9,10 @@ import {
 import Locale from './Locale';
 import Logout from './Logout';
 
-function AdminPaymenttypesCreate(props) {
-    const {
-        text,
-        transactionTypeName,
-        transactionAmount,
-    } = props;
+export default function AdminPaymenttypesCreate() {
+    const text = useSelector(state => state.displayTexts);
+    const transactionTypeName = useSelector(state => state.transactionTypeName);
+    const transactionAmount = useSelector(state => state.transactionAmount);
     const dispatch = useDispatch();
 
     return (
@@ -57,16 +55,3 @@ function AdminPaymenttypesCreate(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        transactionTypeName: state.transactionTypeName,
-        transactionAmount: state.transactionAmount,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        transactiontype: state.transactiontype,
-    };
-}
-
-export default connect(mapStateToProps)(AdminPaymenttypesCreate);

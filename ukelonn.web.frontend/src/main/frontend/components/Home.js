@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-function Home(props) {
-    const { loginResponse } = props;
+export default function Home() {
+    const loginResponse = useSelector(state => state.loginResponse);
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return <Redirect to="/ukelonn/admin" />;
@@ -18,11 +18,3 @@ function Home(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        loginResponse: state.loginResponse
-    };
-}
-
-export default connect(mapStateToProps)(Home);

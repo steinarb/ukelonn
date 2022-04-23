@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import {
@@ -12,17 +12,15 @@ import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 import Logout from './Logout';
 
-function AdminJobsEdit(props) {
-    const {
-        text,
-        accountId,
-        firstname,
-        transactionId,
-        transactionTypeId,
-        transactionAmount,
-        transactionTime,
-        jobs,
-    } = props;
+export default function AdminJobsEdit() {
+    const text = useSelector(state => state.displayTexts);
+    const accountId = useSelector(state => state.accountId);
+    const firstname = useSelector(state => state.accountFirstname);
+    const transactionId = useSelector(state => state.transactionId);
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionTime = useSelector(state => state.transactionDate);
+    const jobs = useSelector(state => state.jobs);
     const dispatch = useDispatch();
 
     return (
@@ -101,18 +99,3 @@ function AdminJobsEdit(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        accountId: state.accountId,
-        firstname: state.accountFirstname,
-        transactionId: state.transactionId,
-        transactionTypeId: state.transactionTypeId,
-        transactionAmount: state.transactionAmount,
-        transactionTime: state.transactionDate,
-        jobs: state.jobs,
-    };
-}
-
-export default connect(mapStateToProps)(AdminJobsEdit);

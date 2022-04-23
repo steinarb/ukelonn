@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_USER_USERNAME,
@@ -13,15 +13,13 @@ import Locale from './Locale';
 import Users from './Users';
 import Logout from './Logout';
 
-function AdminUsersModify(props) {
-    const {
-        text,
-        userUsername,
-        userEmail,
-        userFirstname,
-        userLastname,
-        userIsAdministrator,
-    } = props;
+export default function AdminUsersModify() {
+    const text = useSelector(state => state.displayTexts);
+    const userUsername = useSelector(state => state.userUsername);
+    const userEmail = useSelector(state => state.userEmail);
+    const userFirstname = useSelector(state => state.userFirstname);
+    const userLastname = useSelector(state => state.userLastname);
+    const userIsAdministrator = useSelector(state => state.userIsAdministrator);
     const dispatch = useDispatch();
 
     return (
@@ -88,18 +86,3 @@ function AdminUsersModify(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        userUsername: state.userUsername,
-        userEmail: state.userEmail,
-        userFirstname: state.userFirstname,
-        userLastname: state.userLastname,
-        userIsAdministrator: state.userIsAdministrator,
-    };
-}
-
-export default connect(mapStateToProps)(AdminUsersModify);

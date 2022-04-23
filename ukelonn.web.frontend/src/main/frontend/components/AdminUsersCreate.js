@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { isEmail } from 'validator';
 import {
@@ -15,19 +15,17 @@ import {
 import Locale from './Locale';
 import Logout from './Logout';
 
-function AdminUsersCreate(props) {
-    const {
-        text,
-        usernames,
-        userUsername,
-        userEmail,
-        userFirstname,
-        userLastname,
-        userIsAdministrator,
-        password1,
-        password2,
-        passwordsNotIdentical,
-    } = props;
+export default function AdminUsersCreate() {
+    const text = useSelector(state => state.displayTexts);
+    const usernames = useSelector(state => state.usernames);
+    const userUsername = useSelector(state => state.userUsername);
+    const userEmail = useSelector(state => state.userEmail);
+    const userFirstname = useSelector(state => state.userFirstname);
+    const userLastname = useSelector(state => state.userLastname);
+    const userIsAdministrator = useSelector(state => state.userIsAdministrator);
+    const password1 = useSelector(state => state.password1);
+    const password2 = useSelector(state => state.password2);
+    const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
     const dispatch = useDispatch();
 
     const usernameEmpty = !userUsername;
@@ -107,22 +105,3 @@ function AdminUsersCreate(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        usernames: state.usernames,
-        userUsername: state.userUsername,
-        userEmail: state.userEmail,
-        userFirstname: state.userFirstname,
-        userLastname: state.userLastname,
-        userIsAdministrator: state.userIsAdministrator,
-        password1: state.password1,
-        password2: state.password2,
-        passwordsNotIdentical: state.passwordsNotIdentical,
-    };
-}
-
-export default connect(mapStateToProps)(AdminUsersCreate);

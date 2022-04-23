@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import { LOGIN_REQUEST } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
-function Login(props) {
-    const {
-        loginResponse,
-    } = props;
+export default function Login() {
+    const loginResponse = useSelector(state => state.loginResponse);
     const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
@@ -33,11 +31,3 @@ function Login(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        loginResponse: state.loginResponse
-    };
-}
-
-export default connect(mapStateToProps)(Login);

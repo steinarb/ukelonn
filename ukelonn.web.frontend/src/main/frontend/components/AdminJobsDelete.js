@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_MARK_JOB_FOR_DELETE,
@@ -9,12 +9,10 @@ import Locale from './Locale';
 import Accounts from './Accounts';
 import Logout from './Logout';
 
-function AdminJobsDelete(props) {
-    const {
-        text,
-        accountFirstName,
-        jobs,
-    } = props;
+export default function AdminJobsDelete() {
+    const text = useSelector(state => state.displayTexts);
+    const accountFirstName = useSelector(state => state.accountFirstName);
+    const jobs = useSelector(state => state.jobs);
     const dispatch = useDispatch();
 
     return (
@@ -70,15 +68,3 @@ function AdminJobsDelete(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        jobs: state.jobs,
-        accounts: state.accounts,
-    };
-}
-
-export default connect(mapStateToProps)(AdminJobsDelete);

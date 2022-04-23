@@ -1,11 +1,11 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
-import {
-    UPDATE_LOCALE,
-} from '../actiontypes';
+import { useSelector, useDispatch } from 'react-redux';
+import { UPDATE_LOCALE } from '../actiontypes';
 
-function Locale(props) {
-    const { className, locale, availableLocales } = props;
+export default function Locale(props) {
+    const { className } = props;
+    const locale = useSelector(state => state.locale);
+    const availableLocales = useSelector(state => state.availableLocales);
     const dispatch = useDispatch();
 
     return (
@@ -14,13 +14,3 @@ function Locale(props) {
         </select>
     );
 }
-
-function mapStateToProps(state) {
-    const { locale, availableLocales } = state;
-    return {
-        locale,
-        availableLocales,
-    };
-}
-
-export default connect(mapStateToProps)(Locale);

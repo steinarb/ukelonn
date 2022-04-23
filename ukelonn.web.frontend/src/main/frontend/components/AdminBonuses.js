@@ -1,11 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Locale from './Locale';
 import Logout from './Logout';
 
-function AdminBonuses(props) {
-    const { text } = props;
+export default function AdminBonuses() {
+    const text = useSelector(state => state.displayTexts);
 
     return (
         <div>
@@ -46,13 +46,3 @@ function AdminBonuses(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-    };
-}
-
-export default connect(mapStateToProps)(AdminBonuses);

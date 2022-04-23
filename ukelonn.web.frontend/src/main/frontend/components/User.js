@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
@@ -15,19 +15,16 @@ import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
-function User(props) {
-    const {
-        text,
-        accountId,
-        firstname,
-        username,
-        accountBalance,
-        transactionAmount,
-        transactionDate,
-        notificationMessage,
-    } = props;
+export default function User() {
+    const text = useSelector(state => state.displayTexts);
+    const accountId = useSelector(state => state.accountId);
+    const firstname = useSelector(state => state.accountFirstname);
+    const username = useSelector(state => state.accountUsername);
+    const accountBalance = useSelector(state => state.accountBalance);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionDate = useSelector(state => state.transactionDate);
+    const notificationMessage = useSelector(state => state.notificationMessage);
     const dispatch = useDispatch();
-
     const title = text.weeklyAllowanceFor + ' ' + firstname;
     const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });
     const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId, username, parentTitle: title });
@@ -115,20 +112,3 @@ function User(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        accountId: state.accountId,
-        firstname: state.accountFirstname,
-        username: state.accountUsername,
-        accountBalance: state.accountBalance,
-        transactionAmount: state.transactionAmount,
-        transactionDate: state.transactionDate,
-        notificationMessage: state.notificationMessage,
-    };
-}
-
-export default connect(mapStateToProps)(User);

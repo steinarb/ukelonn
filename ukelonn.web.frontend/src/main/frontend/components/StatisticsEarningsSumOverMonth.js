@@ -1,17 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import { findUsernameFromAccountOrQueryParameter } from '../common/account';
 import Locale from './Locale';
 import Logout from './Logout';
 
-function StatisticsEarningsSumOverMonth(props) {
-    const {
-        text,
-        earningsSumOverMonth,
-    } = props;
-
+export default function StatisticsEarningsSumOverMonth(props) {
+    const text = useSelector(state => state.displayTexts);
+    const earningsSumOverMonth = useSelector(state => state.earningsSumOverMonth);
     const username = findUsernameFromAccountOrQueryParameter(props);
     const statistics = '/ukelonn/statistics?' + stringify({ username });
 
@@ -53,14 +50,3 @@ function StatisticsEarningsSumOverMonth(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        earningsSumOverMonth: state.earningsSumOverMonth,
-    };
-}
-
-export default connect(mapStateToProps)(StatisticsEarningsSumOverMonth);

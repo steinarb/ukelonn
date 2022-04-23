@@ -1,12 +1,15 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Locale from './Locale';
 import Logout from './Logout';
 
 
-function Unauthorized(props) {
-    const { haveReceivedResponseFromLogin, loginResponse, text } = props;
+export default function Unauthorized() {
+    const haveReceivedResponseFromLogin = useSelector(state => state.haveReceivedResponseFromLogin);
+    const loginResponse = useSelector(state => state.loginResponse);
+    const text = useSelector(state => state.displayTexts);
+
     if (haveReceivedResponseFromLogin && !loginResponse.roles.length) {
         return <Redirect to="/ukelonn/login" />;
     }
@@ -33,13 +36,3 @@ function Unauthorized(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        text: state.displayTexts,
-    };
-}
-
-export default connect(mapStateToProps)(Unauthorized);

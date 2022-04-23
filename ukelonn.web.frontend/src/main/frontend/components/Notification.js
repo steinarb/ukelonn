@@ -1,11 +1,9 @@
 import { spawnNotification } from './spawnnotification.js';
-import { connect, useDispatch } from 'react-redux';
-import {
-    UPDATE_NOTIFICATIONMESSAGE,
-} from '../actiontypes';
+import { useSelector, useDispatch } from 'react-redux';
+import { UPDATE_NOTIFICATIONMESSAGE } from '../actiontypes';
 
-function Notification(props) {
-    const { notificationMessage } = props;
+export default function Notification() {
+    const  notificationMessage = useSelector(state => state.notificationMessage);
     const dispatch = useDispatch();
     if (notificationMessage) {
         if (Notification) {
@@ -18,11 +16,3 @@ function Notification(props) {
 
     return null;
 }
-
-function mapStateToProps(state) {
-    return {
-        notificationMessage: state.notificationMessage,
-    };
-}
-
-export default connect(mapStateToProps)(Notification);

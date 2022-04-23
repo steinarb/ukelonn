@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import {
@@ -13,17 +13,14 @@ import Paymenttypes from './Paymenttypes';
 import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
-function Admin(props) {
-    const {
-        text,
-        accountId,
-        username,
-        balance,
-        transactionTypeId,
-        transactionAmount,
-    } = props;
+export default function Admin() {
+    const text = useSelector(state => state.displayTexts);
+    const accountId = useSelector(state => state.accountId);
+    const username = useSelector(state => state.accountUsername);
+    const balance = useSelector(state => state.accountBalance);
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
+    const transactionAmount = useSelector(state => state.transactionAmount);
     const dispatch = useDispatch();
-
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
     const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
@@ -125,18 +122,3 @@ function Admin(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        accountId: state.accountId,
-        username: state.accountUsername,
-        balance: state.accountBalance,
-        transactionTypeId: state.transactionTypeId,
-        transactionAmount: state.transactionAmount,
-    };
-}
-
-export default connect(mapStateToProps)(Admin);

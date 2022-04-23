@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
@@ -10,13 +10,11 @@ import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
 import Logout from './Logout';
 
-function AdminJobtypesModify(props) {
-    const {
-        text,
-        transactionTypeId,
-        transactionAmount,
-        transactionTypeName,
-    } = props;
+export default function AdminJobtypesModify() {
+    const text = useSelector(state => state.displayTexts);
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionTypeName = useSelector(state => state.transactionTypeName);
     const dispatch = useDispatch();
 
     return (
@@ -65,15 +63,3 @@ function AdminJobtypesModify(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        transactionAmount: state.transactionAmount,
-        transactionTypeName: state.transactionTypeName,
-    };
-}
-
-export default connect(mapStateToProps)(AdminJobtypesModify);

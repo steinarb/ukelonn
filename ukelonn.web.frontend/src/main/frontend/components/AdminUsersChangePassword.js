@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_PASSWORD1,
@@ -10,13 +10,11 @@ import Locale from './Locale';
 import Users from './Users';
 import Logout from './Logout';
 
-function AdminUsersChangePassword(props) {
-    const {
-        text,
-        password1,
-        password2,
-        passwordsNotIdentical,
-    } = props;
+export default function AdminUsersChangePassword() {
+    const text = useSelector(state => state.displayTexts);
+    const password1 = useSelector(state => state.password1);
+    const password2 = useSelector(state => state.password2);
+    const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
     const dispatch = useDispatch();
 
     return (
@@ -66,16 +64,3 @@ function AdminUsersChangePassword(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        password1: state.password1,
-        password2: state.password2,
-        passwordsNotIdentical: state.passwordsNotIdentical,
-    };
-}
-
-export default connect(mapStateToProps)(AdminUsersChangePassword);
