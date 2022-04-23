@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
@@ -16,10 +16,8 @@ function AdminJobtypesModify(props) {
         transactionTypeId,
         transactionAmount,
         transactionTypeName,
-        onNameFieldChange,
-        onAmountFieldChange,
-        onSaveUpdatedJobType,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -43,19 +41,19 @@ function AdminJobtypesModify(props) {
                     <div>
                         <label htmlFor="amount">{text.modifyNameOfJobType}</label>
                         <div>
-                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.modifyAmountOfJobType}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedJobType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToJobType}</button>
+                            <button onClick={() => dispatch(MODIFY_JOBTYPE_REQUEST({ id: transactionTypeId, transactionTypeName, transactionAmount }))}>{text.saveChangesToJobType}</button>
                         </div>
                     </div>
             </form>
@@ -78,12 +76,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
-        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
-        onSaveUpdatedJobType: jobtype => dispatch(MODIFY_JOBTYPE_REQUEST(jobtype)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesModify);
+export default connect(mapStateToProps)(AdminJobtypesModify);

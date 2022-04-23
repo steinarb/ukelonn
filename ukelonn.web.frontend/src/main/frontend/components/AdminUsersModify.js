@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_USER_USERNAME,
@@ -21,13 +21,8 @@ function AdminUsersModify(props) {
         userFirstname,
         userLastname,
         userIsAdministrator,
-        onUsernameChange,
-        onEmailChange,
-        onFirstnameChange,
-        onLastnameChange,
-        onUpdateUserIsAdministrator,
-        onSaveUserButtonClicked,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -51,37 +46,37 @@ function AdminUsersModify(props) {
                     <div>
                         <label htmlFor="username">{text.username}</label>
                         <div>
-                            <input id="username" type="text" value={userUsername} onChange={onUsernameChange} />
+                            <input id="username" type="text" value={userUsername} onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="email">{text.emailAddress}</label>
                         <div>
-                            <input id="email" type="text" value={userEmail} onChange={onEmailChange} />
+                            <input id="email" type="text" value={userEmail} onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="firstname">{text.firstName}</label>
                         <div>
-                            <input id="firstname" type="text" value={userFirstname} onChange={onFirstnameChange} />
+                            <input id="firstname" type="text" value={userFirstname} onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="lastname">{text.lastName}</label>
                         <div>
-                            <input id="lastname" type="text" value={userLastname} onChange={onLastnameChange} />
+                            <input id="lastname" type="text" value={userLastname} onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="administrator">{text.administrator}</label>
                         <div>
-                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
+                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={onSaveUserButtonClicked}>{text.saveUserModifications}</button>
+                            <button onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>{text.saveUserModifications}</button>
                         </div>
                     </div>
                 </div>
@@ -107,15 +102,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onUsernameChange: e => dispatch(MODIFY_USER_USERNAME(e.target.value)),
-        onEmailChange: e => dispatch(MODIFY_USER_EMAIL(e.target.value)),
-        onFirstnameChange: e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value)),
-        onLastnameChange: e => dispatch(MODIFY_USER_LASTNAME(e.target.value)),
-        onUpdateUserIsAdministrator: e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked)),
-        onSaveUserButtonClicked: () => dispatch(SAVE_USER_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersModify);
+export default connect(mapStateToProps)(AdminUsersModify);

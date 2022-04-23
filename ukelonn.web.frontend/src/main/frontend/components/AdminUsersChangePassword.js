@@ -1,8 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    USERS_REQUEST,
     MODIFY_PASSWORD1,
     MODIFY_PASSWORD2,
     CHANGE_PASSWORD_BUTTON_CLICKED,
@@ -17,10 +16,8 @@ function AdminUsersChangePassword(props) {
         password1,
         password2,
         passwordsNotIdentical,
-        onPassword1Change,
-        onPassword2Change,
-        onSaveUpdatedPassword,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -44,20 +41,20 @@ function AdminUsersChangePassword(props) {
                     <div>
                         <label htmlFor="password1">{text.password}:</label>
                         <div>
-                            <input id="password1" type='password' value={password1} onChange={onPassword1Change} />
+                            <input id="password1" type='password' value={password1} onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="password2">{text.repeatPassword}:</label>
                         <div>
-                            <input id="password2" type='password' value={password2} onChange={onPassword2Change} />
+                            <input id="password2" type='password' value={password2} onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))} />
                             { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={onSaveUpdatedPassword}>{text.changePassword}</button>
+                            <button onClick={() => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED())}>{text.changePassword}</button>
                         </div>
                     </div>
                 </div>
@@ -81,13 +78,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onUserList: () => dispatch(USERS_REQUEST()),
-        onPassword1Change: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
-        onPassword2Change: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
-        onSaveUpdatedPassword: () => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersChangePassword);
+export default connect(mapStateToProps)(AdminUsersChangePassword);

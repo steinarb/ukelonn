@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
@@ -16,10 +16,8 @@ function AdminPaymenttypesModify(props) {
         transactionTypeId,
         transactionTypeName,
         transactionAmount,
-        onNameFieldChange,
-        onAmountFieldChange,
-        onSaveUpdatedPaymentType,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -43,19 +41,19 @@ function AdminPaymenttypesModify(props) {
                     <div>
                         <label htmlFor="amount">{text.modifyPaymentTypeName}</label>
                         <div>
-                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.modifyPaymentTypeAmount}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedPaymentType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToPaymentType}</button>
+                            <button onClick={() => dispatch(MODIFY_PAYMENTTYPE_REQUEST({ id: transactionTypeId, transactionTypeName, transactionAmount }))}>{text.saveChangesToPaymentType}</button>
                         </div>
                     </div>
                 </div>
@@ -79,12 +77,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
-        onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
-        onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesModify);
+export default connect(mapStateToProps)(AdminPaymenttypesModify);

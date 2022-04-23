@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
@@ -14,10 +14,8 @@ function AdminJobtypesCreate(props) {
         text,
         transactionTypeName,
         transactionAmount,
-        onNameFieldChange,
-        onAmountFieldChange,
-        onSaveUpdatedJobType,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -35,19 +33,19 @@ function AdminJobtypesCreate(props) {
                     <div>
                         <label htmlFor="amount">{text.nameOfJobType}</label>
                         <div>
-                            <input id="name" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.amountForJobType}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedJobType({ transactionTypeName, transactionAmount })}>{text.createNewJobType}</button>
+                            <button onClick={() => dispatch(CREATE_JOBTYPE_REQUEST({ transactionTypeName, transactionAmount }))}>{text.createNewJobType}</button>
                         </div>
                     </div>
                 </div>
@@ -68,12 +66,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
-        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
-        onSaveUpdatedJobType: transactiontype => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesCreate);
+export default connect(mapStateToProps)(AdminJobtypesCreate);

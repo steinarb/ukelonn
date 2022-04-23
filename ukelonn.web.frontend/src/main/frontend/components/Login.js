@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import { LOGIN_REQUEST } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
@@ -7,8 +7,8 @@ import LoginErrorMessage from './LoginErrorMessage';
 function Login(props) {
     const {
         loginResponse,
-        onLogin,
     } = props;
+    const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     if (loginResponse.roles.length > 0) {
@@ -27,7 +27,7 @@ function Login(props) {
                 <input id="username" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
                 <label htmlFor="password">Passord:</label>
                 <input id="password" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
-                <button onClick={() => onLogin(username, password)}>Login</button>
+                <button onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}>Login</button>
             </form>
             <LoginErrorMessage loginResponse={loginResponse} />
         </div>
@@ -40,10 +40,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps)(Login);

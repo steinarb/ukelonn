@@ -1,9 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { isEmail } from 'validator';
 import {
-    CLEAR_USER_AND_PASSWORDS,
     MODIFY_USER_USERNAME,
     MODIFY_USER_EMAIL,
     MODIFY_USER_FIRSTNAME,
@@ -28,15 +27,8 @@ function AdminUsersCreate(props) {
         password1,
         password2,
         passwordsNotIdentical,
-        onUsernameChange,
-        onEmailChange,
-        onFirstnameChange,
-        onLastnameChange,
-        onPassword1Change,
-        onPassword2Change,
-        onUpdateUserIsAdministrator,
-        onSaveCreatedUser,
     } = props;
+    const dispatch = useDispatch();
 
     const usernameEmpty = !userUsername;
     const usernameExists = usernames.indexOf(userUsername) > -1;
@@ -57,7 +49,7 @@ function AdminUsersCreate(props) {
                     <div>
                         <label htmlFor="username">{text.username}</label>
                         <div>
-                            <input id="username" type="text" value={userUsername} onChange={onUsernameChange} />
+                            <input id="username" type="text" value={userUsername} onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                             { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
                             { usernameExists && <span>{text.usernameExists}</span> }
                         </div>
@@ -65,45 +57,45 @@ function AdminUsersCreate(props) {
                     <div>
                         <label htmlFor="email">{text.emailAddress}</label>
                         <div>
-                            <input id="email" type="text" value={userEmail} onChange={onEmailChange} />
+                            <input id="email" type="text" value={userEmail} onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                             { userEmail && !isEmail(userEmail) && <span>{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div>
                         <label htmlFor="firstname">{text.firstName}</label>
                         <div>
-                            <input id="firstname" type="text" value={userFirstname} onChange={onFirstnameChange} />
+                            <input id="firstname" type="text" value={userFirstname} onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="lastname">{text.lastName}</label>
                         <div>
-                            <input id="lastname" type="text" value={userLastname} onChange={onLastnameChange} />
+                            <input id="lastname" type="text" value={userLastname} onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="password1">{text.password}:</label>
                         <div>
-                            <input id="password1" type='password' value={password1} onChange={onPassword1Change} />
+                            <input id="password1" type='password' value={password1} onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="password2">{text.repeatPassword}:</label>
                         <div>
-                            <input id="password2" type="password" value={password2} onChange={onPassword2Change}/>
+                            <input id="password2" type="password" value={password2} onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))}/>
                             { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div>
                         <label htmlFor="administrator">{text.administrator}</label>
                         <div>
-                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
+                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveCreatedUser()}>{text.createUser}</button>
+                            <button onClick={() => dispatch(CREATE_USER_BUTTON_CLICKED())}>{text.createUser}</button>
                         </div>
                     </div>
                 </div>
@@ -133,18 +125,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onClearUserAndPassword: () => dispatch(CLEAR_USER_AND_PASSWORDS()),
-        onUsernameChange: e => dispatch(MODIFY_USER_USERNAME(e.target.value)),
-        onEmailChange: e => dispatch(MODIFY_USER_EMAIL(e.target.value)),
-        onFirstnameChange: e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value)),
-        onLastnameChange: e => dispatch(MODIFY_USER_LASTNAME(e.target.value)),
-        onPassword1Change: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
-        onPassword2Change: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
-        onUpdateUserIsAdministrator: e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked)),
-        onSaveCreatedUser: () => dispatch(CREATE_USER_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersCreate);
+export default connect(mapStateToProps)(AdminUsersCreate);

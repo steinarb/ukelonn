@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import {
@@ -28,16 +28,8 @@ function AdminBonusesModify(props) {
         bonusFactor,
         bonusStartDate,
         bonusEndDate,
-        onSelectBonus,
-        onUpdateEnabled,
-        onUpdateIconurl,
-        onUpdateTitle,
-        onUpdateDescription,
-        onUpdateBonusFactor,
-        onUpdateStartDate,
-        onUpdateEndDate,
-        onSaveModifyBonusButtonClicked,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -55,7 +47,7 @@ function AdminBonusesModify(props) {
                     <div>
                         <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
-                            <select id="bonus" value={bonusId} onChange={onSelectBonus}>
+                            <select id="bonus" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
                                 <option key="-1" value="-1" />
                                 {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
@@ -64,49 +56,62 @@ function AdminBonusesModify(props) {
                     <div>
                         <label htmlFor="enabled">{text.activated}</label>
                         <div>
-                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
+                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="iconurl">{text.iconURL}</label>
                         <div>
-                            <input id="iconurl" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
+                            <input id="iconurl" type="text" value={bonusIconurl} onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input id="title" type="text" value={bonusTitle} onChange={onUpdateTitle} />
+                            <input id="title" type="text" value={bonusTitle} onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input id="description" type="text" value={bonusDescription} onChange={onUpdateDescription} />
+                            <input id="description" type="text" value={bonusDescription} onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="bonusfactor">{text.bonusFactor}</label>
                         <div>
-                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
+                            <input
+                                id="bonusfactor"
+                                type="text"
+                                pattern="[0-9]?[.]?[0-9]?[0-9]?"
+                                value={bonusFactor}
+                                onChange={e => dispatch(MODIFY_BONUS_FACTOR(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker selected={new Date(bonusStartDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateStartDate} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(bonusStartDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_BONUS_START_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker selected={new Date(bonusEndDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateEndDate} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(bonusEndDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_BONUS_END_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={onSaveModifyBonusButtonClicked}>{text.saveChangesToBonus}</button>
+                            <button onClick={() => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED())}>{text.saveChangesToBonus}</button>
                         </div>
                     </div>
                 </div>
@@ -134,18 +139,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onSelectBonus: e => dispatch(SELECT_BONUS(parseInt(e.target.value))),
-        onUpdateEnabled: e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked)),
-        onUpdateIconurl: e => dispatch(MODIFY_BONUS_ICONURL(e.target.value)),
-        onUpdateTitle: e => dispatch(MODIFY_BONUS_TITLE(e.target.value)),
-        onUpdateDescription: e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value)),
-        onUpdateBonusFactor: e => dispatch(MODIFY_BONUS_FACTOR(e.target.value)),
-        onUpdateStartDate: d => dispatch(MODIFY_BONUS_START_DATE(d)),
-        onUpdateEndDate: d => dispatch(MODIFY_BONUS_END_DATE(d)),
-        onSaveModifyBonusButtonClicked: () => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminBonusesModify);
+export default connect(mapStateToProps)(AdminBonusesModify);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import {
@@ -22,10 +22,8 @@ function AdminJobsEdit(props) {
         transactionAmount,
         transactionTime,
         jobs,
-        onRowClick,
-        onDateFieldChange,
-        onSaveEditedJob,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -53,12 +51,12 @@ function AdminJobsEdit(props) {
                     </thead>
                     <tbody>
                         {jobs.map((job) =>
-                                  <tr onClick={ ()=>onRowClick(job) } key={job.id}>
-                                      <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                      <td>{job.name}</td>
-                                      <td>{job.transactionAmount}</td>
-                                  </tr>
-                                 )}
+                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
                 <h2>{text.modifyJob}</h2>
@@ -79,13 +77,17 @@ function AdminJobsEdit(props) {
                         <div>
                             <label htmlFor="date">{text.date}</label>
                             <div>
-                                <DatePicker selected={new Date(transactionTime)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
+                                <DatePicker
+                                    selected={new Date(transactionTime)}
+                                    dateFormat="yyyy-MM-dd"
+                                    onChange={d => dispatch(MODIFY_JOB_DATE(d))}
+                                    onFocus={e => e.target.blur()} />
                             </div>
                         </div>
                         <div>
                             <div/>
                             <div>
-                                <button onClick={() => onSaveEditedJob({ id: transactionId, accountId, transactionTypeId, transactionAmount, transactionTime })}>{text.saveChangesToJob}</button>
+                                <button onClick={() => dispatch(UPDATE_JOB_REQUEST({ id: transactionId, accountId, transactionTypeId, transactionAmount, transactionTime }))}>{text.saveChangesToJob}</button>
                             </div>
                         </div>
                     </div>
@@ -113,12 +115,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onRowClick: (job) => dispatch(JOB_TABLE_ROW_CLICK({ ...job })),
-        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
-        onSaveEditedJob: (modifiedJob) => dispatch(UPDATE_JOB_REQUEST(modifiedJob)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobsEdit);
+export default connect(mapStateToProps)(AdminJobsEdit);

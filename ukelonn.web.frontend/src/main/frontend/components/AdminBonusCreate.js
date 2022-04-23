@@ -1,9 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import {
-    LOGOUT_REQUEST,
     MODIFY_BONUS_ENABLED,
     MODIFY_BONUS_ICONURL,
     MODIFY_BONUS_TITLE,
@@ -14,6 +13,7 @@ import {
     CREATE_NEW_BONUS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function AdminBonusCreate(props) {
     const {
@@ -25,16 +25,8 @@ function AdminBonusCreate(props) {
         bonusFactor,
         bonusStartDate,
         bonusEndDate,
-        onUpdateEnabled,
-        onUpdateIconurl,
-        onUpdateTitle,
-        onUpdateDescription,
-        onUpdateBonusFactor,
-        onUpdateStartDate,
-        onUpdateEndDate,
-        onSaveCreatedBonusClicked,
-        onLogout,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -52,55 +44,63 @@ function AdminBonusCreate(props) {
                     <div>
                         <label htmlFor="enabled">{text.activated}</label>
                         <div>
-                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
+                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="iconurl">{text.iconURL}</label>
                         <div>
-                            <input id="iconurl" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
+                            <input id="iconurl" type="text" value={bonusIconurl} onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input id="title" type="text" value={bonusTitle} onChange={onUpdateTitle} />
+                            <input id="title" type="text" value={bonusTitle} onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input id="description" type="text" value={bonusDescription} onChange={onUpdateDescription} />
+                            <input id="description" type="text" value={bonusDescription} onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="bonusfactor">{text.bonusFactor}</label>
                         <div>
-                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
+                            <input id="bonusfactor" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => dispatch(MODIFY_BONUS_FACTOR(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker selected={new Date(bonusStartDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateStartDate} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(bonusStartDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_BONUS_START_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker selected={new Date(bonusEndDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateEndDate} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(bonusEndDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_BONUS_END_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveCreatedBonusClicked()}>{text.createNewBonus}</button>
+                            <button onClick={() => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED())}>{text.createNewBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout/>
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -123,18 +123,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onUpdateEnabled: e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked)),
-        onUpdateIconurl: e => dispatch(MODIFY_BONUS_ICONURL(e.target.value)),
-        onUpdateTitle: e => dispatch(MODIFY_BONUS_TITLE(e.target.value)),
-        onUpdateDescription: e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value)),
-        onUpdateBonusFactor: e => dispatch(MODIFY_BONUS_FACTOR(e.target.value)),
-        onUpdateStartDate: d => dispatch(MODIFY_BONUS_START_DATE(d)),
-        onUpdateEndDate: d => dispatch(MODIFY_BONUS_END_DATE(d)),
-        onSaveCreatedBonusClicked: () => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminBonusCreate);
+export default connect(mapStateToProps)(AdminBonusCreate);

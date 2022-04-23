@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
@@ -25,9 +25,8 @@ function User(props) {
         transactionAmount,
         transactionDate,
         notificationMessage,
-        onDateFieldChange,
-        onRegisterJob,
     } = props;
+    const dispatch = useDispatch();
 
     const title = text.weeklyAllowanceFor + ' ' + firstname;
     const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });
@@ -75,13 +74,17 @@ function User(props) {
                     <div>
                         <label htmlFor="date">{text.date}</label>
                         <div>
-                            <DatePicker selected={new Date(transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(transactionDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_JOB_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={onRegisterJob}>{text.registerJob}</button>
+                            <button onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>{text.registerJob}</button>
                         </div>
                     </div>
                 </div>
@@ -128,11 +131,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
-        onRegisterJob: () => dispatch(REGISTER_JOB_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(User);
+export default connect(mapStateToProps)(User);

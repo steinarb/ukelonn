@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    LOGOUT_REQUEST,
     SELECT_BONUS,
     DELETE_SELECTED_BONUS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
 function AdminBonusesDelete(props) {
     const {
@@ -15,10 +15,8 @@ function AdminBonusesDelete(props) {
         bonusId,
         bonusTitle,
         bonusDescription,
-        onSelectBonus,
-        onDeleteBonus,
-        onLogout,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -37,7 +35,7 @@ function AdminBonusesDelete(props) {
                     <div>
                         <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
-                            <select id="bonus" value={bonusId} onChange={onSelectBonus}>
+                            <select id="bonus" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
                                 <option key="-1" value="-1" />
                                 {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
@@ -58,13 +56,13 @@ function AdminBonusesDelete(props) {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onDeleteBonus()}>{text.deleteSelectedBonus}</button>
+                            <button onClick={() => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED())}>{text.deleteSelectedBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
@@ -83,12 +81,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onSelectBonus: e => dispatch(SELECT_BONUS(parseInt(e.target.value))),
-        onDeleteBonus: () => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminBonusesDelete);
+export default connect(mapStateToProps)(AdminBonusesDelete);

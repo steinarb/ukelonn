@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import {
@@ -21,9 +21,8 @@ function Admin(props) {
         balance,
         transactionTypeId,
         transactionAmount,
-        onAmountFieldChange,
-        onRegisterPayment,
     } = props;
+    const dispatch = useDispatch();
 
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
@@ -66,12 +65,12 @@ function Admin(props) {
                     <div>
                         <label htmlFor="amount">{text.amount}:</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <div>
-                            <button disabled={noUser} onClick={() => onRegisterPayment({ account: { accountId, username }, transactionTypeId, transactionAmount })}>{text.registerPayment}</button>
+                            <button disabled={noUser} onClick={() => dispatch(REGISTERPAYMENT_REQUEST({ account: { accountId, username }, transactionTypeId, transactionAmount }))}>{text.registerPayment}</button>
                         </div>
                     </div>
                 </div>
@@ -140,11 +139,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
-        onRegisterPayment: (payment) => dispatch(REGISTERPAYMENT_REQUEST(payment)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Admin);
+export default connect(mapStateToProps)(Admin);

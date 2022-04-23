@@ -1,8 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    RECENTJOBS_REQUEST,
     MODIFY_MARK_JOB_FOR_DELETE,
     DELETE_SELECTED_JOBS_BUTTON_CLICKED,
 } from '../actiontypes';
@@ -15,9 +14,8 @@ function AdminJobsDelete(props) {
         text,
         accountFirstName,
         jobs,
-        onCheckboxTicked,
-        onDeleteMarkedJobsButtonClicked,
     } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -51,7 +49,10 @@ function AdminJobsDelete(props) {
                     <tbody>
                         {jobs.map((job) =>
                                   <tr key={job.id}>
-                                      <td><input type="checkbox" checked={job.delete} onChange={e => onCheckboxTicked({ ...job, delete: e.target.checked })}/></td>
+                                      <td><input
+                                              type="checkbox"
+                                              checked={job.delete}
+                                              onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ ...job, delete: e.target.checked }))}/></td>
                                       <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
@@ -59,7 +60,7 @@ function AdminJobsDelete(props) {
                                  )}
                     </tbody>
                 </table>
-                <button onClick={onDeleteMarkedJobsButtonClicked}>{text.deleteMarkedJobs}</button>
+                <button onClick={() => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED())}>{text.deleteMarkedJobs}</button>
             </div>
             <br/>
             <br/>
@@ -80,12 +81,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
-        onCheckboxTicked: job => dispatch(MODIFY_MARK_JOB_FOR_DELETE(job)),
-        onDeleteMarkedJobsButtonClicked: () => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobsDelete);
+export default connect(mapStateToProps)(AdminJobsDelete);

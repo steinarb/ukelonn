@@ -1,15 +1,16 @@
 import { spawnNotification } from './spawnnotification.js';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import {
     UPDATE_NOTIFICATIONMESSAGE,
 } from '../actiontypes';
 
 function Notification(props) {
-    const { notificationMessage, onNullNotification } = props;
+    const { notificationMessage } = props;
+    const dispatch = useDispatch();
     if (notificationMessage) {
         if (Notification) {
             spawnNotification(notificationMessage);
-            onNullNotification();
+            dispatch(UPDATE_NOTIFICATIONMESSAGE(null));
         } else {
             console.log('Notification not supported by browser');
         }
@@ -24,10 +25,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onNullNotification: () => dispatch(UPDATE_NOTIFICATIONMESSAGE(null)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Notification);
+export default connect(mapStateToProps)(Notification);
