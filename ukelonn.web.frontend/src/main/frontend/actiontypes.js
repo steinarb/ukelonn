@@ -18,6 +18,7 @@ export const CHANGE_PASSWORD_BUTTON_CLICKED = createAction('CHANGE_PASSWORD_BUTT
 export const CLEAR_USER_AND_PASSWORDS = createAction('CLEAR_USER_AND_PASSWORDS');
 export const SELECT_ACCOUNT = createAction('SELECT_ACCOUNT');
 export const SELECTED_ACCOUNT = createAction('SELECTED_ACCOUNT');
+export const CLEAR_ACCOUNT = createAction('CLEAR_ACCOUNT');
 export const SELECT_JOB_TYPE = createAction('SELECT_JOB_TYPE');
 export const SELECTED_JOB_TYPE = createAction('SELECTED_JOB_TYPE');
 export const MODIFY_JOB_AMOUNT = createAction('MODIFY_JOB_AMOUNT');
