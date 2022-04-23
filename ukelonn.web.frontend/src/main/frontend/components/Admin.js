@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import {
     MODIFY_PAYMENT_AMOUNT,
-    REGISTERPAYMENT_REQUEST,
+    REGISTER_PAYMENT_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
@@ -18,7 +18,6 @@ export default function Admin() {
     const accountId = useSelector(state => state.accountId);
     const username = useSelector(state => state.accountUsername);
     const balance = useSelector(state => state.accountBalance);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionAmount = useSelector(state => state.transactionAmount);
     const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
@@ -67,7 +66,7 @@ export default function Admin() {
                     </div>
                     <div>
                         <div>
-                            <button disabled={noUser} onClick={() => dispatch(REGISTERPAYMENT_REQUEST({ account: { accountId, username }, transactionTypeId, transactionAmount }))}>{text.registerPayment}</button>
+                            <button disabled={noUser} onClick={() => dispatch(REGISTER_PAYMENT_BUTTON_CLICKED())}>{text.registerPayment}</button>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_JOB_AMOUNT,
-    MODIFY_JOBTYPE_REQUEST,
+    SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
@@ -12,7 +12,6 @@ import Logout from './Logout';
 
 export default function AdminJobtypesModify() {
     const text = useSelector(state => state.displayTexts);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionAmount = useSelector(state => state.transactionAmount);
     const transactionTypeName = useSelector(state => state.transactionTypeName);
     const dispatch = useDispatch();
@@ -51,7 +50,7 @@ export default function AdminJobtypesModify() {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(MODIFY_JOBTYPE_REQUEST({ id: transactionTypeId, transactionTypeName, transactionAmount }))}>{text.saveChangesToJobType}</button>
+                            <button onClick={() => dispatch(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED())}>{text.saveChangesToJobType}</button>
                         </div>
                     </div>
             </form>

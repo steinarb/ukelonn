@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
-    MODIFY_PAYMENTTYPE_REQUEST,
+    SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
@@ -12,7 +12,6 @@ import Logout from './Logout';
 
 export default function AdminPaymenttypesModify() {
     const text = useSelector(state => state.displayTexts);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionTypeName = useSelector(state => state.transactionTypeName);
     const transactionAmount = useSelector(state => state.transactionAmount);
     const dispatch = useDispatch();
@@ -51,7 +50,7 @@ export default function AdminPaymenttypesModify() {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(MODIFY_PAYMENTTYPE_REQUEST({ id: transactionTypeId, transactionTypeName, transactionAmount }))}>{text.saveChangesToPaymentType}</button>
+                            <button onClick={() => dispatch(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.saveChangesToPaymentType}</button>
                         </div>
                     </div>
                 </div>

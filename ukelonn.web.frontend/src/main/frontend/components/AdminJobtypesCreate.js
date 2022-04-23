@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_JOB_AMOUNT,
-    CREATE_JOBTYPE_REQUEST,
+    CREATE_NEW_JOB_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
@@ -43,7 +43,7 @@ export default function AdminJobtypesCreate() {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(CREATE_JOBTYPE_REQUEST({ transactionTypeName, transactionAmount }))}>{text.createNewJobType}</button>
+                            <button onClick={() => dispatch(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED())}>{text.createNewJobType}</button>
                         </div>
                     </div>
                 </div>

@@ -1,10 +1,11 @@
-import { takeLatest, call, put } from 'redux-saga/effects';
+import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     CREATE_PAYMENTTYPE_REQUEST,
     CREATE_PAYMENTTYPE_RECEIVE,
     CREATE_PAYMENTTYPE_FAILURE,
     CLEAR_PAYMENT_TYPE_FORM,
+    CREATE_PAYMENT_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 
 function doCreatePaymenttype(paymenttype) {
@@ -22,6 +23,13 @@ function* requestReceiveCreatePaymenttype(action) {
     }
 }
 
+function* createPaymenttype() {
+    const transactionTypeName = yield select(state => state.transactionTypeName);
+    const transactionAmount = yield select(state => state.transactionAmount);
+    yield put(CREATE_PAYMENTTYPE_REQUEST({ transactionTypeName, transactionAmount }));
+}
+
 export default function* createPaymenttypeSaga() {
     yield takeLatest(CREATE_PAYMENTTYPE_REQUEST, requestReceiveCreatePaymenttype);
+    yield takeLatest(CREATE_PAYMENT_TYPE_BUTTON_CLICKED, createPaymenttype);
 }

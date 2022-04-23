@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import {
     JOB_TABLE_ROW_CLICK,
     MODIFY_JOB_DATE,
-    UPDATE_JOB_REQUEST,
+    SAVE_CHANGES_TO_JOB_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
@@ -14,10 +14,7 @@ import Logout from './Logout';
 
 export default function AdminJobsEdit() {
     const text = useSelector(state => state.displayTexts);
-    const accountId = useSelector(state => state.accountId);
     const firstname = useSelector(state => state.accountFirstname);
-    const transactionId = useSelector(state => state.transactionId);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionAmount = useSelector(state => state.transactionAmount);
     const transactionTime = useSelector(state => state.transactionDate);
     const jobs = useSelector(state => state.jobs);
@@ -85,7 +82,7 @@ export default function AdminJobsEdit() {
                         <div>
                             <div/>
                             <div>
-                                <button onClick={() => dispatch(UPDATE_JOB_REQUEST({ id: transactionId, accountId, transactionTypeId, transactionAmount, transactionTime }))}>{text.saveChangesToJob}</button>
+                                <button onClick={() => dispatch(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED())}>{text.saveChangesToJob}</button>
                             </div>
                         </div>
                     </div>
