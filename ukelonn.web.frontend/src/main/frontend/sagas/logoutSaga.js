@@ -9,16 +9,10 @@ import {
 } from '../actiontypes';
 import { emptyLoginResponse } from './constants';
 
-// watcher saga
-export function* requestLogoutSaga() {
-    yield takeLatest(LOGOUT_REQUEST, receiveLogoutSaga);
-}
-
 function doLogout() {
     return axios.post('/ukelonn/api/logout', {});
 }
 
-// worker saga
 function* receiveLogoutSaga() {
     try {
         const response = yield call(doLogout);
@@ -29,4 +23,8 @@ function* receiveLogoutSaga() {
     } catch (error) {
         yield put(LOGOUT_FAILURE(error));
     }
+}
+
+export default function* logoutSaga() {
+    yield takeLatest(LOGOUT_REQUEST, receiveLogoutSaga);
 }
