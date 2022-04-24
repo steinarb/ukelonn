@@ -25,7 +25,7 @@ export default function Login() {
                 <input id="username" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
                 <label htmlFor="password">Passord:</label>
                 <input id="password" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
-                <button onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}>Login</button>
+                <button onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}>Login</button>
             </form>
             <LoginErrorMessage loginResponse={loginResponse} />
         </div>
