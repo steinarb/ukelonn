@@ -51,7 +51,7 @@ export default function AdminUsersCreate() {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
-                            <input id="username" type="text" value={userUsername} onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
+                            <input id="username" className={usernameInputClass} type="text" value={userUsername} onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                             { usernameEmpty && <span className="invalid-feedback d-block">{text.usernameCanNotBeEmpty}</span> }
                             { usernameExists && <span className="invalid-feedback d-block">{text.usernameExists}</span> }
                         </div>
@@ -59,39 +59,39 @@ export default function AdminUsersCreate() {
                     <div className="form-group row">
                         <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
-                            <input id="email" type="text" value={userEmail} onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
+                            <input id="email" className={emailInputClass} type="text" value={userEmail} onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                             { userEmail && !isEmail(userEmail) && <span className="invalid-feedback d-block">{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
-                            <input id="firstname" type="text" value={userFirstname} onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
+                            <input id="firstname" className="form-control" type="text" value={userFirstname} onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
-                            <input id="lastname" type="text" value={userLastname} onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
+                            <input id="lastname" className="form-control" type="text" value={userLastname} onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
-                            <input id="password1" type='password' value={password1} onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
+                            <input id="password1" className={passwordGroupClass} type='password' value={password1} onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
-                            <input id="password2" type="password" value={password2} onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))}/>
+                            <input id="password2" className={passwordGroupClass} type="password" value={password2} onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))}/>
                             { passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div clasName="row">
                         <div className="col">
                             <div className="form-check">
-                                <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
+                                <input id="administrator" className="form-check-input" type="checkbox" checked={userIsAdministrator} onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                                 <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
                         </div>
@@ -99,7 +99,7 @@ export default function AdminUsersCreate() {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => dispatch(CREATE_USER_BUTTON_CLICKED())}>{text.createUser}</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(CREATE_USER_BUTTON_CLICKED())}>{text.createUser}</button>
                         </div>
                     </div>
                 </div>

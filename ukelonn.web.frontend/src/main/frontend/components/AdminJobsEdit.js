@@ -87,7 +87,7 @@ export default function AdminJobsEdit() {
                     </div>
                 </div>
             </div>
-            <button onClick={() => dispatch(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED())}>{text.saveChangesToJob}</button>
+            <button className="btn btn-primary" onClick={() => dispatch(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED())}>{text.saveChangesToJob}</button>
             <br/>
             <br/>
             <Logout />

@@ -80,7 +80,7 @@ export default function User() {
                         <div className="form-group row">
                             <div className="col-5"/>
                             <div className="col-7">
-                                <button onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>{text.registerJob}</button>
+                                <button className="btn btn-primary" onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>{text.registerJob}</button>
                             </div>
                         </div>
                     </div>

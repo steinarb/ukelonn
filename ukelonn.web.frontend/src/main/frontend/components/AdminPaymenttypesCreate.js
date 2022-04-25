@@ -43,7 +43,7 @@ export default function AdminPaymenttypesCreate() {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.createNewPaymentType}</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.createNewPaymentType}</button>
                         </div>
                     </div>
                 </div>

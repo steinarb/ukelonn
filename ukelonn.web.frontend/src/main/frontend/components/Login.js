@@ -29,18 +29,18 @@ export default function Login() {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Brukernavn:</label>
                         <div className="col-8">
-                <input id="username" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
+                            <input id="username" className="form-control" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Passord:</label>
                         <div className="col-8">
-                <input id="password" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
+                            <input id="password" className="form-control" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="offset-xs-3 col-xs-9">
-                <button onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}>Login</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}>Login</button>
                         </div>
                     </div>
                 </form>

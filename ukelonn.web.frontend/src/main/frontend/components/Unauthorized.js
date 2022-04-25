@@ -28,7 +28,7 @@ export default function Unauthorized() {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <Logout/>
+                            <Logout className="btn btn-primary" />
                         </div>
                     </div>
                 </form>
