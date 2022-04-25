@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import {
@@ -16,28 +16,18 @@ import {
 import Locale from './Locale';
 import Logout from './Logout';
 
-function AdminBonusesModify(props) {
-    const {
-        text,
-        allbonuses,
-        bonusId,
-        bonusEnabled,
-        bonusIconurl,
-        bonusTitle,
-        bonusDescription,
-        bonusFactor,
-        bonusStartDate,
-        bonusEndDate,
-        onSelectBonus,
-        onUpdateEnabled,
-        onUpdateIconurl,
-        onUpdateTitle,
-        onUpdateDescription,
-        onUpdateBonusFactor,
-        onUpdateStartDate,
-        onUpdateEndDate,
-        onSaveModifyBonusButtonClicked,
-    } = props;
+export default function AdminBonusesModify() {
+    const text = useSelector(state => state.displayTexts);
+    const allbonuses = useSelector(state => state.allbonuses);
+    const bonusId = useSelector(state => state.bonusId);
+    const bonusEnabled = useSelector(state => state.bonusEnabled);
+    const bonusIconurl = useSelector(state => state.bonusIconurl);
+    const bonusTitle = useSelector(state => state.bonusTitle);
+    const bonusDescription = useSelector(state => state.bonusDescription);
+    const bonusFactor = useSelector(state => state.bonusFactor);
+    const bonusStartDate = useSelector(state => state.bonusStartDate);
+    const bonusEndDate = useSelector(state => state.bonusEndDate);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -55,7 +45,7 @@ function AdminBonusesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
-                            <select id="bonus" className="form-control" value={bonusId} onChange={onSelectBonus}>
+                            <select id="bonus" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
                                 <option key="-1" value="-1" />
                                 {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
@@ -64,7 +54,7 @@ function AdminBonusesModify(props) {
                     <div className="row">
                         <div className="col">
                             <div className="form-check">
-                                <input id="enabled" className="form-check-input" type="checkbox" checked={bonusEnabled} onChange={onUpdateEnabled} />
+                                <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                                 <label htmlFor="enabled" className="form-check-label">{text.activated}</label>
                             </div>
                         </div>
@@ -72,43 +62,56 @@ function AdminBonusesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="iconurl" className="col-form-label col-5">{text.iconURL}</label>
                         <div className="col-7">
-                            <input id="iconurl" className="form-control" type="text" value={bonusIconurl} onChange={onUpdateIconurl} />
+                            <input id="iconurl" type="text" value={bonusIconurl} onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
-                            <input id="title" className="form-control" type="text" value={bonusTitle} onChange={onUpdateTitle} />
+                            <input id="title" type="text" value={bonusTitle} onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
-                            <input id="description" className="form-control" type="text" value={bonusDescription} onChange={onUpdateDescription} />
+                            <input id="description" type="text" value={bonusDescription} onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="bonusfactor" className="col-form-label col-5">{text.bonusFactor}</label>
                         <div className="col-7">
-                            <input id="bonusfactor" className="form-control" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={onUpdateBonusFactor} />
+                            <input
+                                id="bonusfactor"
+                                type="text"
+                                pattern="[0-9]?[.]?[0-9]?[0-9]?"
+                                value={bonusFactor}
+                                onChange={e => dispatch(MODIFY_BONUS_FACTOR(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="startdate" className="col-form-label col-5">{text.startDate}</label>
                         <div className="col-7">
-                            <DatePicker selected={new Date(bonusStartDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateStartDate} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(bonusStartDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_BONUS_START_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="enddate" className="col-form-label col-5">{text.endDate}</label>
                         <div className="col-7">
-                            <DatePicker selected={new Date(bonusEndDate)} dateFormat="yyyy-MM-dd" onChange={onUpdateEndDate} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(bonusEndDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_BONUS_END_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={onSaveModifyBonusButtonClicked}>{text.saveChangesToBonus}</button>
+                            <button onClick={() => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED())}>{text.saveChangesToBonus}</button>
                         </div>
                     </div>
                 </div>
@@ -118,36 +121,3 @@ function AdminBonusesModify(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        allbonuses: state.allbonuses,
-        bonusId: state.bonusId,
-        bonusEnabled: state.bonusEnabled,
-        bonusIconurl: state.bonusIconurl,
-        bonusTitle: state.bonusTitle,
-        bonusDescription: state.bonusDescription,
-        bonusFactor: state.bonusFactor,
-        bonusStartDate: state.bonusStartDate,
-        bonusEndDate: state.bonusEndDate,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onSelectBonus: e => dispatch(SELECT_BONUS(parseInt(e.target.value))),
-        onUpdateEnabled: e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked)),
-        onUpdateIconurl: e => dispatch(MODIFY_BONUS_ICONURL(e.target.value)),
-        onUpdateTitle: e => dispatch(MODIFY_BONUS_TITLE(e.target.value)),
-        onUpdateDescription: e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value)),
-        onUpdateBonusFactor: e => dispatch(MODIFY_BONUS_FACTOR(e.target.value)),
-        onUpdateStartDate: d => dispatch(MODIFY_BONUS_START_DATE(d)),
-        onUpdateEndDate: d => dispatch(MODIFY_BONUS_END_DATE(d)),
-        onSaveModifyBonusButtonClicked: () => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminBonusesModify);

@@ -1,25 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
-    MODIFY_PAYMENTTYPE_REQUEST,
+    SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
 import Logout from './Logout';
 
-function AdminPaymenttypesModify(props) {
-    const {
-        text,
-        transactionTypeId,
-        transactionTypeName,
-        transactionAmount,
-        onNameFieldChange,
-        onAmountFieldChange,
-        onSaveUpdatedPaymentType,
-    } = props;
+export default function AdminPaymenttypesModify() {
+    const text = useSelector(state => state.displayTexts);
+    const transactionTypeName = useSelector(state => state.transactionTypeName);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -45,19 +40,19 @@ function AdminPaymenttypesModify(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyPaymentTypeName}</label>
                         <div className="col-7">
-                            <input id="name" className="form-control" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyPaymentTypeAmount}</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedPaymentType({ id: transactionTypeId, transactionTypeName, transactionAmount })}>{text.saveChangesToPaymentType}</button>
+                            <button onClick={() => dispatch(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.saveChangesToPaymentType}</button>
                         </div>
                     </div>
                 </div>
@@ -68,24 +63,3 @@ function AdminPaymenttypesModify(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        transactionTypeId: state.transactionTypeId,
-        transactionTypeName: state.transactionTypeName,
-        transactionAmount: state.transactionAmount,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
-        onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
-        onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminPaymenttypesModify);

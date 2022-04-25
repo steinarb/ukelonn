@@ -1,8 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-function BonusBanner(props) {
-    const { text, activebonuses } = props;
+export default function BonusBanner() {
+    const text = useSelector(state => state.displayTexts);
+    const activebonuses = useSelector(state => state.activebonuses);
     if (!activebonuses.length) {
         return null;
     }
@@ -13,16 +14,6 @@ function BonusBanner(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const activebonuses = state.activebonuses || [];
-    return {
-        text: state.displayTexts,
-        activebonuses,
-    };
-}
-
-export default connect(mapStateToProps)(BonusBanner);
 
 function renderBonus(bonus, idx, text) {
     const key = 'bonus' + idx.toString();

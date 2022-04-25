@@ -1,23 +1,19 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_JOB_AMOUNT,
-    CREATE_JOBTYPE_REQUEST,
+    CREATE_NEW_JOB_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 
-function AdminJobtypesCreate(props) {
-    const {
-        text,
-        transactionTypeName,
-        transactionAmount,
-        onNameFieldChange,
-        onAmountFieldChange,
-        onSaveUpdatedJobType,
-    } = props;
+export default function AdminJobtypesCreate() {
+    const text = useSelector(state => state.displayTexts);
+    const transactionTypeName = useSelector(state => state.transactionTypeName);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -35,19 +31,19 @@ function AdminJobtypesCreate(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.nameOfJobType}</label>
                         <div className="col-7">
-                            <input id="name" className="form-control" type="text" value={transactionTypeName} onChange={onNameFieldChange} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.amountForJobType}</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onSaveUpdatedJobType({ transactionTypeName, transactionAmount })}>{text.createNewJobType}</button>
+                            <button onClick={() => dispatch(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED())}>{text.createNewJobType}</button>
                         </div>
                     </div>
                 </div>
@@ -59,21 +55,3 @@ function AdminJobtypesCreate(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        transactionTypeName: state.transactionTypeName,
-        transactionAmount: state.transactionAmount,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onNameFieldChange: e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value)),
-        onAmountFieldChange: e => dispatch(MODIFY_JOB_AMOUNT(e.target.value)),
-        onSaveUpdatedJobType: transactiontype => dispatch(CREATE_JOBTYPE_REQUEST(transactiontype)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobtypesCreate);

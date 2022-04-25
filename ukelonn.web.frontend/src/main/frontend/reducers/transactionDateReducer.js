@@ -6,7 +6,6 @@ import {
     CLEAR_REGISTER_JOB_FORM,
     CLEAR_JOB_FORM,
     CLEAR_EDIT_JOB_FORM,
-    CLEAR_ACCOUNT,
 } from '../actiontypes';
 const currentDate = new Date().toISOString();
 
@@ -17,7 +16,6 @@ const transactionDateReducer = createReducer(currentDate, {
     [CLEAR_REGISTER_JOB_FORM]: () => new Date().toISOString(),
     [CLEAR_JOB_FORM]: () => new Date().toISOString(),
     [CLEAR_EDIT_JOB_FORM]: () => new Date().toISOString(),
-    [CLEAR_ACCOUNT]: () => new Date().toISOString(),
 });
 
 export default transactionDateReducer;

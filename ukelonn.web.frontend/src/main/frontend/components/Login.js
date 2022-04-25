@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import { LOGIN_REQUEST } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
-function Login(props) {
-    const {
-        loginResponse,
-        onLogin,
-    } = props;
+export default function Login() {
+    const loginResponse = useSelector(state => state.loginResponse);
+    const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     if (loginResponse.roles.length > 0) {
@@ -31,18 +29,18 @@ function Login(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Brukernavn:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
+                <input id="username" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Passord:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
+                <input id="password" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="offset-xs-3 col-xs-9">
-                            <button className="btn btn-primary" onClick={() => onLogin(username, password)}>Login</button>
+                <button onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}>Login</button>
                         </div>
                     </div>
                 </form>
@@ -50,21 +48,6 @@ function Login(props) {
                     <LoginErrorMessage loginResponse={loginResponse} />
                 </div>
             </div>
-
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        loginResponse: state.loginResponse
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);

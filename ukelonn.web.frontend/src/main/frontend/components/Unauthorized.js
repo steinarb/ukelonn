@@ -1,14 +1,15 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect } from 'react-redux';
-import {
-    LOGOUT_REQUEST,
-} from '../actiontypes';
+import { useSelector } from 'react-redux';
 import Locale from './Locale';
+import Logout from './Logout';
 
 
-function Unauthorized(props) {
-    const { haveReceivedResponseFromLogin, loginResponse, text, onLogout } = props;
+export default function Unauthorized() {
+    const haveReceivedResponseFromLogin = useSelector(state => state.haveReceivedResponseFromLogin);
+    const loginResponse = useSelector(state => state.loginResponse);
+    const text = useSelector(state => state.displayTexts);
+
     if (haveReceivedResponseFromLogin && !loginResponse.roles.length) {
         return <Redirect to="/ukelonn/login" />;
     }
@@ -27,7 +28,7 @@ function Unauthorized(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={onLogout}>{text.logout}</button>
+                            <Logout/>
                         </div>
                     </div>
                 </form>
@@ -35,19 +36,3 @@ function Unauthorized(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        text: state.displayTexts,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Unauthorized);

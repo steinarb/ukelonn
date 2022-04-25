@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import {
     MODIFY_PAYMENT_AMOUNT,
-    REGISTERPAYMENT_REQUEST,
+    REGISTER_PAYMENT_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
@@ -13,18 +13,13 @@ import Paymenttypes from './Paymenttypes';
 import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
-function Admin(props) {
-    const {
-        text,
-        accountId,
-        username,
-        balance,
-        transactionTypeId,
-        transactionAmount,
-        onAmountFieldChange,
-        onRegisterPayment,
-    } = props;
-
+export default function Admin() {
+    const text = useSelector(state => state.displayTexts);
+    const accountId = useSelector(state => state.accountId);
+    const username = useSelector(state => state.accountUsername);
+    const balance = useSelector(state => state.accountBalance);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
     const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
@@ -67,13 +62,13 @@ function Admin(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">{text.amount}:</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={transactionAmount} onChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5" />
                         <div className="col-7">
-                            <button className="btn btn-primary" disabled={noUser} onClick={() => onRegisterPayment({ account: { accountId, username }, transactionTypeId, transactionAmount })}>{text.registerPayment}</button>
+                            <button disabled={noUser} onClick={() => dispatch(REGISTER_PAYMENT_BUTTON_CLICKED())}>{text.registerPayment}</button>
                         </div>
                     </div>
                 </div>
@@ -120,25 +115,3 @@ function Admin(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        accountId: state.accountId,
-        username: state.accountUsername,
-        balance: state.accountBalance,
-        transactionTypeId: state.transactionTypeId,
-        transactionAmount: state.transactionAmount,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onAmountFieldChange: e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value)),
-        onRegisterPayment: (payment) => dispatch(REGISTERPAYMENT_REQUEST(payment)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Admin);

@@ -4,7 +4,7 @@ import { SELECT_PAYMENT_TYPE } from '../actiontypes';
 
 function Paymenttypes(props) {
     const { id, className } = props;
-    const paymentTypeId = useSelector(state => state.paymentTypeId);
+    const paymentTypeId = useSelector(state => state.transactionTypeId);
     const paymenttypes = useSelector(state => state.paymenttypes);
     const dispatch = useDispatch();
 

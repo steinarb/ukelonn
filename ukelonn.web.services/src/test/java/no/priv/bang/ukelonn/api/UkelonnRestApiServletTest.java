@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
-            .password("1ad")
+            .password(Base64.getEncoder().encodeToString("1ad".getBytes()))
             .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
@@ -130,7 +131,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("admin")
-            .password("admin")
+            .password(Base64.getEncoder().encodeToString("admin".getBytes()))
             .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
@@ -195,7 +196,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
-            .password("wrong")
+            .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
