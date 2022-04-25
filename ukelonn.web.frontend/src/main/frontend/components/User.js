@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
 import DatePicker from 'react-datepicker';
@@ -15,20 +15,16 @@ import Notification from './Notification';
 import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
-function User(props) {
-    const {
-        text,
-        accountId,
-        firstname,
-        username,
-        accountBalance,
-        transactionAmount,
-        transactionDate,
-        notificationMessage,
-        onDateFieldChange,
-        onRegisterJob,
-    } = props;
-
+export default function User() {
+    const text = useSelector(state => state.displayTexts);
+    const accountId = useSelector(state => state.accountId);
+    const firstname = useSelector(state => state.accountFirstname);
+    const username = useSelector(state => state.accountUsername);
+    const accountBalance = useSelector(state => state.accountBalance);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionDate = useSelector(state => state.transactionDate);
+    const notificationMessage = useSelector(state => state.notificationMessage);
+    const dispatch = useDispatch();
     const title = text.weeklyAllowanceFor + ' ' + firstname;
     const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });
     const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId, username, parentTitle: title });
@@ -74,13 +70,17 @@ function User(props) {
                         <div className="form-group row">
                             <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                             <div className="col-7">
-                                <DatePicker selected={new Date(transactionDate)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
+                            <DatePicker
+                                selected={new Date(transactionDate)}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={d => dispatch(MODIFY_JOB_DATE(d))}
+                                onFocus={e => e.target.blur()} />
                             </div>
                         </div>
                         <div className="form-group row">
                             <div className="col-5"/>
                             <div className="col-7">
-                                <button className="btn btn-primary" onClick={onRegisterJob}>{text.registerJob}</button>
+                                <button className="btn btn-primary" onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>{text.registerJob}</button>
                             </div>
                         </div>
                     </div>
@@ -109,27 +109,3 @@ function User(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        accountId: state.accountId,
-        firstname: state.accountFirstname,
-        username: state.accountUsername,
-        accountBalance: state.accountBalance,
-        transactionAmount: state.transactionAmount,
-        transactionDate: state.transactionDate,
-        notificationMessage: state.notificationMessage,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
-        onRegisterJob: () => dispatch(REGISTER_JOB_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(User);

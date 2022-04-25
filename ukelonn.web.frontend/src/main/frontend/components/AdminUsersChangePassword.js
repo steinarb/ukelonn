@@ -1,8 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    USERS_REQUEST,
     MODIFY_PASSWORD1,
     MODIFY_PASSWORD2,
     CHANGE_PASSWORD_BUTTON_CLICKED,
@@ -11,16 +10,12 @@ import Locale from './Locale';
 import Users from './Users';
 import Logout from './Logout';
 
-function AdminUsersChangePassword(props) {
-    const {
-        text,
-        password1,
-        password2,
-        passwordsNotIdentical,
-        onPassword1Change,
-        onPassword2Change,
-        onSaveUpdatedPassword,
-    } = props;
+export default function AdminUsersChangePassword() {
+    const text = useSelector(state => state.displayTexts);
+    const password1 = useSelector(state => state.password1);
+    const password2 = useSelector(state => state.password2);
+    const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
+    const dispatch = useDispatch();
     const passwordInputClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
 
     return (
@@ -45,20 +40,20 @@ function AdminUsersChangePassword(props) {
                     <div className="form-group row">
                         <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
-                            <input id="password1" className="form-control" type='password' value={password1} onChange={onPassword1Change} />
+                            <input id="password1" className="form-control" type='password' value={password1} onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
-                            <input id="password2" className={passwordInputClass} type='password' value={password2} onChange={onPassword2Change} />
+                            <input id="password2" className={passwordInputClass} type='password' value={password2} onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))} />
                             { passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={onSaveUpdatedPassword}>{text.changePassword}</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED())}>{text.changePassword}</button>
                         </div>
                     </div>
                 </div>
@@ -68,25 +63,3 @@ function AdminUsersChangePassword(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        password1: state.password1,
-        password2: state.password2,
-        passwordsNotIdentical: state.passwordsNotIdentical,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onUserList: () => dispatch(USERS_REQUEST()),
-        onPassword1Change: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
-        onPassword2Change: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
-        onSaveUpdatedPassword: () => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminUsersChangePassword);

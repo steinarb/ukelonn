@@ -1,24 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    LOGOUT_REQUEST,
     SELECT_BONUS,
     DELETE_SELECTED_BONUS_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
+import Logout from './Logout';
 
-function AdminBonusesDelete(props) {
-    const {
-        text,
-        allbonuses,
-        bonusId,
-        bonusTitle,
-        bonusDescription,
-        onSelectBonus,
-        onDeleteBonus,
-        onLogout,
-    } = props;
+export default function AdminBonusesDelete() {
+    const text = useSelector(state => state.displayTexts);
+    const allbonuses = useSelector(state => state.allbonuses);
+    const bonusId = useSelector(state => state.bonusId);
+    const bonusTitle = useSelector(state => state.bonusTitle);
+    const bonusDescription = useSelector(state => state.bonusDescription);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -37,7 +33,7 @@ function AdminBonusesDelete(props) {
                     <div className="form-group row">
                         <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
-                            <select id="bonus" className="form-control" value={bonusId} onChange={onSelectBonus}>
+                            <select id="bonus" className="form-control" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
                                 <option key="-1" value="-1" />
                                 {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
                             </select>
@@ -58,37 +54,15 @@ function AdminBonusesDelete(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onDeleteBonus()}>{text.deleteSelectedBonus}</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED())}>{text.deleteSelectedBonus}</button>
                         </div>
                     </div>
                 </div>
             </form>
             <br/>
-            <button className="btn btn-default" onClick={() => onLogout()}>{text.logout}</button>
+            <Logout />
             <br/>
             <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        allbonuses: state.allbonuses,
-        bonusId: state.bonusId,
-        bonusTitle: state.bonusTitle,
-        bonusDescription: state.bonusDescription,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onSelectBonus: e => dispatch(SELECT_BONUS(parseInt(e.target.value))),
-        onDeleteBonus: () => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED()),
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminBonusesDelete);

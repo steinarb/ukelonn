@@ -1,8 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    RECENTJOBS_REQUEST,
     MODIFY_MARK_JOB_FOR_DELETE,
     DELETE_SELECTED_JOBS_BUTTON_CLICKED,
 } from '../actiontypes';
@@ -10,14 +9,11 @@ import Locale from './Locale';
 import Accounts from './Accounts';
 import Logout from './Logout';
 
-function AdminJobsDelete(props) {
-    const {
-        text,
-        accountFirstName,
-        jobs,
-        onCheckboxTicked,
-        onDeleteMarkedJobsButtonClicked,
-    } = props;
+export default function AdminJobsDelete() {
+    const text = useSelector(state => state.displayTexts);
+    const accountFirstName = useSelector(state => state.accountFirstName);
+    const jobs = useSelector(state => state.jobs);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -57,7 +53,10 @@ function AdminJobsDelete(props) {
                     <tbody>
                         {jobs.map((job) =>
                                   <tr key={job.id}>
-                                      <td><input type="checkbox" checked={job.delete} onChange={e => onCheckboxTicked({ ...job, delete: e.target.checked })}/></td>
+                                      <td><input
+                                              type="checkbox"
+                                              checked={job.delete}
+                                              onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ ...job, delete: e.target.checked }))}/></td>
                                       <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
@@ -66,7 +65,7 @@ function AdminJobsDelete(props) {
                     </tbody>
                 </table>
             </div>
-            <button className="btn btn-default" onClick={onDeleteMarkedJobsButtonClicked}>{text.deleteMarkedJobs}</button>
+            <button className="btn btn-primary" onClick={() => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED())}>{text.deleteMarkedJobs}</button>
             <br/>
             <br/>
             <Logout />
@@ -75,23 +74,3 @@ function AdminJobsDelete(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
-        loginResponse: state.loginResponse,
-        jobs: state.jobs,
-        accounts: state.accounts,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onJobs: (account) => dispatch(RECENTJOBS_REQUEST(account.accountId)),
-        onCheckboxTicked: job => dispatch(MODIFY_MARK_JOB_FOR_DELETE(job)),
-        onDeleteMarkedJobsButtonClicked: () => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobsDelete);

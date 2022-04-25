@@ -1,31 +1,24 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import {
     JOB_TABLE_ROW_CLICK,
     MODIFY_JOB_DATE,
-    UPDATE_JOB_REQUEST,
+    SAVE_CHANGES_TO_JOB_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 import Logout from './Logout';
 
-function AdminJobsEdit(props) {
-    const {
-        text,
-        accountId,
-        firstname,
-        transactionId,
-        transactionTypeId,
-        transactionAmount,
-        transactionTime,
-        jobs,
-        onRowClick,
-        onDateFieldChange,
-        onSaveEditedJob,
-    } = props;
+export default function AdminJobsEdit() {
+    const text = useSelector(state => state.displayTexts);
+    const firstname = useSelector(state => state.accountFirstname);
+    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionTime = useSelector(state => state.transactionDate);
+    const jobs = useSelector(state => state.jobs);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -60,9 +53,9 @@ function AdminJobsEdit(props) {
                     </thead>
                     <tbody>
                         {jobs.map((job) =>
-                            <tr onClick={ ()=>onRowClick(job) } key={job.id}>
+                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
                                 <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                <td className="transaction-table-col-hide-overflow">{job.name}</td>
+                                <td>{job.name}</td>
                                 <td>{job.transactionAmount}</td>
                             </tr>
                         )}
@@ -86,11 +79,15 @@ function AdminJobsEdit(props) {
                 <div className="form-group row">
                     <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                     <div className="col-7">
-                        <DatePicker selected={new Date(transactionTime)} dateFormat="yyyy-MM-dd" onChange={(selectedValue) => onDateFieldChange(selectedValue)} onFocus={e => e.target.blur()} />
+                                <DatePicker
+                                    selected={new Date(transactionTime)}
+                                    dateFormat="yyyy-MM-dd"
+                                    onChange={d => dispatch(MODIFY_JOB_DATE(d))}
+                                    onFocus={e => e.target.blur()} />
                     </div>
                 </div>
             </div>
-            <button onClick={() => onSaveEditedJob({ id: transactionId, accountId, transactionTypeId, transactionAmount, transactionTime })}>{text.saveChangesToJob}</button>
+            <button className="btn btn-primary" onClick={() => dispatch(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED())}>{text.saveChangesToJob}</button>
             <br/>
             <br/>
             <Logout />
@@ -99,26 +96,3 @@ function AdminJobsEdit(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        text: state.displayTexts,
-        accountId: state.accountId,
-        firstname: state.accountFirstname,
-        transactionId: state.transactionId,
-        transactionTypeId: state.transactionTypeId,
-        transactionAmount: state.transactionAmount,
-        transactionTime: state.transactionDate,
-        jobs: state.jobs,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        onRowClick: (job) => dispatch(JOB_TABLE_ROW_CLICK({ ...job })),
-        onDateFieldChange: (selectedValue) => dispatch(MODIFY_JOB_DATE(selectedValue)),
-        onSaveEditedJob: (modifiedJob) => dispatch(UPDATE_JOB_REQUEST(modifiedJob)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminJobsEdit);

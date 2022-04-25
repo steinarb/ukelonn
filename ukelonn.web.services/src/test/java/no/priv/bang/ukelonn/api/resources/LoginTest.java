@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Base64;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -49,7 +51,7 @@ class LoginTest extends ServletTestBase {
         // Set up the login request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
-            .password("1ad")
+            .password(Base64.getEncoder().encodeToString("1ad".getBytes()))
             .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
@@ -74,7 +76,7 @@ class LoginTest extends ServletTestBase {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("admin")
-            .password("admin")
+            .password(Base64.getEncoder().encodeToString("admin".getBytes()))
             .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
@@ -124,7 +126,7 @@ class LoginTest extends ServletTestBase {
         // Set up the request
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
-            .password("wrong")
+            .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
         MockHttpServletRequest request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
@@ -151,7 +153,7 @@ class LoginTest extends ServletTestBase {
             // Set up the request
             LoginCredentials credentials = LoginCredentials.with()
                 .username("jad")
-                .password("wrong")
+                .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
                 .build();
             MockHttpServletRequest request = buildPostUrl("/login");
             request.setBodyContent(mapper.writeValueAsString(credentials));
@@ -176,7 +178,7 @@ class LoginTest extends ServletTestBase {
         createSubjectThrowingExceptionAndBindItToThread(AuthenticationException.class);
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
-            .password("wrong")
+            .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();
@@ -194,7 +196,7 @@ class LoginTest extends ServletTestBase {
         createSubjectThrowingExceptionAndBindItToThread(IllegalArgumentException.class);
         LoginCredentials credentials = LoginCredentials.with()
             .username("jad")
-            .password("wrong")
+            .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
         // Create mock OSGi services to inject
         MockLogService logservice = new MockLogService();

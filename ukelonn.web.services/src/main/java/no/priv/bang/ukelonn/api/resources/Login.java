@@ -15,6 +15,8 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
+import java.util.Base64;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -57,8 +59,9 @@ public class Login {
     @Consumes(MediaType.APPLICATION_JSON)
     public LoginResult doLogin(LoginCredentials credentials) {
         Subject subject = SecurityUtils.getSubject();
+        var decodedPassword = new String(Base64.getDecoder().decode(credentials.getPassword()));
 
-        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
+        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), decodedPassword, true);
         try {
             subject.login(token);
 

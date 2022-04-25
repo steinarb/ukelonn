@@ -4,6 +4,7 @@ import {
     REGISTERPAYMENT_REQUEST,
     REGISTERPAYMENT_RECEIVE,
     REGISTERPAYMENT_FAILURE,
+    REGISTER_PAYMENT_BUTTON_CLICKED,
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
 
@@ -33,7 +34,16 @@ function* receiveRegisterPaymentSaga(action) {
     }
 }
 
+function* buildRequestAndRegisterPayment() {
+    const accountId = yield select(state => state.accountId);
+    const username = yield select(state => state.accountUsername);
+    const account = { accountId, username };
+    const transactionTypeId = yield select(state => state.transactionTypeId);
+    const transactionAmount = yield select(state => state.transactionAmount);
+    yield put(REGISTERPAYMENT_REQUEST({ account, transactionTypeId, transactionAmount }));
+}
 
 export default function* registerPaymentSaga() {
     yield takeLatest(REGISTERPAYMENT_REQUEST, receiveRegisterPaymentSaga);
+    yield takeLatest(REGISTER_PAYMENT_BUTTON_CLICKED, buildRequestAndRegisterPayment);
 }
