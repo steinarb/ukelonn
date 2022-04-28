@@ -8,11 +8,12 @@ import {
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
+import { numberAsString } from './utils';
 
 export default function AdminPaymenttypesCreate() {
     const text = useSelector(state => state.displayTexts);
     const transactionTypeName = useSelector(state => state.transactionTypeName);
-    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionAmount = useSelector(state => numberAsString(state.transactionAmount));
     const dispatch = useDispatch();
 
     return (
@@ -37,7 +38,7 @@ export default function AdminPaymenttypesCreate() {
                     <div>
                         <label htmlFor="amount">{text.paymentTypeAmount}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(e.target.value))} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
                         </div>
                     </div>
                     <div>
