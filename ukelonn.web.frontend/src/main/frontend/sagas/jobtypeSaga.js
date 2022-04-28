@@ -26,24 +26,34 @@ function* selectJobType(action) {
 }
 
 function* buildRequestAndSaveModifiedJobType() {
-    const id = yield select(state => state.transactionTypeId);
-    const transactionTypeName = yield select(state => state.transactionTypeName);
-    const transactionAmount = yield select(state => state.transactionAmount);
-    yield put(MODIFY_JOBTYPE_REQUEST({ id, transactionTypeName, transactionAmount }));
+    const jobType = yield select(state => ({
+        id: state.transactionTypeId,
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
+    }));
+    yield put(MODIFY_JOBTYPE_REQUEST(jobType));
 }
 
-function* clearJobtypeCreateForm() {
-    yield put(CLEAR_JOB_TYPE_CREATE_FORM());
+function* buildRequestAndSaveCreatedJobType() {
+    const jobType = yield select(state => ({
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
+    }));
+    yield put(CREATE_JOBTYPE_REQUEST(jobType));
 }
 
 function* clearJobtypeForm() {
     yield put(CLEAR_JOB_TYPE_FORM());
 }
 
+function* clearJobtypeCreateForm() {
+    yield put(CLEAR_JOB_TYPE_CREATE_FORM());
+}
+
 export default function* jobtypeSaga() {
     yield takeLatest(SELECT_JOB_TYPE, selectJobType);
-    yield takeLatest(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedJobType);
     yield takeLatest(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveModifiedJobType);
-    yield takeLatest(CREATE_JOBTYPE_RECEIVE, clearJobtypeCreateForm);
+    yield takeLatest(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedJobType);
     yield takeLatest(MODIFY_JOBTYPE_RECEIVE, clearJobtypeForm);
+    yield takeLatest(CREATE_JOBTYPE_RECEIVE, clearJobtypeCreateForm);
 }

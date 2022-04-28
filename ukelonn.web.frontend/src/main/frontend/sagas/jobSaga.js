@@ -15,29 +15,35 @@ import {
 } from '../actiontypes';
 
 function* registerPerformedJob() {
-    const accountId = yield select(state => state.accountId);
-    const username = yield select(state => state.accountUsername);
-    const account = { accountId, username };
-    const transactionTypeId = yield select(state => state.transactionTypeId);
-    const transactionAmount = yield select(state => state.transactionAmount);
-    const transactionDate = yield select(state => state.transactionDate);
-    yield put(REGISTERJOB_REQUEST({ account, transactionTypeId, transactionAmount, transactionDate }));
+    const job = yield select(state => ({
+        account: {
+            accountId: state.accountId,
+            username: state.accountUsername,
+        },
+        transactionTypeId: state.transactionTypeId,
+        transactionAmount: state.transactionAmount,
+        transactionDate: state.transactionDate,
+    }));
+    yield put(REGISTERJOB_REQUEST(job));
 }
 
 function* buildRequestAndSaveModifiedJob() {
-    const id = yield select(state => state.transactionId);
-    const accountId = yield select(state => state.accountId);
-    const transactionTypeId = yield select(state => state.transactionTypeId);
-    const transactionAmount = yield select(state => state.transactionAmount);
-    const transactionTime = yield select(state => state.transactionDate);
-    yield put(UPDATE_JOB_REQUEST({ id, accountId, transactionTypeId, transactionAmount, transactionTime }));
+    const job = yield select(state => ({
+        id: state.transactionId,
+        accountId: state.accountId,
+        transactionTypeId: state.transactionTypeId,
+        transactionAmount: state.transactionAmount,
+        transactionTime: state.transactionDate,
+    }));
+    yield put(UPDATE_JOB_REQUEST(job));
 }
 
 function* deleteSelectedJobs() {
-    const accountId = yield select(state => state.accountId);
-    const jobs = yield select(state => state.jobs);
-    const jobsToDelete = jobs.filter(job => job.delete);
-    yield put(DELETE_JOBS_REQUEST({ account: { accountId }, jobsToDelete }));
+    const deleteRequest = yield select(state => ({
+        account: { accountId: state.accountId },
+        jobsToDelete: state.jobs.filter(job => job.delete),
+    }));
+    yield put(DELETE_JOBS_REQUEST(deleteRequest));
 }
 
 function* fetchUpdatedSumsAndClearRegisterJobForm(action) {

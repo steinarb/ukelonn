@@ -42,16 +42,20 @@ function* selectPaymentTypeForEdit(action) {
 }
 
 function* buildRequestAndSaveModifiedPaymentType() {
-    const id = yield select(state => state.transactionTypeId);
-    const transactionTypeName = yield select(state => state.transactionTypeName);
-    const transactionAmount = yield select(state => state.transactionAmount);
-    yield put(MODIFY_PAYMENTTYPE_REQUEST({ id, transactionTypeName, transactionAmount }));
+    const paymentType = yield select(state => ({
+        id: state.transactionTypeId,
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
+    }));
+    yield put(MODIFY_PAYMENTTYPE_REQUEST(paymentType));
 }
 
 function* buildRequestAndSaveCreatedPaymentType() {
-    const transactionTypeName = yield select(state => state.transactionTypeName);
-    const transactionAmount = yield select(state => state.transactionAmount);
-    yield put(CREATE_PAYMENTTYPE_REQUEST({ transactionTypeName, transactionAmount }));
+    const paymentType = yield select(state => ({
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
+    }));
+    yield put(CREATE_PAYMENTTYPE_REQUEST(paymentType));
 }
 
 function* clearPaymenttypeForm() {

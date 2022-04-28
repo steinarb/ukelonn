@@ -38,12 +38,15 @@ function* selectPaymentTypeForEdit(action) {
 }
 
 function* buildRequestAndRegisterPayment() {
-    const accountId = yield select(state => state.accountId);
-    const username = yield select(state => state.accountUsername);
-    const account = { accountId, username };
-    const transactionTypeId = yield select(state => state.transactionTypeId);
-    const transactionAmount = yield select(state => state.transactionAmount);
-    yield put(REGISTERPAYMENT_REQUEST({ account, transactionTypeId, transactionAmount }));
+    const payment = yield select(state => ({
+        account: {
+            accountId: state.accountId,
+            username: state.accountUsername,
+        },
+        transactionTypeId: state.transactionTypeId,
+        transactionAmount: state.transactionAmount,
+    }));
+    yield put(REGISTERPAYMENT_REQUEST(payment));
 }
 
 export default function* paymentSaga() {

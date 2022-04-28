@@ -33,55 +33,43 @@ function* selectUser(action) {
 }
 
 function* collectAndSaveModifiedUser() {
-    const userid = yield select(state => state.userid);
-    const username = yield select(state => state.userUsername);
-    const email = yield select(state => state.userEmail);
-    const firstname = yield select(state => state.userFirstname);
-    const lastname = yield select(state => state.userLastname);
-    const user = {
-        userid,
-        username,
-        email,
-        firstname,
-        lastname,
-    };
+    const user = yield select(state => ({
+        userid: state.userid,
+        username: state.userUsername,
+        email: state.userEmail,
+        firstname: state.userFirstname,
+        lastname: state.userLastname,
+    }));
     yield put(CHANGE_USER_REQUEST(user));
     const administrator = yield select(state => state.userIsAdministrator);
     yield put(CHANGE_ADMIN_STATUS({ user, administrator }));
 }
 
 function* collectDataAndSaveUpdatedPassword() {
-    const userid = yield select(state => state.userid);
-    const user = { userid };
-    const password1 = yield select(state => state.password1);
-    const password2 = yield select(state => state.password2);
-    const passwordsNotIdentical = yield select(state => state.passwordsNotIdentical);
-    yield put(CHANGE_USER_PASSWORD_REQUEST({ user, password1, password2, passwordsNotIdentical }));
+    const request = yield select(state => ({
+        user: { userid: state.userid },
+        password1: state.password1,
+        password2: state.password2,
+        passwordsNotIdentical: state.passwordsNotIdentical,
+    }));
+    yield put(CHANGE_USER_PASSWORD_REQUEST(request));
 }
 
 function* saveCreatedUser() {
-    const username = yield select(state => state.userUsername);
-    const email = yield select(state => state.userEmail);
-    const firstname = yield select(state => state.userFirstname);
-    const lastname = yield select(state => state.userLastname);
-    const user = {
-        username,
-        email,
-        firstname,
-        lastname,
-    };
-    const password1 = yield select(state => state.password1);
-    const password2 = yield select(state => state.password2);
-    const passwordsNotIdentical = yield select(state => state.passwordsNotIdentical);
-    const userAndPasswords = {
-        user,
-        password1,
-        password2,
-        passwordsNotIdentical,
-    };
+    const userAndPasswords = yield select(state => ({
+        user: {
+            username: state.userUsername,
+            email: state.userEmail,
+            firstname: state.userFirstname,
+            lastname: state.userLastname,
+        },
+        password1: state.password1,
+        password2: state.password2,
+        passwordsNotIdentical: state.passwordsNotIdentical,
+    }));
     yield put(CREATE_USER_REQUEST(userAndPasswords));
     const administrator = yield select(state => state.userIsAdministrator);
-    yield put(CHANGE_ADMIN_STATUS({ user, administrator }));
+    yield put(CHANGE_ADMIN_STATUS({ user: userAndPasswords.user, administrator }));
 }
 
 function* clearUserForm() {
