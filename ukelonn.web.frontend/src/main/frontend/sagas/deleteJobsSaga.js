@@ -1,10 +1,9 @@
-import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     DELETE_JOBS_REQUEST,
     DELETE_JOBS_RECEIVE,
     DELETE_JOBS_FAILURE,
-    DELETE_SELECTED_JOBS_BUTTON_CLICKED,
 } from '../actiontypes';
 
 function doDeleteJobs(accountWithJobIds) {
@@ -24,14 +23,6 @@ function* requestReceiveDeleteJobsSaga(action) {
     }
 }
 
-function* deleteSelectedJobs() {
-    const accountId = yield select(state => state.accountId);
-    const jobs = yield select(state => state.jobs);
-    const jobsToDelete = jobs.filter(job => job.delete);
-    yield put(DELETE_JOBS_REQUEST({ account: { accountId }, jobsToDelete }));
-}
-
 export default function* deleteJobsSaga() {
     yield takeLatest(DELETE_JOBS_REQUEST, requestReceiveDeleteJobsSaga);
-    yield takeLatest(DELETE_SELECTED_JOBS_BUTTON_CLICKED, deleteSelectedJobs);
 }

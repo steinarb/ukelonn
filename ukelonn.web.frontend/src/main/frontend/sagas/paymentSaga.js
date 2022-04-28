@@ -4,6 +4,8 @@ import {
     SELECT_PAYMENT_TYPE_FOR_EDIT,
     SELECTED_PAYMENT_TYPE,
     MODIFY_PAYMENT_AMOUNT,
+    REGISTER_PAYMENT_BUTTON_CLICKED,
+    REGISTERPAYMENT_REQUEST,
     CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 
@@ -35,7 +37,17 @@ function* selectPaymentTypeForEdit(action) {
     }
 }
 
+function* buildRequestAndRegisterPayment() {
+    const accountId = yield select(state => state.accountId);
+    const username = yield select(state => state.accountUsername);
+    const account = { accountId, username };
+    const transactionTypeId = yield select(state => state.transactionTypeId);
+    const transactionAmount = yield select(state => state.transactionAmount);
+    yield put(REGISTERPAYMENT_REQUEST({ account, transactionTypeId, transactionAmount }));
+}
+
 export default function* paymentSaga() {
     yield takeLatest(SELECT_PAYMENT_TYPE, selectPaymentType);
     yield takeLatest(SELECT_PAYMENT_TYPE_FOR_EDIT, selectPaymentTypeForEdit);
+    yield takeLatest(REGISTER_PAYMENT_BUTTON_CLICKED, buildRequestAndRegisterPayment);
 }
