@@ -55,6 +55,7 @@ export default function AdminBonusesDelete() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED())}>
                                 {text.deleteSelectedBonus}
                             </button>

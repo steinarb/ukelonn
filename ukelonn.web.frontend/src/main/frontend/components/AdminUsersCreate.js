@@ -53,6 +53,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <input
                                 id="username"
+                                className={usernameInputClass}
                                 type="text"
                                 value={userUsername}
                                 onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
@@ -65,6 +66,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <input
                                 id="email"
+                                className={emailInputClass}
                                 type="text"
                                 value={userEmail}
                                 onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
@@ -76,6 +78,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <input
                                 id="firstname"
+                                className="form-control"
                                 type="text"
                                 value={userFirstname}
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
@@ -86,6 +89,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <input
                                 id="lastname"
+                                className="form-control"
                                 type="text"
                                 value={userLastname}
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
@@ -96,6 +100,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <input
                                 id="password1"
+                                className={passwordGroupClass}
                                 type='password'
                                 value={password1}
                                 onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
@@ -106,6 +111,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <input
                                 id="password2"
+                                className={passwordGroupClass}
                                 type="password"
                                 value={password2}
                                 onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))}/>
@@ -117,6 +123,7 @@ export default function AdminUsersCreate() {
                             <div className="form-check">
                                 <input
                                     id="administrator"
+                                    className="form-control"
                                     type="checkbox"
                                     checked={userIsAdministrator}
                                     onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
@@ -128,6 +135,7 @@ export default function AdminUsersCreate() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(CREATE_USER_BUTTON_CLICKED())}>
                                 {text.createUser}
                             </button>

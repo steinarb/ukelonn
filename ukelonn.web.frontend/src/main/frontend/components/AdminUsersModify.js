@@ -46,6 +46,7 @@ export default function AdminUsersModify() {
                         <div className="col-7">
                             <input
                                 id="username"
+                                className="form-control"
                                 type="text"
                                 value={userUsername}
                                 onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
@@ -56,6 +57,7 @@ export default function AdminUsersModify() {
                         <div className="col-7">
                             <input
                                 id="email"
+                                className="form-control"
                                 type="text"
                                 value={userEmail}
                                 onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
@@ -66,6 +68,7 @@ export default function AdminUsersModify() {
                         <div className="col-7">
                             <input
                                 id="firstname"
+                                className="form-control"
                                 type="text"
                                 value={userFirstname}
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
@@ -76,6 +79,7 @@ export default function AdminUsersModify() {
                         <div className="col-7">
                             <input
                                 id="lastname"
+                                className="form-control"
                                 type="text"
                                 value={userLastname}
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
@@ -86,6 +90,7 @@ export default function AdminUsersModify() {
                             <div className="form-check">
                                 <input
                                     id="administrator"
+                                    className="form-check-input"
                                     type="checkbox"
                                     checked={userIsAdministrator}
                                     onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
@@ -97,6 +102,7 @@ export default function AdminUsersModify() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>
                                 {text.saveUserModifications}
                             </button>

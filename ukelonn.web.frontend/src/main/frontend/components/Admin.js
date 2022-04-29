@@ -64,6 +64,7 @@ export default function Admin() {
                         <div className="col-7">
                             <input
                                 id="amount"
+                                className="form-control"
                                 type="text"
                                 value={transactionAmount}
                                 onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
@@ -73,6 +74,7 @@ export default function Admin() {
                         <div className="col-5" />
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 disabled={noUser}
                                 onClick={() => dispatch(REGISTER_PAYMENT_BUTTON_CLICKED())}>
                                 {text.registerPayment}

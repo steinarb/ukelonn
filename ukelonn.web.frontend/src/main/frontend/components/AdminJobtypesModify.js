@@ -41,6 +41,7 @@ export default function AdminJobtypesModify() {
                         <div className="col-7">
                             <input
                                 id="name"
+                                className="form-control"
                                 type="text"
                                 value={transactionTypeName}
                                 onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
@@ -51,6 +52,7 @@ export default function AdminJobtypesModify() {
                         <div className="col-7">
                             <input
                                 id="amount"
+                                className="form-control"
                                 type="text"
                                 value={transactionAmount}
                                 onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
@@ -60,6 +62,7 @@ export default function AdminJobtypesModify() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED())}>
                                 {text.saveChangesToJobType}
                             </button>

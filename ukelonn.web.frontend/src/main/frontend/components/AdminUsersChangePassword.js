@@ -42,6 +42,7 @@ export default function AdminUsersChangePassword() {
                         <div className="col-7">
                             <input
                                 id="password1"
+                                className="form-control"
                                 type="password"
                                 value={password1}
                                 onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
@@ -52,6 +53,7 @@ export default function AdminUsersChangePassword() {
                         <div className="col-7">
                             <input
                                 id="password2"
+                                className={passwordInputClass}
                                 type="password"
                                 value={password2}
                                 onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))} />
@@ -62,6 +64,7 @@ export default function AdminUsersChangePassword() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED())}>
                                 {text.changePassword}
                             </button>

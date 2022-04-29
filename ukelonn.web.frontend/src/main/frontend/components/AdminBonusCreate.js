@@ -45,6 +45,7 @@ export default function AdminBonusCreate() {
                                 <div className="form-check">
                                     <input
                                         id="enabled"
+                                        className="form-check-input"
                                         type="checkbox"
                                         checked={bonusEnabled}
                                         onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
@@ -58,6 +59,7 @@ export default function AdminBonusCreate() {
                         <div className="col-7">
                             <input
                                 id="iconurl"
+                                className="form-control"
                                 type="text"
                                 value={bonusIconurl}
                                 onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
@@ -68,6 +70,7 @@ export default function AdminBonusCreate() {
                         <div className="col-7">
                             <input
                                 id="title"
+                                className="form-control"
                                 type="text"
                                 value={bonusTitle}
                                 onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
@@ -78,6 +81,7 @@ export default function AdminBonusCreate() {
                         <div className="col-7">
                             <input
                                 id="description"
+                                className="form-control"
                                 type="text"
                                 value={bonusDescription}
                                 onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
@@ -88,6 +92,7 @@ export default function AdminBonusCreate() {
                         <div className="col-7">
                             <input
                                 id="bonusfactor"
+                                className="form-control"
                                 type="text"
                                 pattern="[0-9]?[.]?[0-9]?[0-9]?"
                                 value={bonusFactor}
@@ -118,6 +123,7 @@ export default function AdminBonusCreate() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED())}>
                                 {text.createNewBonus}
                             </button>

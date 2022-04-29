@@ -81,6 +81,7 @@ export default function User() {
                             <div className="col-5"/>
                             <div className="col-7">
                                 <button
+                                    className="btn btn-primary"
                                     onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>
                                     {text.registerJob}
                                 </button>
