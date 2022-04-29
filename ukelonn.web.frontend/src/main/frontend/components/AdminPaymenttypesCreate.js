@@ -8,11 +8,12 @@ import {
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
+import { numberAsString } from './utils';
 
 export default function AdminPaymenttypesCreate() {
     const text = useSelector(state => state.displayTexts);
     const transactionTypeName = useSelector(state => state.transactionTypeName);
-    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionAmount = useSelector(state => numberAsString(state.transactionAmount));
     const dispatch = useDispatch();
 
     return (
@@ -31,19 +32,30 @@ export default function AdminPaymenttypesCreate() {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-5">{text.paymentTypeName}</label>
                         <div className="col-7">
-                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                            <input
+                                id="name"
+                                type="text"
+                                value={transactionTypeName}
+                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-5">{text.paymentTypeAmount}</label>
                         <div className="col-7">
-                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(e.target.value))} />
+                            <input
+                                id="amount"
+                                type="text"
+                                value={transactionAmount}
+                                onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.createNewPaymentType}</button>
+                            <button
+                                onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>
+                                {text.createNewPaymentType}
+                            </button>
                         </div>
                     </div>
                 </div>

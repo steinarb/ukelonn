@@ -4,6 +4,7 @@ import {
     RECEIVE_ADMIN_STATUS,
     SELECTED_USER,
     CLEAR_USER,
+    CLEAR_USER_AND_PASSWORDS,
 } from '../actiontypes';
 import { isUnselected } from '../common/reducers';
 
@@ -14,4 +15,5 @@ export default createReducer(defaultValue, {
     [RECEIVE_ADMIN_STATUS]: (state, action) => action.payload.administrator,
     [SELECTED_USER]: (state, action) => isUnselected(action.payload.userid) ? defaultValue : state,
     [CLEAR_USER]: () => defaultValue,
+    [CLEAR_USER_AND_PASSWORDS]: () => defaultValue,
 });
