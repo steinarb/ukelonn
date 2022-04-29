@@ -44,31 +44,51 @@ export default function AdminUsersModify() {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
-                            <input id="username" className="form-control" type="text" value={userUsername} onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
+                            <input
+                                id="username"
+                                type="text"
+                                value={userUsername}
+                                onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
-                            <input id="email" className="form-control" type="text" value={userEmail} onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
+                            <input
+                                id="email"
+                                type="text"
+                                value={userEmail}
+                                onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
-                            <input id="firstname" className="form-control" type="text" value={userFirstname} onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
+                            <input
+                                id="firstname"
+                                type="text"
+                                value={userFirstname}
+                                onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
-                            <input id="lastname" className="form-control" type="text" value={userLastname} onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
+                            <input
+                                id="lastname"
+                                type="text"
+                                value={userLastname}
+                                onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div clasName="row">
                         <div className="col">
                             <div className="form-check">
-                                <input id="administrator" className="form-check-input" type="checkbox" checked={userIsAdministrator} onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
+                                <input
+                                    id="administrator"
+                                    type="checkbox"
+                                    checked={userIsAdministrator}
+                                    onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                                 <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
                         </div>
@@ -76,7 +96,10 @@ export default function AdminUsersModify() {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>{text.saveUserModifications}</button>
+                            <button
+                                onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>
+                                {text.saveUserModifications}
+                            </button>
                         </div>
                     </div>
                 </div>

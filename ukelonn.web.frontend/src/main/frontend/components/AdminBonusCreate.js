@@ -43,7 +43,11 @@ export default function AdminBonusCreate() {
                         <div className="col">
                             <div className="form-check">
                                 <div className="form-check">
-                                    <input id="enabled" className="form-check-input" type="checkbox" checked={bonusEnabled} onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
+                                    <input
+                                        id="enabled"
+                                        type="checkbox"
+                                        checked={bonusEnabled}
+                                        onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                                     <label htmlFor="enabled" className="form-check-label">{text.activated}</label>
                                 </div>
                             </div>
@@ -52,25 +56,42 @@ export default function AdminBonusCreate() {
                     <div className="form-group row">
                         <label htmlFor="iconurl" className="col-form-label col-5">{text.iconURL}</label>
                         <div className="col-7">
-                            <input id="iconurl" className="form-control" type="text" value={bonusIconurl} onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
+                            <input
+                                id="iconurl"
+                                type="text"
+                                value={bonusIconurl}
+                                onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
-                            <input id="title" className="form-control" type="text" value={bonusTitle} onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
+                            <input
+                                id="title"
+                                type="text"
+                                value={bonusTitle}
+                                onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
-                            <input id="description" className="form-control" type="text" value={bonusDescription} onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
+                            <input
+                                id="description"
+                                type="text"
+                                value={bonusDescription}
+                                onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="bonusfactor" className="col-form-label col-5">{text.bonusFactor}</label>
                         <div className="col-7">
-                            <input id="bonusfactor" className="form-control" type="text" pattern="[0-9]?[.]?[0-9]?[0-9]?" value={bonusFactor} onChange={e => dispatch(MODIFY_BONUS_FACTOR(e.target.value))} />
+                            <input
+                                id="bonusfactor"
+                                type="text"
+                                pattern="[0-9]?[.]?[0-9]?[0-9]?"
+                                value={bonusFactor}
+                                onChange={e => dispatch(MODIFY_BONUS_FACTOR(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -96,7 +117,10 @@ export default function AdminBonusCreate() {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED())}>{text.createNewBonus}</button>
+                            <button
+                                onClick={() => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED())}>
+                                {text.createNewBonus}
+                            </button>
                         </div>
                     </div>
                 </div>

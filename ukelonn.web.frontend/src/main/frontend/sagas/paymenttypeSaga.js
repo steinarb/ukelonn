@@ -4,8 +4,12 @@ import {
     SELECT_PAYMENT_TYPE_FOR_EDIT,
     SELECTED_PAYMENT_TYPE,
     MODIFY_PAYMENT_AMOUNT,
-    REGISTER_PAYMENT_BUTTON_CLICKED,
-    REGISTERPAYMENT_REQUEST,
+    SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED,
+    MODIFY_PAYMENTTYPE_REQUEST,
+    MODIFY_PAYMENTTYPE_RECEIVE,
+    CREATE_PAYMENT_TYPE_BUTTON_CLICKED,
+    CREATE_PAYMENTTYPE_REQUEST,
+    CREATE_PAYMENTTYPE_RECEIVE,
     CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 
@@ -37,20 +41,32 @@ function* selectPaymentTypeForEdit(action) {
     }
 }
 
-function* buildRequestAndRegisterPayment() {
-    const payment = yield select(state => ({
-        account: {
-            accountId: state.accountId,
-            username: state.accountUsername,
-        },
-        transactionTypeId: state.transactionTypeId,
+function* buildRequestAndSaveModifiedPaymentType() {
+    const paymentType = yield select(state => ({
+        id: state.transactionTypeId,
+        transactionTypeName: state.transactionTypeName,
         transactionAmount: state.transactionAmount,
     }));
-    yield put(REGISTERPAYMENT_REQUEST(payment));
+    yield put(MODIFY_PAYMENTTYPE_REQUEST(paymentType));
+}
+
+function* buildRequestAndSaveCreatedPaymentType() {
+    const paymentType = yield select(state => ({
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
+    }));
+    yield put(CREATE_PAYMENTTYPE_REQUEST(paymentType));
+}
+
+function* clearPaymenttypeForm() {
+    yield put(CLEAR_PAYMENT_TYPE_FORM());
 }
 
 export default function* paymentSaga() {
     yield takeLatest(SELECT_PAYMENT_TYPE, selectPaymentType);
     yield takeLatest(SELECT_PAYMENT_TYPE_FOR_EDIT, selectPaymentTypeForEdit);
-    yield takeLatest(REGISTER_PAYMENT_BUTTON_CLICKED, buildRequestAndRegisterPayment);
+    yield takeLatest(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED, buildRequestAndSaveModifiedPaymentType);
+    yield takeLatest(CREATE_PAYMENT_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedPaymentType);
+    yield takeLatest(MODIFY_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
+    yield takeLatest(CREATE_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
 }

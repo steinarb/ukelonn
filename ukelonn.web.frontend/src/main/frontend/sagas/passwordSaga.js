@@ -16,7 +16,7 @@ function* comparePasswords() {
     }
 }
 
-export default function* userSaga() {
+export default function* passwordSaga() {
     yield takeLatest(MODIFY_PASSWORD1, comparePasswords);
     yield takeLatest(MODIFY_PASSWORD2, comparePasswords);
 }

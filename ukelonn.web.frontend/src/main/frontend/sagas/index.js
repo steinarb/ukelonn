@@ -7,14 +7,16 @@ import accountSaga from './accountSaga';
 import { requestJobtypeListSaga } from './jobtypelistSaga';
 import registerJobSaga from './registerJobSaga';
 import jobSaga from './jobSaga';
+import jobtypeSaga from './jobtypeSaga';
 import paymentSaga from './paymentSaga';
+import paymenttypeSaga from './paymenttypeSaga';
 import { requestRecentJobsSaga } from './recentjobsSaga';
 import { requestRecentPaymentsSaga } from  './recentpaymentsSaga';
 import accountsSaga from './accountsSaga';
 import paymenttypesSaga from './paymenttypesSaga';
 import registerPaymentSaga from './registerPaymentSaga';
 import modifyJobtypeSaga from './modifyJobtypeSaga';
-import createPaymenttypeSaga from './createpaymenttypeSaga';
+import createPaymenttypeSaga from './createPaymenttypeSaga';
 import createJobtypeSaga from './createJobtypeSaga';
 import deleteJobsSaga from './deleteJobsSaga';
 import updateJobSaga from './updateJobSaga';
@@ -52,7 +54,9 @@ export function* rootSaga() {
         fork(requestJobtypeListSaga),
         fork(registerJobSaga),
         fork(jobSaga),
+        fork(jobtypeSaga),
         fork(paymentSaga),
+        fork(paymenttypeSaga),
         fork(requestRecentJobsSaga),
         fork(requestRecentPaymentsSaga),
         fork(accountsSaga),
