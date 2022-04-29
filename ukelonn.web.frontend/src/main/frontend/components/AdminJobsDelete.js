@@ -58,7 +58,10 @@ export default function AdminJobsDelete() {
                                  )}
                     </tbody>
                 </table>
-                <button onClick={() => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED())}>{text.deleteMarkedJobs}</button>
+                <button
+                    onClick={() => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED())}>
+                    {text.deleteMarkedJobs}
+                </button>
             </div>
             <br/>
             <br/>

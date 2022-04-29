@@ -39,19 +39,30 @@ export default function AdminJobtypesModify() {
                     <div>
                         <label htmlFor="amount">{text.modifyNameOfJobType}</label>
                         <div>
-                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                            <input
+                                id="name"
+                                type="text"
+                                value={transactionTypeName}
+                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.modifyAmountOfJobType}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
+                            <input
+                                id="amount"
+                                type="text"
+                                value={transactionAmount}
+                                onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED())}>{text.saveChangesToJobType}</button>
+                            <button
+                                onClick={() => dispatch(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED())}>
+                                {text.saveChangesToJobType}
+                            </button>
                         </div>
                     </div>
             </form>

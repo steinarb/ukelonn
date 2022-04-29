@@ -39,20 +39,31 @@ export default function AdminUsersChangePassword() {
                     <div>
                         <label htmlFor="password1">{text.password}:</label>
                         <div>
-                            <input id="password1" type='password' value={password1} onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
+                            <input
+                                id="password1"
+                                type="password"
+                                value={password1}
+                                onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="password2">{text.repeatPassword}:</label>
                         <div>
-                            <input id="password2" type='password' value={password2} onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))} />
+                            <input
+                                id="password2"
+                                type="password"
+                                value={password2}
+                                onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))} />
                             { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED())}>{text.changePassword}</button>
+                            <button
+                                onClick={() => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED())}>
+                                {text.changePassword}
+                            </button>
                         </div>
                     </div>
                 </div>

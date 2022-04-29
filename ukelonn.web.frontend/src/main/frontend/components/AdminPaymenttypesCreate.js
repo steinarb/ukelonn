@@ -32,19 +32,30 @@ export default function AdminPaymenttypesCreate() {
                     <div>
                         <label htmlFor="amount">{text.paymentTypeName}</label>
                         <div>
-                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                            <input
+                                id="name"
+                                type="text"
+                                value={transactionTypeName}
+                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.paymentTypeAmount}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
+                            <input
+                                id="amount"
+                                type="text"
+                                value={transactionAmount}
+                                onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.createNewPaymentType}</button>
+                            <button
+                                onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>
+                                {text.createNewPaymentType}
+                            </button>
                         </div>
                     </div>
                 </div>

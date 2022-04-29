@@ -54,25 +54,41 @@ export default function AdminBonusesModify() {
                     <div>
                         <label htmlFor="enabled">{text.activated}</label>
                         <div>
-                            <input id="enabled" type="checkbox" checked={bonusEnabled} onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
+                            <input
+                                id="enabled"
+                                type="checkbox"
+                                checked={bonusEnabled}
+                                onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="iconurl">{text.iconURL}</label>
                         <div>
-                            <input id="iconurl" type="text" value={bonusIconurl} onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
+                            <input
+                                id="iconurl"
+                                type="text"
+                                value={bonusIconurl}
+                                onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input id="title" type="text" value={bonusTitle} onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
+                            <input
+                                id="title"
+                                type="text"
+                                value={bonusTitle}
+                                onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input id="description" type="text" value={bonusDescription} onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
+                            <input
+                                id="description"
+                                type="text"
+                                value={bonusDescription}
+                                onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -109,7 +125,10 @@ export default function AdminBonusesModify() {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED())}>{text.saveChangesToBonus}</button>
+                            <button
+                                onClick={() => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED())}>
+                                {text.saveChangesToBonus}
+                            </button>
                         </div>
                     </div>
                 </div>

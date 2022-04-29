@@ -81,7 +81,10 @@ export default function User() {
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>{text.registerJob}</button>
+                            <button
+                                onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>
+                                {text.registerJob}
+                            </button>
                         </div>
                     </div>
                 </div>

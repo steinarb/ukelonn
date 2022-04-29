@@ -38,19 +38,30 @@ export default function AdminPaymenttypesModify() {
                     <div>
                         <label htmlFor="amount">{text.modifyPaymentTypeName}</label>
                         <div>
-                            <input id="name" type="text" value={transactionTypeName} onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                            <input
+                                id="name"
+                                type="text"
+                                value={transactionTypeName}
+                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.modifyPaymentTypeAmount}</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
+                            <input
+                                id="amount"
+                                type="text"
+                                value={transactionAmount}
+                                onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED())}>{text.saveChangesToPaymentType}</button>
+                            <button
+                                onClick={() => dispatch(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED())}>
+                                {text.saveChangesToPaymentType}
+                            </button>
                         </div>
                     </div>
                 </div>

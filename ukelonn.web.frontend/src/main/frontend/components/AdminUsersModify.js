@@ -44,37 +44,60 @@ export default function AdminUsersModify() {
                     <div>
                         <label htmlFor="username">{text.username}</label>
                         <div>
-                            <input id="username" type="text" value={userUsername} onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
+                            <input
+                                id="username"
+                                type="text"
+                                value={userUsername}
+                                onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="email">{text.emailAddress}</label>
                         <div>
-                            <input id="email" type="text" value={userEmail} onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
+                            <input
+                                id="email"
+                                type="text"
+                                value={userEmail}
+                                onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="firstname">{text.firstName}</label>
                         <div>
-                            <input id="firstname" type="text" value={userFirstname} onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
+                            <input
+                                id="firstname"
+                                type="text"
+                                value={userFirstname}
+                                onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="lastname">{text.lastName}</label>
                         <div>
-                            <input id="lastname" type="text" value={userLastname} onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
+                            <input
+                                id="lastname"
+                                type="text"
+                                value={userLastname}
+                                onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="administrator">{text.administrator}</label>
                         <div>
-                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
+                            <input
+                                id="administrator"
+                                type="checkbox"
+                                checked={userIsAdministrator}
+                                onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>{text.saveUserModifications}</button>
+                            <button
+                                onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>
+                                {text.saveUserModifications}
+                            </button>
                         </div>
                     </div>
                 </div>

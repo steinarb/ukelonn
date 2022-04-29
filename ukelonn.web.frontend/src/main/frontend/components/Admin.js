@@ -61,12 +61,20 @@ export default function Admin() {
                     <div>
                         <label htmlFor="amount">{text.amount}:</label>
                         <div>
-                            <input id="amount" type="text" value={transactionAmount} onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
+                            <input
+                                id="amount"
+                                type="text"
+                                value={transactionAmount}
+                                onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
                     <div>
                         <div>
-                            <button disabled={noUser} onClick={() => dispatch(REGISTER_PAYMENT_BUTTON_CLICKED())}>{text.registerPayment}</button>
+                            <button
+                                disabled={noUser}
+                                onClick={() => dispatch(REGISTER_PAYMENT_BUTTON_CLICKED())}>
+                                {text.registerPayment}
+                            </button>
                         </div>
                     </div>
                 </div>
