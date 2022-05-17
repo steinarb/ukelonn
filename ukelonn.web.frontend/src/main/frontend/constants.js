@@ -8,6 +8,14 @@ export const emptyAccount = {
     balance: 0.0,
 };
 
+export const emptyUser = {
+    userid: -1,
+    username: '',
+    email: '',
+    firstname: '',
+    lastname: '',
+};
+
 export const emptyBonus = {
     bonusId: -1,
     enabled: true,
