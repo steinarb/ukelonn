@@ -7,7 +7,7 @@ import {
 const unselected = -1;
 
 const userIdReducer = createReducer(unselected, {
-    [SELECT_USER]: (state, action) => action.payload,
+    [SELECT_USER]: (state, action) => action.payload.userid,
     [CLEAR_USER]: () => unselected,
     [CLEAR_USER_AND_PASSWORDS]: () => unselected,
 });
