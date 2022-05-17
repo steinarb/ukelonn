@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     MODIFY_JOB_AMOUNT,
     MODIFY_PAYMENT_AMOUNT,
-    SELECTED_ACCOUNT,
+    SELECT_ACCOUNT,
     SELECTED_JOB_TYPE,
     SELECTED_PAYMENT_TYPE,
     REGISTERPAYMENT_RECEIVE,
@@ -21,7 +21,7 @@ const defaultValue = 0;
 const transactionAmountReducer = createReducer(defaultValue, {
     [MODIFY_JOB_AMOUNT]: (state, action) => action.payload,
     [MODIFY_PAYMENT_AMOUNT]: (state, action) => action.payload,
-    [SELECTED_ACCOUNT]: (state, action) => isUnselected(action.payload.accountId) ? defaultValue : action.payload.balance,
+    [SELECT_ACCOUNT]: (state, action) => action.payload.balance,
     [SELECTED_JOB_TYPE]: (state, action) => isUnselected(action.payload.accountId) ? defaultValue : action.payload.transactionAmount,
     [SELECTED_PAYMENT_TYPE]: (state, action) => isUnselected(action.payload.accountId) ? defaultValue : action.payload.transactionAmount,
     [REGISTERPAYMENT_RECEIVE]: (state, action) => action.payload.balance,

@@ -1,7 +1,6 @@
 import { takeLatest, put, select } from 'redux-saga/effects';
 import {
     SELECT_USER,
-    SELECTED_USER,
     REQUEST_ADMIN_STATUS,
     USERS_RECEIVE,
     CHANGE_USER_RECEIVE,
@@ -18,17 +17,9 @@ import {
     CLEAR_USER_AND_PASSWORDS,
 } from '../actiontypes';
 
-function* selectUser(action) {
-    const userid = action.payload;
-    if (userid === -1) {
-        yield put(SELECTED_USER({ userid }));
-    } else {
-        const users = yield select(state => state.users);
-        const user = users.find(u => u.userid === userid);
-        if (user) {
-            yield put(SELECTED_USER(user));
-            yield put(REQUEST_ADMIN_STATUS(user));
-        }
+function* queryAdminStatusForSelectedUser(action) {
+    if (action.payload.userid !== -1) {
+        yield put(REQUEST_ADMIN_STATUS(action.payload));
     }
 }
 
@@ -81,7 +72,7 @@ function* clearUserAndPasswordForms() {
 }
 
 export default function* userSaga() {
-    yield takeLatest(SELECT_USER, selectUser);
+    yield takeLatest(SELECT_USER, queryAdminStatusForSelectedUser);
     yield takeLatest(USERS_RECEIVE, clearUserForm);
     yield takeLatest(SAVE_USER_BUTTON_CLICKED, collectAndSaveModifiedUser);
     yield takeLatest(CHANGE_PASSWORD_BUTTON_CLICKED, collectDataAndSaveUpdatedPassword);

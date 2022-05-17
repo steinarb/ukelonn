@@ -2,7 +2,6 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     SELECT_ACCOUNT,
-    SELECTED_ACCOUNT,
     ACCOUNT_REQUEST,
     ACCOUNT_RECEIVE,
     ACCOUNT_FAILURE,
@@ -35,24 +34,16 @@ function* requestReceiveAccountSaga(action) {
     }
 }
 
-function* selectAccountSaga(action) {
-    const accountId = action.payload;
-    if (accountId === -1) {
-        yield put(SELECTED_ACCOUNT({ accountId }));
-    } else {
-        const accounts = yield select(state => state.accounts);
-        const account = accounts.find(a => a.accountId === accountId);
-        if (account) {
-            yield put(SELECTED_ACCOUNT(account));
-            const { accountId, username } = account;
-            if (username) {
-                yield put(EARNINGS_SUM_OVER_YEAR_REQUEST(username));
-                yield put(EARNINGS_SUM_OVER_MONTH_REQUEST(username));
-            }
-            if (accountId) {
-                yield put(RECENTPAYMENTS_REQUEST(accountId));
-                yield put(RECENTJOBS_REQUEST(accountId));
-            }
+function* fetchDataForSelectedAccount(action) {
+    const { accountId, username } = action.payload;
+    if (accountId !== -1) {
+        if (username) {
+            yield put(EARNINGS_SUM_OVER_YEAR_REQUEST(username));
+            yield put(EARNINGS_SUM_OVER_MONTH_REQUEST(username));
+        }
+        if (accountId) {
+            yield put(RECENTPAYMENTS_REQUEST(accountId));
+            yield put(RECENTJOBS_REQUEST(accountId));
         }
     }
 }
@@ -63,7 +54,7 @@ function* updateAccountOnNotification() {
 }
 
 export default function* accountSaga() {
-    yield takeLatest(SELECT_ACCOUNT, selectAccountSaga);
+    yield takeLatest(SELECT_ACCOUNT, fetchDataForSelectedAccount);
     yield takeLatest(ACCOUNT_REQUEST, requestReceiveAccountSaga);
     yield takeLatest(RECEIVED_NOTIFICATION, updateAccountOnNotification);
 }
