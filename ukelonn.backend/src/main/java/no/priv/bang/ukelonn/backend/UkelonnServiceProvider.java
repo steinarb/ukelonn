@@ -724,14 +724,23 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     public Account mapAccount(ResultSet results) throws SQLException {
         String username = results.getString(UkelonnServiceProvider.USERNAME);
-        no.priv.bang.osgiservice.users.User user = useradmin.getUser(username);
-        return Account.with()
-            .accountid(results.getInt("account_id"))
-            .username(username)
-            .firstName(user.getFirstname())
-            .lastName(user.getLastname())
-            .balance(results.getDouble("balance"))
-            .build();
+        try {
+            no.priv.bang.osgiservice.users.User user = useradmin.getUser(username);
+            return Account.with()
+                .accountid(results.getInt("account_id"))
+                .username(username)
+                .firstName(user.getFirstname())
+                .lastName(user.getLastname())
+                .balance(results.getDouble("balance"))
+                .build();
+        } catch (AuthserviceException e) {
+            logWarning(String.format("No authservice user for username \"%s\" when fetching account", username), e);
+            return Account.with()
+                .accountid(results.getInt("account_id"))
+                .username(username)
+                .balance(results.getDouble("balance"))
+                .build();
+        }
     }
 
     private void addRolesIfNotPresent() {

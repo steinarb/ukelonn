@@ -93,6 +93,35 @@ class UkelonnServiceProviderTest {
         assertThat(accounts.size()).isGreaterThan(1);
     }
 
+    @Test
+    void testGetAccountsWithUserMissing() {
+        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        var originalLogService = provider.getLogservice();
+        try {
+            var logservice = new MockLogService();
+            provider.setLogservice(logservice);
+            UserManagementService useradmin = mock(UserManagementService.class);
+            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with().userid(1)
+                .username("jad")
+                .email("jad@gmail.com")
+                .firstname("Jane")
+                .lastname("Doe")
+                .build();
+            when(useradmin.getUser(anyString()))
+                .thenReturn(user)
+                .thenThrow(AuthserviceException.class);
+            provider.setUserAdmin(useradmin);
+            assertThat(logservice.getLogmessages()).isEmpty(); // Verify no log messages before fetching users
+            List<Account> accounts = provider.getAccounts();
+            assertThat(accounts.size()).isGreaterThan(1);
+            assertThat(logservice.getLogmessages()).isNotEmpty();
+            assertThat(logservice.getLogmessages().get(0))
+                .startsWith("[WARNING] No authservice user for username \"jod\" when fetching account");
+        } finally {
+            provider.setLogservice(originalLogService);
+        }
+    }
+
     /**
      * Corner case test: Tests what happens to the {@link CommonDatabaseMethods#getAccounts(Class)}
      * method when a resultset that throws SQLException is returned from the
