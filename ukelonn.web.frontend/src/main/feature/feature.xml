@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle">
 
-    <!-- Copyright 2016-2021 Steinar Bang                                                -->
+    <!-- Copyright 2016-2022 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -15,7 +15,7 @@
 
     <feature name="ukelonn-web-frontend">
         <feature prerequisite="true">wrap</feature>
-        <feature>pax-http-whiteboard</feature>
+        <feature>http-whiteboard</feature>
         <feature>scr</feature>
     </feature>
 </features>
