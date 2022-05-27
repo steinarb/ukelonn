@@ -48,7 +48,15 @@ public class Account extends Immutable { // NOSONAR Immutable handles added fiel
     }
 
     public String getFullName() {
-        return getFirstName() + " " + getLastName();
+        if (getFirstName() != null && getLastName() != null) {
+            return getFirstName() + " " + getLastName();
+        }
+
+        if (getFirstName() != null) {
+            return getFirstName();
+        }
+
+        return getUsername();
     }
 
     public double getBalance() {
