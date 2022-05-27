@@ -48,6 +48,36 @@ class AccountTest {
     }
 
     @Test
+    void testFullName() {
+        Account account = Account.with()
+            .username("jad")
+            .firstName("Jane")
+            .lastName("Doe")
+            .build();
+
+        assertEquals("Jane Doe", account.getFullName());
+    }
+
+    @Test
+    void testFullNameWhenNoLastName() {
+        Account account = Account.with()
+            .username("jad")
+            .firstName("Jane")
+            .build();
+
+        assertEquals("Jane", account.getFullName());
+    }
+
+    @Test
+    void testFullNameWhenNoFirstName() {
+        Account account = Account.with()
+            .username("jad")
+            .build();
+
+        assertEquals("jad", account.getFullName());
+    }
+
+    @Test
     void testToString() {
         Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
         assertEquals("Account [getAccountId()=1, getUsername()=jad, getFirstName()=Jane, getLastName()=Doe]", account.toString());
