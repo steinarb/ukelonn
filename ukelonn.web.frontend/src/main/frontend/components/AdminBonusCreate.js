@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
 import {
     MODIFY_BONUS_ENABLED,
     MODIFY_BONUS_ICONURL,
@@ -22,8 +21,8 @@ export default function AdminBonusCreate() {
     const bonusTitle = useSelector(state => state.bonusTitle);
     const bonusDescription = useSelector(state => state.bonusDescription);
     const bonusFactor = useSelector(state => state.bonusFactor);
-    const bonusStartDate = useSelector(state => state.bonusStartDate);
-    const bonusEndDate = useSelector(state => state.bonusEndDate);
+    const bonusStartDate = useSelector(state => state.bonusStartDate.split('T')[0]);
+    const bonusEndDate = useSelector(state => state.bonusEndDate.split('T')[0]);
     const dispatch = useDispatch();
 
     return (
@@ -93,21 +92,23 @@ export default function AdminBonusCreate() {
                     <div>
                         <label htmlFor="startdate">{text.startDate}</label>
                         <div>
-                            <DatePicker
-                                selected={new Date(bonusStartDate)}
-                                dateFormat="yyyy-MM-dd"
-                                onChange={d => dispatch(MODIFY_BONUS_START_DATE(d))}
-                                onFocus={e => e.target.blur()} />
+                            <input
+                                id="startdate"
+                                type="date"
+                                value={bonusStartDate}
+                                onChange={e => dispatch(MODIFY_BONUS_START_DATE(e.target.value))}
+                            />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="enddate">{text.endDate}</label>
                         <div>
-                            <DatePicker
-                                selected={new Date(bonusEndDate)}
-                                dateFormat="yyyy-MM-dd"
-                                onChange={d => dispatch(MODIFY_BONUS_END_DATE(d))}
-                                onFocus={e => e.target.blur()} />
+                            <input
+                                id="enddate"
+                                type="date"
+                                value={bonusEndDate}
+                                onChange={e => dispatch(MODIFY_BONUS_END_DATE(e.target.value))}
+                            />
                         </div>
                     </div>
                     <div>

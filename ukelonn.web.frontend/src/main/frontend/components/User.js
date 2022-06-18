@@ -2,8 +2,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { stringify } from 'qs';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
     MODIFY_JOB_DATE,
     REGISTER_JOB_BUTTON_CLICKED,
@@ -22,7 +20,7 @@ export default function User() {
     const username = useSelector(state => state.accountUsername);
     const accountBalance = useSelector(state => state.accountBalance);
     const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionDate = useSelector(state => state.transactionDate);
+    const transactionDate = useSelector(state => state.transactionDate.split('T')[0]);
     const notificationMessage = useSelector(state => state.notificationMessage);
     const dispatch = useDispatch();
     const title = text.weeklyAllowanceFor + ' ' + firstname;
@@ -71,11 +69,12 @@ export default function User() {
                     <div>
                         <label htmlFor="date">{text.date}</label>
                         <div>
-                            <DatePicker
-                                selected={new Date(transactionDate)}
-                                dateFormat="yyyy-MM-dd"
-                                onChange={d => dispatch(MODIFY_JOB_DATE(d))}
-                                onFocus={e => e.target.blur()} />
+                            <input
+                                id="date"
+                                type="date"
+                                value={transactionDate}
+                                onChange={e => dispatch(MODIFY_JOB_DATE(e.target.value))}
+                            />
                         </div>
                     </div>
                     <div>

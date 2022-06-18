@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
 import {
     JOB_TABLE_ROW_CLICK,
     MODIFY_JOB_DATE,
@@ -16,7 +15,7 @@ export default function AdminJobsEdit() {
     const text = useSelector(state => state.displayTexts);
     const firstname = useSelector(state => state.accountFirstname);
     const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionTime = useSelector(state => state.transactionDate);
+    const transactionDate = useSelector(state => state.transactionDate.split('T')[0]);
     const jobs = useSelector(state => state.jobs);
     const dispatch = useDispatch();
 
@@ -72,11 +71,12 @@ export default function AdminJobsEdit() {
                         <div>
                             <label htmlFor="date">{text.date}</label>
                             <div>
-                                <DatePicker
-                                    selected={new Date(transactionTime)}
-                                    dateFormat="yyyy-MM-dd"
-                                    onChange={d => dispatch(MODIFY_JOB_DATE(d))}
-                                    onFocus={e => e.target.blur()} />
+                                <input
+                                    id="date"
+                                    type="date"
+                                    value={transactionDate}
+                                    onChange={e => dispatch(MODIFY_JOB_DATE(e.target.value))}
+                                />
                             </div>
                         </div>
                         <div>
