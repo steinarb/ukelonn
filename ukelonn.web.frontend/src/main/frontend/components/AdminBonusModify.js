@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
 import {
     SELECT_BONUS,
     MODIFY_BONUS_ENABLED,
@@ -25,8 +24,8 @@ export default function AdminBonusesModify() {
     const bonusTitle = useSelector(state => state.bonusTitle);
     const bonusDescription = useSelector(state => state.bonusDescription);
     const bonusFactor = useSelector(state => state.bonusFactor);
-    const bonusStartDate = useSelector(state => state.bonusStartDate);
-    const bonusEndDate = useSelector(state => state.bonusEndDate);
+    const bonusStartDate = useSelector(state => state.bonusStartDate.split('T')[0]);
+    const bonusEndDate = useSelector(state => state.bonusEndDate.split('T')[0]);
     const dispatch = useDispatch();
 
     return (
@@ -112,21 +111,25 @@ export default function AdminBonusesModify() {
                     <div className="form-group row">
                         <label htmlFor="startdate" className="col-form-label col-5">{text.startDate}</label>
                         <div className="col-7">
-                            <DatePicker
-                                selected={new Date(bonusStartDate)}
-                                dateFormat="yyyy-MM-dd"
-                                onChange={d => dispatch(MODIFY_BONUS_START_DATE(d))}
-                                onFocus={e => e.target.blur()} />
+                            <input
+                                id="startdate"
+                                className="form-control"
+                                type="date"
+                                value={bonusStartDate}
+                                onChange={e => dispatch(MODIFY_BONUS_START_DATE(e.target.value))}
+                            />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="enddate" className="col-form-label col-5">{text.endDate}</label>
                         <div className="col-7">
-                            <DatePicker
-                                selected={new Date(bonusEndDate)}
-                                dateFormat="yyyy-MM-dd"
-                                onChange={d => dispatch(MODIFY_BONUS_END_DATE(d))}
-                                onFocus={e => e.target.blur()} />
+                            <input
+                                id="enddate"
+                                className="form-control"
+                                type="date"
+                                value={bonusEndDate}
+                                onChange={e => dispatch(MODIFY_BONUS_END_DATE(e.target.value))}
+                            />
                         </div>
                     </div>
                     <div className="form-group row">
