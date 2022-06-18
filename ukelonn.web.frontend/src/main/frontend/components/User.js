@@ -70,6 +70,7 @@ export default function User() {
                             <div className="col-7">
                                 <input
                                     id="date"
+                                    className="form-control"
                                     type="date"
                                     value={transactionDate}
                                     onChange={e => dispatch(MODIFY_JOB_DATE(e.target.value))}

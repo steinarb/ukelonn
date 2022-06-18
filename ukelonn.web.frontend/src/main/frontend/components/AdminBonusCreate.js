@@ -103,6 +103,7 @@ export default function AdminBonusCreate() {
                         <div className="col-7">
                             <input
                                 id="startdate"
+                                className="form-control"
                                 type="date"
                                 value={bonusStartDate}
                                 onChange={e => dispatch(MODIFY_BONUS_START_DATE(e.target.value))}
@@ -114,6 +115,7 @@ export default function AdminBonusCreate() {
                         <div className="col-7">
                             <input
                                 id="enddate"
+                                className="form-control"
                                 type="date"
                                 value={bonusEndDate}
                                 onChange={e => dispatch(MODIFY_BONUS_END_DATE(e.target.value))}
