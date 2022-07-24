@@ -33,7 +33,7 @@ By default the GUI language is Norwegian.
 
 Changing the locale setting is persisted in a cookie in the browser, but to avoid needing to do the change, it is possible to set the default to something else in the karaf configuration.
 
-To set the default to English, and to get English text on the prepopulated database entries, do the following commands in the karaf console:
+To set the default to English, and to get English text on the prepopulated database entries, do the following commands in the karaf console, before installing the application:
 #+begin_example
   config:edit no.priv.bang.ukelonn.backend.UkelonnServiceProvider
   config:property-set defaultlocale en_GB
