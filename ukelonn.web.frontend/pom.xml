@@ -143,10 +143,6 @@
                 <configuration>
                     <instructions>
                         <Export-Package>!*</Export-Package>
-                        <Import-Package>
-                            org.osgi.service.log;version="[1.4,2)",
-                            *
-                        </Import-Package>
                         <Include-Resource>/=target/classes/</Include-Resource>
                     </instructions>
                 </configuration>
