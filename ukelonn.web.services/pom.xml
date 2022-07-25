@@ -230,14 +230,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Import-Package>
-                            org.osgi.service.log;version="[1.4,2)",
-                            *
-                        </Import-Package>
-                    </instructions>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
