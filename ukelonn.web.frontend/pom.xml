@@ -143,10 +143,6 @@
                 <configuration>
                     <instructions>
                         <Export-Package>!*</Export-Package>
-                        <Import-Package>
-                            org.osgi.service.log;version="[1.4,2)",
-                            *
-                        </Import-Package>
                         <Include-Resource>
                             /=target/classes/,
                             /open-iconic/font/css/open-iconic-bootstrap.min.css=target/dependency/META-INF/resources/webjars/open-iconic/${open-iconic.version}/font/css/open-iconic-bootstrap.min.css,
