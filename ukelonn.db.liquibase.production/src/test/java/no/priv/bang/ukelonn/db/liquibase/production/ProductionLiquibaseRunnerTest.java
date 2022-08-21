@@ -100,7 +100,8 @@ class ProductionLiquibaseRunnerTest {
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
         DatabaseConnection connection = mock(DatabaseConnection.class);
-        when(connection.getDatabaseProductName()).thenReturn("PostgreSQL");
+        when(connection.getDatabaseProductName()).thenReturn("mockdb");
+        when(connection.getURL()).thenReturn("jdbc:mock:///ukelonn");
         Liquibase liquibase = runner.createLiquibase(null, null, connection);
         assertNotNull(liquibase);
     }
