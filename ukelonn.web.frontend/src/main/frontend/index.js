@@ -1,6 +1,6 @@
 import 'regenerator-runtime';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
@@ -39,10 +39,11 @@ if (typeof Notification !== 'undefined') {
     store.dispatch(UPDATE_NOTIFICATIONAVAILABLE(false));
 }
 
+const container = document.getElementById('root');
+const root = createRoot(container);
 
-ReactDOM.render(
+root.render(
     <Provider store={store}>
       <App history={history} />
     </Provider>,
-    document.getElementById('root')
 );
