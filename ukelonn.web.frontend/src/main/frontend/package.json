@@ -11,7 +11,7 @@
         "qs": "^6.10.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-redux": "^7.2.6",
+        "react-redux": "^8.0.2",
         "react-router-dom": "^5.2.0",
         "redux-saga": "1.1.3",
         "validator": "^13.7.0"
