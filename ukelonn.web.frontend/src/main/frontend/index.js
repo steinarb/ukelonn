@@ -15,16 +15,21 @@ import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
-import { routerMiddleware } from 'connected-react-router';
+import { createReduxHistoryContext } from "redux-first-history";
 
-const history = createBrowserHistory();
+const {
+  createReduxHistory,
+  routerMiddleware,
+  routerReducer
+} = createReduxHistoryContext({ history: createBrowserHistory() });
 const store = configureStore({
-    reducer: createUkelonnReducer(history),
+    reducer: createUkelonnReducer(routerReducer),
     middleware: [
         sagaMiddleware,
-        routerMiddleware(history),
+        routerMiddleware,
     ],
 });
+const history = createReduxHistory(store);
 sagaMiddleware.run(rootSaga);
 store.dispatch(INITIAL_LOGIN_STATE_REQUEST());
 store.dispatch(DEFAULT_LOCALE_REQUEST());

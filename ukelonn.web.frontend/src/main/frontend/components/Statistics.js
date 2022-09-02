@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { stringify } from 'qs';
 import { findUsernameFromAccountOrQueryParameter } from '../common/account';
 import Locale from './Locale';
@@ -8,7 +8,8 @@ import Logout from './Logout';
 
 export default function Statistics(props) {
     const text = useSelector(state => state.displayTexts);
-    const username = findUsernameFromAccountOrQueryParameter(props);
+    const [ queryParams ] = useSearchParams();
+    const username = findUsernameFromAccountOrQueryParameter(props, queryParams);
     const sumoveryear = '/ukelonn/statistics/earnings/sumoveryear?' + stringify({ username });
     const sumovermonth = '/ukelonn/statistics/earnings/sumovermonth?' + stringify({ username });
 

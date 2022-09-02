@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import { LOGIN_REQUEST } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 
@@ -11,10 +11,10 @@ export default function Login() {
     const [ password, setPassword ] = useState('');
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
-            return (<Redirect to="/ukelonn/admin" />);
+            return (<Navigate to="/ukelonn/admin" />);
         }
 
-        return (<Redirect to="/ukelonn/user" />);
+        return (<Navigate to="/ukelonn/user" />);
     }
 
     return (
