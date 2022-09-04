@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="webapi">
 
-    <!-- Copyright 2016-2019 Steinar Bang                                                -->
+    <!-- Copyright 2016-2022 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -31,6 +31,12 @@
         <feature>authservice-with-dbrealm-and-session</feature>
         <feature prerequisite="true">ukelonn-db-test</feature>
         <feature>ukelonn-db-as-authservicedb</feature>
+        <feature>ukelonn</feature>
+    </feature>
+    <feature name="ukelonn-with-derby-and-provided-authservice" description="Ukelonn webapp without authservice" version="${project.version}">
+        <feature>ukelonn-backend</feature>
+        <feature>authservice-users</feature>
+        <feature prerequisite="true">ukelonn-db-test</feature>
         <feature>ukelonn</feature>
     </feature>
     <feature name="ukelonn-with-postgresql" description="Ukelonn webapp" version="${project.version}">
