@@ -1,16 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { parse } from 'qs';
+import { Link, useSearchParams } from 'react-router-dom';
 import Locale from './Locale';
 import Logout from './Logout';
 
-export default function PerformedPayments(props) {
+export default function PerformedPayments() {
     const text = useSelector(state => state.displayTexts);
     const accountFirstname = useSelector(state => state.accountFirstname);
     const payments = useSelector(state => state.payments);
-    let queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
-    const { parentTitle } = queryParams;
+    const [ queryParams ] = useSearchParams();
+    const parentTitle = queryParams.get('parentTitle');
 
     return (
         <div>

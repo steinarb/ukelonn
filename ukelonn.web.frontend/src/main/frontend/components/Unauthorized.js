@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Locale from './Locale';
 import Logout from './Logout';
@@ -11,7 +11,7 @@ export default function Unauthorized() {
     const text = useSelector(state => state.displayTexts);
 
     if (haveReceivedResponseFromLogin && !loginResponse.roles.length) {
-        return <Redirect to="/ukelonn/login" />;
+        return <Navigate to="/ukelonn/login" />;
     }
 
     return (
