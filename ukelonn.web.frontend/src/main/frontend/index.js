@@ -1,6 +1,6 @@
 import 'regenerator-runtime';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
@@ -15,16 +15,21 @@ import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
-import { routerMiddleware } from 'connected-react-router';
+import { createReduxHistoryContext } from "redux-first-history";
 
-const history = createBrowserHistory();
+const {
+  createReduxHistory,
+  routerMiddleware,
+  routerReducer
+} = createReduxHistoryContext({ history: createBrowserHistory() });
 const store = configureStore({
-    reducer: createUkelonnReducer(history),
+    reducer: createUkelonnReducer(routerReducer),
     middleware: [
         sagaMiddleware,
-        routerMiddleware(history),
+        routerMiddleware,
     ],
 });
+const history = createReduxHistory(store);
 sagaMiddleware.run(rootSaga);
 store.dispatch(INITIAL_LOGIN_STATE_REQUEST());
 store.dispatch(DEFAULT_LOCALE_REQUEST());
@@ -39,10 +44,11 @@ if (typeof Notification !== 'undefined') {
     store.dispatch(UPDATE_NOTIFICATIONAVAILABLE(false));
 }
 
+const container = document.getElementById('root');
+const root = createRoot(container);
 
-ReactDOM.render(
+root.render(
     <Provider store={store}>
       <App history={history} />
     </Provider>,
-    document.getElementById('root')
 );

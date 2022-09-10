@@ -6,6 +6,7 @@ const PATHS = {
 };
 
 module.exports = {
+    mode: 'development',
     entry: './index.js',
     output: {
         path: PATHS.build,
