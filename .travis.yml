@@ -1,7 +1,0 @@
-language: java
-addons:
-    sonarcloud:
-        organization: steinarb-github
-        token: $SONAR_TOKEN
-script:
-    - mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar coveralls:report

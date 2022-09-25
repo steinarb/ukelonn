@@ -62,11 +62,22 @@ The demo version use an in-container derby databse that works while the containe
 
 * Status
 
-[[https://travis-ci.org/steinarb/ukelonn][file:https://travis-ci.org/steinarb/ukelonn.svg?branch=master]] [[https://coveralls.io/r/steinarb/ukelonn][file:https://coveralls.io/repos/steinarb/ukelonn/badge.svg]]  [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=alert_status#.svg]]
+[[https://github.com/steinarb/ukelonn/actions/workflows/ukelonn-maven-ci-build.yml][file:https://github.com/steinarb/ukelonn/actions/workflows/ukelonn-maven-ci-build.yml/badge.svg]]
+[[https://coveralls.io/github/badges/shields?branch=master][file:https://coveralls.io/repos/github/badges/shields/badge.svg?branch=master]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=alert_status#.svg]]
 
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/images/project_badges/sonarcloud-white.svg]]
 
-** SonarCloud
-[[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.ukelonn%3Aukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.ukelonn%3Aukelonn&metric=coverage#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=sqale_index#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=coverage#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=ncloc#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=code_smells#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=sqale_rating#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=security_rating#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=bugs#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=vulnerabilities#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=duplicated_lines_density#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_ukelonn][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_ukelonn&metric=reliability_rating#.svg]]
 
 * Lisens
 
