@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,16 +56,11 @@ public class ProductionLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        try(Connection connect = datasource.getConnection()) {
+        try {
             UkelonnLiquibase liquibase = createUkelonnLiquibase();
-            try {
-                liquibase.createInitialSchema(connect);
-                insertInitialDataInDatabase(datasource);
-                liquibase.updateSchema(connect);
-            } finally {
-                // Liquibase sets autocommit to false
-                connect.setAutoCommit(true);
-            }
+            liquibase.createInitialSchema(datasource);
+            insertInitialDataInDatabase(datasource);
+            liquibase.updateSchema(datasource);
         } catch (Exception e) {
             logger.error("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
         }
@@ -74,9 +69,11 @@ public class ProductionLiquibaseRunner implements PreHook {
     boolean insertInitialDataInDatabase(DataSource datasource) {
         try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = createLiquibase(initialDataResourceName(), classLoaderResourceAccessor, databaseConnection);
-            liquibase.update("");
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = createLiquibase(initialDataResourceName(), classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            }
             return true;
         } catch (Exception e) {
             logger.error("Failed to fill ukelonn PostgreSQL database with initial data.", e);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,15 +65,10 @@ public class TestLiquibaseRunner implements PreHook {
     @Override
     public void prepare(DataSource datasource) throws SQLException {
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        try(Connection connect = datasource.getConnection()) {
-            try {
-                liquibase.createInitialSchema(connect);
-                insertMockData(datasource);
-                liquibase.updateSchema(connect);
-            } finally {
-                // Liquibase sets Connection.autoCommit to false, set it back to true
-                connect.setAutoCommit(true);
-            }
+        try {
+            liquibase.createInitialSchema(datasource);
+            insertMockData(datasource);
+            liquibase.updateSchema(datasource);
         } catch (Exception e) {
             logger.error("Failed to create derby test database schema", e);
         }
@@ -82,16 +77,19 @@ public class TestLiquibaseRunner implements PreHook {
     public boolean insertMockData(DataSource datasource) {
         try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            if (hasTable(connect, "user_roles")) {
-                initialChangelog = false;
-                Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-                liquibase.update("");
-            } else {
-                // Schema before authservice schema applied
-                initialChangelog = true;
-                Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
-                liquibase.update("");
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                if (hasTable(connect, "user_roles")) {
+                    initialChangelog = false;
+                    try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                        liquibase.update("");
+                    }
+                } else {
+                    // Schema before authservice schema applied
+                    initialChangelog = true;
+                    try(var liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection)) {
+                        liquibase.update("");
+                    }
+                }
             }
             return true;
         } catch (Exception e) {
@@ -115,20 +113,22 @@ public class TestLiquibaseRunner implements PreHook {
     public boolean rollbackMockData(DataSource datasource) {
         try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            if (initialChangelog) {
-                try(PreparedStatement statement = connect.prepareStatement("delete from user_roles")) {
-                    statement.executeUpdate();
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                if (initialChangelog) {
+                    try(PreparedStatement statement = connect.prepareStatement("delete from user_roles")) {
+                        statement.executeUpdate();
+                    }
+                    try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
+                        statement.executeUpdate();
+                    }
+                    Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
+                    liquibase.rollback(3, "");
+                } else {
+                    try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                        liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
+                        // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
+                    }
                 }
-                try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
-                    statement.executeUpdate();
-                }
-                Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
-                liquibase.rollback(3, "");
-            } else {
-                Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-                liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
-                // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
             }
             return true;
         } catch (Exception e) {
