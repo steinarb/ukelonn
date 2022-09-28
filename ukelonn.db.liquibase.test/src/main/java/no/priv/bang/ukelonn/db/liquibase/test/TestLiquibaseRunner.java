@@ -98,11 +98,12 @@ public class TestLiquibaseRunner implements PreHook {
         }
     }
 
-    private boolean hasTable(Connection connection, String tablename) throws SQLException {
+    boolean hasTable(Connection connection, String tablename) throws SQLException {
         DatabaseMetaData metadata = connection.getMetaData();
         ResultSet tables = metadata.getTables(null, null, "%", null);
         while(tables.next()) {
-            if (tablename.equals(tables.getString(3))) {
+            var tablenameFromSchema = tables.getString(3).toLowerCase();
+            if (tablename.equals(tablenameFromSchema)) {
                 return true;
             }
         }

@@ -51,6 +51,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
@@ -61,9 +62,10 @@ class TestLiquibaseRunnerTest {
     @Test
     void testPrepareDatabase() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_pure", "no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        assertThat(runner.getChangeLogHistory(datasource)).isEmpty();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
@@ -95,8 +97,7 @@ class TestLiquibaseRunnerTest {
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(49, ranChangeSets.size());
+        assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(49);
     }
 
     @Test
@@ -182,6 +183,17 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
+    void testFailWhenPrepareDatabase() throws SQLException, DatabaseException {
+        DataSource datasource = mock(DataSource.class);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var logservice = new MockLogService();
+        runner.setLogService(logservice);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        runner.prepare(datasource); // Create the database
+        assertThat(logservice.getLogmessages()).hasSize(1);
+    }
+
+    @Test
     void testInsert() throws SQLException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
         Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
@@ -221,6 +233,30 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
+    void testHasTableWithUserRolesTablePresent() throws Exception {
+        var datasource = createDatasource("ukelonn_with_user_roles", "no");
+        var ukelonnLiquibase = new UkelonnLiquibase();
+        ukelonnLiquibase.createInitialSchema(datasource);
+        try (var connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            }
+        }
+        var authserviceLiquibase = new AuthserviceLiquibase();
+        try(var connection = datasource.getConnection()) {
+            authserviceLiquibase.createInitialSchema(connection);
+        }
+
+        var runner = new TestLiquibaseRunner();
+        try(var connection = datasource.getConnection()) {
+            assertTrue(runner.hasTable(connection, "user_roles"));
+        }
+    }
+
+    @Test
     void testFailToInsertMockData() throws SQLException {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -234,7 +270,7 @@ class TestLiquibaseRunnerTest {
     @Test
     void testRollbackMockData() throws Exception {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_rollback", "no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -276,6 +312,46 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
+    void testRollbackMockDataWithoutAuthserviceAdded() throws Exception {
+        DataSource datasource = createDatasource("ukelonn_rollback2", "no");
+        var runner = new TestLiquibaseRunner();
+        runner.setLogService(new MockLogService());
+
+        // Check that database has no mock data in place
+        SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
+        int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).as("numberOfTransactionTypesBeforeRollback").isPositive();
+        int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
+        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).as("numberOfUsersBeforeRollback").isPositive();
+        int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
+        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).as("numberOfAccountsBeforeRollback").isPositive();
+        int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
+        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).as("numberOfTransactionsBeforeRollback").isZero();
+        expectedStatusBeforeRollback.assertAll();
+
+        int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
+
+        // Do the rollback
+        boolean rollbackSuccessful = runner.rollbackMockData(datasource);
+        assertTrue(rollbackSuccessful);
+
+        int sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
+        assertThat(sizeOfDbchangelogAfterRollback).isLessThan(sizeOfDbchangelogBeforeRollback);
+
+        // Verify that the database tables are empty
+        SoftAssertions expectedStatusAfterRollback = new SoftAssertions();
+        int numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
+        expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).as("findTheNumberOfRowsInTable").isZero();
+        int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(datasource, "users");
+        expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).as("numberOfUsersAfterRollback").isPositive();
+        int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(datasource, "accounts");
+        expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).as("numberOfAccountsAfterRollback").isZero();
+        int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
+        expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).as("numberOfTransactionsAfterRollback").isZero();
+        expectedStatusAfterRollback.assertAll();
+    }
+
+    @Test
     void testFailToRollbackMockData() throws Exception {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -285,6 +361,20 @@ class TestLiquibaseRunnerTest {
 
         boolean rollbackSuccessful = runner.rollbackMockData(datasource);
         assertFalse(rollbackSuccessful);
+    }
+
+    @Test
+    void testGetChangelogHistoryWhenFailing() throws Exception {
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
+        when(datasource.getConnection()).thenReturn(connection);
+        var logservice = new MockLogService();
+
+        var runner = new TestLiquibaseRunner();
+        runner.setLogService(logservice);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(runner.getChangeLogHistory(datasource)).isEmpty();
+        assertThat(logservice.getLogmessages()).hasSize(1);
     }
 
     @Test
@@ -399,6 +489,12 @@ class TestLiquibaseRunnerTest {
         liquibase.updateSchema(dataSource);
     }
 
+    private DataSource createDatasource(String string, String language) throws Exception {
+        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", language);
+        return dataSourceFactory.createDataSource(derbyMemoryCredentials);
+    }
+
     private Properties createDerbyMemoryCredentials(String dbname, String language) {
         Properties properties = new Properties();
         properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + language + ";create=true");
@@ -423,8 +519,8 @@ class TestLiquibaseRunnerTest {
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
                 ResultSet userResults = selectAllRowsInTable.executeQuery();
-                int numberOfUsers = countResults(userResults);
-                return numberOfUsers;
+                int numberOfRows = countResults(userResults);
+                return numberOfRows;
             }
         }
     }
