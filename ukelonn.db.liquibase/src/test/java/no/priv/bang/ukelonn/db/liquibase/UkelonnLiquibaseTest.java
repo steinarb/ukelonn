@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.LogManager;
 
 import javax.sql.DataSource;
 
@@ -46,6 +47,9 @@ class UkelonnLiquibaseTest {
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
+        try (var lpf = UkelonnLiquibaseTest.class.getClassLoader().getResourceAsStream("logging.properties")) {
+        	LogManager.getLogManager().readConfiguration(lpf);
+        }
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
