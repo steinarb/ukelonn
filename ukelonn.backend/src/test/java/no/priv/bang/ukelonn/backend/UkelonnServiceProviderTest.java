@@ -334,11 +334,19 @@ class UkelonnServiceProviderTest {
 
         // Create a passwords object containing the user
         UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
+        // Create a user in the database, and retrieve it (to get the user id)
+        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
+        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
 
-        // Create a user in the database, expected to fail
-        assertThrows(AuthserviceException.class, () -> {
-                usermanagement.addUser(passwords);
-            });
+        // Add a new account to the database and expect to fail
+        User userWithUserId = User.with()
+            .userId(createdUser.getUserid())
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
+        assertThrows(UkelonnException.class, () -> ukelonn.addAccount(userWithUserId));
     }
 
     @Test
