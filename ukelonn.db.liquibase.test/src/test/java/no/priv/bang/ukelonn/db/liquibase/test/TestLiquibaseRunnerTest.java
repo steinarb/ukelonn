@@ -51,7 +51,6 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
@@ -233,30 +232,6 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
-    void testHasTableWithUserRolesTablePresent() throws Exception {
-        var datasource = createDatasource("ukelonn_with_user_roles", "no");
-        var ukelonnLiquibase = new UkelonnLiquibase();
-        ukelonnLiquibase.createInitialSchema(datasource);
-        try (var connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection)) {
-                    liquibase.update("");
-                }
-            }
-        }
-        var authserviceLiquibase = new AuthserviceLiquibase();
-        try(var connection = datasource.getConnection()) {
-            authserviceLiquibase.createInitialSchema(connection);
-        }
-
-        var runner = new TestLiquibaseRunner();
-        try(var connection = datasource.getConnection()) {
-            assertTrue(runner.hasTable(connection, "user_roles"));
-        }
-    }
-
-    @Test
     void testFailToInsertMockData() throws SQLException {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -308,46 +283,6 @@ class TestLiquibaseRunnerTest {
         expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
         int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
         expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).isEqualTo(0);
-        expectedStatusAfterRollback.assertAll();
-    }
-
-    @Test
-    void testRollbackMockDataWithoutAuthserviceAdded() throws Exception {
-        DataSource datasource = createDatasource("ukelonn_rollback2", "no");
-        var runner = new TestLiquibaseRunner();
-        runner.setLogService(new MockLogService());
-
-        // Check that database has no mock data in place
-        SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
-        int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).as("numberOfTransactionTypesBeforeRollback").isPositive();
-        int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
-        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).as("numberOfUsersBeforeRollback").isPositive();
-        int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
-        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).as("numberOfAccountsBeforeRollback").isPositive();
-        int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).as("numberOfTransactionsBeforeRollback").isZero();
-        expectedStatusBeforeRollback.assertAll();
-
-        int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
-
-        // Do the rollback
-        boolean rollbackSuccessful = runner.rollbackMockData(datasource);
-        assertTrue(rollbackSuccessful);
-
-        int sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
-        assertThat(sizeOfDbchangelogAfterRollback).isLessThan(sizeOfDbchangelogBeforeRollback);
-
-        // Verify that the database tables are empty
-        SoftAssertions expectedStatusAfterRollback = new SoftAssertions();
-        int numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
-        expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).as("findTheNumberOfRowsInTable").isZero();
-        int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(datasource, "users");
-        expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).as("numberOfUsersAfterRollback").isPositive();
-        int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(datasource, "accounts");
-        expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).as("numberOfAccountsAfterRollback").isZero();
-        int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
-        expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).as("numberOfTransactionsAfterRollback").isZero();
         expectedStatusAfterRollback.assertAll();
     }
 
@@ -487,12 +422,6 @@ class TestLiquibaseRunnerTest {
         }
 
         liquibase.updateSchema(dataSource);
-    }
-
-    private DataSource createDatasource(String string, String language) throws Exception {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", language);
-        return dataSourceFactory.createDataSource(derbyMemoryCredentials);
     }
 
     private Properties createDerbyMemoryCredentials(String dbname, String language) {

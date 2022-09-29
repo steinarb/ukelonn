@@ -16,9 +16,7 @@
 package no.priv.bang.ukelonn.db.liquibase.test;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +47,6 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 public class TestLiquibaseRunner implements PreHook {
     static final String DEFAULT_DUMMY_DATA_CHANGELOG = "sql/data/db-initial-changelog.xml";
     private Logger logger;
-    private boolean initialChangelog = false;
     private String databaselanguage;
 
     @Reference
@@ -78,17 +75,9 @@ public class TestLiquibaseRunner implements PreHook {
         try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                if (hasTable(connect, "user_roles")) {
-                    initialChangelog = false;
-                    try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
-                        liquibase.update("");
-                    }
-                } else {
-                    // Schema before authservice schema applied
-                    initialChangelog = true;
-                    try(var liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection)) {
-                        liquibase.update("");
-                    }
+                // Schema before authservice schema applied
+                try(var liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
                 }
             }
             return true;
@@ -98,38 +87,18 @@ public class TestLiquibaseRunner implements PreHook {
         }
     }
 
-    boolean hasTable(Connection connection, String tablename) throws SQLException {
-        DatabaseMetaData metadata = connection.getMetaData();
-        ResultSet tables = metadata.getTables(null, null, "%", null);
-        while(tables.next()) {
-            var tablenameFromSchema = tables.getString(3).toLowerCase();
-            if (tablename.equals(tablenameFromSchema)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public boolean rollbackMockData(DataSource datasource) {
         try(Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                if (initialChangelog) {
-                    try(PreparedStatement statement = connect.prepareStatement("delete from user_roles")) {
-                        statement.executeUpdate();
-                    }
-                    try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
-                        statement.executeUpdate();
-                    }
-                    Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
-                    liquibase.rollback(3, "");
-                } else {
-                    try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
-                        liquibase.rollback(5, ""); // Note this number must be increased if additional change lists are added
-                        // Note also that all of those change lists will need to implement rollback (at least those changing the schema)
-                    }
+                try(PreparedStatement statement = connect.prepareStatement("delete from user_roles")) {
+                    statement.executeUpdate();
                 }
+                try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
+                    statement.executeUpdate();
+                }
+                Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
+                liquibase.rollback(3, "");
             }
             return true;
         } catch (Exception e) {
