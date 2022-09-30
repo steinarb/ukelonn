@@ -23,6 +23,7 @@ import org.osgi.service.log.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -714,7 +715,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 resource.write(buffer, 0, length);
             }
 
-            return resource.toString("UTF-8");
+            return resource.toString(StandardCharsets.UTF_8);
         } catch (Exception e) {
             logError("Error getting resource \"" + resource + "\" from the classpath", e);
         }

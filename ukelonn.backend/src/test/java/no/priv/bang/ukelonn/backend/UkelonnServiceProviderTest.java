@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ class UkelonnServiceProviderTest {
         when(useradmin.getUser(anyString())).thenReturn(user);
         provider.setUserAdmin(useradmin);
         List<Account> accounts = provider.getAccounts();
-        assertThat(accounts.size()).isGreaterThan(1);
+        assertThat(accounts).hasSizeGreaterThan(1);
     }
 
     @Test
@@ -113,7 +113,7 @@ class UkelonnServiceProviderTest {
             provider.setUserAdmin(useradmin);
             assertThat(logservice.getLogmessages()).isEmpty(); // Verify no log messages before fetching users
             List<Account> accounts = provider.getAccounts();
-            assertThat(accounts.size()).isGreaterThan(1);
+            assertThat(accounts).hasSizeGreaterThan(1);
             assertThat(logservice.getLogmessages()).isNotEmpty();
             assertThat(logservice.getLogmessages().get(0))
                 .startsWith("[WARNING] No authservice user for username \"jod\" when fetching account");
@@ -334,11 +334,19 @@ class UkelonnServiceProviderTest {
 
         // Create a passwords object containing the user
         UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
+        // Create a user in the database, and retrieve it (to get the user id)
+        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
+        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
 
-        // Create a user in the database, expected to fail
-        assertThrows(AuthserviceException.class, () -> {
-                usermanagement.addUser(passwords);
-            });
+        // Add a new account to the database and expect to fail
+        User userWithUserId = User.with()
+            .userId(createdUser.getUserid())
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
+        assertThrows(UkelonnException.class, () -> ukelonn.addAccount(userWithUserId));
     }
 
     @Test
@@ -987,7 +995,7 @@ class UkelonnServiceProviderTest {
         List<TransactionType> updatedJobtypes = ukelonn.createJobtype(jobtype);
 
         // Verify that a new jobtype has been added
-        assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
+        assertThat(updatedJobtypes).hasSizeGreaterThan(originalJobtypes.size());
     }
 
     @Test
@@ -1087,7 +1095,7 @@ class UkelonnServiceProviderTest {
         List<TransactionType> updatedPaymenttypes = ukelonn.createPaymenttype(paymenttype);
 
         // Verify that a new payment type has been added
-        assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
+        assertThat(updatedPaymenttypes).hasSizeGreaterThan(originalPaymenttypes.size());
     }
 
     @Test
@@ -1238,7 +1246,7 @@ class UkelonnServiceProviderTest {
     void testEarningsSumOverYear() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
-        assertThat(statistics.size()).isPositive();
+        assertThat(statistics).isNotEmpty();
         SumYear firstYear = statistics.get(0);
         assertEquals(1250.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
@@ -1272,7 +1280,7 @@ class UkelonnServiceProviderTest {
     void testEarningsSumOverMonth() {
         UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
         List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
-        assertThat(statistics.size()).isPositive();
+        assertThat(statistics).isNotEmpty();
         SumYearMonth firstYear = statistics.get(0);
         assertEquals(125.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
@@ -1364,13 +1372,13 @@ class UkelonnServiceProviderTest {
             .endDate(paaskeslutt)
             .build();
         Bonus inactiveBonus = ukelonn.createBonus(paaskebonus).stream().filter(b -> "Påskebonus".equals(b.getTitle())).findFirst().get();
-        assertThat(ukelonn.getAllBonuses().size()).isGreaterThan(bonusCountWithOneAddedBonus);
+        assertThat(ukelonn.getAllBonuses()).hasSizeGreaterThan(bonusCountWithOneAddedBonus);
 
         // Verify that active count is larger than 0 and is less than total count
         List<Bonus> activeBonuses = ukelonn.getActiveBonuses();
         assertThat(activeBonuses).isNotEmpty();
         int activeBonusCount = activeBonuses.size();
-        assertThat(ukelonn.getAllBonuses().size()).isGreaterThan(activeBonusCount);
+        assertThat(ukelonn.getAllBonuses()).hasSizeGreaterThan(activeBonusCount);
 
         // Verify that active count is greater than initial count
         assertThat(activeBonusCount).isGreaterThan(initialBonusCount);
@@ -1387,7 +1395,7 @@ class UkelonnServiceProviderTest {
         assertEquals(enabledBonus.getEndDate(), disabledBonus.getEndDate());
 
         // Verify that the active bonus count is less than before the update
-        assertThat(ukelonn.getActiveBonuses().size()).isLessThan(activeBonusCount);
+        assertThat(ukelonn.getActiveBonuses()).hasSizeLessThan(activeBonusCount);
 
         // Delete both bonuses and verify that the count decreases
         int countBeforeDelete = bonuses.size();

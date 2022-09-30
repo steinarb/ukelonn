@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ class AdminJobtypeTest {
         List<TransactionType> updatedJobtypes = resource.create(jobtype);
 
         // Verify that a new jobtype has been added
-        assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
+        assertThat(updatedJobtypes).hasSizeGreaterThan(originalJobtypes.size());
     }
 
     @Test

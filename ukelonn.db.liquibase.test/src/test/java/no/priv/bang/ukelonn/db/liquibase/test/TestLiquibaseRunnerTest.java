@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 
@@ -60,9 +61,10 @@ class TestLiquibaseRunnerTest {
     @Test
     void testPrepareDatabase() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_pure", "no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        assertThat(runner.getChangeLogHistory(datasource)).isEmpty();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
@@ -94,14 +96,13 @@ class TestLiquibaseRunnerTest {
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(49, ranChangeSets.size());
+        assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(49);
     }
 
     @Test
     void testPrepareDatabaseWithConfiguredLanguage() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("en");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "en");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -142,7 +143,7 @@ class TestLiquibaseRunnerTest {
     @Test
     void testPrepareDatabaseWithConfiguredLanguageNotFound() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("uk");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "uk");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -181,9 +182,20 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
+    void testFailWhenPrepareDatabase() throws SQLException, DatabaseException {
+        DataSource datasource = mock(DataSource.class);
+        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var logservice = new MockLogService();
+        runner.setLogService(logservice);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        runner.prepare(datasource); // Create the database
+        assertThat(logservice.getLogmessages()).hasSize(1);
+    }
+
+    @Test
     void testInsert() throws SQLException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -233,7 +245,7 @@ class TestLiquibaseRunnerTest {
     @Test
     void testRollbackMockData() throws Exception {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("no");
+        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_rollback", "no");
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
@@ -284,6 +296,20 @@ class TestLiquibaseRunnerTest {
 
         boolean rollbackSuccessful = runner.rollbackMockData(datasource);
         assertFalse(rollbackSuccessful);
+    }
+
+    @Test
+    void testGetChangelogHistoryWhenFailing() throws Exception {
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
+        when(datasource.getConnection()).thenReturn(connection);
+        var logservice = new MockLogService();
+
+        var runner = new TestLiquibaseRunner();
+        runner.setLogService(logservice);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(runner.getChangeLogHistory(datasource)).isEmpty();
+        assertThat(logservice.getLogmessages()).hasSize(1);
     }
 
     @Test
@@ -379,19 +405,28 @@ class TestLiquibaseRunnerTest {
             dataSource.setCreateDatabase("create");
         }
 
-        Connection connect = dataSource.getConnection();
         UkelonnLiquibase liquibase = new UkelonnLiquibase();
-        liquibase.createInitialSchema(connect);
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase2 = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase2.update("");
-        liquibase.updateSchema(connect);
+        liquibase.createInitialSchema(dataSource);
+
+        try(var connect = dataSource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase2 = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase2.update("");
+                }
+            } catch (LiquibaseException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new UkelonnException("Failed to close resource when inserting data");
+            }
+        }
+
+        liquibase.updateSchema(dataSource);
     }
 
-    private Properties createDerbyMemoryCredentials(String language) {
+    private Properties createDerbyMemoryCredentials(String dbname, String language) {
         Properties properties = new Properties();
-        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn" + language + ";create=true");
+        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + language + ";create=true");
         return properties;
     }
 
@@ -413,8 +448,8 @@ class TestLiquibaseRunnerTest {
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
                 ResultSet userResults = selectAllRowsInTable.executeQuery();
-                int numberOfUsers = countResults(userResults);
-                return numberOfUsers;
+                int numberOfRows = countResults(userResults);
+                return numberOfRows;
             }
         }
     }

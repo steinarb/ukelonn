@@ -32,6 +32,12 @@
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
+            <artifactId>ukelonn.services</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.db.liquibase</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
