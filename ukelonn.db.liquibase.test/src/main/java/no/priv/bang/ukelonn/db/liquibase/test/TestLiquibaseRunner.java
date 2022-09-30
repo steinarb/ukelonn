@@ -117,15 +117,12 @@ public class TestLiquibaseRunner implements PreHook {
      */
     List<RanChangeSet> getChangeLogHistory(DataSource datasource) throws DatabaseException, SQLException {
         try(Connection connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try {
+            try(var databaseConnection = new JdbcConnection(connect)) {
                 Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
                 StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
                 return logHistoryService.getRanChangeSets();
             } catch (Exception e) {
                 logger.error("Failed to create derby test database schema", e);
-            } finally {
-                databaseConnection.close();
             }
         }
 
