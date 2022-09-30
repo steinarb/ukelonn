@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -414,7 +414,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         List<TransactionType> jobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
-        assertThat(jobtypes.size()).isPositive();
+        assertThat(jobtypes).isNotEmpty();
     }
 
     @Test
@@ -1105,7 +1105,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Verify that the updated have more items than the original jobtypes
         List<TransactionType> updatedJobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
-        assertThat(updatedJobtypes.size()).isGreaterThan(originalJobtypes.size());
+        assertThat(updatedJobtypes).hasSizeGreaterThan(originalJobtypes.size());
     }
 
     @Test
@@ -1185,7 +1185,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         // Verify that the updated have more items than the original jobtypes
         List<TransactionType> updatedPaymenttypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
-        assertThat(updatedPaymenttypes.size()).isGreaterThan(originalPaymenttypes.size());
+        assertThat(updatedPaymenttypes).hasSizeGreaterThan(originalPaymenttypes.size());
     }
 
     @Test
@@ -1212,7 +1212,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         List<User> users = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
-        assertThat(users.size()).isPositive();
+        assertThat(users).isNotEmpty();
     }
 
     @Test
@@ -1313,7 +1313,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         List<User> updatedUsers = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
 
         // Verify that the last user has the expected values
-        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        assertThat(updatedUsers).hasSizeGreaterThan(originalUserCount);
         User lastUser = updatedUsers.get(updatedUsers.size() - 1);
         assertEquals(newUsername, lastUser.getUsername());
         assertEquals(newEmailaddress, lastUser.getEmail());

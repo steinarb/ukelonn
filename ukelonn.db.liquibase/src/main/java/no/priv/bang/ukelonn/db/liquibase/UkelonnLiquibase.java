@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,84 @@
 package no.priv.bang.ukelonn.db.liquibase;
 
 import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
+import no.priv.bang.ukelonn.UkelonnException;
 
 public class UkelonnLiquibase {
 
-    public void createInitialSchema(Connection connect) throws LiquibaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase.update("");
+    static final String ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA = "Error closing resource when updating ukelonn schema";
+
+    public void createInitialSchema(DataSource datasource) throws LiquibaseException {
+        try (var connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e1) {
+            throw new UkelonnException("Error closing resource when creating ukelonn initial schema", e1);
+        }
     }
 
-    public void updateSchema(Connection connect) throws LiquibaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase101 = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase101.update("");
-        AuthserviceLiquibase authserviceLiquibase = new AuthserviceLiquibase();
-        authserviceLiquibase.createInitialSchema(connect);
-        Liquibase liquibase = new Liquibase("ukelonn-db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase.update("");
+    public void updateSchema(DataSource datasource) throws LiquibaseException {
+        try (var connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e1) {
+            throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
+        }
+
+        try (var connect = datasource.getConnection()) {
+            AuthserviceLiquibase authserviceLiquibase = new AuthserviceLiquibase();
+            authserviceLiquibase.createInitialSchema(connect);
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e1) {
+            throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
+        }
+
+        try (var connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e1) {
+            throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
+        }
     }
 
     public void forceReleaseLocks(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase.forceReleaseLocks();
+        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+            try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
+                liquibase.forceReleaseLocks();
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e1) {
+            throw new UkelonnException("Error closing resource when forcibly releasing liquibase lock", e1);
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,7 @@ class AdminUserResourceTest {
         List<User> updatedUsers = resource.create(passwords);
 
         // Verify that the modified user has the modified values
-        assertThat(updatedUsers.size()).isGreaterThan(originalUserCount);
+        assertThat(updatedUsers).hasSizeGreaterThan(originalUserCount);
         User lastUser = updatedUsers.get(updatedUsers.size() - 1);
         assertEquals(newUsername, lastUser.getUsername());
         assertEquals(newEmailaddress, lastUser.getEmail());

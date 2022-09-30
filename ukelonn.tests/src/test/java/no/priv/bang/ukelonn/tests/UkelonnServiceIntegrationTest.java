@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,12 @@ public class UkelonnServiceIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final MavenArtifactUrlReference ukelonnFeatureRepo = maven().groupId("no.priv.bang.ukelonn").artifactId("karaf").versionAsInProject().type("xml").classifier("features");
+        final MavenArtifactUrlReference ukelonnFeatureRepo = maven()
+            .groupId("no.priv.bang.ukelonn")
+            .artifactId("karaf")
+            .versionAsInProject()
+            .type("xml")
+            .classifier("features");
         Option[] options = new Option[] {
             features(ukelonnFeatureRepo)
         };
