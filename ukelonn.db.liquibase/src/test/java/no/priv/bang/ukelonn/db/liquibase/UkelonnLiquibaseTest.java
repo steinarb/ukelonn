@@ -20,11 +20,9 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
@@ -48,12 +46,10 @@ class UkelonnLiquibaseTest {
     @BeforeAll
     static void beforeAllTests() throws Exception {
         try (var lpf = UkelonnLiquibaseTest.class.getClassLoader().getResourceAsStream("logging.properties")) {
-        	LogManager.getLogManager().readConfiguration(lpf);
+            LogManager.getLogManager().readConfiguration(lpf);
         }
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
-        dataSource = derbyDataSourceFactory.createDataSource(properties);
+
+        dataSource = createDataSource("ukelonn");
     }
 
     @Test
@@ -99,20 +95,21 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testCreateInitialAndUpdateSchemaFailOnLiquibaseUpdate() throws Exception {
+        Connection connection1 = spy(createConnection("ukelonn1"));
+        Connection connection2 = spy(createConnection("ukelonn2"));
         DataSource datasource = mock(DataSource.class);
-        Connection connection = createMockConnection();
-        when(datasource.getConnection()).thenReturn(connection);
+        when(datasource.getConnection()).thenReturn(connection1).thenReturn(connection2);
         UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
 
         var e1 = assertThrows(
             LiquibaseException.class,
             () -> handleregLiquibase.createInitialSchema(datasource));
-        assertThat(e1.getMessage()).startsWith("liquibase.exception.UnexpectedLiquibaseException: liquibase.exception.DatabaseException");
+        assertThat(e1.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
 
         var e2 = assertThrows(
             LiquibaseException.class,
             () -> handleregLiquibase.updateSchema(datasource));
-        assertThat(e2.getMessage()).startsWith("liquibase.exception.UnexpectedLiquibaseException: liquibase.exception.DatabaseException");
+        assertThat(e2.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
     @Test
@@ -147,7 +144,8 @@ class UkelonnLiquibaseTest {
     @Test
     void testUpdateSchemaFailOnLiqubaseUpdateInAuthserviceSchemaSetup() throws Exception {
         DataSource datasource = spy(dataSource);
-        Connection connection = createMockConnection();
+        Connection connection = spy(createConnection("ukelonn3"));
+        doThrow(SQLException.class).when(connection).setAutoCommit(anyBoolean());
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenReturn(connection);
@@ -157,13 +155,13 @@ class UkelonnLiquibaseTest {
         var e = assertThrows(
             LiquibaseException.class,
             () -> handleregLiquibase.updateSchema(datasource));
-        assertThat(e.getMessage()).startsWith("liquibase.exception.UnexpectedLiquibaseException: liquibase.exception.DatabaseException");
+        assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
     @Test
     void testUpdateSchemaFailOnLiqubaseUpdateOnSchemaUpdateAfterAuthserviceAdd() throws Exception {
         DataSource datasource = spy(dataSource);
-        Connection connection = createMockConnection();
+        Connection connection = createConnection("ukelonn4");
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenCallRealMethod()
@@ -174,7 +172,7 @@ class UkelonnLiquibaseTest {
         var e = assertThrows(
             LiquibaseException.class,
             () -> handleregLiquibase.updateSchema(datasource));
-        assertThat(e.getMessage()).startsWith("liquibase.exception.UnexpectedLiquibaseException: liquibase.exception.DatabaseException");
+        assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
     @Test
@@ -249,22 +247,16 @@ class UkelonnLiquibaseTest {
         return dataSource.getConnection();
     }
 
-    Connection createMockConnection() throws Exception {
-        Connection connection = mock(Connection.class);
-        DatabaseMetaData metadata = mock(DatabaseMetaData.class);
-        when(metadata.getDatabaseProductName()).thenReturn("mockdb");
-        when(metadata.getSQLKeywords()).thenReturn("insert, select, delete");
-        when(metadata.getURL()).thenReturn("jdbc:mock:///authservice");
-        ResultSet tables = mock(ResultSet.class);
-        when(metadata.getTables(anyString(), anyString(), anyString(), any(String[].class))).thenReturn(tables);
-        Statement stmnt = mock(Statement.class);
-        ResultSet results = mock(ResultSet.class);
-        when(results.next()).thenReturn(true).thenReturn(false);
-        when(stmnt.executeQuery(anyString())).thenReturn(results);
-        when(stmnt.getUpdateCount()).thenReturn(-1);
-        when(connection.createStatement()).thenReturn(stmnt);
-        when(connection.getMetaData()).thenReturn(metadata);
-        return connection;
+    static private Connection createConnection(String dbname) throws Exception {
+        return createDataSource(dbname).getConnection();
+    }
+
+    private static DataSource createDataSource(String dbname) throws SQLException {
+        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+        Properties properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
+        var datasource = derbyDataSourceFactory.createDataSource(properties);
+        return datasource;
     }
 
 }
