@@ -26,8 +26,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.LogManager;
-
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -45,10 +43,6 @@ class UkelonnLiquibaseTest {
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
-        try (var lpf = UkelonnLiquibaseTest.class.getClassLoader().getResourceAsStream("logging.properties")) {
-            LogManager.getLogManager().readConfiguration(lpf);
-        }
-
         dataSource = createDataSource("ukelonn");
     }
 
