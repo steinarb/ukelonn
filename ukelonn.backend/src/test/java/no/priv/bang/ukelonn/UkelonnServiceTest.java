@@ -19,7 +19,6 @@ package no.priv.bang.ukelonn;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 /**
