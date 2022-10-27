@@ -48,9 +48,9 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testCreateSchema() throws Exception {
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
-        handleregLiquibase.createInitialSchema(dataSource);
-        handleregLiquibase.updateSchema(dataSource);
+        var ukelonnLiquibase = new UkelonnLiquibase();
+        ukelonnLiquibase.createInitialSchema(dataSource);
+        ukelonnLiquibase.updateSchema(dataSource);
 
         try(Connection connection = createConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("select * from transactions")) {
@@ -74,16 +74,16 @@ class UkelonnLiquibaseTest {
     void testCreateInitialAndUpdateSchemaFailOnConnectionClose() throws Exception {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
         var e1 = assertThrows(
             UkelonnException.class,
-            () -> handleregLiquibase.createInitialSchema(datasource));
+            () -> ukelonnLiquibase.createInitialSchema(datasource));
         assertThat(e1.getMessage()).startsWith("Error closing resource when creating ukelonn initial schema");
 
         var e2 = assertThrows(
             UkelonnException.class,
-            () -> handleregLiquibase.updateSchema(datasource));
+            () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e2.getMessage()).startsWith(UkelonnLiquibase.ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA);
     }
 
@@ -93,16 +93,16 @@ class UkelonnLiquibaseTest {
         Connection connection2 = spy(createConnection("ukelonn2"));
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenReturn(connection1).thenReturn(connection2);
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
         var e1 = assertThrows(
             LiquibaseException.class,
-            () -> handleregLiquibase.createInitialSchema(datasource));
+            () -> ukelonnLiquibase.createInitialSchema(datasource));
         assertThat(e1.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
 
         var e2 = assertThrows(
             LiquibaseException.class,
-            () -> handleregLiquibase.updateSchema(datasource));
+            () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e2.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
@@ -112,11 +112,11 @@ class UkelonnLiquibaseTest {
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenThrow(SQLException.class);
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
         var e = assertThrows(
             UkelonnException.class,
-            () -> handleregLiquibase.updateSchema(datasource));
+            () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e.getMessage()).startsWith(UkelonnLiquibase.ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA);
     }
 
@@ -127,11 +127,11 @@ class UkelonnLiquibaseTest {
             .thenCallRealMethod()
             .thenCallRealMethod()
             .thenThrow(SQLException.class);
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
         var e = assertThrows(
             UkelonnException.class,
-            () -> handleregLiquibase.updateSchema(datasource));
+            () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e.getMessage()).startsWith(UkelonnLiquibase.ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA);
     }
 
@@ -143,12 +143,12 @@ class UkelonnLiquibaseTest {
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenReturn(connection);
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
-        handleregLiquibase.createInitialSchema(dataSource);
+        ukelonnLiquibase.createInitialSchema(dataSource);
         var e = assertThrows(
             LiquibaseException.class,
-            () -> handleregLiquibase.updateSchema(datasource));
+            () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
@@ -160,20 +160,20 @@ class UkelonnLiquibaseTest {
             .thenCallRealMethod()
             .thenCallRealMethod()
             .thenReturn(connection);
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
-        handleregLiquibase.createInitialSchema(dataSource);
+        ukelonnLiquibase.createInitialSchema(dataSource);
         var e = assertThrows(
             LiquibaseException.class,
-            () -> handleregLiquibase.updateSchema(datasource));
+            () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
     @Test
     void testForceReleaseLocks() throws Exception {
         try(Connection connection = createConnection()) {
-            UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
-            handleregLiquibase.forceReleaseLocks(connection);
+            var ukelonnLiquibase = new UkelonnLiquibase();
+            ukelonnLiquibase.forceReleaseLocks(connection);
         }
 
         try(Connection connection = createConnection()) {
@@ -194,11 +194,11 @@ class UkelonnLiquibaseTest {
     void testForceReleaseLocksFailOnConnectionClose() throws Exception {
         Connection connection = mock(Connection.class);
         doThrow(Exception.class).when(connection).close();
-        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase();
 
         var e = assertThrows(
             UkelonnException.class,
-            () -> handleregLiquibase.forceReleaseLocks(connection));
+            () -> ukelonnLiquibase.forceReleaseLocks(connection));
         assertThat(e.getMessage()).startsWith("Error closing resource when forcibly releasing liquibase lock");
     }
 
