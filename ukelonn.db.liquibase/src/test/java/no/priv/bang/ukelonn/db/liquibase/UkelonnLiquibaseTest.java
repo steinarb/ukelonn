@@ -34,6 +34,7 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import liquibase.exception.LiquibaseException;
+import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.ukelonn.UkelonnException;
 
 
@@ -147,9 +148,9 @@ class UkelonnLiquibaseTest {
 
         ukelonnLiquibase.createInitialSchema(dataSource);
         var e = assertThrows(
-            LiquibaseException.class,
+            AuthserviceException.class,
             () -> ukelonnLiquibase.updateSchema(datasource));
-        assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
+        assertThat(e.getMessage()).startsWith("Error applying liquibase changelist in authservice");
     }
 
     @Test

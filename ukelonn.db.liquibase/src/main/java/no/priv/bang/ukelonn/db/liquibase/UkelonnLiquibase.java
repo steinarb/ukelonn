@@ -25,6 +25,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
+import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.ukelonn.UkelonnException;
 
 public class UkelonnLiquibase {
@@ -64,6 +65,8 @@ public class UkelonnLiquibase {
             AuthserviceLiquibase authserviceLiquibase = new AuthserviceLiquibase();
             authserviceLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException e) {
+            throw e;
+        } catch (AuthserviceException e) {
             throw e;
         } catch (Exception e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
