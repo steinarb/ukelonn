@@ -56,6 +56,17 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.definitions</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.definitions</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
             <artifactId>authservice.db.liquibase</artifactId>
             <scope>provided</scope>
         </dependency>
