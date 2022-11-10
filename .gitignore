@@ -2,6 +2,7 @@
 .classpath
 .project
 .settings/
+/.metadata/
 /README.md
 /TAGS
 /ukelonn.gogoshell/runner/
