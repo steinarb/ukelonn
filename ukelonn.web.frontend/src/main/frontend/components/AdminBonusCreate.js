@@ -38,7 +38,7 @@ export default function AdminBonusCreate() {
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div clasName="row">
+                    <div className="row">
                         <div className="col">
                             <div className="form-check">
                                 <div className="form-check">

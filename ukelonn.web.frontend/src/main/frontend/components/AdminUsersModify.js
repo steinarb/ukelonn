@@ -85,7 +85,7 @@ export default function AdminUsersModify() {
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
-                    <div clasName="row">
+                    <div className="row">
                         <div className="col">
                             <div className="form-check">
                                 <input
