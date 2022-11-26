@@ -118,7 +118,7 @@ export default function AdminUsersCreate() {
                             { passwordsNotIdentical && <span className="invalid-feedback d-block">{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
-                    <div clasName="row">
+                    <div className="row">
                         <div className="col">
                             <div className="form-check">
                                 <input
