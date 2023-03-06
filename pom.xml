@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xml:space="preserve">
 
-    <!-- Copyright 2016-2022 Steinar Bang                                                -->
+    <!-- Copyright 2016-2023 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-app-pom</artifactId>
-        <version>1.1.18</version>
+        <version>1.1.21</version>
     </parent>
     <groupId>no.priv.bang.ukelonn</groupId>
     <artifactId>ukelonn</artifactId>
@@ -45,7 +45,7 @@
     </modules>
 
     <properties>
-        <authservice.version>1.15.2</authservice.version>
+        <authservice.version>1.15.3</authservice.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
