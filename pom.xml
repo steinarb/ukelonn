@@ -45,7 +45,7 @@
     </modules>
 
     <properties>
-        <authservice.version>1.15.4</authservice.version>
+        <authservice.version>1.15.5</authservice.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/PGUkelonnDatabaseProvider.java,
