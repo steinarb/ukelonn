@@ -64,9 +64,7 @@ public class UkelonnLiquibase {
         try (var connect = datasource.getConnection()) {
             AuthserviceLiquibase authserviceLiquibase = new AuthserviceLiquibase();
             authserviceLiquibase.createInitialSchema(connect);
-        } catch (LiquibaseException e) {
-            throw e;
-        } catch (AuthserviceException e) {
+        } catch (LiquibaseException | AuthserviceException e) {
             throw e;
         } catch (Exception e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
