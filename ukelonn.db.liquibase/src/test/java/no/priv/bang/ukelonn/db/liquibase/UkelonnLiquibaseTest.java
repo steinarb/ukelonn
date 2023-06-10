@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Steinar Bang
+ * Copyright 2019-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,39 +167,6 @@ class UkelonnLiquibaseTest {
             LiquibaseException.class,
             () -> ukelonnLiquibase.updateSchema(datasource));
         assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
-    }
-
-    @Test
-    void testForceReleaseLocks() throws Exception {
-        try(Connection connection = createConnection()) {
-            var ukelonnLiquibase = new UkelonnLiquibase();
-            ukelonnLiquibase.forceReleaseLocks(connection);
-        }
-
-        try(Connection connection = createConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from databasechangeloglock")) {
-                try(ResultSet results = statement.executeQuery()) {
-                    boolean locked = true;
-                    while(results.next()) {
-                        locked = results.getBoolean("locked");
-                    }
-
-                    assertFalse(locked);
-                }
-            }
-        }
-    }
-
-    @Test
-    void testForceReleaseLocksFailOnConnectionClose() throws Exception {
-        Connection connection = mock(Connection.class);
-        doThrow(Exception.class).when(connection).close();
-        var ukelonnLiquibase = new UkelonnLiquibase();
-
-        var e = assertThrows(
-            UkelonnException.class,
-            () -> ukelonnLiquibase.forceReleaseLocks(connection));
-        assertThat(e.getMessage()).startsWith("Error closing resource when forcibly releasing liquibase lock");
     }
 
     private void createBonuses(Connection connection, Date startDate, Date endDate) throws Exception {

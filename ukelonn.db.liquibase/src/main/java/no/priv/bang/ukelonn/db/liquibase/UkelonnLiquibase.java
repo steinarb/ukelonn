@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Steinar Bang
+ * Copyright 2016-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * under the License.
  */
 package no.priv.bang.ukelonn.db.liquibase;
-
-import java.sql.Connection;
 
 import javax.sql.DataSource;
 
@@ -81,19 +79,6 @@ public class UkelonnLiquibase {
             throw e;
         } catch (Exception e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
-        }
-    }
-
-    public void forceReleaseLocks(Connection connect) throws LiquibaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-            try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
-                liquibase.forceReleaseLocks();
-            }
-        } catch (LiquibaseException e) {
-            throw e;
-        } catch (Exception e1) {
-            throw new UkelonnException("Error closing resource when forcibly releasing liquibase lock", e1);
         }
     }
 
