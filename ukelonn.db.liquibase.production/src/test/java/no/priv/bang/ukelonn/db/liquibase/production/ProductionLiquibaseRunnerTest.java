@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ class ProductionLiquibaseRunnerTest {
         runner.prepare(datasource);
 
         // Verify that no errors have been logged
-        assertEquals(0, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages()).isEmpty();
     }
 
     @Test
@@ -78,7 +78,7 @@ class ProductionLiquibaseRunnerTest {
         runner.prepare(datasource);
 
         // Verify that no errors have been logged
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages()).hasSize(1);
     }
 
     @Test
