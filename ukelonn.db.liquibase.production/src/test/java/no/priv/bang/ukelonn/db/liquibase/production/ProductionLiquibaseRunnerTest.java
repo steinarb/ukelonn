@@ -19,13 +19,15 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
-import liquibase.Liquibase;
+import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.osgi.service.jdbc.DataSourceFactory;
+
 import liquibase.database.DatabaseConnection;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
@@ -36,23 +38,11 @@ class ProductionLiquibaseRunnerTest {
     @Test
     void testPrepare() throws Exception {
         // Create the object under test
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-
-        // Mock the UkelonnLiquibase and the Liquibase (to avoid having to mock a lot of JDBC)
-        UkelonnLiquibase ukelonnLiquibase = mock(UkelonnLiquibase.class);
-        UkelonnLiquibaseFactory ukelonnLiquibaseFactory = mock(UkelonnLiquibaseFactory.class);
-        when(ukelonnLiquibaseFactory.create()).thenReturn(ukelonnLiquibase);
-        runner.setUkelonnLiquibaseFactory(ukelonnLiquibaseFactory);
-        Liquibase liquibase = mock(Liquibase.class);
-        LiquibaseFactory liquibaseFactory = mock(LiquibaseFactory.class);
-        when(liquibaseFactory.create(anyString(), any(), any())).thenReturn(liquibase);
-        runner.setLiquibaseFactory(liquibaseFactory);
+        var runner = new ProductionLiquibaseRunner();
 
         // Mock injected OSGi services
-        MockLogService logservice = new MockLogService();
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
-        when(datasource.getConnection()).thenReturn(connection);
+        var logservice = new MockLogService();
+        var datasource = createDataSource("ukelonn1");
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
 
@@ -102,8 +92,6 @@ class ProductionLiquibaseRunnerTest {
         DatabaseConnection connection = mock(DatabaseConnection.class);
         when(connection.getDatabaseProductName()).thenReturn("mockdb");
         when(connection.getURL()).thenReturn("jdbc:mock:///ukelonn");
-        Liquibase liquibase = runner.createLiquibase(null, null, connection);
-        assertNotNull(liquibase);
     }
 
     @Test
@@ -147,6 +135,14 @@ class ProductionLiquibaseRunnerTest {
 
         assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME, runner.initialDataResourceName());
         assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    private static DataSource createDataSource(String dbname) throws SQLException {
+        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
+        var datasource = derbyDataSourceFactory.createDataSource(properties);
+        return datasource;
     }
 
 }
