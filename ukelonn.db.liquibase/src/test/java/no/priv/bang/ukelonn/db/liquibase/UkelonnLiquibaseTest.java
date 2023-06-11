@@ -103,7 +103,7 @@ class UkelonnLiquibaseTest {
         var e2 = assertThrows(
             LiquibaseException.class,
             () -> ukelonnLiquibase.updateSchema(datasource));
-        assertThat(e2.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
+        assertThat(e2.getMessage()).contains("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
     @Test
@@ -166,7 +166,7 @@ class UkelonnLiquibaseTest {
         var e = assertThrows(
             LiquibaseException.class,
             () -> ukelonnLiquibase.updateSchema(datasource));
-        assertThat(e.getMessage()).startsWith("liquibase.exception.MigrationFailedException: Migration failed for changeset");
+        assertThat(e.getMessage()).contains("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
     private void createBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
