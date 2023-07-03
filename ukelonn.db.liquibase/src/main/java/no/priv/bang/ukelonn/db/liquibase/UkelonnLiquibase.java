@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Steinar Bang
+ * Copyright 2016-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,18 @@
  */
 package no.priv.bang.ukelonn.db.liquibase;
 
-import java.sql.Connection;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import liquibase.Liquibase;
-import liquibase.database.DatabaseConnection;
+import liquibase.Scope;
+import liquibase.Scope.ScopedRunner;
+import liquibase.changelog.ChangeLogParameters;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
@@ -34,11 +40,16 @@ public class UkelonnLiquibase {
 
     public void createInitialSchema(DataSource datasource) throws LiquibaseException {
         try (var connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
-                    liquibase.update("");
-                }
+            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "ukelonn-db-changelog/db-changelog-1.0.0.xml")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             }
         } catch (LiquibaseException e) {
             throw e;
@@ -49,11 +60,16 @@ public class UkelonnLiquibase {
 
     public void updateSchema(DataSource datasource) throws LiquibaseException {
         try (var connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection)) {
-                    liquibase.update("");
-                }
+            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "ukelonn-db-changelog/db-changelog-1.0.1.xml")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             }
         } catch (LiquibaseException e) {
             throw e;
@@ -71,29 +87,21 @@ public class UkelonnLiquibase {
         }
 
         try (var connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
-                    liquibase.update("");
-                }
+            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "ukelonn-db-changelog/db-changelog.xml")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             }
         } catch (LiquibaseException e) {
             throw e;
         } catch (Exception e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
-        }
-    }
-
-    public void forceReleaseLocks(Connection connect) throws LiquibaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-            try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
-                liquibase.forceReleaseLocks();
-            }
-        } catch (LiquibaseException e) {
-            throw e;
-        } catch (Exception e1) {
-            throw new UkelonnException("Error closing resource when forcibly releasing liquibase lock", e1);
         }
     }
 
