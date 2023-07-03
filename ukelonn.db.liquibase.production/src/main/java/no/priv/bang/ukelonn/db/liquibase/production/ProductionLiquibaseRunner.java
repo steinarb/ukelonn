@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Steinar Bang
+ * Copyright 2016-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,17 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
-import liquibase.Liquibase;
-import liquibase.database.DatabaseConnection;
+import liquibase.Scope;
+import liquibase.Scope.ScopedRunner;
+import liquibase.ThreadLocalScopeManager;
+import liquibase.changelog.ChangeLogParameters;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import liquibase.resource.ResourceAccessor;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(immediate=true, property = "name=ukelonndb")
@@ -41,7 +46,6 @@ public class ProductionLiquibaseRunner implements PreHook {
     static final String INITIAL_DATA_DEFAULT_RESOURCE_NAME = "db-changelog/db-changelog.xml";
     private Logger logger;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
-    private LiquibaseFactory liquibaseFactory;
     private String databaselanguage;
 
     @Reference
@@ -52,6 +56,7 @@ public class ProductionLiquibaseRunner implements PreHook {
     @Activate
     public void activate(Map<String, Object> config) {
         databaselanguage = (String) config.get("databaselanguage");
+        Scope.setScopeManager(new ThreadLocalScopeManager());
     }
 
     @Override
@@ -68,12 +73,18 @@ public class ProductionLiquibaseRunner implements PreHook {
 
     boolean insertInitialDataInDatabase(DataSource datasource) {
         try(Connection connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = createLiquibase(initialDataResourceName(), classLoaderResourceAccessor, databaseConnection)) {
-                    liquibase.update("");
-                }
+            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, initialDataResourceName())
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             }
+
             return true;
         } catch (Exception e) {
             logger.error("Failed to fill ukelonn PostgreSQL database with initial data.", e);
@@ -96,23 +107,6 @@ public class ProductionLiquibaseRunner implements PreHook {
 
     void setUkelonnLiquibaseFactory(UkelonnLiquibaseFactory ukelonnLiquibaseFactory) {
         this.ukelonnLiquibaseFactory = ukelonnLiquibaseFactory;
-    }
-
-    Liquibase createLiquibase(String changelogfile, ResourceAccessor resourceAccessor, DatabaseConnection databaseConnection) throws LiquibaseException {
-        if (liquibaseFactory == null) {
-            liquibaseFactory = new LiquibaseFactory() {
-                    @Override
-                    public Liquibase create(String changelogfile, ResourceAccessor resourceAccessor, DatabaseConnection databaseConnection) throws LiquibaseException {
-                        return new Liquibase(changelogfile, resourceAccessor, databaseConnection);
-                    }
-                };
-        }
-
-        return liquibaseFactory.create(changelogfile, resourceAccessor, databaseConnection);
-    }
-
-    void setLiquibaseFactory(LiquibaseFactory liquibaseFactory) {
-        this.liquibaseFactory = liquibaseFactory;
     }
 
     String initialDataResourceName() {

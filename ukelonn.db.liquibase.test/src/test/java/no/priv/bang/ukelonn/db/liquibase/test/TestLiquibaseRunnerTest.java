@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Steinar Bang
+ * Copyright 2016-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.sql.Statement;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -44,9 +45,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-import liquibase.Liquibase;
+import liquibase.Scope;
+import liquibase.Scope.ScopedRunner;
+import liquibase.changelog.ChangeLogParameters;
 import liquibase.changelog.RanChangeSet;
-import liquibase.database.DatabaseConnection;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
@@ -409,11 +416,16 @@ class TestLiquibaseRunnerTest {
         liquibase.createInitialSchema(dataSource);
 
         try(var connect = dataSource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase2 = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
-                    liquibase2.update("");
-                }
+            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "sql/data/db-changelog.xml")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             } catch (LiquibaseException e) {
                 throw e;
             } catch (Exception e) {
