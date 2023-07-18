@@ -47,8 +47,8 @@
     <properties>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
-            **/PGUkelonnDatabaseProvider.java,
-            **/UkelonnDatabaseProvider.java
+            **/ProductionLiquibaseRunner.java,
+            **/TestLiquibaseRunner.java
         </sonar.cpd.exclusions>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
