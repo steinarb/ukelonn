@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-import liquibase.database.DatabaseConnection;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import static no.priv.bang.ukelonn.db.liquibase.production.ProductionLiquibaseRunner.*;
@@ -81,17 +80,6 @@ class ProductionLiquibaseRunnerTest {
         when(datasource.getConnection()).thenThrow(SQLException.class);
         boolean successfullyinserteddata = runner.insertInitialDataInDatabase(datasource );
         assertFalse(successfullyinserteddata);
-    }
-
-    @Test
-    void testCreateLiquibase() throws Exception {
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
-        runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
-        DatabaseConnection connection = mock(DatabaseConnection.class);
-        when(connection.getDatabaseProductName()).thenReturn("mockdb");
-        when(connection.getURL()).thenReturn("jdbc:mock:///ukelonn");
     }
 
     @Test

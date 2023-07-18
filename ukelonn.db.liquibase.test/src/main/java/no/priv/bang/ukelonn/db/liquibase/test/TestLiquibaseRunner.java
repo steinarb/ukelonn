@@ -38,7 +38,6 @@ import liquibase.ThreadLocalScopeManager;
 import liquibase.changelog.ChangeLogHistoryServiceFactory;
 import liquibase.changelog.ChangeLogParameters;
 import liquibase.changelog.RanChangeSet;
-import liquibase.changelog.StandardChangeLogHistoryService;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
@@ -133,7 +132,7 @@ public class TestLiquibaseRunner implements PreHook {
         try(Connection connect = datasource.getConnection()) {
             try(var databaseConnection = new JdbcConnection(connect)) {
                 Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
-                StandardChangeLogHistoryService logHistoryService = ((StandardChangeLogHistoryService) ChangeLogHistoryServiceFactory.getInstance().getChangeLogService(database));
+                var logHistoryService = Scope.getCurrentScope().getSingleton(ChangeLogHistoryServiceFactory.class).getChangeLogService(database);
                 return logHistoryService.getRanChangeSets();
             } catch (Exception e) {
                 logger.error("Failed to create derby test database schema", e);

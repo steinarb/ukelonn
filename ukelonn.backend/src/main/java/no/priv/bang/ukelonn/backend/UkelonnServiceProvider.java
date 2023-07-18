@@ -43,8 +43,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
-
 import javax.sql.DataSource;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
@@ -591,7 +589,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<LocaleBean> availableLocales() {
-        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList());
+        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).toList();
     }
 
     @Override
