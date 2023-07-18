@@ -36,6 +36,7 @@ import no.priv.bang.ukelonn.UkelonnException;
 
 public class UkelonnLiquibase {
 
+    private static final String UPDATE = "update";
     static final String ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA = "Error closing resource when updating ukelonn schema";
 
     public void createInitialSchema(DataSource datasource) throws LiquibaseException {
@@ -45,7 +46,7 @@ public class UkelonnLiquibase {
                     Scope.Attr.database.name(), database,
                     Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
 
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope(UPDATE)
                             .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "ukelonn-db-changelog/db-changelog-1.0.0.xml")
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
@@ -65,7 +66,7 @@ public class UkelonnLiquibase {
                     Scope.Attr.database.name(), database,
                     Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
 
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope(UPDATE)
                             .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "ukelonn-db-changelog/db-changelog-1.0.1.xml")
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
@@ -92,7 +93,7 @@ public class UkelonnLiquibase {
                     Scope.Attr.database.name(), database,
                     Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
 
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope(UPDATE)
                             .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "ukelonn-db-changelog/db-changelog.xml")
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
