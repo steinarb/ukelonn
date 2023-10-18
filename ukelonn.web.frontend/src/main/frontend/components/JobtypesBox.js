@@ -9,7 +9,7 @@ function JobtypesBox(props) {
     const dispatch = useDispatch();
 
     return (
-        <select multiselect="true" size="10" id={id} className={className} onChange={e => dispatch(SELECT_JOB_TYPE(parseInt(e.target.value)))} value={transactionTypeId}>
+        <select multiple="true" size="10" id={id} className={className} onChange={e => dispatch(SELECT_JOB_TYPE(parseInt(e.target.value)))} value={transactionTypeId}>
             <option key="-1" value="-1" />
             {jobtypes.map((val) => <option key={val.id} value={val.id}>{val.transactionTypeName}</option>)}
         </select>
