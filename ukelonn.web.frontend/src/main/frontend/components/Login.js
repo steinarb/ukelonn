@@ -22,9 +22,9 @@ export default function Login() {
             <h1>Ukelønn login</h1>
             <form  onSubmit={ e => { e.preventDefault(); }}>
                 <label htmlFor="username">Brukernavn:</label>
-                <input id="username" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
+                <input id="username" type="text" name="username" autoComplete="username" onChange={e => setUsername(e.target.value)}></input><br/>
                 <label htmlFor="password">Passord:</label>
-                <input id="password" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
+                <input id="password" type="password" name="password" autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
                 <button onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}>Login</button>
             </form>
             <LoginErrorMessage loginResponse={loginResponse} />
