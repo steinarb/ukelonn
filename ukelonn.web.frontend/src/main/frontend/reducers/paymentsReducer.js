@@ -4,8 +4,9 @@ import {
 } from '../actiontypes';
 const defaultValue = [];
 
-const paymenttypeReducer = createReducer(defaultValue, {
-    [RECENTPAYMENTS_RECEIVE]: (state, action) => action.payload,
+const paymenttypeReducer = createReducer(defaultValue, builder => {
+    builder
+        .addCase(RECENTPAYMENTS_RECEIVE, (state, action) => action.payload);
 });
 
 export default paymenttypeReducer;

@@ -5,9 +5,10 @@ import {
 } from '../actiontypes';
 const unselectedId = -1;
 
-const transactionIdReducer = createReducer(unselectedId, {
-    [JOB_TABLE_ROW_CLICK]: (state, action) => action.payload.id,
-    [CLEAR_EDIT_JOB_FORM]: () => unselectedId,
+const transactionIdReducer = createReducer(unselectedId, builder => {
+    builder
+        .addCase(JOB_TABLE_ROW_CLICK, (state, action) => action.payload.id)
+        .addCase(CLEAR_EDIT_JOB_FORM, () => unselectedId);
 });
 
 export default transactionIdReducer;

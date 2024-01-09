@@ -5,9 +5,10 @@ import {
 } from '../actiontypes';
 const unselected = -1;
 
-const bonusIdReducer = createReducer(unselected, {
-    [SELECT_BONUS]: (state, action) => action.payload,
-    [CLEAR_BONUS]: () => unselected,
+const bonusIdReducer = createReducer(unselected, builder => {
+    builder
+        .addCase(SELECT_BONUS, (state, action) => action.payload)
+        .addCase(CLEAR_BONUS, () => unselected);
 });
 
 export default bonusIdReducer;

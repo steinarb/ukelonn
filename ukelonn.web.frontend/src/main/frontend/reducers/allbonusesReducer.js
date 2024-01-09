@@ -6,11 +6,12 @@ import {
     DELETE_BONUS_RECEIVE,
 } from '../actiontypes';
 
-const allbonusesReducer = createReducer([], {
-    [RECEIVE_ALL_BONUSES]: (state, action) => action.payload,
-    [DELETE_BONUS_RECEIVE]: (state, action) => action.payload,
-    [MODIFY_BONUS_RECEIVE]: (state, action) => action.payload,
-    [CREATE_BONUS_RECEIVE]: (state, action) => action.payload,
+const allbonusesReducer = createReducer([], builder => {
+    builder
+        .addCase(RECEIVE_ALL_BONUSES, (state, action) => action.payload)
+        .addCase(DELETE_BONUS_RECEIVE, (state, action) => action.payload)
+        .addCase(MODIFY_BONUS_RECEIVE, (state, action) => action.payload)
+        .addCase(CREATE_BONUS_RECEIVE, (state, action) => action.payload);
 });
 
 export default allbonusesReducer;
