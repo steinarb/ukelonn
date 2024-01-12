@@ -2,7 +2,7 @@ import 'regenerator-runtime';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Tuple } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
@@ -24,10 +24,7 @@ const {
 } = createReduxHistoryContext({ history: createBrowserHistory() });
 const store = configureStore({
     reducer: createUkelonnReducer(routerReducer),
-    middleware: [
-        sagaMiddleware,
-        routerMiddleware,
-    ],
+    middleware: () => new Tuple(sagaMiddleware, routerMiddleware),
 });
 const history = createReduxHistory(store);
 sagaMiddleware.run(rootSaga);

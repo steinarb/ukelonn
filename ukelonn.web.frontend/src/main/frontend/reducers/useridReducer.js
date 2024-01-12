@@ -6,10 +6,11 @@ import {
 } from '../actiontypes';
 const unselected = -1;
 
-const userIdReducer = createReducer(unselected, {
-    [SELECT_USER]: (state, action) => action.payload.userid,
-    [CLEAR_USER]: () => unselected,
-    [CLEAR_USER_AND_PASSWORDS]: () => unselected,
+const userIdReducer = createReducer(unselected, builder => {
+    builder
+        .addCase(SELECT_USER, (state, action) => action.payload.userid)
+        .addCase(CLEAR_USER, () => unselected)
+        .addCase(CLEAR_USER_AND_PASSWORDS, () => unselected);
 });
 
 export default userIdReducer;

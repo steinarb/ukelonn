@@ -13,17 +13,18 @@ import {
 } from '../actiontypes';
 const unselectedId = -1;
 
-const transactionTypeIdReducer = createReducer(unselectedId, {
-    [SELECT_JOB_TYPE]: (state, action) => action.payload,
-    [SELECT_PAYMENT_TYPE]: (state, action) => action.payload,
-    [SELECT_PAYMENT_TYPE_FOR_EDIT]: (state, action) => action.payload,
-    [JOB_TABLE_ROW_CLICK]: (state, action) => parseInt(action.payload.transactionType.id),
-    [REGISTERJOB_RECEIVE]: () => unselectedId,
-    [CLEAR_JOB_FORM]: () => unselectedId,
-    [CLEAR_EDIT_JOB_FORM]: () => unselectedId,
-    [CLEAR_JOB_TYPE_FORM]: () => unselectedId,
-    [CLEAR_PAYMENT_TYPE_FORM]: () => unselectedId,
-    [CLEAR_REGISTER_JOB_FORM]: () => unselectedId,
+const transactionTypeIdReducer = createReducer(unselectedId, builder => {
+    builder
+        .addCase(SELECT_JOB_TYPE, (state, action) => action.payload)
+        .addCase(SELECT_PAYMENT_TYPE, (state, action) => action.payload)
+        .addCase(SELECT_PAYMENT_TYPE_FOR_EDIT, (state, action) => action.payload)
+        .addCase(JOB_TABLE_ROW_CLICK, (state, action) => parseInt(action.payload.transactionType.id))
+        .addCase(REGISTERJOB_RECEIVE, () => unselectedId)
+        .addCase(CLEAR_JOB_FORM, () => unselectedId)
+        .addCase(CLEAR_EDIT_JOB_FORM, () => unselectedId)
+        .addCase(CLEAR_JOB_TYPE_FORM, () => unselectedId)
+        .addCase(CLEAR_PAYMENT_TYPE_FORM, () => unselectedId)
+        .addCase(CLEAR_REGISTER_JOB_FORM, () => unselectedId);
 });
 
 export default transactionTypeIdReducer;

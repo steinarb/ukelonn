@@ -3,8 +3,9 @@ import {
     ACCOUNTS_RECEIVE,
 } from '../actiontypes';
 
-const accountsReducer = createReducer([], {
-    [ACCOUNTS_RECEIVE]: (state, action) => action.payload,
+const accountsReducer = createReducer([], builder => {
+    builder
+        .addCase(ACCOUNTS_RECEIVE, (state, action) => action.payload);
 });
 
 export default accountsReducer;

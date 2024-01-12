@@ -8,10 +8,11 @@ import { isUnselected } from '../common/reducers';
 
 const defaultValue = '';
 
-const bonusIconurlReducer = createReducer(defaultValue, {
-    [MODIFY_BONUS_ICONURL]: (state, action) => action.payload,
-    [SELECTED_BONUS]: (state, action) => isUnselected(action.payload.bonusId) ? defaultValue : action.payload.iconurl,
-    [CLEAR_BONUS]: () => defaultValue,
+const bonusIconurlReducer = createReducer(defaultValue, builder => {
+    builder
+        .addCase(MODIFY_BONUS_ICONURL, (state, action) => action.payload)
+        .addCase(SELECTED_BONUS, (state, action) => isUnselected(action.payload.bonusId) ? defaultValue : action.payload.iconurl)
+        .addCase(CLEAR_BONUS, () => defaultValue);
 });
 
 export default bonusIconurlReducer;

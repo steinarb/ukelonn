@@ -8,11 +8,12 @@ import {
 
 const defaultValue = '';
 
-const accountFirstnameReducer = createReducer(defaultValue, {
-    [ACCOUNT_RECEIVE]: (state, action) => action.payload.firstName,
-    [REGISTERJOB_RECEIVE]: (state, action) => action.payload.firstName,
-    [REGISTERPAYMENT_RECEIVE]: (state, action) => action.payload.firstName,
-    [SELECT_ACCOUNT]: (state, action) => action.payload.firstName,
+const accountFirstnameReducer = createReducer(defaultValue, builder => {
+    builder
+        .addCase(ACCOUNT_RECEIVE, (state, action) => action.payload.firstName)
+        .addCase(REGISTERJOB_RECEIVE, (state, action) => action.payload.firstName)
+        .addCase(REGISTERPAYMENT_RECEIVE, (state, action) => action.payload.firstName)
+        .addCase(SELECT_ACCOUNT, (state, action) => action.payload.firstName);
 });
 
 export default accountFirstnameReducer;

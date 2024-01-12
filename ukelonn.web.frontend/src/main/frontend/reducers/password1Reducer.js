@@ -5,9 +5,10 @@ import {
 } from '../actiontypes';
 const defaultValue = '';
 
-const password1Reducer = createReducer(defaultValue, {
-    [MODIFY_PASSWORD1]: (state, action) => action.payload,
-    [CLEAR_USER_AND_PASSWORDS]: () => defaultValue,
+const password1Reducer = createReducer(defaultValue, builder => {
+    builder
+        .addCase(MODIFY_PASSWORD1, (state, action) => action.payload)
+        .addCase(CLEAR_USER_AND_PASSWORDS, () => defaultValue);
 });
 
 export default password1Reducer;

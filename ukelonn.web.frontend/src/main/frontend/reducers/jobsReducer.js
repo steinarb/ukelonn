@@ -7,11 +7,12 @@ import {
 } from '../actiontypes';
 const defaultValue = [];
 
-const paymenttypeReducer = createReducer(defaultValue, {
-    [RECENTJOBS_RECEIVE]: (state, action) => action.payload,
-    [DELETE_JOBS_RECEIVE]: (state, action) => action.payload,
-    [UPDATE_JOB_RECEIVE]: (state, action) => action.payload,
-    [MODIFY_MARK_JOB_FOR_DELETE]: (state, action) => state.map(j => j.id === action.payload.id ? action.payload : j),
+const paymenttypeReducer = createReducer(defaultValue, builder => {
+    builder
+        .addCase(RECENTJOBS_RECEIVE, (state, action) => action.payload)
+        .addCase(DELETE_JOBS_RECEIVE, (state, action) => action.payload)
+        .addCase(UPDATE_JOB_RECEIVE, (state, action) => action.payload)
+        .addCase(MODIFY_MARK_JOB_FOR_DELETE, (state, action) => state.map(j => j.id === action.payload.id ? action.payload : j));
 });
 
 export default paymenttypeReducer;

@@ -7,11 +7,12 @@ import {
 } from '../actiontypes';
 const defaultValue = -1;
 
-const accountIdReducer = createReducer(defaultValue, {
-    [ACCOUNT_RECEIVE]: (state, action) => action.payload.accountId,
-    [REGISTERJOB_RECEIVE]: (state, action) => action.payload.accountId,
-    [REGISTERPAYMENT_RECEIVE]: (state, action) => action.payload.accountId,
-    [SELECT_ACCOUNT]: (state, action) => action.payload.accountId,
+const accountIdReducer = createReducer(defaultValue, builder => {
+    builder
+        .addCase(ACCOUNT_RECEIVE, (state, action) => action.payload.accountId)
+        .addCase(REGISTERJOB_RECEIVE, (state, action) => action.payload.accountId)
+        .addCase(REGISTERPAYMENT_RECEIVE, (state, action) => action.payload.accountId)
+        .addCase(SELECT_ACCOUNT, (state, action) => action.payload.accountId);
 });
 
 export default accountIdReducer;

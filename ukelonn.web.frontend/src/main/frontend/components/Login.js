@@ -29,13 +29,13 @@ export default function Login() {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Brukernavn:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type="text" name="username" onChange={e => setUsername(e.target.value)}></input><br/>
+                            <input id="username" className="form-control" type="text" name="username" autoComplete="username" onChange={e => setUsername(e.target.value)}></input><br/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Passord:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type="password" name='password' onChange={e => setPassword(e.target.value)}/><br/>
+                            <input id="password" className="form-control" type="password" name="password" autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
                         </div>
                     </div>
                     <div className="form-group row">

@@ -5,10 +5,11 @@ import {
     INITIAL_LOGIN_STATE_RECEIVE,
 } from '../actiontypes';
 
-const loginResponse = createReducer({ username: '', roles: [],error: '' }, {
-    [LOGIN_RECEIVE]: (state, action) => action.payload,
-    [LOGOUT_RECEIVE]: (state, action) => action.payload,
-    [INITIAL_LOGIN_STATE_RECEIVE]: (state, action) => action.payload,
+const loginResponse = createReducer({ username: '', roles: [],error: '' }, builder => {
+    builder
+        .addCase(LOGIN_RECEIVE, (state, action) => action.payload)
+        .addCase(LOGOUT_RECEIVE, (state, action) => action.payload)
+        .addCase(INITIAL_LOGIN_STATE_RECEIVE, (state, action) => action.payload);
 });
 
 export default loginResponse;
