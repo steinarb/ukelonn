@@ -30,13 +30,13 @@ export default function AdminJobtypesModify() {
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJobType}</label>
                         <div className="col-7">
                             <JobtypesBox id="jobtype" className="form-control" />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyNameOfJobType}</label>
                         <div className="col-7">
                             <input
@@ -47,7 +47,7 @@ export default function AdminJobtypesModify() {
                                 onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="amount" className="col-form-label col-5">{text.modifyAmountOfJobType}</label>
                         <div className="col-7">
                             <input
@@ -58,7 +58,7 @@ export default function AdminJobtypesModify() {
                                 onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5"/>
                         <div className="col-7">
                             <button

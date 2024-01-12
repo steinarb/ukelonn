@@ -19,12 +19,12 @@ export default function AdminPaymenttypes() {
                 <Locale />
             </nav>
             <div className="container">
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes/modify">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/paymenttypes/modify">
                     {text.modifyPaymenttypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes/create">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/paymenttypes/create">
                     {text.createPaymenttype}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

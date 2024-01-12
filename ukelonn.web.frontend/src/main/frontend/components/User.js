@@ -53,19 +53,19 @@ export default function User() {
                 </div>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div className="container">
-                        <div className="form-group row">
+                        <div className="form-group row mb-2">
                             <label htmlFor="jobtype" className="col-form-label col-5">{text.chooseJob}</label>
                             <div className="col-7">
                                 <Jobtypes id="jobtype" className="form-control" />
                             </div>
                         </div>
-                        <div className="form-group row">
+                        <div className="form-group row mb-2">
                             <label htmlFor="amount" className="col-form-label col-5">{text.amount}</label>
                             <div className="col-7">
                                 <input id="amount" className="form-control" type="text" value={transactionAmount} readOnly={true} />
                             </div>
                         </div>
-                        <div className="form-group row">
+                        <div className="form-group row mb-2">
                             <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                             <div className="col-7">
                                 <input
@@ -77,7 +77,7 @@ export default function User() {
                                 />
                             </div>
                         </div>
-                        <div className="form-group row">
+                        <div className="form-group row mb-2">
                             <div className="col-5"/>
                             <div className="col-7">
                                 <button
@@ -90,17 +90,17 @@ export default function User() {
                     </div>
                 </form>
                 <div className="container">
-                    <Link className="btn btn-block btn-primary right-align-cell" to={performedjobs}>
+                    <Link className="btn btn-block btn-primary right-align-cell mb-2" to={performedjobs}>
                         {text.performedJobs}
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="btn btn-block btn-primary right-align-cell" to={performedpayments}>
+                    <Link className="btn btn-block btn-primary right-align-cell mb-2" to={performedpayments}>
                         {text.performedPayments}
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                     </Link>
-                    <Link className="btn btn-block btn-primary right-align-cell" to={statistics}>
+                    <Link className="btn btn-block btn-primary right-align-cell mb-2" to={statistics}>
                         {text.statistics}
                         &nbsp;
                         <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

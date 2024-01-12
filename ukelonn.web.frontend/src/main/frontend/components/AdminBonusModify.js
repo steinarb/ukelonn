@@ -41,7 +41,7 @@ export default function AdminBonusesModify() {
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
                             <select id="bonus" className="form-control" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
@@ -63,7 +63,7 @@ export default function AdminBonusesModify() {
                             </div>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="iconurl" className="col-form-label col-5">{text.iconURL}</label>
                         <div className="col-7">
                             <input
@@ -74,7 +74,7 @@ export default function AdminBonusesModify() {
                                 onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input
@@ -85,7 +85,7 @@ export default function AdminBonusesModify() {
                                 onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input
@@ -96,7 +96,7 @@ export default function AdminBonusesModify() {
                                 onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="bonusfactor" className="col-form-label col-5">{text.bonusFactor}</label>
                         <div className="col-7">
                             <input
@@ -108,7 +108,7 @@ export default function AdminBonusesModify() {
                                 onChange={e => dispatch(MODIFY_BONUS_FACTOR(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="startdate" className="col-form-label col-5">{text.startDate}</label>
                         <div className="col-7">
                             <input
@@ -120,7 +120,7 @@ export default function AdminBonusesModify() {
                             />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="enddate" className="col-form-label col-5">{text.endDate}</label>
                         <div className="col-7">
                             <input
@@ -132,7 +132,7 @@ export default function AdminBonusesModify() {
                             />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5"/>
                         <div className="col-7">
                             <button

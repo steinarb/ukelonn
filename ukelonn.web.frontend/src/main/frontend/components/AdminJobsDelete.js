@@ -32,7 +32,7 @@ export default function AdminJobsDelete() {
                 <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
 
             <div className="container">
-                <div className="form-group row">
+                <div className="form-group row mb-2">
                     <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseAccount}:</label>
                     <div className="col-7">
                         <Accounts id="account-selector" />

@@ -38,7 +38,7 @@ export default function Admin() {
             </div>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseWhoToPayTo}:</label>
                         <div className="col-7">
                             <Accounts id="account-selector" className="form-control" />
@@ -47,19 +47,19 @@ export default function Admin() {
                     <div className="row">
                         <EarningsMessage />
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="account-balance" className="col-form-label col-5">{text.owedAmount}:</label>
                         <div className="col-7">
                             <input id="account-balance" className="form-control" type="text" value={balance} readOnly={true} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="paymenttype-selector" className="col-form-label col-5">{text.paymentType}:</label>
                         <div className="col-7">
                             <Paymenttypes id="paymenttype-selector" className="form-control" />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="amount" className="col-form-label col-5">{text.amount}:</label>
                         <div className="col-7">
                             <input
@@ -70,7 +70,7 @@ export default function Admin() {
                                 onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5" />
                         <div className="col-7">
                             <button
@@ -84,37 +84,37 @@ export default function Admin() {
                 </div>
             </form>
             <div className="container">
-                <Link className="btn btn-block btn-primary right-align-cell" to={performedjobs}>
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to={performedjobs}>
                     {text.performedJobs}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to={performedpayments}>
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to={performedpayments}>
                     {text.performedPayments}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to={statistics}>
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to={statistics}>
                     {text.statistics}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/jobtypes">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/jobtypes">
                     {text.administrateJobsAndJobTypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/paymenttypes">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/paymenttypes">
                     {text.administratePaymenttypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/users">
                     {text.administrateUsers}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/bonuses">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/bonuses">
                     {text.administrateBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

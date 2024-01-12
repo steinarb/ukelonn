@@ -48,7 +48,7 @@ export default function AdminUsersCreate() {
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
                             <input
@@ -61,7 +61,7 @@ export default function AdminUsersCreate() {
                             { usernameExists && <span className="invalid-feedback d-block">{text.usernameExists}</span> }
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
                             <input
@@ -73,7 +73,7 @@ export default function AdminUsersCreate() {
                             { userEmail && !isEmail(userEmail) && <span className="invalid-feedback d-block">{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
                             <input
@@ -84,7 +84,7 @@ export default function AdminUsersCreate() {
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
                             <input
@@ -95,7 +95,7 @@ export default function AdminUsersCreate() {
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="password1" className="col-form-label col-5">{text.password}:</label>
                         <div className="col-7">
                             <input
@@ -106,7 +106,7 @@ export default function AdminUsersCreate() {
                                 onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="password2" className="col-form-label col-5">{text.repeatPassword}:</label>
                         <div className="col-7">
                             <input
@@ -131,7 +131,7 @@ export default function AdminUsersCreate() {
                             </div>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5"/>
                         <div className="col-7">
                             <button

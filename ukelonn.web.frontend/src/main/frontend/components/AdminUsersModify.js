@@ -35,13 +35,13 @@ export default function AdminUsersModify() {
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="users" className="col-form-label col-5">{text.chooseUser}</label>
                         <div className="col-7">
                             <Users id="users" className="form-control" />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="username" className="col-form-label col-5">{text.username}</label>
                         <div className="col-7">
                             <input
@@ -52,7 +52,7 @@ export default function AdminUsersModify() {
                                 onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="email" className="col-form-label col-5">{text.emailAddress}</label>
                         <div className="col-7">
                             <input
@@ -63,7 +63,7 @@ export default function AdminUsersModify() {
                                 onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="firstname" className="col-form-label col-5">{text.firstName}</label>
                         <div className="col-7">
                             <input
@@ -74,7 +74,7 @@ export default function AdminUsersModify() {
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="lastname" className="col-form-label col-5">{text.lastName}</label>
                         <div className="col-7">
                             <input
@@ -98,7 +98,7 @@ export default function AdminUsersModify() {
                             </div>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5"/>
                         <div className="col-7">
                             <button

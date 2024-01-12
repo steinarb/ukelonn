@@ -33,7 +33,7 @@ export default function AdminJobsEdit() {
 
 
             <div className="container">
-                <div className="form-group row">
+                <div className="form-group row mb-2">
                     <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseAccount}:</label>
                     <div className="col-7">
                         <Accounts id="account-selector" className="form-control" />
@@ -63,19 +63,19 @@ export default function AdminJobsEdit() {
             </div>
             <h2>Endre jobb</h2>
             <div className="container">
-                <div className="form-group row">
+                <div className="form-group row mb-2">
                     <label htmlFor="jobtype" className="col-form-label col-5">{text.jobType}</label>
                     <div className="col-7">
                         <Jobtypes id="jobtype" />
                     </div>
                 </div>
-                <div className="form-group row">
+                <div className="form-group row mb-2">
                     <label htmlFor="amount" className="col-form-label col-5">{text.amount}</label>
                     <div className="col-7">
                         <input id="amount" type="text" value={transactionAmount} readOnly={true} />
                     </div>
                 </div>
-                <div className="form-group row">
+                <div className="form-group row mb-2">
                     <label htmlFor="date" className="col-form-label col-5">{text.date}</label>
                     <div className="col-7">
                         <input

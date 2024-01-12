@@ -19,17 +19,17 @@ export default function AdminUsers() {
                 <Locale />
             </nav>
             <div className="container">
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/modify">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/users/modify">
                     {text.modifyUsers}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/password">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/users/password">
                     {text.changeUsersPassword}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to="/ukelonn/admin/users/create">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/users/create">
                     {text.addUser}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

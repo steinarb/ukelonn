@@ -25,12 +25,12 @@ export default function Statistics(props) {
                 <Locale />
             </nav>
             <div className="container">
-                <Link className="btn btn-block btn-primary right-align-cell" to={sumoveryear}>
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to={sumoveryear}>
                     {text.sumEarnedPerYear}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell" to={sumovermonth}>
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to={sumovermonth}>
                     {text.sumEarnedPerMonth}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
