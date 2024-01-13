@@ -34,6 +34,7 @@ export default function AdminPaymenttypesCreate() {
                         <div className="col-7">
                             <input
                                 id="name"
+                                className="form-control"
                                 type="text"
                                 value={transactionTypeName}
                                 onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
@@ -44,6 +45,7 @@ export default function AdminPaymenttypesCreate() {
                         <div className="col-7">
                             <input
                                 id="amount"
+                                className="form-control"
                                 type="text"
                                 value={transactionAmount}
                                 onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
@@ -53,6 +55,7 @@ export default function AdminPaymenttypesCreate() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
+                                className="btn btn-primary"
                                 onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>
                                 {text.createNewPaymentType}
                             </button>
