@@ -98,6 +98,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-bom</artifactId>
+                <version>${shiro.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>no.priv.bang.osgiservice</groupId>
                 <artifactId>osgiservice-bom</artifactId>
                 <version>${bang-osgi-service.version}</version>
