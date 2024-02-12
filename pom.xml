@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xml:space="preserve">
 
-    <!-- Copyright 2016-2023 Steinar Bang                                                -->
+    <!-- Copyright 2016-2024 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-authservice-client-pom</artifactId>
-        <version>1.1.44</version>
+        <version>1.1.45</version>
     </parent>
     <groupId>no.priv.bang.ukelonn</groupId>
     <artifactId>ukelonn</artifactId>
@@ -94,6 +94,13 @@
                 <groupId>no.priv.bang.authservice</groupId>
                 <artifactId>authservice-bom</artifactId>
                 <version>${authservice.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-bom</artifactId>
+                <version>${shiro.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
