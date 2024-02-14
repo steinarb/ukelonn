@@ -19,7 +19,7 @@ export default function AdminBonusesDelete() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin/bonuses">
+                <Link to="/admin/bonuses">
                     &lt;-
                     &nbsp;
                     {text.administrateBonuses}

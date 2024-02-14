@@ -28,7 +28,7 @@ export default function AdminBonusCreate() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin/bonuses">
+                <Link to="/admin/bonuses">
                     &lt;-
                     &nbsp;
                     {text.administrateBonuses}

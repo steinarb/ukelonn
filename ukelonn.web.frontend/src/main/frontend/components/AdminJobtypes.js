@@ -10,7 +10,7 @@ export default function AdminJobtypes() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/">
+                <Link to="/">
                     &lt;-
                     &nbsp;
                     {text.registerPayment}
@@ -20,25 +20,25 @@ export default function AdminJobtypes() {
             </nav>
             <br/>
             <div>
-                <Link to="/ukelonn/admin/jobtypes/modify">
+                <Link to="/admin/jobtypes/modify">
                     {text.modifyJobTypes}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/jobtypes/create">
+                <Link to="/admin/jobtypes/create">
                     {text.createNewJobType}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/jobs/delete">
+                <Link to="/admin/jobs/delete">
                     {text.deleteJobs}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/jobs/edit">
+                <Link to="/admin/jobs/edit">
                     {text.modifyJobs}
                     &nbsp;
                     -&gt;

@@ -19,7 +19,7 @@ export default function AdminJobtypesCreate() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin/jobtypes">
+                <Link to="/admin/jobtypes">
                     &lt;-
                     &nbsp;
                     {text.administrateJobsAndJobTypes}

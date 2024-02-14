@@ -17,7 +17,7 @@ export function* requestInitialLoginStateSaga() {
 }
 
 function doGetLogin() {
-    return axios.get('/ukelonn/api/login');
+    return axios.get('/api/login');
 }
 
 // worker saga
@@ -42,7 +42,7 @@ export function* requestLoginSaga() {
 }
 
 function doLogin(username, password) {
-    return axios.post('/ukelonn/api/login', { username, password });
+    return axios.post('/api/login', { username, password });
 }
 
 // worker saga

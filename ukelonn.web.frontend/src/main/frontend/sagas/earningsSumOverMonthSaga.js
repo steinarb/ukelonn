@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doEarningsSumOverMonth(username) {
-    return axios.get('/ukelonn/api/statistics/earnings/sumovermonth/' + username);
+    return axios.get('/api/statistics/earnings/sumovermonth/' + username);
 }
 
 // worker saga

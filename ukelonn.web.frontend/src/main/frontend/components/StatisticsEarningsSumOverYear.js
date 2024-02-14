@@ -12,7 +12,7 @@ export default function StatisticsEarningsSumOverYear(props) {
 
     const [ queryParams ] = useSearchParams();
     const username = findUsernameFromAccountOrQueryParameter(props, queryParams);
-    const statistics = '/ukelonn/statistics?' + stringify({ username });
+    const statistics = '/statistics?' + stringify({ username });
 
     return (
         <div>

@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doDeleteBonus(bonus) {
-    return axios.post('/ukelonn/api/admin/deletebonus', bonus);
+    return axios.post('/api/admin/deletebonus', bonus);
 }
 
 function* receiveDeleteBonusSaga(action) {

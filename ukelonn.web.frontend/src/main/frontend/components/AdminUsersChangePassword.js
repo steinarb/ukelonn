@@ -20,7 +20,7 @@ export default function AdminUsersChangePassword() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin/users">
+                <Link to="/admin/users">
                     &lt;-
                     &nbsp;
                     {text.administrateUsers}

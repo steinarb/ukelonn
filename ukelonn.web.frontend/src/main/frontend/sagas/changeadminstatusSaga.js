@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function fetchAdminStatus(user) {
-    return axios.post('/ukelonn/api/admin/user/changeadminstatus', user);
+    return axios.post('/api/admin/user/changeadminstatus', user);
 }
 
 function* changeAdminStatus(action) {

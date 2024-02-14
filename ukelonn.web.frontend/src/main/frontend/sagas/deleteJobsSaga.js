@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doDeleteJobs(accountWithJobIds) {
-    return axios.post('/ukelonn/api/admin/jobs/delete', accountWithJobIds);
+    return axios.post('/api/admin/jobs/delete', accountWithJobIds);
 }
 
 function* requestReceiveDeleteJobsSaga(action) {

@@ -8,7 +8,7 @@ import {
 import { emptyAccount } from '../constants';
 
 function doRegisterJob(performedJob) {
-    return axios.post('/ukelonn/api/job/register', performedJob);
+    return axios.post('/api/job/register', performedJob);
 }
 
 function* requestReceiveRegisterJobSaga(action) {

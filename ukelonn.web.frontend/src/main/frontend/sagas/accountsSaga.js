@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doAccounts() {
-    return axios.get('/ukelonn/api/accounts');
+    return axios.get('/api/accounts');
 }
 
 function* requestReceiveAccountsSaga() {

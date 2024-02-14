@@ -34,7 +34,7 @@ export default function AdminUsersCreate() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin/users">
+                <Link to="/admin/users">
                     &lt;-
                     &nbsp;
                     {text.administrateUsers}

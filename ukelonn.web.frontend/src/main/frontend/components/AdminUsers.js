@@ -10,7 +10,7 @@ export default function AdminUsers() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin">
+                <Link to="/admin">
                     &lt;-
                     &nbsp;
                     {text.registerPayment}
@@ -19,19 +19,19 @@ export default function AdminUsers() {
                 <Locale />
             </nav>
             <div>
-                <Link to="/ukelonn/admin/users/modify">
+                <Link to="/admin/users/modify">
                     {text.modifyUsers}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/users/password">
+                <Link to="/admin/users/password">
                     {text.changeUsersPassword}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/users/create">
+                <Link to="/admin/users/create">
                     {text.addUser}
                     &nbsp;
                     -&gt;

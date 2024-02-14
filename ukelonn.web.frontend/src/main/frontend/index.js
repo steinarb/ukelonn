@@ -1,6 +1,7 @@
 import 'regenerator-runtime';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import axios from 'axios';
 import App from './components/App';
 import { configureStore, Tuple } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
@@ -13,6 +14,9 @@ import {
 } from './actiontypes';
 import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
+const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('bundle.js'))[0].replace('/bundle.js', '');
+const basename = new URL(baseUrl).pathname;
+axios.defaults.baseURL = baseUrl;
 const sagaMiddleware = createSagaMiddleware();
 import { createBrowserHistory } from 'history';
 import { createReduxHistoryContext } from "redux-first-history";
@@ -21,7 +25,7 @@ const {
   createReduxHistory,
   routerMiddleware,
   routerReducer
-} = createReduxHistoryContext({ history: createBrowserHistory() });
+} = createReduxHistoryContext({ history: createBrowserHistory(), basename });
 const store = configureStore({
     reducer: createUkelonnReducer(routerReducer),
     middleware: () => new Tuple(sagaMiddleware, routerMiddleware),
@@ -46,6 +50,6 @@ const root = createRoot(container);
 
 root.render(
     <Provider store={store}>
-      <App history={history} />
+        <App history={history} basename={basename} />
     </Provider>,
 );

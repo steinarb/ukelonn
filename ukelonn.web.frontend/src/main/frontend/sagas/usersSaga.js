@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doUsers() {
-    return axios.get('/ukelonn/api/users');
+    return axios.get('/api/users');
 }
 
 function* receiveUsersSaga() {

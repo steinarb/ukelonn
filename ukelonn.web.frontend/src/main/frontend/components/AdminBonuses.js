@@ -10,7 +10,7 @@ export default function AdminBonuses() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/">
+                <Link to="/">
                     &lt;-
                     &nbsp;
                     {text.registerPayment}
@@ -19,19 +19,19 @@ export default function AdminBonuses() {
                 <Locale />
             </nav>
             <div>
-                <Link to="/ukelonn/admin/bonuses/modify">
+                <Link to="/admin/bonuses/modify">
                     {text.modifyBonuses}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/bonuses/create">
+                <Link to="/admin/bonuses/create">
                     {text.createNewBonus}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/bonuses/delete">
+                <Link to="/admin/bonuses/delete">
                     {text.deleteBonuses}
                     &nbsp;
                     -&gt;

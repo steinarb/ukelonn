@@ -10,7 +10,7 @@ export default function AdminPaymenttypes() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin">
+                <Link to="/admin">
                     &lt;-
                     &nbsp;
                     {text.registerPayment}
@@ -19,13 +19,13 @@ export default function AdminPaymenttypes() {
                 <Locale />
             </nav>
             <div>
-                <Link to="/ukelonn/admin/paymenttypes/modify">
+                <Link to="/admin/paymenttypes/modify">
                     {text.modifyPaymenttypes}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/paymenttypes/create">
+                <Link to="/admin/paymenttypes/create">
                     {text.createPaymenttype}
                     &nbsp;
                     -&gt;

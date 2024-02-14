@@ -22,9 +22,9 @@ export default function Admin() {
     const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
-    const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
-    const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
-    const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
+    const performedjobs = noUser ? '#' : '/performedjobs?' + stringify({ parentTitle, accountId, username });
+    const performedpayments = noUser ? '#' : '/performedpayments?' + stringify({ parentTitle, accountId, username });
+    const statistics = noUser ? '#' : '/statistics?' + stringify({ username });
 
     return (
         <div>
@@ -98,25 +98,25 @@ export default function Admin() {
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/jobtypes">
+                <Link to="/admin/jobtypes">
                     {text.administrateJobsAndJobTypes}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/paymenttypes">
+                <Link to="/admin/paymenttypes">
                     {text.administratePaymenttypes}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/users">
+                <Link to="/admin/users">
                     {text.administrateUsers}
                     &nbsp;
                     -&gt;
                 </Link>
                 <br/>
-                <Link to="/ukelonn/admin/bonuses">
+                <Link to="/admin/bonuses">
                     {text.administrateBonuses}
                     &nbsp;
                     -&gt;

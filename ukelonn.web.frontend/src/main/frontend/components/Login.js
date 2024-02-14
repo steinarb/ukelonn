@@ -11,10 +11,10 @@ export default function Login() {
     const [ password, setPassword ] = useState('');
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
-            return (<Navigate to="/ukelonn/admin" />);
+            return (<Navigate to="/admin" />);
         }
 
-        return (<Navigate to="/ukelonn/user" />);
+        return (<Navigate to="/user" />);
     }
 
     return (

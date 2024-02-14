@@ -19,7 +19,7 @@ export default function AdminPaymenttypesCreate() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/admin/paymenttypes">
+                <Link to="/admin/paymenttypes">
                     &lt;-
                     &nbsp;
                     {text.administratePaymenttypes}

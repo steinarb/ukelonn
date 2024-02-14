@@ -14,7 +14,7 @@ export default function PerformedJobs() {
     return (
         <div>
             <nav>
-                <Link to="/ukelonn/">
+                <Link to="/">
                     &lt;-
                     &nbsp;
                     {parentTitle}
