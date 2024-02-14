@@ -15,7 +15,7 @@ export default function* displayTextsSaga() {
 }
 
 function doDisplayTexts(locale) {
-    return axios.get('/ukelonn/api/displaytexts?' + stringify({ locale }));
+    return axios.get('/api/displaytexts?' + stringify({ locale }));
 }
 
 // worker saga

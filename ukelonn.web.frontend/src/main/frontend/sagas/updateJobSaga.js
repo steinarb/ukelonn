@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doUpdateJob(updatedJob) {
-    return axios.post('/ukelonn/api/job/update', updatedJob);
+    return axios.post('/api/job/update', updatedJob);
 }
 
 function* requestReceiveUpdateJobSaga(action) {

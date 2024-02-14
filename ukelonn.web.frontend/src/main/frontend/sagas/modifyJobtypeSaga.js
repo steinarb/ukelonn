@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doModifyJobtype(jobtype) {
-    return axios.post('/ukelonn/api/admin/jobtype/modify', jobtype);
+    return axios.post('/api/admin/jobtype/modify', jobtype);
 }
 
 function* receiveModifyJobtypeSaga(action) {

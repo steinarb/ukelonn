@@ -12,7 +12,7 @@ export function* requestRecentJobsSaga() {
 }
 
 function doRecentJobs(accountId) {
-    return axios.get('/ukelonn/api/jobs/' + accountId);
+    return axios.get('/api/jobs/' + accountId);
 }
 
 // worker saga

@@ -16,7 +16,7 @@ import { findUsername } from '../common/login';
 
 
 function doAccount(username) {
-    return axios.get('/ukelonn/api/account/' + username );
+    return axios.get('/api/account/' + username );
 }
 
 function* requestReceiveAccountSaga(action) {

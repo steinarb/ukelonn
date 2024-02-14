@@ -22,7 +22,7 @@ export default function AdminJobsEdit() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/admin/jobtypes">
+                <Link className="btn btn-primary" to="/admin/jobtypes">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.administrateJobsAndJobTypes}

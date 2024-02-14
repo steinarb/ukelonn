@@ -24,9 +24,9 @@ export default function User() {
     const notificationMessage = useSelector(state => state.notificationMessage);
     const dispatch = useDispatch();
     const title = text.weeklyAllowanceFor + ' ' + firstname;
-    const performedjobs = '/ukelonn/performedjobs?' + stringify({ accountId, username, parentTitle: title });
-    const performedpayments = '/ukelonn/performedpayments?' + stringify({ accountId, username, parentTitle: title });
-    const statistics = '/ukelonn/statistics?' + stringify({ username });
+    const performedjobs = '/performedjobs?' + stringify({ accountId, username, parentTitle: title });
+    const performedpayments = '/performedpayments?' + stringify({ accountId, username, parentTitle: title });
+    const statistics = '/statistics?' + stringify({ username });
 
     return (
         <div>

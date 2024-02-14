@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doModifyBonus(bonus) {
-    return axios.post('/ukelonn/api/admin/modifybonus', bonus);
+    return axios.post('/api/admin/modifybonus', bonus);
 }
 
 function* receiveModifyBonusSaga(action) {

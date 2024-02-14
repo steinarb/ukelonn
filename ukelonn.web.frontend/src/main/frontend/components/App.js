@@ -31,36 +31,36 @@ import '../ukelonn.css';
 
 
 function App(props) {
-    const { history } = props;
+    const { history, basename } = props;
     return(
-        <Router history={history}>
+        <Router history={history} basename={basename}>
             <Routes>
-                <Route exact path="/ukelonn/" element={<Home/>} />
-                <Route path="/ukelonn/login" element={<Login/>} />
-                <Route path="/ukelonn/unauthorized" element={<Unauthorized/>} />
-                <Route path="/ukelonn/user" element={<User/>} />
-                <Route path="/ukelonn/performedjobs" element={<PerformedJobs/>} />
-                <Route path="/ukelonn/performedpayments" element={<PerformedPayments/>} />
-                <Route path="/ukelonn/statistics/earnings/sumoveryear" element={<StatisticsEarningsSumOverYear/>} />
-                <Route path="/ukelonn/statistics/earnings/sumovermonth" element={<StatisticsEarningsSumOverMonth/>} />
-                <Route path="/ukelonn/statistics" element={<Statistics/>} />
-                <Route path="/ukelonn/admin/jobtypes/modify" element={<AdminJobtypesModify/>} />
-                <Route path="/ukelonn/admin/jobtypes/create" element={<AdminJobtypesCreate/>} />
-                <Route path="/ukelonn/admin/jobtypes" element={<AdminJobtypes/>} />
-                <Route path="/ukelonn/admin/jobs/delete" element={<AdminJobsDelete/>} />
-                <Route path="/ukelonn/admin/jobs/edit" element={<AdminJobsEdit/>} />
-                <Route path="/ukelonn/admin/paymenttypes/modify" element={<AdminPaymenttypesModify/>} />
-                <Route path="/ukelonn/admin/paymenttypes/create" element={<AdminPaymenttypesCreate/>} />
-                <Route path="/ukelonn/admin/paymenttypes" element={<AdminPaymenttypes/>} />
-                <Route path="/ukelonn/admin/users/password" element={<AdminUsersChangePassword/>} />
-                <Route path="/ukelonn/admin/users/modify" element={<AdminUsersModify/>} />
-                <Route path="/ukelonn/admin/users/create" element={<AdminUsersCreate/>} />
-                <Route path="/ukelonn/admin/users" element={<AdminUsers/>} />
-                <Route path="/ukelonn/admin/bonuses/modify" element={<AdminBonusModify/>} />
-                <Route path="/ukelonn/admin/bonuses/create" element={<AdminBonusCreate/>} />
-                <Route path="/ukelonn/admin/bonuses/delete" element={<AdminBonusDelete/>} />
-                <Route path="/ukelonn/admin/bonuses" element={<AdminBonuses/>} />
-                <Route path="/ukelonn/admin" element={<Admin/>} />
+                <Route exact path="/" element={<Home/>} />
+                <Route path="/login" element={<Login/>} />
+                <Route path="/unauthorized" element={<Unauthorized/>} />
+                <Route path="/user" element={<User/>} />
+                <Route path="/performedjobs" element={<PerformedJobs/>} />
+                <Route path="/performedpayments" element={<PerformedPayments/>} />
+                <Route path="/statistics/earnings/sumoveryear" element={<StatisticsEarningsSumOverYear/>} />
+                <Route path="/statistics/earnings/sumovermonth" element={<StatisticsEarningsSumOverMonth/>} />
+                <Route path="/statistics" element={<Statistics/>} />
+                <Route path="/admin/jobtypes/modify" element={<AdminJobtypesModify/>} />
+                <Route path="/admin/jobtypes/create" element={<AdminJobtypesCreate/>} />
+                <Route path="/admin/jobtypes" element={<AdminJobtypes/>} />
+                <Route path="/admin/jobs/delete" element={<AdminJobsDelete/>} />
+                <Route path="/admin/jobs/edit" element={<AdminJobsEdit/>} />
+                <Route path="/admin/paymenttypes/modify" element={<AdminPaymenttypesModify/>} />
+                <Route path="/admin/paymenttypes/create" element={<AdminPaymenttypesCreate/>} />
+                <Route path="/admin/paymenttypes" element={<AdminPaymenttypes/>} />
+                <Route path="/admin/users/password" element={<AdminUsersChangePassword/>} />
+                <Route path="/admin/users/modify" element={<AdminUsersModify/>} />
+                <Route path="/admin/users/create" element={<AdminUsersCreate/>} />
+                <Route path="/admin/users" element={<AdminUsers/>} />
+                <Route path="/admin/bonuses/modify" element={<AdminBonusModify/>} />
+                <Route path="/admin/bonuses/create" element={<AdminBonusCreate/>} />
+                <Route path="/admin/bonuses/delete" element={<AdminBonusDelete/>} />
+                <Route path="/admin/bonuses" element={<AdminBonuses/>} />
+                <Route path="/admin" element={<Admin/>} />
             </Routes>
         </Router>
     );

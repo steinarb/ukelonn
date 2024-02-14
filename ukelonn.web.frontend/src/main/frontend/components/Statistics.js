@@ -10,13 +10,13 @@ export default function Statistics(props) {
     const text = useSelector(state => state.displayTexts);
     const [ queryParams ] = useSearchParams();
     const username = findUsernameFromAccountOrQueryParameter(props, queryParams);
-    const sumoveryear = '/ukelonn/statistics/earnings/sumoveryear?' + stringify({ username });
-    const sumovermonth = '/ukelonn/statistics/earnings/sumovermonth?' + stringify({ username });
+    const sumoveryear = '/statistics/earnings/sumoveryear?' + stringify({ username });
+    const sumovermonth = '/statistics/earnings/sumovermonth?' + stringify({ username });
 
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/">
+                <Link className="btn btn-primary" to="/">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.back}

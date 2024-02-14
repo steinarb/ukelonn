@@ -10,7 +10,7 @@ export default function AdminPaymenttypes() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/admin">
+                <Link className="btn btn-primary" to="/admin">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.registerPayment}
@@ -19,12 +19,12 @@ export default function AdminPaymenttypes() {
                 <Locale />
             </nav>
             <div className="container">
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/paymenttypes/modify">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/paymenttypes/modify">
                     {text.modifyPaymenttypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/paymenttypes/create">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/paymenttypes/create">
                     {text.createPaymenttype}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

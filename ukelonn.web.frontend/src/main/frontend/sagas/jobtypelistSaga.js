@@ -12,7 +12,7 @@ export function* requestJobtypeListSaga() {
 }
 
 function doJobtypeList() {
-    return axios.get('/ukelonn/api/jobtypes');
+    return axios.get('/api/jobtypes');
 }
 
 // worker saga

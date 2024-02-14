@@ -10,7 +10,7 @@ export default function AdminJobtypes() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/">
+                <Link className="btn btn-primary" to="/">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.registerPayment}
@@ -19,22 +19,22 @@ export default function AdminJobtypes() {
                 <Locale />
             </nav>
             <div className="container">
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/jobtypes/modify">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/jobtypes/modify">
                     {text.modifyJobTypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/jobtypes/create">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/jobtypes/create">
                     {text.createNewJobType}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/jobs/delete">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/jobs/delete">
                     {text.deleteJobs}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/jobs/edit">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/jobs/edit">
                     {text.modifyJobs}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

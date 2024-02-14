@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doChangePassword(passwords) {
-    return axios.post('/ukelonn/api/admin/user/password', passwords);
+    return axios.post('/api/admin/user/password', passwords);
 }
 
 function* requestReceiveChangePasswordSaga(action) {

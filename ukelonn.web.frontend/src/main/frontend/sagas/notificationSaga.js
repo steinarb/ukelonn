@@ -16,7 +16,7 @@ export function* startNotificationListening() {
 // worker saga
 function* pollNotification(action) {
     const username = action.payload;
-    const notificationsRestEndpoint = '/ukelonn/api/notificationsto/' + username;
+    const notificationsRestEndpoint = '/api/notificationsto/' + username;
     var loop = true;
     try {
         while (loop) {

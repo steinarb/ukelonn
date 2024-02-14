@@ -8,7 +8,7 @@ import {
 } from '../actiontypes';
 
 function doPaymenttypes() {
-    return axios.get('/ukelonn/api/paymenttypes');
+    return axios.get('/api/paymenttypes');
 }
 
 function* receivePaymenttypesSaga() {

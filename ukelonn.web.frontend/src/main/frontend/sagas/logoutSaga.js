@@ -9,7 +9,7 @@ import {
 import { emptyLoginResponse } from './constants';
 
 function doLogout() {
-    return axios.post('/ukelonn/api/logout', {});
+    return axios.post('/api/logout', {});
 }
 
 function* receiveLogoutSaga() {

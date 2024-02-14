@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doCreateJobtype(jobtype) {
-    return axios.post('/ukelonn/api/admin/jobtype/create', jobtype);
+    return axios.post('/api/admin/jobtype/create', jobtype);
 }
 
 function* sendReceiveCreateJobtype(action) {

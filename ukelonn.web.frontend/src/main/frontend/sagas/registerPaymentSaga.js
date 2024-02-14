@@ -8,7 +8,7 @@ import {
 import { emptyAccount } from '../constants';
 
 function doRegisterPayment(payment) {
-    return axios.post('/ukelonn/api/registerpayment', payment);
+    return axios.post('/api/registerpayment', payment);
 }
 
 function doNotifyPaymentdone(payment, paymenttype) {
@@ -16,7 +16,7 @@ function doNotifyPaymentdone(payment, paymenttype) {
         title: 'Ukelønn',
         message: payment.transactionAmount + ' kroner ' + paymenttype.transactionTypeName,
     };
-    return axios.post('/ukelonn/api/notificationto/' + payment.account.username, notification);
+    return axios.post('/api/notificationto/' + payment.account.username, notification);
 }
 
 function* receiveRegisterPaymentSaga(action) {

@@ -11,7 +11,7 @@ export default function StatisticsEarningsSumOverMonth(props) {
     const earningsSumOverMonth = useSelector(state => state.earningsSumOverMonth);
     const [ queryParams ] = useSearchParams();
     const username = findUsernameFromAccountOrQueryParameter(props, queryParams);
-    const statistics = '/ukelonn/statistics?' + stringify({ username });
+    const statistics = '/statistics?' + stringify({ username });
 
     return (
         <div>

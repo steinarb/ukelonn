@@ -13,7 +13,7 @@ export function* requestRecentPaymentsSaga() {
 }
 
 function doRecentPayments(accountId) {
-    return axios.get('/ukelonn/api/payments/' + accountId);
+    return axios.get('/api/payments/' + accountId);
 }
 
 // worker saga

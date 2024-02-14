@@ -21,7 +21,7 @@ export default function AdminUsersChangePassword() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/admin/users">
+                <Link className="btn btn-primary" to="/admin/users">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.administrateUsers}

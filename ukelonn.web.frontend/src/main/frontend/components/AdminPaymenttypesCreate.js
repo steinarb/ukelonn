@@ -19,7 +19,7 @@ export default function AdminPaymenttypesCreate() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/admin/paymenttypes">
+                <Link className="btn btn-primary" to="/admin/paymenttypes">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.administratePaymenttypes}

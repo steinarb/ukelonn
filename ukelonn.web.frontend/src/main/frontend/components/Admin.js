@@ -22,9 +22,9 @@ export default function Admin() {
     const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
-    const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
-    const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
-    const statistics = noUser ? '#' : '/ukelonn/statistics?' + stringify({ username });
+    const performedjobs = noUser ? '#' : '/performedjobs?' + stringify({ parentTitle, accountId, username });
+    const performedpayments = noUser ? '#' : '/performedpayments?' + stringify({ parentTitle, accountId, username });
+    const statistics = noUser ? '#' : '/statistics?' + stringify({ username });
 
     return (
         <div>
@@ -99,22 +99,22 @@ export default function Admin() {
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/jobtypes">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/jobtypes">
                     {text.administrateJobsAndJobTypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/paymenttypes">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/paymenttypes">
                     {text.administratePaymenttypes}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/users">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/users">
                     {text.administrateUsers}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/bonuses">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/bonuses">
                     {text.administrateBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

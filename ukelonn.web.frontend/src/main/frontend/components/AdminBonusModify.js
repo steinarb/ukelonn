@@ -31,7 +31,7 @@ export default function AdminBonusesModify() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/admin/bonuses">
+                <Link className="btn btn-primary" to="/admin/bonuses">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.administrateBonuses}

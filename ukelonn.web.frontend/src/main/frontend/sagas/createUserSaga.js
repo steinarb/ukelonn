@@ -8,7 +8,7 @@ import {
 
 function doCreateUser(passwords) {
     delete passwords.user.fullname;
-    return axios.post('/ukelonn/api/admin/user/create', passwords);
+    return axios.post('/api/admin/user/create', passwords);
 }
 
 function* requestReceiveCreateUserSaga(action) {

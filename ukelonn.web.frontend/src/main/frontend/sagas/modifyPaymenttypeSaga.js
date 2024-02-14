@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doModifyPaymenttype(paymenttype) {
-    return axios.post('/ukelonn/api/admin/paymenttype/modify', paymenttype);
+    return axios.post('/api/admin/paymenttype/modify', paymenttype);
 }
 
 function* requestReceiveModifyPaymenttypeSaga(action) {

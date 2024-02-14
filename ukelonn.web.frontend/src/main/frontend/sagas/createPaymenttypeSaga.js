@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function doCreatePaymenttype(paymenttype) {
-    return axios.post('/ukelonn/api/admin/paymenttype/create', paymenttype);
+    return axios.post('/api/admin/paymenttype/create', paymenttype);
 }
 
 function* requestReceiveCreatePaymenttype(action) {

@@ -11,7 +11,7 @@ export default function Unauthorized() {
     const text = useSelector(state => state.displayTexts);
 
     if (haveReceivedResponseFromLogin && !loginResponse.roles.length) {
-        return <Navigate to="/ukelonn/login" />;
+        return <Navigate to="/login" />;
     }
 
     return (

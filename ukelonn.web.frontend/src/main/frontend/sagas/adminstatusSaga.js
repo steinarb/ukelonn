@@ -17,7 +17,7 @@ function* requestAdminStatus(action) {
 }
 
 function fetchAdminStatus(user) {
-    return axios.post('/ukelonn/api/admin/user/adminstatus', user);
+    return axios.post('/api/admin/user/adminstatus', user);
 }
 
 export default function* adminStatusSaga() {

@@ -8,7 +8,7 @@ import {
 
 
 function doModifyUser(user) {
-    return axios.post('/ukelonn/api/admin/user/modify', user);
+    return axios.post('/api/admin/user/modify', user);
 }
 
 function* requestReceiveModifyUserSaga(action) {

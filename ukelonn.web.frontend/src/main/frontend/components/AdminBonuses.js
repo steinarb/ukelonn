@@ -10,7 +10,7 @@ export default function AdminBonuses() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <Link className="btn btn-primary" to="/ukelonn/">
+                <Link className="btn btn-primary" to="/">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
                     &nbsp;
                     {text.registerPayment}
@@ -19,17 +19,17 @@ export default function AdminBonuses() {
                 <Locale />
             </nav>
             <div>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/bonuses/modify">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/bonuses/modify">
                     {text.modifyBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/bonuses/create">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/bonuses/create">
                     {text.createNewBonus}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>
                 </Link>
-                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/ukelonn/admin/bonuses/delete">
+                <Link className="btn btn-block btn-primary right-align-cell mb-2" to="/admin/bonuses/delete">
                     {text.deleteBonuses}
                     &nbsp;
                     <span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span>

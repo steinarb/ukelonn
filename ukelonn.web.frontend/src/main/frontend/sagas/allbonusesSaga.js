@@ -12,7 +12,7 @@ export function* requestAllbonusesSaga() {
 }
 
 function doAllbonuses() {
-    return axios.get('/ukelonn/api/allbonuses');
+    return axios.get('/api/allbonuses');
 }
 
 // worker saga
