@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
-import no.priv.bang.ukelonn.beans.Account;
 
 class AccountResourceTest extends ServletTestBase {
 
@@ -43,28 +42,28 @@ class AccountResourceTest extends ServletTestBase {
     @Test
     void testGetAccount() throws Exception {
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Create the object to be tested
-        AccountResource resource = new AccountResource();
+        var resource = new AccountResource();
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        Account result = resource.getAccount("jad");
+        var result = resource.getAccount("jad");
 
         // Check the result
         assertEquals("jad", result.getUsername());
@@ -80,23 +79,23 @@ class AccountResourceTest extends ServletTestBase {
     @Test
     void testGetAccountOtherUsername() throws Exception {
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
         // Create the object to be tested
-        AccountResource resource = new AccountResource();
+        var resource = new AccountResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test with a different username
@@ -114,28 +113,28 @@ class AccountResourceTest extends ServletTestBase {
     @Test
     void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
 
         // Create the object to be tested
-        AccountResource resource = new AccountResource();
+        var resource = new AccountResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        Account result = resource.getAccount("jad");
+        var result = resource.getAccount("jad");
 
         // Check the response
         assertEquals("jad", result.getUsername());
@@ -145,19 +144,19 @@ class AccountResourceTest extends ServletTestBase {
     @Test
     void testGetAccountNoUsername() throws Exception {
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
 
         // Create the object to be tested
-        AccountResource resource = new AccountResource();
+        var resource = new AccountResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test
@@ -169,23 +168,23 @@ class AccountResourceTest extends ServletTestBase {
     @Test
     void testGetAccountUsernameNotPresentInDatabase() throws Exception {
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
 
         // Create the object to be tested
-        AccountResource resource = new AccountResource();
+        var resource = new AccountResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
         resource.ukelonn = ukelonn;
 
@@ -200,14 +199,14 @@ class AccountResourceTest extends ServletTestBase {
         createSubjectWithNullPrincipalAndBindItToThread();
 
         // Create the object to be tested
-        AccountResource resource = new AccountResource();
+        var resource = new AccountResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test

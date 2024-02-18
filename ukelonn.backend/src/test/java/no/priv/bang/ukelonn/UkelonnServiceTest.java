@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ class UkelonnServiceTest {
      */
     @Test
     void testGetUkelonnServices() {
-        UkelonnService ukelonnService = new UkelonnServiceProvider();
+        var ukelonnService = new UkelonnServiceProvider();
         assertNotNull(ukelonnService);
         assertEquals("Hello world!", ukelonnService.getMessage());
     }

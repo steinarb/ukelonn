@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,24 @@ package no.priv.bang.ukelonn.api.resources;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.TransactionType;
 
 class PaymenttypeListTest {
 
     @Test
     void testGetPaymenttypes() throws Exception {
         // Create the resource that is to be tested
-        PaymenttypeList resource = new PaymenttypeList();
+        var resource = new PaymenttypeList();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPaymenttypes()).thenReturn(getPaymenttypes());
         resource.ukelonn = ukelonn;
 
         // Run the method that is to be tested
-        List<TransactionType> paymenttypes = resource.getPaymenttypes();
+        var paymenttypes = resource.getPaymenttypes();
 
         // Check the output
         assertEquals(2, paymenttypes.size());

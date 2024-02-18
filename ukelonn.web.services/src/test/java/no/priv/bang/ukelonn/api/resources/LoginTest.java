@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,22 +49,22 @@ class LoginTest extends ServletTestBase {
     @Test
     void testLoginOk() throws Exception {
         // Set up the login request
-        LoginCredentials credentials = LoginCredentials.with()
+        var credentials = LoginCredentials.with()
             .username("jad")
             .password(Base64.getEncoder().encodeToString("1ad".getBytes()))
             .build();
-        MockHttpServletRequest request = buildPostUrl("/login");
+        var request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
 
         // Create the resource and do the login
-        Login resource = new Login();
+        var resource = new Login();
         resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
-        LoginResult result = resource.doLogin(credentials);
+        var result = resource.doLogin(credentials);
 
         // Check the response
         assertThat(result.getRoles()).isNotEmpty();
@@ -74,22 +74,22 @@ class LoginTest extends ServletTestBase {
     @Test
     void testAdminLoginOk() throws Exception {
         // Set up the request
-        LoginCredentials credentials = LoginCredentials.with()
+        var credentials = LoginCredentials.with()
             .username("admin")
             .password(Base64.getEncoder().encodeToString("admin".getBytes()))
             .build();
-        MockHttpServletRequest request = buildPostUrl("/login");
+        var request = buildPostUrl("/login");
         request.setBodyContent(mapper.writeValueAsString(credentials));
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
 
         // Create the servlet and do the login
-        Login resource = new Login();
+        var resource = new Login();
         resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
-        LoginResult result = resource.doLogin(credentials);
+        var result = resource.doLogin(credentials);
 
         // Check the response
         assertThat(result.getRoles()).isNotEmpty();

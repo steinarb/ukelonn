@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ class SumYearMonthTest {
 
     @Test
     void test() {
-        double sum = 250.0;
-        int year = 2016;
-        int month = 11;
-        SumYearMonth bean = SumYearMonth.with().sum(sum).year(year).month(month).build();
+        var sum = 250.0;
+        var year = 2016;
+        var month = 11;
+        var bean = SumYearMonth.with().sum(sum).year(year).month(month).build();
         assertEquals(sum, bean.getSum(), 0.0);
         assertEquals(year, bean.getYear());
         assertEquals(month, bean.getMonth());
@@ -34,10 +34,10 @@ class SumYearMonthTest {
 
     @Test
     void testNoArgsConstructor() {
-        double sum = 0.0;
-        int year = -1;
-        int month = -1;
-        SumYearMonth bean = SumYearMonth.with().build();
+        var sum = 0.0;
+        var year = -1;
+        var month = -1;
+        var bean = SumYearMonth.with().build();
         assertEquals(sum, bean.getSum(), 0.0);
         assertEquals(year, bean.getYear());
         assertEquals(month, bean.getMonth());

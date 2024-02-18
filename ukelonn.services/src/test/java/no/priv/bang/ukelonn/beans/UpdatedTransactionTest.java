@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ class UpdatedTransactionTest {
 
     @Test
     void testCreate() {
-        Date now = new Date();
-        UpdatedTransaction bean = UpdatedTransaction.with()
+        var now = new Date();
+        var bean = UpdatedTransaction.with()
             .id(31)
             .accountId(2)
             .transactionTypeId(2)
@@ -42,7 +42,7 @@ class UpdatedTransactionTest {
 
     @Test
     void testNoArgsConstructor() {
-        UpdatedTransaction bean = UpdatedTransaction.with().build();
+        var bean = UpdatedTransaction.with().build();
         assertEquals(-1, bean.getId());
         assertEquals(-1, bean.getTransactionTypeId());
         assertEquals(-1, bean.getTransactionTypeId());

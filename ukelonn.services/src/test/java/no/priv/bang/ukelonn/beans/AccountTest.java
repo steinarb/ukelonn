@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,12 @@ class AccountTest {
 
     @Test
     void testProperties() {
-        int expectedAccountId = 1;
-        String expectedUsername = "jad";
-        String expectedFirstname = "Jane";
-        String expectedLastname = "Doe";
-        double expectedBalance = 1;
-        Account account = Account.with()
+        var expectedAccountId = 1;
+        var expectedUsername = "jad";
+        var expectedFirstname = "Jane";
+        var expectedLastname = "Doe";
+        var expectedBalance = 1;
+        var account = Account.with()
             .accountid(expectedAccountId)
             .username(expectedUsername)
             .firstName(expectedFirstname)
@@ -49,7 +49,7 @@ class AccountTest {
 
     @Test
     void testFullName() {
-        Account account = Account.with()
+        var account = Account.with()
             .username("jad")
             .firstName("Jane")
             .lastName("Doe")
@@ -60,7 +60,7 @@ class AccountTest {
 
     @Test
     void testFullNameWhenNoLastName() {
-        Account account = Account.with()
+        var account = Account.with()
             .username("jad")
             .firstName("Jane")
             .build();
@@ -70,7 +70,7 @@ class AccountTest {
 
     @Test
     void testFullNameWhenNoFirstName() {
-        Account account = Account.with()
+        var account = Account.with()
             .username("jad")
             .build();
 
@@ -79,9 +79,9 @@ class AccountTest {
 
     @Test
     void testToString() {
-        Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
+        var account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
         assertEquals("Account [getAccountId()=1, getUsername()=jad, getFirstName()=Jane, getLastName()=Doe]", account.toString());
-        Account accountWithNullStrings = Account.with().accountid(1).build();
+        var accountWithNullStrings = Account.with().accountid(1).build();
         assertEquals("Account [getAccountId()=1, getUsername()=null, getFirstName()=null, getLastName()=null]", accountWithNullStrings.toString());
     }
 

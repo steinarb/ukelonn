@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,20 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.Account;
-import no.priv.bang.ukelonn.beans.Transaction;
 
 class PaymentsTest {
 
     @Test
     void testGetPayments() {
-        Account account = getJadAccount();
-        Payments resource = new Payments();
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var account = getJadAccount();
+        var resource = new Payments();
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
         resource.ukelonn = ukelonn;
-        List<Transaction> jobs = resource.payments(account.getAccountId());
+        var jobs = resource.payments(account.getAccountId());
         assertEquals(10, jobs.size());
     }
 

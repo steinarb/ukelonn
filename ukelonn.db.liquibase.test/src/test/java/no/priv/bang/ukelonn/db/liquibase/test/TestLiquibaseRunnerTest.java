@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,10 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -35,10 +32,8 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Disabled;
@@ -48,7 +43,6 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
-import liquibase.changelog.RanChangeSet;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
@@ -67,36 +61,36 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testPrepareDatabase() throws SQLException, DatabaseException {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_pure", "no");
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_pure", "no");
+        var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        var runner = new TestLiquibaseRunner();
         assertThat(runner.getChangeLogHistory(datasource)).isEmpty();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
-        try(Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+        try(var connection = datasource.getConnection()) {
+            try (var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
                 statement.setString(1, "jad");
-                try(ResultSet onAccount = statement.executeQuery()) {
+                try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    int account_id = onAccount.getInt("account_id");
-                    String username = onAccount.getString("username");
-                    float balance = onAccount.getFloat("balance");
+                    var account_id = onAccount.getInt("account_id");
+                    var username = onAccount.getString("username");
+                    var balance = onAccount.getFloat("balance");
                     assertEquals(4, account_id);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
             }
             // Verify that the texts in the database are in the default language  (i.e. Norwegian)
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
+            try (var statement = connection.createStatement()) {
+                try (var transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
                     assertNotNull(transactionTypes);
                     assertTrue(transactionTypes.next());
-                    String transactionTypeName = transactionTypes.getString("transaction_type_name");
+                    var transactionTypeName = transactionTypes.getString("transaction_type_name");
                     assertEquals("Støvsuging 1. etasje", transactionTypeName);
                 }
             }
@@ -108,90 +102,90 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testPrepareDatabaseWithConfiguredLanguage() throws SQLException, DatabaseException {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "en");
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "en");
+        var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.singletonMap("databaselanguage", "en_GB")); // Create the database
         runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
-        try(Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+        try(var connection = datasource.getConnection()) {
+            try (var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
                 statement.setString(1, "jad");
-                try(ResultSet onAccount = statement.executeQuery()) {
+                try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    int account_id = onAccount.getInt("account_id");
-                    String username = onAccount.getString("username");
-                    float balance = onAccount.getFloat("balance");
+                    var account_id = onAccount.getInt("account_id");
+                    var username = onAccount.getString("username");
+                    var balance = onAccount.getFloat("balance");
                     assertEquals(4, account_id);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
             }
             // Verify that the texts in the database are in the default language  (i.e. Norwegian)
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
+            try (var statement = connection.createStatement()) {
+                try (var transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
                     assertNotNull(transactionTypes);
                     assertTrue(transactionTypes.next());
-                    String transactionTypeName = transactionTypes.getString("transaction_type_name");
+                    var transactionTypeName = transactionTypes.getString("transaction_type_name");
                     assertEquals("Vacuuming 1st floor", transactionTypeName);
                 }
             }
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
+        var ranChangeSets = runner.getChangeLogHistory(datasource);
         assertEquals(49, ranChangeSets.size());
     }
 
     @Test
     void testPrepareDatabaseWithConfiguredLanguageNotFound() throws SQLException, DatabaseException {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "uk");
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "uk");
+        var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.singletonMap("databaselanguage", "en_UK")); // Create the database
         runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
-        try(Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+        try(var connection = datasource.getConnection()) {
+            try (var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
                 statement.setString(1, "jad");
-                try(ResultSet onAccount = statement.executeQuery()) {
+                try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    int account_id = onAccount.getInt("account_id");
-                    String username = onAccount.getString("username");
-                    float balance = onAccount.getFloat("balance");
+                    var account_id = onAccount.getInt("account_id");
+                    var username = onAccount.getString("username");
+                    var balance = onAccount.getFloat("balance");
                     assertEquals(4, account_id);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
             }
             // Verify that the texts in the database are in the default language  (i.e. Norwegian)
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
+            try (var statement = connection.createStatement()) {
+                try (var transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
                     assertNotNull(transactionTypes);
                     assertTrue(transactionTypes.next());
-                    String transactionTypeName = transactionTypes.getString("transaction_type_name");
+                    var transactionTypeName = transactionTypes.getString("transaction_type_name");
                     assertEquals("Støvsuging 1. etasje", transactionTypeName);
                 }
             }
         }
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        List<RanChangeSet> ranChangeSets = runner.getChangeLogHistory(datasource);
+        var ranChangeSets = runner.getChangeLogHistory(datasource);
         assertEquals(49, ranChangeSets.size());
     }
 
     @Test
     void testFailWhenPrepareDatabase() throws SQLException, DatabaseException {
-        DataSource datasource = mock(DataSource.class);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var datasource = mock(DataSource.class);
+        var runner = new TestLiquibaseRunner();
         var logservice = new MockLogService();
         runner.setLogService(logservice);
         assertThat(logservice.getLogmessages()).isEmpty();
@@ -201,24 +195,24 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testInsert() throws SQLException {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
+        var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Verify that the user isn't present
-        try(Connection connection = datasource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from users where username=?");
+        try(var connection = datasource.getConnection()) {
+            var statement = connection.prepareStatement("select * from users where username=?");
             statement.setString(1, "jjd");
-            ResultSet userJjdBeforeInsert = statement.executeQuery();
-            int numberOfUserJjdBeforeInsert = 0;
+            var userJjdBeforeInsert = statement.executeQuery();
+            var numberOfUserJjdBeforeInsert = 0;
             while (userJjdBeforeInsert.next()) { ++numberOfUserJjdBeforeInsert; }
             assertEquals(0, numberOfUserJjdBeforeInsert);
 
-            PreparedStatement updateStatement = connection.prepareStatement("insert into users (username,password,password_salt,email,firstname,lastname) values (?, ?, ?, ?, ?, ?)");
+            var updateStatement = connection.prepareStatement("insert into users (username,password,password_salt,email,firstname,lastname) values (?, ?, ?, ?, ?, ?)");
             updateStatement.setString(1, "jjd");
             updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
             updateStatement.setString(3, "9SFDvohxZkZ9eWHiSEoMDw==");
@@ -229,7 +223,7 @@ class TestLiquibaseRunnerTest {
             assertEquals(1, count);
 
             // Verify that the user is now present
-            PreparedStatement statement2 = connection.prepareStatement("select * from users where username=?");
+            var statement2 = connection.prepareStatement("select * from users where username=?");
             statement2.setString(1, "jjd");
             ResultSet userJjd = statement2.executeQuery();
             int numberOfUserJjd = 0;
@@ -240,68 +234,68 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testFailToInsertMockData() throws SQLException {
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        DataSource datasource = mock(DataSource.class);
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
 
-        boolean result = runner.insertMockData(datasource);
+        var result = runner.insertMockData(datasource);
         assertFalse(result);
     }
 
     @Test
     void testRollbackMockData() throws Exception {
-        DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_rollback", "no");
-        DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_rollback", "no");
+        var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Check that database has the mock data in place
-        SoftAssertions expectedStatusBeforeRollback = new SoftAssertions();
-        int numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
+        var expectedStatusBeforeRollback = new SoftAssertions();
+        var numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
         expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isPositive();
-        int numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
+        var numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
         expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isPositive();
-        int numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
+        var numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
         expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isPositive();
-        int numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
+        var numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
         expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isPositive();
         expectedStatusBeforeRollback.assertAll();
 
-        int sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
+        var sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
 
         // Do the rollback
-        boolean rollbackSuccessful = runner.rollbackMockData(datasource);
+        var rollbackSuccessful = runner.rollbackMockData(datasource);
         assertTrue(rollbackSuccessful);
 
-        int sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
+        var sizeOfDbchangelogAfterRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
         assertThat(sizeOfDbchangelogAfterRollback).isLessThan(sizeOfDbchangelogBeforeRollback);
 
         // Verify that the database tables are empty
-        SoftAssertions expectedStatusAfterRollback = new SoftAssertions();
-        int numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
+        var expectedStatusAfterRollback = new SoftAssertions();
+        var numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
         expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).isEqualTo(0);
-        int numberOfUsersAfterRollback = findTheNumberOfRowsInTable(datasource, "users");
+        var numberOfUsersAfterRollback = findTheNumberOfRowsInTable(datasource, "users");
         expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).isEqualTo(0);
-        int numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(datasource, "accounts");
+        var numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(datasource, "accounts");
         expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
-        int numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
+        var numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
         expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).isEqualTo(0);
         expectedStatusAfterRollback.assertAll();
     }
 
     @Test
     void testFailToRollbackMockData() throws Exception {
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
-        DataSource datasource = mock(DataSource.class);
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
 
-        boolean rollbackSuccessful = runner.rollbackMockData(datasource);
+        var rollbackSuccessful = runner.rollbackMockData(datasource);
         assertFalse(rollbackSuccessful);
     }
 
@@ -321,8 +315,8 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testDummyDataResourceNameNoLanguageSet() {
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new TestLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
 
@@ -332,8 +326,8 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testDummyDataResourceNameWithLanguageSet() {
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new TestLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.singletonMap("databaselanguage", "en_GB"));
 
@@ -343,8 +337,8 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testDummyDataResourceNameWithNotFoundLanguageSet() {
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new TestLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.singletonMap("databaselanguage", "en_UK"));
 
@@ -360,20 +354,20 @@ class TestLiquibaseRunnerTest {
     void testCreateHashedPasswords() {
         String[] usernames = { "on", "kn", "jad", "jod" };
         String[] unhashedPasswords = { "ola12", "KaRi", "1ad", "johnnyBoi" };
-        RandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
+        var randomNumberGenerator = new SecureRandomNumberGenerator();
         System.out.println("username, password, salt");
         for (int i=0; i<usernames.length; ++i) {
             // First hash the password
-            String username = usernames[i];
-            String password = unhashedPasswords[i];
-            String salt = randomNumberGenerator.nextBytes().toBase64();
-            Object decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
-            String hashedPassword = new Sha256Hash(password, decodedSaltUsedWhenHashing, 1024).toBase64();
+            var username = usernames[i];
+            var password = unhashedPasswords[i];
+            var salt = randomNumberGenerator.nextBytes().toBase64();
+            var decodedSaltUsedWhenHashing = Util.bytes(Base64.getDecoder().decode(salt));
+            var hashedPassword = new Sha256Hash(password, decodedSaltUsedWhenHashing, 1024).toBase64();
 
             // Check the cleartext password against the hashed password
-            UsernamePasswordToken usenamePasswordToken = new UsernamePasswordToken(username, password.toCharArray());
-            SimpleAuthenticationInfo saltedAuthenticationInfo = createAuthenticationInfo(usernames[i], hashedPassword, salt);
-            CredentialsMatcher credentialsMatcher = createSha256HashMatcher(1024);
+            var usenamePasswordToken = new UsernamePasswordToken(username, password.toCharArray());
+            var saltedAuthenticationInfo = createAuthenticationInfo(usernames[i], hashedPassword, salt);
+            var credentialsMatcher = createSha256HashMatcher(1024);
             assertTrue(credentialsMatcher.doCredentialsMatch(usenamePasswordToken, saltedAuthenticationInfo));
 
             // Print out the username, hashed password, and salt
@@ -403,8 +397,8 @@ class TestLiquibaseRunnerTest {
     @Disabled("Not an actual unit test. This test is a convenient way to populate a derby network server running on localhost, with the ukelonn schema and test data, using liquibase.")
     @Test
     void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException { // NOSONAR This isn't an actual test, see the comments
-        boolean createUkelonnDatabase = true;
-        ClientConnectionPoolDataSource dataSource = new ClientConnectionPoolDataSource();
+        var createUkelonnDatabase = true;
+        var dataSource = new ClientConnectionPoolDataSource();
         dataSource.setServerName("localhost");
         dataSource.setDatabaseName("ukelonn");
         dataSource.setPortNumber(1527);
@@ -412,7 +406,7 @@ class TestLiquibaseRunnerTest {
             dataSource.setCreateDatabase("create");
         }
 
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        var liquibase = new UkelonnLiquibase();
         liquibase.createInitialSchema(dataSource);
 
         try(var connect = dataSource.getConnection()) {
@@ -437,37 +431,37 @@ class TestLiquibaseRunnerTest {
     }
 
     private Properties createDerbyMemoryCredentials(String dbname, String language) {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + language + ";create=true");
         return properties;
     }
 
     private CredentialsMatcher createSha256HashMatcher(int iterations) {
-        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
+        var credentialsMatcher = new HashedCredentialsMatcher(Sha256Hash.ALGORITHM_NAME);
         credentialsMatcher.setHashIterations(iterations);
         return credentialsMatcher;
     }
 
     private SimpleAuthenticationInfo createAuthenticationInfo(String principal, String hashedPassword, String salt) {
-        Object decodedPassword = Sha256Hash.fromBase64String(hashedPassword);
-        ByteSource decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
+        var decodedPassword = Sha256Hash.fromBase64String(hashedPassword);
+        var decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
+        var authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
         return authenticationInfo;
     }
 
     private int findTheNumberOfRowsInTable(DataSource datasource, String tableName) throws Exception {
-        String selectAllRowsStatement = String.format("select * from %s", tableName);
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
-                ResultSet userResults = selectAllRowsInTable.executeQuery();
-                int numberOfRows = countResults(userResults);
+        var selectAllRowsStatement = String.format("select * from %s", tableName);
+        try(var connection = datasource.getConnection()) {
+            try(var selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
+                var userResults = selectAllRowsInTable.executeQuery();
+                var numberOfRows = countResults(userResults);
                 return numberOfRows;
             }
         }
     }
 
     private int countResults(ResultSet results) throws Exception {
-        int numberOfResultsInResultSet = 0;
+        var numberOfResultsInResultSet = 0;
         while(results.next()) {
             ++numberOfResultsInResultSet;
         }

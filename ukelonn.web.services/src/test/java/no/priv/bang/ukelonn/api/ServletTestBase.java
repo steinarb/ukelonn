@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,19 +55,19 @@ public class ServletTestBase {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     protected byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
-        MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
+        var outputstream = (MockServletOutputStream) response.getOutputStream();
         return outputstream.getBinaryContent();
     }
 
     protected MockHttpServletRequest buildGetUrl(String resource) {
-        MockHttpServletRequest request = buildRequest(resource);
+        var request = buildRequest(resource);
         request.setMethod("GET");
         return request;
     }
 
     protected MockHttpServletRequest buildPostUrl(String resource) throws Exception {
-        String contenttype = MediaType.APPLICATION_JSON;
-        MockHttpServletRequest request = buildRequest(resource);
+        var contenttype = MediaType.APPLICATION_JSON;
+        var request = buildRequest(resource);
         request.setMethod("POST");
         request.setContentType(contenttype);
         request.addHeader("Content-Type", contenttype);
@@ -76,26 +76,26 @@ public class ServletTestBase {
     }
 
     protected void loginUser(HttpServletRequest request, HttpServletResponse response, String username, String password) {
-        WebSubject subject = createSubjectAndBindItToThread(request, response);
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        var subject = createSubjectAndBindItToThread(request, response);
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
     }
 
     protected WebSubject createSubjectAndBindItToThread(HttpServletRequest request, HttpServletResponse response) {
-        WebSubject subject = new WebSubject.Builder(getSecurityManager(), request, response).buildWebSubject();
+        var subject = new WebSubject.Builder(getSecurityManager(), request, response).buildWebSubject();
         ThreadContext.bind(subject);
         return subject;
     }
 
     protected WebSubject createSubjectWithNullPrincipalAndBindItToThread() {
-        WebSubject subject = mock(WebSubject.class);
+        var subject = mock(WebSubject.class);
         ThreadContext.bind(subject);
         return subject;
     }
 
     private MockHttpServletRequest buildRequest(String resource) {
-        MockHttpSession session = new MockHttpSession();
-        MockHttpServletRequest request = new MockHttpServletRequest();
+        var session = new MockHttpSession();
+        var request = new MockHttpServletRequest();
         request.setProtocol("HTTP/1.1");
         request.setRequestURL(buildFullURL(resource));
         request.setRequestURI(buildURI(resource));

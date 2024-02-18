@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ class UkelonndbAsAuthservicedbTest {
 
     @Test
     void testActivate() throws Exception {
-        DataSource ukelonndb = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var ukelonndb = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(ukelonndb.getConnection()).thenReturn(connection);
 
-        UkelonndbAsAuthservicedb proxy = new UkelonndbAsAuthservicedb();
+        var proxy = new UkelonndbAsAuthservicedb();
         proxy.setWrappedDataSource(ukelonndb);
         proxy.activate();
 

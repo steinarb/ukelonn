@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +44,6 @@ import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
-import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
 
@@ -58,10 +56,10 @@ class JobResourceTest extends ServletTestBase {
     @Test
     void testRegisterJob() throws Exception {
         // Create the request
-        Account account = getJadAccount();
-        double originalBalance = account.getBalance();
-        List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = PerformedTransaction.with()
+        var account = getJadAccount();
+        var originalBalance = account.getBalance();
+        var jobTypes = getJobtypes();
+        var job = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(jobTypes.get(0).getId())
             .transactionAmount(jobTypes.get(0).getTransactionAmount())
@@ -69,30 +67,30 @@ class JobResourceTest extends ServletTestBase {
             .build();
 
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Create the object to be tested
-        JobResource resource = new JobResource();
+        var resource = new JobResource();
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        Account accountWithUpdatedBalance = copyAccount(account);
+        var ukelonn = mock(UkelonnService.class);
+        var accountWithUpdatedBalance = copyAccount(account);
         accountWithUpdatedBalance.setBalance(account.getBalance() + job.getTransactionAmount());
         when(ukelonn.registerPerformedJob(any())).thenReturn(accountWithUpdatedBalance);
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        Account result = resource.doRegisterJob(job);
+        var result = resource.doRegisterJob(job);
 
         // Check the response
         assertEquals("jad", result.getUsername());
@@ -108,9 +106,9 @@ class JobResourceTest extends ServletTestBase {
     @Test
     void testRegisterJobOtherUsername() throws Exception {
         // Create the request
-        Account account = getJodAccount();
-        List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = PerformedTransaction.with()
+        var account = getJodAccount();
+        var jobTypes = getJobtypes();
+        var job = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(jobTypes.get(0).getId())
             .transactionAmount(jobTypes.get(0).getTransactionAmount())
@@ -118,23 +116,23 @@ class JobResourceTest extends ServletTestBase {
             .build();
 
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
         // Create the object to be tested
-        JobResource resource = new JobResource();
+        var resource = new JobResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test
@@ -150,10 +148,10 @@ class JobResourceTest extends ServletTestBase {
     @Test
     void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
-        Account account = getJadAccount();
-        double originalBalance = account.getBalance();
-        List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = PerformedTransaction.with()
+        var account = getJadAccount();
+        var originalBalance = account.getBalance();
+        var jobTypes = getJobtypes();
+        var job = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(jobTypes.get(0).getId())
             .transactionAmount(jobTypes.get(0).getTransactionAmount())
@@ -161,30 +159,30 @@ class JobResourceTest extends ServletTestBase {
             .build();
 
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
 
         // Create the object to be tested
-        JobResource resource = new JobResource();
+        var resource = new JobResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        Account accountWithUpdatedBalance = copyAccount(account);
+        var ukelonn = mock(UkelonnService.class);
+        var accountWithUpdatedBalance = copyAccount(account);
         accountWithUpdatedBalance.setBalance(account.getBalance() + job.getTransactionAmount());
         when(ukelonn.registerPerformedJob(any())).thenReturn(accountWithUpdatedBalance);
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        Account result = resource.doRegisterJob(job);
+        var result = resource.doRegisterJob(job);
 
         // Check the response
         assertEquals("jad", result.getUsername());
@@ -194,9 +192,9 @@ class JobResourceTest extends ServletTestBase {
     @Test
     void testRegisterJobNoUsername() throws Exception {
         // Create the request
-        Account account = Account.with().build();
-        List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = PerformedTransaction.with()
+        var account = Account.with().build();
+        var jobTypes = getJobtypes();
+        var job = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(jobTypes.get(0).getId())
             .transactionAmount(jobTypes.get(0).getTransactionAmount())
@@ -204,22 +202,22 @@ class JobResourceTest extends ServletTestBase {
             .build();
 
         // Create the request and response for the Shiro login
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
+        var request = mock(HttpServletRequest.class);
+        var session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        var response = mock(HttpServletResponse.class);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
 
-        JobResource resource = new JobResource();
+        var resource = new JobResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test
@@ -238,9 +236,9 @@ class JobResourceTest extends ServletTestBase {
     @Test
     void testRegisterJobInternalServerError() throws Exception {
         // Create the request
-        Account account = Account.with().build();
-        List<TransactionType> jobTypes = getJobtypes();
-        PerformedTransaction job = PerformedTransaction.with()
+        var account = Account.with().build();
+        var jobTypes = getJobtypes();
+        var job = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(jobTypes.get(0).getId())
             .transactionAmount(jobTypes.get(0).getTransactionAmount())
@@ -248,14 +246,14 @@ class JobResourceTest extends ServletTestBase {
             .build();
 
         // Create the object to be tested
-        JobResource resource = new JobResource();
+        var resource = new JobResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Clear the Subject to ensure that Shiro will fail
@@ -268,29 +266,29 @@ class JobResourceTest extends ServletTestBase {
 
     @Test
     void testUpdateJob() {
-        UkelonnService ukelonn = mock(UkelonnService.class);
-        JobResource resource = new JobResource();
+        var ukelonn = mock(UkelonnService.class);
+        var resource = new JobResource();
 
         // Create mock OSGi services to inject and inject it
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
 
-        Account account = getJadAccount();
-        Transaction job = getJadJobs().get(0);
-        int jobId = job.getId();
+        var account = getJadAccount();
+        var job = getJadJobs().get(0);
+        var jobId = job.getId();
 
         // Save initial values of the job for comparison later
-        Integer originalTransactionTypeId = job.getTransactionType().getId();
-        Date originalTransactionTime = job.getTransactionTime();
-        double originalTransactionAmount = job.getTransactionAmount();
+        var originalTransactionTypeId = job.getTransactionType().getId();
+        var originalTransactionTime = job.getTransactionTime();
+        var originalTransactionAmount = job.getTransactionAmount();
 
         // Find a different job type that has a different amount
-        TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
+        var newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
 
         // Create a new job object with a different jobtype and the same id
-        Date now = new Date();
-        UpdatedTransaction editedJob = UpdatedTransaction.with()
+        var now = new Date();
+        var editedJob = UpdatedTransaction.with()
             .id(jobId)
             .accountId(account.getAccountId())
             .transactionTypeId(newJobType.getId())
@@ -299,9 +297,9 @@ class JobResourceTest extends ServletTestBase {
             .build();
         when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
 
-        List<Transaction> updatedJobs = resource.doUpdateJob(editedJob);
+        var updatedJobs = resource.doUpdateJob(editedJob);
 
-        Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
 
         assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
         assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
@@ -311,22 +309,22 @@ class JobResourceTest extends ServletTestBase {
     @Test
     void testUpdateJobGetSQLException() throws Exception {
         // Create an ukelonn service with a mock database that throws exception
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
         ukelonn.setDataSource(datasource);
 
         // Create a resource and inject OSGi services
-        JobResource resource = new JobResource();
+        var resource = new JobResource();
         resource.ukelonn = ukelonn;
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
 
-        UpdatedTransaction emptyTransaction = UpdatedTransaction.with().build();
+        var emptyTransaction = UpdatedTransaction.with().build();
         assertThrows(InternalServerErrorException.class, () -> resource.doUpdateJob(emptyTransaction));
     }
 

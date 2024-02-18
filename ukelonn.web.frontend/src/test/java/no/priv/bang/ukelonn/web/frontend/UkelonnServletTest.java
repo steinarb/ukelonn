@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,17 +35,17 @@ class UkelonnServletTest {
 
     @Test
     void testGet() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UkelonnServlet servlet = new UkelonnServlet();
-        ServletConfig servletConfig = mock(ServletConfig.class);
+        var logservice = new MockLogService();
+        var servlet = new UkelonnServlet();
+        var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
         servlet.setLogService(logservice);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+        var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         servlet.service(request, response);
 
@@ -57,15 +57,15 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetAddTrailingSlash() throws Exception {
-        MockLogService logservice = new MockLogService();
-        HttpServletRequest request = mock(HttpServletRequest.class);
+        var logservice = new MockLogService();
+        var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn");
         when(request.getServletPath()).thenReturn("/frontend-karaf-demo");
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
-        UkelonnServlet servlet = new UkelonnServlet();
+        var servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
         servlet.service(request, response);
@@ -75,19 +75,19 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetResponseThrowsIOException() throws Exception {
-        MockLogService logservice = new MockLogService();
-        HttpServletRequest request = mock(HttpServletRequest.class);
+        var logservice = new MockLogService();
+        var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        var response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();
-        ServletOutputStream streamThrowingIOException = mock(ServletOutputStream.class);
+        var streamThrowingIOException = mock(ServletOutputStream.class);
         doThrow(IOException.class).when(streamThrowingIOException).write(anyInt());
         when(response.getOutputStream()).thenReturn(streamThrowingIOException);
 
-        UkelonnServlet servlet = new UkelonnServlet();
+        var servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
         servlet.service(request, response);
@@ -97,17 +97,17 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
-        MockLogService logservice = new MockLogService();
-        HttpServletRequest request = mock(HttpServletRequest.class);
+        var logservice = new MockLogService();
+        var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
         when(request.getPathInfo()).thenReturn("/");
-        MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
+        var response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();
         when(response.getOutputStream()).thenThrow(IOException.class);
 
-        UkelonnServlet servlet = new UkelonnServlet();
+        var servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
         servlet.service(request, response);
@@ -117,15 +117,15 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetResourceNotFound() throws Exception {
-        MockLogService logservice = new MockLogService();
-        HttpServletRequest request = mock(HttpServletRequest.class);
+        var logservice = new MockLogService();
+        var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/static/nosuchname.png"));
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/static/nosuchname.png");
         when(request.getPathInfo()).thenReturn("/static/nosuchname.png");
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
-        UkelonnServlet servlet = new UkelonnServlet();
+        var servlet = new UkelonnServlet();
         servlet.setLogService(logservice);
 
         servlet.service(request, response);

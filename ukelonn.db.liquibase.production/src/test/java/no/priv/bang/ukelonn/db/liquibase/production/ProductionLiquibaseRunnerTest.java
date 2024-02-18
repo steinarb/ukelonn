@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import static no.priv.bang.ukelonn.db.liquibase.production.ProductionLiquibaseRunner.*;
 
 class ProductionLiquibaseRunnerTest {
@@ -55,12 +54,12 @@ class ProductionLiquibaseRunnerTest {
     @Test
     void testPrepareWhenSQLExceptionIsThrown() throws Exception {
         // Create the object under test
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new ProductionLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
 
-        DataSource datasource = mock(DataSource.class);
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
 
         // Execute the method under test
@@ -72,30 +71,30 @@ class ProductionLiquibaseRunnerTest {
 
     @Test
     void testInsertInitialDataInDatabaseFailToCreateLiquibase() throws Exception {
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new ProductionLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
-        DataSource datasource = mock(DataSource.class);
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        boolean successfullyinserteddata = runner.insertInitialDataInDatabase(datasource );
+        var successfullyinserteddata = runner.insertInitialDataInDatabase(datasource );
         assertFalse(successfullyinserteddata);
     }
 
     @Test
     void testCreateUkelonnLiquibaseDefault() throws Exception {
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new ProductionLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
-        UkelonnLiquibase liquibase = runner.createUkelonnLiquibase();
+        var liquibase = runner.createUkelonnLiquibase();
         assertNotNull(liquibase);
     }
 
     @Test
     void testInitialDataResourceNameNoLanguageSet() {
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new ProductionLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
 
@@ -105,8 +104,8 @@ class ProductionLiquibaseRunnerTest {
 
     @Test
     void testInitialDataResourceNameWithLanguageSet() {
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new ProductionLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.singletonMap("databaselanguage", "en_GB"));
 
@@ -116,8 +115,8 @@ class ProductionLiquibaseRunnerTest {
 
     @Test
     void testInitialDataResourceNameWithNotFoundLanguageSet() {
-        ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
-        MockLogService logservice = new MockLogService();
+        var runner = new ProductionLiquibaseRunner();
+        var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.singletonMap("databaselanguage", "en_UK"));
 

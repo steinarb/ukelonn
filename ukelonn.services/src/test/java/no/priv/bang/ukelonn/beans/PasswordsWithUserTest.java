@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,25 +23,25 @@ class PasswordsWithUserTest {
 
     @Test
     void testProperties() {
-        int expectedUserId = 1;
-        String expectedUsername = "jad";
-        String expectedEmail = "jane21@gmail.com";
-        String expectedFirstname = "Jane";
-        String expectedLastname = "Doe";
-        User user = User.with()
+        var expectedUserId = 1;
+        var expectedUsername = "jad";
+        var expectedEmail = "jane21@gmail.com";
+        var expectedFirstname = "Jane";
+        var expectedLastname = "Doe";
+        var user = User.with()
             .userId(expectedUserId)
             .username(expectedUsername)
             .email(expectedEmail)
             .firstname(expectedFirstname)
             .lastname(expectedLastname)
             .build();
-        String password = "zecret";
-        String password2 = "zecret2";
-        PasswordsWithUser passwords = PasswordsWithUser.with().user(user).password(password).password2(password2).build();
+        var password = "zecret";
+        var password2 = "zecret2";
+        var passwords = PasswordsWithUser.with().user(user).password(password).password2(password2).build();
         assertEquals("jad", passwords.getUser().getUsername());
         assertEquals(password, passwords.getPassword());
         assertEquals(password2, passwords.getPassword2());
-        User user2 = User.with().build();
+        var user2 = User.with().build();
         passwords.setUser(user2);
         assertEquals(user2, passwords.getUser());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
@@ -32,26 +30,26 @@ class StatisticsTest {
 
     @Test
     void testEarningsSumOverYear() {
-        Statistics resource = new Statistics();
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var resource = new Statistics();
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.earningsSumOverYear("jad")).thenReturn(Arrays.asList(SumYear.with().sum(1250.0).year(2016).build()));
         resource.ukelonn = ukelonn;
 
-        String username = "jad";
-        List<SumYear> earningsSumOverYear = resource.earningsSumOverYear(username);
+        var username = "jad";
+        var earningsSumOverYear = resource.earningsSumOverYear(username);
         assertThat(earningsSumOverYear).isNotEmpty();
         assertEquals(2016, earningsSumOverYear.get(0).getYear());
     }
 
     @Test
     void testEarningsSumOverMonth() {
-        Statistics resource = new Statistics();
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var resource = new Statistics();
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.earningsSumOverMonth("jad")).thenReturn(Arrays.asList(SumYearMonth.with().sum(125.0).year(2016).month(7).build()));
         resource.ukelonn = ukelonn;
 
-        String username = "jad";
-        List<SumYearMonth> earningsSumOverYear = resource.earningsSumOverMonth(username);
+        var username = "jad";
+        var earningsSumOverYear = resource.earningsSumOverMonth(username);
         assertThat(earningsSumOverYear).isNotEmpty();
         assertEquals(2016, earningsSumOverYear.get(0).getYear());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,15 @@ class BonusTest {
 
     @Test
     void testCreate() {
-        int bonusId = 1;
-        boolean enabled = true;
-        String iconurl = "http//images.com/juletre.jpg";
-        String title = "Julebonus";
-        String description = "Dobbel betaling for jobber";
-        double bonusFactor = 2.0;
-        Date startDate = new Date();
-        Date endDate = new Date();
-        Bonus bean = Bonus.with()
+        var bonusId = 1;
+        var enabled = true;
+        var iconurl = "http//images.com/juletre.jpg";
+        var title = "Julebonus";
+        var description = "Dobbel betaling for jobber";
+        var bonusFactor = 2.0;
+        var startDate = new Date();
+        var endDate = new Date();
+        var bean = Bonus.with()
             .bonusId(bonusId)
             .enabled(enabled)
             .iconurl(iconurl)
@@ -55,7 +55,7 @@ class BonusTest {
 
     @Test
     void testNoArgsConstructor() {
-        Bonus bean = Bonus.with().build();
+        var bean = Bonus.with().build();
         assertEquals(0, bean.getBonusId());
         assertFalse(bean.isEnabled());
         assertNull(bean.getIconurl());

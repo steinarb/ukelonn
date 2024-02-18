@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,24 @@ package no.priv.bang.ukelonn.api.resources;
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.Account;
 
 class AccountsTest {
 
     @Test
     void testGetAccounts() throws Exception {
         // Create the object to be tested
-        Accounts resource = new Accounts();
+        var resource = new Accounts();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        List<Account> result = resource.accounts();
+        var result = resource.accounts();
 
         // Check the result
         assertEquals(2, result.size());
