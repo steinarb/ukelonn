@@ -210,8 +210,6 @@ class AccountResourceTest extends ServletTestBase {
         resource.ukelonn = ukelonn;
 
         // Run the method under test
-        assertThrows(InternalServerErrorException.class, () -> {
-                resource.getAccount("on");
-            });
+        assertThrows(ForbiddenException.class, () -> resource.getAccount("on"));
     }
 }
