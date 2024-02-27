@@ -75,6 +75,11 @@ public class ServletTestBase {
         return request;
     }
 
+    protected void loginUser(String username, String password) {
+        var request = new MockHttpServletRequest().setSession(new MockHttpSession());
+        loginUser(request, new MockHttpServletResponse(), username, password);
+    }
+
     protected void loginUser(HttpServletRequest request, HttpServletResponse response, String username, String password) {
         var subject = createSubjectAndBindItToThread(request, response);
         var token = new UsernamePasswordToken(username, password.toCharArray(), true);
@@ -91,6 +96,10 @@ public class ServletTestBase {
         var subject = mock(WebSubject.class);
         ThreadContext.bind(subject);
         return subject;
+    }
+
+    protected void removeWebSubjectFromThread() {
+        ThreadContext.remove(ThreadContext.SUBJECT_KEY);
     }
 
     private MockHttpServletRequest buildRequest(String resource) {

@@ -36,8 +36,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.util.ThreadContext;
 import org.glassfish.jersey.server.ServerProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.log.LogService;
@@ -92,6 +92,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+    @BeforeEach
+    void beforeEachTest() {
+        removeWebSubjectFromThread();
+    }
+
     @Test
     void testLoginOk() throws Exception {
         // Set up the request
@@ -111,6 +116,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create shiro context but do not log in
+        createSubjectAndBindItToThread(request, response);
 
         // Do the login
         servlet.service(request, response);
@@ -143,6 +151,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create shiro context but do not log in
+        createSubjectAndBindItToThread(request, response);
 
         // Do the login
         servlet.service(request, response);
@@ -208,6 +219,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create shiro context but do not log in
+        createSubjectAndBindItToThread(request, response);
 
         // Do the login
         servlet.service(request, response);
@@ -341,6 +355,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Do the logout
         servlet.service(request, response);
 
@@ -458,6 +475,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -490,6 +510,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
         // Run the method under test
@@ -520,6 +543,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
 
         // Run the method under test
         servlet.service(request, response);
@@ -617,6 +643,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -659,6 +688,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Run the method under test
         servlet.service(request, response);
@@ -774,51 +806,6 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(400, response.getStatus());
     }
 
-    /**
-     * To provoked the internal server error, the user isn't logged in.
-     * This causes a NullPointerException in the user check.
-     *
-     * (In a production environment this request without a login,
-     * will be stopped by Shiro)
-     *
-     * @throws Exception
-     */
-    @Test
-    void testRegisterJobInternalServerError() throws Exception {
-        // Create the request
-        var account = Account.with().build();
-        var jobTypes = getJobtypes();
-        var job = PerformedTransaction.with()
-            .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
-            .transactionDate(new Date())
-            .build();
-        var jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
-        var request = buildPostUrl("/job/register");
-        request.setBodyContent(jobAsJson);
-
-        // Create a response object that will receive and hold the servlet output
-        var response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
-
-        // Create mock OSGi services to inject
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var ukelonn = mock(UkelonnService.class);
-
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
-
-        // Clear the Subject to ensure that Shiro will fail
-        // no matter what order test methods are run in
-        ThreadContext.remove();
-
-        // Run the method under test
-        servlet.service(request, response);
-
-        // Check the response
-        assertEquals(500, response.getStatus());
-    }
-
     @Test
     void testGetJobs() throws Exception {
         // Set up the request
@@ -916,6 +903,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Call the method under test
         servlet.service(request, response);
 
@@ -946,6 +936,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Call the method under test
         servlet.service(request, response);
@@ -1093,6 +1086,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1200,6 +1196,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Call the method under test
         servlet.service(request, response);
@@ -1406,6 +1405,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Create a response object that will receive and hold the servlet output
         var notificationsResponse = new MockHttpServletResponse();
 
+        // Log in admin user
+        loginUser("admin", "admin");
+
         // Do a REST API call
         servlet.service(requestGetNotifications, notificationsResponse);
 
@@ -1476,6 +1478,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request and response
         var request = buildGetUrl("/allbonuses");
         var response = new MockHttpServletResponse();
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Run the method under test
         servlet.service(request, response);
@@ -1669,6 +1674,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1678,6 +1686,88 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var updatedStatus = mapper.readValue(getBinaryContent(response), AdminStatus.class);
         assertEquals(user, updatedStatus.getUser());
         assertTrue(updatedStatus.isAdministrator());
+    }
+
+    @Test
+    void testPostChangeAdminStatusNonAdminUser() throws Exception {
+        // Set up REST API servlet with mocked services
+        var ukelonn = mock(UkelonnService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create a user object
+        var newUsername = "aragorn";
+        var newEmailaddress = "strider@hotmail.com";
+        var newFirstname = "Aragorn";
+        var newLastname = "McArathorn";
+        var user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
+        var status = AdminStatus.with().user(user).administrator(true).build();
+
+        // Create the request and response
+        var request = buildPostUrl("/admin/user/changeadminstatus");
+        var postBody = mapper.writeValueAsString(status);
+        request.setBodyContent(postBody);
+        var response = new MockHttpServletResponse();
+
+        // Login non-admin user
+        loginUser(request, response, "jad", "1ad");
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus(), "Expect 403 Forbidden");
+    }
+
+    @Test
+    void testPostChangeAdminStatusNotLoggedIn() throws Exception {
+        // Set up REST API servlet with mocked services
+        var ukelonn = mock(UkelonnService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
+        when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
+
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Create a user object
+        var newUsername = "aragorn";
+        var newEmailaddress = "strider@hotmail.com";
+        var newFirstname = "Aragorn";
+        var newLastname = "McArathorn";
+        var user = User.with()
+            .userid(0)
+            .username(newUsername)
+            .email(newEmailaddress)
+            .firstname(newFirstname)
+            .lastname(newLastname)
+            .build();
+        var status = AdminStatus.with().user(user).administrator(true).build();
+
+        // Create the request and response
+        var request = buildPostUrl("/admin/user/changeadminstatus");
+        var postBody = mapper.writeValueAsString(status);
+        request.setBodyContent(postBody);
+        var response = new MockHttpServletResponse();
+
+        // Create security context
+        createSubjectAndBindItToThread(request, response);
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus(), "Expect 401 Unauthorized");
     }
 
     @Test
