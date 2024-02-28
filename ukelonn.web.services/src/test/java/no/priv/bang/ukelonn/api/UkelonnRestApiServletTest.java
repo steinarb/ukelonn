@@ -388,10 +388,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        // Set up shiro
-        createSubjectAndBindItToThread(request, response);
-
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Do the logout
         servlet.service(request, response);
@@ -421,6 +421,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Call the method under test
         servlet.service(request, response);
 
@@ -447,6 +450,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Run the method under test
         servlet.service(request, response);
@@ -799,6 +805,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -822,6 +831,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Call the method under test
         servlet.service(request, response);
@@ -854,6 +866,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
 
         // Call the method under test
         servlet.service(request, response);
@@ -967,6 +982,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Call the method under test
         servlet.service(request, response);
 
@@ -1006,6 +1024,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1043,6 +1064,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
 
         // Run the method under test
         servlet.service(request, response);
@@ -1127,6 +1151,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1168,6 +1195,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
 
         // Run the method under test
         servlet.service(request, response);
@@ -1244,6 +1274,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1298,6 +1331,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1346,6 +1382,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1377,6 +1416,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Create the request and response
         var request = buildGetUrl("/statistics/earnings/sumoveryear/jad");
         var response = new MockHttpServletResponse();
+
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
 
         // Run the method under test
         servlet.service(request, response);
@@ -1454,6 +1496,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var request = buildGetUrl("/activebonuses");
         var response = new MockHttpServletResponse();
 
+        // Log in non-admin user
+        loginUser(request, response, "jad", "1ad");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1518,6 +1563,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1554,6 +1602,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
 
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
+
         // Run the method under test
         servlet.service(request, response);
 
@@ -1589,6 +1640,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var postBody = mapper.writeValueAsString(bonus);
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
+
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
 
         // Run the method under test
         servlet.service(request, response);
@@ -1631,6 +1685,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var postBody = mapper.writeValueAsString(user);
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
+
+        // Log in admin user
+        loginUser(request, response, "admin", "admin");
 
         // Run the method under test
         servlet.service(request, response);
@@ -1726,7 +1783,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.service(request, response);
 
         // Check the response
-        assertEquals(200, response.getStatus(), "Expect 403 Forbidden");
+        assertEquals(403, response.getStatus(), "Expect 403 Forbidden");
     }
 
     @Test
@@ -1767,7 +1824,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         servlet.service(request, response);
 
         // Check the response
-        assertEquals(200, response.getStatus(), "Expect 401 Unauthorized");
+        assertEquals(401, response.getStatus(), "Expect 401 Unauthorized");
     }
 
     @Test

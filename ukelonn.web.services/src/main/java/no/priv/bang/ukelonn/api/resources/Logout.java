@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
 
@@ -29,6 +30,7 @@ import no.priv.bang.ukelonn.api.beans.LoginResult;
 
 @Path("/logout")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresUser
 public class Logout {
 
     @Inject
