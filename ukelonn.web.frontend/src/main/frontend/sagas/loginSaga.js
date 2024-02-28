@@ -4,6 +4,9 @@ import {
     INITIAL_LOGIN_STATE_REQUEST,
     INITIAL_LOGIN_STATE_RECEIVE,
     INITIAL_LOGIN_STATE_FAILURE,
+    CHECK_LOGIN_STATE_REQUEST,
+    CHECK_LOGIN_STATE_RECEIVE,
+    CHECK_LOGIN_STATE_FAILURE,
     LOGIN_REQUEST,
     LOGIN_RECEIVE,
     LOGIN_FAILURE,
@@ -33,6 +36,21 @@ export function* receiveInitialLoginStateSaga() {
         }
     } catch (error) {
         yield put(INITIAL_LOGIN_STATE_FAILURE(error));
+    }
+}
+
+export function* requestCheckLoginStateSaga() {
+    yield takeLatest(CHECK_LOGIN_STATE_REQUEST, receiveCheckLoginStateSaga);
+}
+
+// worker saga
+export function* receiveCheckLoginStateSaga() {
+    try {
+        const response = yield call(doGetLogin);
+        const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
+        yield put(CHECK_LOGIN_STATE_RECEIVE(loginResponse));
+    } catch (error) {
+        yield put(CHECK_LOGIN_STATE_FAILURE(error));
     }
 }
 
