@@ -1,18 +1,12 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Locale from './Locale';
 import Logout from './Logout';
 
 
 export default function Unauthorized() {
-    const haveReceivedResponseFromLogin = useSelector(state => state.haveReceivedResponseFromLogin);
     const loginResponse = useSelector(state => state.loginResponse);
     const text = useSelector(state => state.displayTexts);
-
-    if (haveReceivedResponseFromLogin && !loginResponse.roles.length) {
-        return <Navigate to="/login" />;
-    }
 
     return (
         <div>
