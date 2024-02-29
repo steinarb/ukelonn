@@ -1,4 +1,5 @@
 import { takeLatest, debounce, put } from 'redux-saga/effects';
+import { push } from 'redux-first-history';
 import {
     REST_API_FAILURE_UNAUTHORIZED,
     REST_API_FAILURE_FORBIDDEN,
@@ -33,6 +34,8 @@ import {
 export default function* checkLoginOnApiErrorSaga() {
     yield takeLatest(REST_API_FAILURE_UNAUTHORIZED, checkLoginState);
     yield takeLatest(REST_API_FAILURE_FORBIDDEN, checkLoginState);
+    yield takeLatest(REST_API_FAILURE_UNAUTHORIZED, goToLogin);
+    yield takeLatest(REST_API_FAILURE_FORBIDDEN, goToUnauthorized);
     yield debounce(1000, [
         ACCOUNT_FAILURE,
         JOBTYPELIST_FAILURE,
@@ -73,4 +76,12 @@ function* finnTypeFeil(action) {
 
 function* checkLoginState() {
     yield put(CHECK_LOGIN_STATE_REQUEST());
+}
+
+function* goToLogin() {
+    yield put(push('/login'));
+}
+
+function* goToUnauthorized() {
+    yield put(push('/unauthorized'));
 }
