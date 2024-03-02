@@ -28,6 +28,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
@@ -46,6 +48,8 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 @Path("/admin/user")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresUser
+@RequiresRoles("ukelonnadmin")
 public class AdminUserResource {
 
     @Inject

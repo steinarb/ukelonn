@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class UserTest {
 
     @Test
     void testNoArgConstructor() {
-        User bean = User.with().build();
+        var bean = User.with().build();
         assertEquals(-1, bean.getUserId());
         assertEquals("", bean.getUsername());
         assertEquals("", bean.getEmail());
@@ -34,12 +34,12 @@ class UserTest {
 
     @Test
     void testProperties() {
-        int expectedUserId = 1;
-        String expectedUsername = "jad";
-        String expectedEmail = "jane21@gmail.com";
-        String expectedFirstname = "Jane";
-        String expectedLastname = "Doe";
-        User user = User.with()
+        var expectedUserId = 1;
+        var expectedUsername = "jad";
+        var expectedEmail = "jane21@gmail.com";
+        var expectedFirstname = "Jane";
+        var expectedLastname = "Doe";
+        var user = User.with()
             .userId(expectedUserId)
             .username(expectedUsername)
             .email(expectedEmail)
@@ -53,10 +53,10 @@ class UserTest {
         assertEquals(expectedLastname, user.getLastname());
         assertEquals("Jane Doe", user.getFullname());
 
-        String newUsername = "jadd";
-        String newEmail = "jane2111@gmail.com";
-        String newFirstname = "Juliet";
-        String newLastname = "Deere";
+        var newUsername = "jadd";
+        var newEmail = "jane2111@gmail.com";
+        var newFirstname = "Juliet";
+        var newLastname = "Deere";
         user = User.with(user).username(newUsername).build();
         assertEquals(newUsername, user.getUsername());
         user = User.with(user).email(newEmail).build();
@@ -71,9 +71,9 @@ class UserTest {
 
     @Test
     void testToString() {
-        User user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
+        var user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
         assertEquals("User [userId=1, username=jad, email=jane21@gmail.com, firstname=Jane, lastname=Doe]", user.toString());
-        User userWithNullStrings = User.with().userId(1).username(null).email(null).firstname(null).lastname(null).build();
+        var userWithNullStrings = User.with().userId(1).username(null).email(null).firstname(null).lastname(null).build();
         assertEquals("User [userId=1, username=null, email=null, firstname=null, lastname=null]", userWithNullStrings.toString());
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
+import java.util.Optional;
+
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
 
 public class ResourceBase {
 
@@ -31,18 +31,14 @@ public class ResourceBase {
     }
 
     protected boolean isCurrentUserOrAdmin(String username, LogService logservice) {
-        Logger logger = logservice.getLogger(getClass());
+        var logger = logservice.getLogger(getClass());
         try {
-            Subject subject = SecurityUtils.getSubject();
-            if (subject.getPrincipal() == null) {
-                String message = "No user available from Shiro";
-                logger.error(message);
-                throw new InternalServerErrorException(message);
-            }
-
-            return
-                subject.getPrincipal().equals(username) ||
-                subject.hasRole("ukelonnadmin");
+            var subject = Optional.ofNullable(SecurityUtils.getSubject());
+            boolean isCurrentUser = subject
+                .map(s -> (String)s.getPrincipal())
+                .map(principal -> principal.equals(username))
+                .orElse(false);
+            return subject.map(s -> s.hasRole("ukelonnadmin") || isCurrentUser).orElse(false);
         } catch (Exception e) {
             String message = "Failure retrieving Shiro subject";
             logger.error(message, e);

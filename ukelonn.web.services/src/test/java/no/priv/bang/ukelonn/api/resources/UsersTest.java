@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,15 +24,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-
 import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.jupiter.api.Test;
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 class UsersTest {
@@ -40,14 +37,14 @@ class UsersTest {
     @Test
     void testGet() {
         // Create the resource to be tested
-        Users resource = new Users();
+        var resource = new Users();
 
         // Inject the user management service
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var useradmin = mock(UserManagementService.class);
         when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
         resource.useradmin = useradmin;
 
-        List<User> users = resource.get();
+        var users = resource.get();
 
         assertThat(users).isNotEmpty();
     }
@@ -55,16 +52,16 @@ class UsersTest {
     @Test
     void testGetWithSqlException() throws Exception {
         // Create the resource to be tested
-        Users resource = new Users();
+        var resource = new Users();
 
         // Create an UkelonnService with a mock database
         // that throws SqlException
-        UserManagementServiceProvider useradmin = new UserManagementServiceProvider();
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
+        var useradmin = new UserManagementServiceProvider();
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
         when(results.next()).thenThrow(SQLException.class);
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(results);
@@ -74,7 +71,7 @@ class UsersTest {
         resource.useradmin = useradmin;
 
         // Inject a log service
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 

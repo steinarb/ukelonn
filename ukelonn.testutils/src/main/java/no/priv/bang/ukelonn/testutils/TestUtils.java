@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package no.priv.bang.ukelonn.testutils;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ import java.util.stream.Stream;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.mgt.RealmSecurityManager;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
 import org.apache.shiro.web.mgt.WebSecurityManager;
@@ -124,7 +122,7 @@ public class TestUtils {
 
     public static WebSecurityManager getSecurityManager() {
         if (securitymanager == null) {
-            WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(Ini.fromResourcePath("classpath:test.shiro.ini"));
+            var securityManagerFactory = new WebIniSecurityManagerFactory(Ini.fromResourcePath("classpath:test.shiro.ini"));
             securitymanager = (WebSecurityManager) securityManagerFactory.getInstance();
             realm = findRealmFromSecurityManager(securitymanager);
         }
@@ -141,14 +139,14 @@ public class TestUtils {
     }
 
     private static SimpleAccountRealm findRealmFromSecurityManager(WebSecurityManager securitymanager) {
-        RealmSecurityManager realmSecurityManager = (RealmSecurityManager) securitymanager;
-        Collection<Realm> realms = realmSecurityManager.getRealms();
+        var realmSecurityManager = (RealmSecurityManager) securitymanager;
+        var realms = realmSecurityManager.getRealms();
         return (SimpleAccountRealm) realms.iterator().next();
     }
 
     private static SimpleAccount findUserFromRealm(SimpleAccountRealm realm, String username) {
         try {
-            Method getUserMethod = SimpleAccountRealm.class.getDeclaredMethod("getUser", String.class);
+            var getUserMethod = SimpleAccountRealm.class.getDeclaredMethod("getUser", String.class);
             getUserMethod.setAccessible(true);
             return (SimpleAccount) getUserMethod.invoke(realm, username);
         } catch (Exception e) {

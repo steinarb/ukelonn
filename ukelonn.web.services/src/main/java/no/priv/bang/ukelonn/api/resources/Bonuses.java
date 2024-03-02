@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Bonus;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresUser
 public class Bonuses {
 
     @Inject
@@ -50,6 +54,7 @@ public class Bonuses {
     @POST
     @Path("/admin/createbonus")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RequiresRoles("ukelonnadmin")
     public List<Bonus> createBonus(Bonus bonus) {
         return ukelonn.createBonus(bonus);
     }
@@ -58,6 +63,7 @@ public class Bonuses {
     @POST
     @Path("/admin/modifybonus")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RequiresRoles("ukelonnadmin")
     public List<Bonus> modifyBonus(Bonus bonus) {
         return ukelonn.modifyBonus(bonus);
     }
@@ -65,6 +71,7 @@ public class Bonuses {
     @POST
     @Path("/admin/deletebonus")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RequiresRoles("ukelonnadmin")
     public List<Bonus> deleteBonus(Bonus bonus) {
         return ukelonn.deleteBonus(bonus);
     }

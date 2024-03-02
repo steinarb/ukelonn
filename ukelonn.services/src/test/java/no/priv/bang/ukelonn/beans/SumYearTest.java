@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,18 @@ class SumYearTest {
 
     @Test
     void testBean() {
-        double sum = 250.0;
-        int year = 2016;
-        SumYear bean = SumYear.with().sum(sum).year(year).build();
+        var sum = 250.0;
+        var year = 2016;
+        var bean = SumYear.with().sum(sum).year(year).build();
         assertEquals(sum, bean.getSum(), 0.0);
         assertEquals(year, bean.getYear());
     }
 
     @Test
     void testNoArgsConstructor() {
-        double sum = 0.0;
-        int year = -1;
-        SumYear bean = SumYear.with().build();
+        var sum = 0.0;
+        var year = -1;
+        var bean = SumYear.with().build();
         assertEquals(sum, bean.getSum(), 0.0);
         assertEquals(year, bean.getYear());
     }

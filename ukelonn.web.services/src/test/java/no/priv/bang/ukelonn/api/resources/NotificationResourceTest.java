@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@ package no.priv.bang.ukelonn.api.resources;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 import no.priv.bang.ukelonn.beans.Notification;
 
@@ -30,14 +27,14 @@ class NotificationResourceTest {
 
     @Test
     void testNotification() {
-        UkelonnService ukelonn = new UkelonnServiceProvider();
-        NotificationResource resource = new NotificationResource();
+        var ukelonn = new UkelonnServiceProvider();
+        var resource = new NotificationResource();
         resource.ukelonn = ukelonn;
-        List<Notification> notificationsToJad = resource.notificationsTo("jad");
+        var notificationsToJad = resource.notificationsTo("jad");
         assertThat(notificationsToJad).isEmpty();
 
         // Send notification to "jad"
-        Notification utbetalt = Notification.with().title("Ukelønn").message("150 kroner betalt til konto").build();
+        var utbetalt = Notification.with().title("Ukelønn").message("150 kroner betalt til konto").build();
         resource.notificationTo("jad", utbetalt);
 
         // Verify that notifcations to a different user is empty

@@ -2,6 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     LOGIN_RECEIVE,
     LOGOUT_RECEIVE,
+    CHECK_LOGIN_STATE_RECEIVE,
     INITIAL_LOGIN_STATE_RECEIVE,
 } from '../actiontypes';
 
@@ -9,6 +10,7 @@ const loginResponse = createReducer({ username: '', roles: [],error: '' }, build
     builder
         .addCase(LOGIN_RECEIVE, (state, action) => action.payload)
         .addCase(LOGOUT_RECEIVE, (state, action) => action.payload)
+        .addCase(CHECK_LOGIN_STATE_RECEIVE, (state, action) => action.payload)
         .addCase(INITIAL_LOGIN_STATE_RECEIVE, (state, action) => action.payload);
 });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.stream.Collectors;
 
@@ -40,44 +38,44 @@ class LocalizationResourceTest {
 
     @Test
     void testDefaultLocale() {
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
-        LocalizationResource resource = new LocalizationResource();
+        var resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        Locale defaultLocale = resource.defaultLocale();
+        var defaultLocale = resource.defaultLocale();
         assertEquals(NB_NO, defaultLocale);
     }
 
     @Test
     void testAvailableLocales() {
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
         when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
-        LocalizationResource resource = new LocalizationResource();
+        var resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        List<LocaleBean> availableLocales = resource.availableLocales();
+        var availableLocales = resource.availableLocales();
         assertThat(availableLocales).isNotEmpty().contains(LocaleBean.with().locale(ukelonn.defaultLocale()).build());
     }
 
     @Test
     void testDisplayTextsForDefaultLocale() {
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
-        Map<String, String> texts = new HashMap<>();
+        var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(ukelonn.displayTexts(any())).thenReturn(texts);
-        LocalizationResource resource = new LocalizationResource();
+        var resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        Map<String, String> displayTexts = resource.displayTexts(ukelonn.defaultLocale().toString());
+        var displayTexts = resource.displayTexts(ukelonn.defaultLocale().toString());
         assertThat(displayTexts).isNotEmpty();
     }
 
     @Test
     void testDisplayTextsWithUnknownLocale() {
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.displayTexts(any())).thenThrow(MissingResourceException.class);
-        LocalizationResource resource = new LocalizationResource();
-        MockLogService logservice = new MockLogService();
+        var resource = new LocalizationResource();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
         assertThrows(WebApplicationException.class, () -> resource.displayTexts("en_UK"));

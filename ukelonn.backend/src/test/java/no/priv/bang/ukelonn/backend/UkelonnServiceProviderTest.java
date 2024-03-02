@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -55,8 +54,6 @@ import no.priv.bang.ukelonn.beans.LocaleBean;
 import no.priv.bang.ukelonn.beans.Notification;
 import no.priv.bang.ukelonn.beans.PasswordsWithUser;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
-import no.priv.bang.ukelonn.beans.SumYear;
-import no.priv.bang.ukelonn.beans.SumYearMonth;
 import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.beans.TransactionType;
 import no.priv.bang.ukelonn.beans.UpdatedTransaction;
@@ -78,9 +75,9 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetAccounts() {
-        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var provider = getUkelonnServiceSingleton();
+        var useradmin = mock(UserManagementService.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
             .email("jad@gmail.com")
@@ -89,19 +86,19 @@ class UkelonnServiceProviderTest {
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         provider.setUserAdmin(useradmin);
-        List<Account> accounts = provider.getAccounts();
+        var accounts = provider.getAccounts();
         assertThat(accounts).hasSizeGreaterThan(1);
     }
 
     @Test
     void testGetAccountsWithUserMissing() {
-        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        var provider = getUkelonnServiceSingleton();
         var originalLogService = provider.getLogservice();
         try {
             var logservice = new MockLogService();
             provider.setLogservice(logservice);
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with().userid(1)
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with().userid(1)
                 .username("jad")
                 .email("jad@gmail.com")
                 .firstname("Jane")
@@ -112,7 +109,7 @@ class UkelonnServiceProviderTest {
                 .thenThrow(AuthserviceException.class);
             provider.setUserAdmin(useradmin);
             assertThat(logservice.getLogmessages()).isEmpty(); // Verify no log messages before fetching users
-            List<Account> accounts = provider.getAccounts();
+            var accounts = provider.getAccounts();
             assertThat(accounts).hasSizeGreaterThan(1);
             assertThat(logservice.getLogmessages()).isNotEmpty();
             assertThat(logservice.getLogmessages().get(0))
@@ -134,19 +131,19 @@ class UkelonnServiceProviderTest {
     @Test()
     void testGetAccountsWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
-            ResultSet resultset = mock(ResultSet.class);
+            var resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
-            List<Account> accounts = ukelonn.getAccounts();
+            var accounts = ukelonn.getAccounts();
             assertEquals(0, accounts.size(), "Expected a non-null, empty list");
         } finally {
             // Restore the real derby database
@@ -165,16 +162,16 @@ class UkelonnServiceProviderTest {
     @Test()
     void testGetAccountsNullResultSet() throws Exception {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setDataSource(datasource);
-            List<Account> accounts = ukelonn.getAccounts();
+            var accounts = ukelonn.getAccounts();
             assertEquals(0, accounts.size(), "Expected a non-null, empty list");
         } finally {
             // Restore the real derby database
@@ -184,9 +181,9 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetAccount() {
-        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var provider = getUkelonnServiceSingleton();
+        var useradmin = mock(UserManagementService.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
             .email("jad@gmail.com")
@@ -195,13 +192,13 @@ class UkelonnServiceProviderTest {
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         provider.setUserAdmin(useradmin);
-        Account account = provider.getAccount("jad");
+        var account = provider.getAccount("jad");
         assertEquals("jad", account.getUsername());
         assertEquals("Jane", account.getFirstName());
         assertEquals("Doe", account.getLastName());
-        List<Transaction> jobs = provider.getJobs(account.getAccountId());
+        var jobs = provider.getJobs(account.getAccountId());
         assertEquals(10, jobs.size());
-        List<Transaction> payments = provider.getPayments(account.getAccountId());
+        var payments = provider.getPayments(account.getAccountId());
         assertEquals(10, payments.size());
     }
 
@@ -211,7 +208,7 @@ class UkelonnServiceProviderTest {
      */
     @Test
     void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
-        UkelonnServiceProvider provider = getUkelonnServiceSingleton();
+        var provider = getUkelonnServiceSingleton();
         assertThrows(UkelonnException.class, () -> {
                 provider.getAccount("on");
             });
@@ -223,7 +220,7 @@ class UkelonnServiceProviderTest {
      */
     @Test
     void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        var ukelonn = getUkelonnServiceSingleton();
         assertThrows(UkelonnException.class, () -> {
                 ukelonn.getAccount("unknownuser");
             });
@@ -241,15 +238,15 @@ class UkelonnServiceProviderTest {
     @Test
     void testGetAccountInfoFromDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            PreparedStatement statement = mock(PreparedStatement.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var statement = mock(PreparedStatement.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
-            ResultSet resultset = mock(ResultSet.class);
+            var resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
@@ -264,18 +261,18 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testAddAccount() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
+        var ukelonn = getUkelonnServiceSingleton();
+        var usermanagement = new UserManagementServiceProvider();
         usermanagement.setLogservice(ukelonn.getLogservice());
         usermanagement.setDataSource(ukelonn.getDataSource());
         ukelonn.setUserAdmin(usermanagement);
 
         // Create a user object
-        String newUsername = "aragorn";
-        String newEmailaddress = "strider@hotmail.com";
-        String newFirstname = "Aragorn";
-        String newLastname = "McArathorn";
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var newUsername = "aragorn";
+        var newEmailaddress = "strider@hotmail.com";
+        var newFirstname = "Aragorn";
+        var newLastname = "McArathorn";
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(0)
             .username(newUsername)
             .email(newEmailaddress)
@@ -284,47 +281,47 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
+        var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
 
         // Create a user in the database, and retrieve it (to get the user id)
-        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
-        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
+        var updatedUsers = usermanagement.addUser(passwords);
+        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
 
         // Add a new account to the database
-        User userWithUserId = User.with()
+        var userWithUserId = User.with()
             .userId(createdUser.getUserid())
             .username(newUsername)
             .email(newEmailaddress)
             .firstname(newFirstname)
             .lastname(newLastname)
             .build();
-        Account newAccount = ukelonn.addAccount(userWithUserId);
+        var newAccount = ukelonn.addAccount(userWithUserId);
         assertThat(newAccount.getAccountId()).isPositive();
         assertEquals(0.0, newAccount.getBalance(), 0);
     }
 
     @Test
     void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        UserManagementServiceProvider usermanagement = new UserManagementServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
+        var usermanagement = new UserManagementServiceProvider();
         usermanagement.setDataSource(getUkelonnServiceSingleton().getDataSource());
         usermanagement.setLogservice(getUkelonnServiceSingleton().getLogservice());
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
         ukelonn.setLogservice(getUkelonnServiceSingleton().getLogservice());
 
         // Create a user object
-        String newUsername = "aragorn";
-        String newEmailaddress = "strider@hotmail.com";
-        String newFirstname = "Aragorn";
-        String newLastname = "McArathorn";
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var newUsername = "aragorn";
+        var newEmailaddress = "strider@hotmail.com";
+        var newFirstname = "Aragorn";
+        var newLastname = "McArathorn";
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(0)
             .username(newUsername)
             .email(newEmailaddress)
@@ -333,13 +330,13 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Create a passwords object containing the user
-        UserAndPasswords passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
+        var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
         // Create a user in the database, and retrieve it (to get the user id)
-        List<no.priv.bang.osgiservice.users.User> updatedUsers = usermanagement.addUser(passwords);
-        no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
+        var updatedUsers = usermanagement.addUser(passwords);
+        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
 
         // Add a new account to the database and expect to fail
-        User userWithUserId = User.with()
+        var userWithUserId = User.with()
             .userId(createdUser.getUserid())
             .username(newUsername)
             .email(newEmailaddress)
@@ -351,10 +348,10 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetJobs() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        String username = "jad";
-        UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var ukelonn = getUkelonnServiceSingleton();
+        var username = "jad";
+        var useradmin = mock(UserManagementService.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username(username)
             .email("jad@gmail.com")
@@ -363,18 +360,18 @@ class UkelonnServiceProviderTest {
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
-        Account account = ukelonn.getAccount(username);
-        List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+        var account = ukelonn.getAccount(username);
+        var jobs = ukelonn.getJobs(account.getAccountId());
         assertEquals(10, jobs.size());
     }
 
     @Test
     void testRegisterPerformedJob() throws Exception {
         try {
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jad";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jad";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jad@gmail.com")
@@ -383,16 +380,16 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
-            double oldBalance = account.getBalance();
-            TransactionType jobtype = ukelonn.getJobTypes().get(0);
-            PerformedTransaction performedJob = PerformedTransaction.with()
+            var account = ukelonn.getAccount(username);
+            var oldBalance = account.getBalance();
+            var jobtype = ukelonn.getJobTypes().get(0);
+            var performedJob = PerformedTransaction.with()
                 .account(account)
                 .transactionTypeId(jobtype.getId())
                 .transactionAmount(jobtype.getTransactionAmount())
                 .transactionDate(new Date())
                 .build();
-            Account updatedAccount = ukelonn.registerPerformedJob(performedJob);
+            var updatedAccount = ukelonn.registerPerformedJob(performedJob);
             assertThat(updatedAccount.getBalance()).isGreaterThan(oldBalance);
         } finally {
             restoreTestDatabase();
@@ -411,9 +408,9 @@ class UkelonnServiceProviderTest {
     @Test
     void testRegisterNewJobInDatabaseWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var ukelonn = getUkelonnServiceSingleton();
+        var useradmin = mock(UserManagementService.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
             .email("jad@gmail.com")
@@ -422,18 +419,18 @@ class UkelonnServiceProviderTest {
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
-        Account account = ukelonn.getAccount("jad");
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var account = ukelonn.getAccount("jad");
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             when(statement.executeUpdate()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenThrow(SQLException.class);
             ukelonn.setDataSource(datasource);
-            PerformedTransaction performedJob = PerformedTransaction.with()
+            var performedJob = PerformedTransaction.with()
                 .account(account)
                 .transactionTypeId(1)
                 .transactionAmount(45.0)
@@ -452,10 +449,10 @@ class UkelonnServiceProviderTest {
     void testDeleteAllJobsOfUser() throws Exception {
         try {
             // Create the delete arguments
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jod";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jod";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jod@gmail.com")
@@ -464,13 +461,13 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
-            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            var account = ukelonn.getAccount(username);
+            var jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
-            List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+            var idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
 
             // Do the delete
-            List<Transaction> jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+            var jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
 
             // Check that the job list that was two items earlier is now empty
             assertEquals(0, jobsAfterDelete.size());
@@ -483,10 +480,10 @@ class UkelonnServiceProviderTest {
     void testDeleteSomeJobsOfUser() throws Exception {
         try {
             // Create the delete arguments
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jod";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jod";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jod@gmail.com")
@@ -495,13 +492,13 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
-            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            var account = ukelonn.getAccount(username);
+            var jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
-            List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
+            var idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
 
             // Do the delete
-            List<Transaction> jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+            var jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
 
             // Check that the job list that was two items earlier is now empty
             assertEquals(1, jobsAfterDelete.size());
@@ -512,20 +509,20 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testDeleteJobsWithErrorOnClosingStatement() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database with a prepared statement that will fail on close
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
         when(statement.executeQuery()).thenReturn(results);
         doThrow(SQLException.class).when(statement).close();
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         ukelonn.setDataSource(datasource);
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         assertEquals(0, logservice.getLogmessages().size());
@@ -536,10 +533,10 @@ class UkelonnServiceProviderTest {
     @Test
     void verifyDeletingNoJobsOfUserHasNoEffect() throws Exception {
         try {
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jod";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jod";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jod@gmail.com")
@@ -548,15 +545,15 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
+            var account = ukelonn.getAccount(username);
 
             // Check preconditions
-            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            var jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
 
             // Delete with an empty argument
             List<Integer> idsOfJobsToDelete = Collections.emptyList();
-            List<Transaction> jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+            var jobsAfterDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
 
             // Verify that nothing has been deleted
             assertEquals(2, jobsAfterDelete.size());
@@ -568,10 +565,10 @@ class UkelonnServiceProviderTest {
     @Test
     void verifyThatTryingToDeletePaymentsAsJobsWillDoNothing() throws Exception {
         try {
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jod";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jod";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jod@gmail.com")
@@ -580,21 +577,21 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
+            var account = ukelonn.getAccount(username);
 
             // Check the preconditions
-            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            var jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
-            List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
+            var payments = ukelonn.getPayments(account.getAccountId());
             assertEquals(1, payments.size());
 
             // Try deleting the payment as a job
-            List<Integer> idsOfJobsToDelete = Arrays.asList(payments.get(0).getId());
-            List<Transaction> jobsAfterAttemptedDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+            var idsOfJobsToDelete = Arrays.asList(payments.get(0).getId());
+            var jobsAfterAttemptedDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
 
             // Verify that both the jobs and payments are unaffected
             assertEquals(2, jobsAfterAttemptedDelete.size());
-            List<Transaction> paymentsAfterAttemptedDelete = ukelonn.getPayments(account.getAccountId());
+            var paymentsAfterAttemptedDelete = ukelonn.getPayments(account.getAccountId());
             assertEquals(1, paymentsAfterAttemptedDelete.size());
         } finally {
             restoreTestDatabase();
@@ -604,10 +601,10 @@ class UkelonnServiceProviderTest {
     @Test
     void verifyThatTryingToDeleteJobsOfDifferentAccountWillDoNothing() throws Exception {
         try {
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jod";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jod";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jod@gmail.com")
@@ -616,23 +613,23 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
-            String otherUsername = "jad";
-            Account otherAccount = ukelonn.getAccount(otherUsername);
+            var account = ukelonn.getAccount(username);
+            var otherUsername = "jad";
+            var otherAccount = ukelonn.getAccount(otherUsername);
 
             // Check the preconditions
-            List<Transaction> jobs = ukelonn.getJobs(account.getAccountId());
+            var jobs = ukelonn.getJobs(account.getAccountId());
             assertEquals(2, jobs.size());
-            List<Transaction> otherAccountJobs = ukelonn.getJobs(otherAccount.getAccountId());
+            var otherAccountJobs = ukelonn.getJobs(otherAccount.getAccountId());
             assertEquals(10, otherAccountJobs.size());
 
             // Try deleting the payment as a job
-            List<Integer> idsOfJobsToDelete = Arrays.asList(otherAccountJobs.get(0).getId(), otherAccountJobs.get(1).getId(), otherAccountJobs.get(2).getId(), otherAccountJobs.get(3).getId(), otherAccountJobs.get(4).getId(), otherAccountJobs.get(5).getId(), otherAccountJobs.get(6).getId(), otherAccountJobs.get(7).getId(), otherAccountJobs.get(8).getId(), otherAccountJobs.get(9).getId());
-            List<Transaction> jobsAfterAttemptedDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
+            var idsOfJobsToDelete = Arrays.asList(otherAccountJobs.get(0).getId(), otherAccountJobs.get(1).getId(), otherAccountJobs.get(2).getId(), otherAccountJobs.get(3).getId(), otherAccountJobs.get(4).getId(), otherAccountJobs.get(5).getId(), otherAccountJobs.get(6).getId(), otherAccountJobs.get(7).getId(), otherAccountJobs.get(8).getId(), otherAccountJobs.get(9).getId());
+            var jobsAfterAttemptedDelete = ukelonn.deleteJobsFromAccount(account.getAccountId(), idsOfJobsToDelete);
 
             // Verify that both the account's jobs and and the other account's jobs are unaffected
             assertEquals(2, jobsAfterAttemptedDelete.size());
-            List<Transaction> otherAccountsJobsAfterAttemptedDelete = ukelonn.getJobs(otherAccount.getAccountId());
+            var otherAccountsJobsAfterAttemptedDelete = ukelonn.getJobs(otherAccount.getAccountId());
             assertThat(otherAccountsJobsAfterAttemptedDelete).containsAll(otherAccountJobs);
         } finally {
             restoreTestDatabase();
@@ -641,15 +638,15 @@ class UkelonnServiceProviderTest {
 
     @Test
     void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var ukelonn = new UkelonnServiceProvider();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Mock a database that will fail
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         ukelonn.setDataSource(datasource);
@@ -663,10 +660,10 @@ class UkelonnServiceProviderTest {
     @Test
     void testUpdateJob() throws Exception {
         try {
-            UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-            String username = "jad";
-            UserManagementService useradmin = mock(UserManagementService.class);
-            no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+            var ukelonn = getUkelonnServiceSingleton();
+            var username = "jad";
+            var useradmin = mock(UserManagementService.class);
+            var user = no.priv.bang.osgiservice.users.User.with()
                 .userid(1)
                 .username(username)
                 .email("jad@gmail.com")
@@ -675,21 +672,21 @@ class UkelonnServiceProviderTest {
                 .build();
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
-            Account account = ukelonn.getAccount(username);
-            Transaction job = ukelonn.getJobs(account.getAccountId()).get(0);
+            var account = ukelonn.getAccount(username);
+            var job = ukelonn.getJobs(account.getAccountId()).get(0);
             int jobId = job.getId();
 
             // Save initial values of the job for comparison later
-            Integer originalTransactionTypeId = job.getTransactionType().getId();
-            Date originalTransactionTime = job.getTransactionTime();
-            double originalTransactionAmount = job.getTransactionAmount();
+            var originalTransactionTypeId = job.getTransactionType().getId();
+            var originalTransactionTime = job.getTransactionTime();
+            var originalTransactionAmount = job.getTransactionAmount();
 
             // Find a different job type that has a different amount
-            TransactionType newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
+            var newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
 
             // Create a new job object with a different jobtype and the same id
-            Date now = new Date();
-            UpdatedTransaction editedJob = UpdatedTransaction.with()
+            var now = new Date();
+            var editedJob = UpdatedTransaction.with()
                 .id(jobId)
                 .accountId(account.getAccountId())
                 .transactionTypeId(newJobType.getId())
@@ -697,9 +694,9 @@ class UkelonnServiceProviderTest {
                 .transactionAmount(newJobType.getTransactionAmount())
                 .build();
 
-            List<Transaction> updatedJobs = ukelonn.updateJob(editedJob);
+            var updatedJobs = ukelonn.updateJob(editedJob);
 
-            Transaction editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+            var editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
 
             assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
             assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
@@ -711,17 +708,17 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testUpdateJobGetSQLException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
 
         ukelonn.setDataSource(datasource);
 
-        UpdatedTransaction updatedTransaction = UpdatedTransaction.with().build();
+        var updatedTransaction = UpdatedTransaction.with().build();
         assertThrows(UkelonnException.class, () -> {
                 ukelonn.updateJob(updatedTransaction);
             });
@@ -733,10 +730,10 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetPayments() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        String username = "jad";
-        UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var ukelonn = getUkelonnServiceSingleton();
+        var username = "jad";
+        var useradmin = mock(UserManagementService.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username(username)
             .email("jad@gmail.com")
@@ -745,33 +742,33 @@ class UkelonnServiceProviderTest {
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
-        Account account = ukelonn.getAccount(username);
-        List<Transaction> payments = ukelonn.getPayments(account.getAccountId());
+        var account = ukelonn.getAccount(username);
+        var payments = ukelonn.getPayments(account.getAccountId());
         assertEquals(10, payments.size());
     }
 
     @Test
     void testGetPaymenttypes() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
-        List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+        var ukelonn = getUkelonnServiceSingleton();
+        var paymenttypes = ukelonn.getPaymenttypes();
         assertEquals(2, paymenttypes.size());
     }
 
     @Test
     void testGetPaymenttypesWithDatabasePreparestatementFailure() throws Exception {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
-        MockLogService logservice = new MockLogService();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
+        var logservice = new MockLogService();
         try {
             ukelonn.setLogservice(logservice);
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
             ukelonn.setDataSource(datasource);
             assertEquals(0, logservice.getLogmessages().size()); // Verify precondition: no logmessages
-            List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+            var paymenttypes = ukelonn.getPaymenttypes();
             assertEquals(0, paymenttypes.size(), "Expected empty list");
             assertEquals(1, logservice.getLogmessages().size(), "Expect database error to be logged");
         } finally {
@@ -783,16 +780,16 @@ class UkelonnServiceProviderTest {
     @Test
     void testGetPaymenttypesWithDatabaseFailure() throws Exception {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setDataSource(datasource);
-            List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
+            var paymenttypes = ukelonn.getPaymenttypes();
             assertEquals(0, paymenttypes.size(), "Expected empty list");
         } finally {
             // Restore the real derby database
@@ -802,9 +799,9 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testRegisterPayment() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var ukelonn = getUkelonnServiceSingleton();
+        var useradmin = mock(UserManagementService.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
             .email("jad@gmail.com")
@@ -815,10 +812,10 @@ class UkelonnServiceProviderTest {
         ukelonn.setUserAdmin(useradmin);
 
         // Create the request
-        Account account = ukelonn.getAccount("jad");
-        double originalBalance = account.getBalance();
-        List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
-        PerformedTransaction payment = PerformedTransaction.with()
+        var account = ukelonn.getAccount("jad");
+        var originalBalance = account.getBalance();
+        var paymenttypes = ukelonn.getPaymenttypes();
+        var payment = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(paymenttypes.get(0).getId())
             .transactionAmount(account.getBalance())
@@ -826,7 +823,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Run the method under test
-        Account result = ukelonn.registerPayment(payment);
+        var result = ukelonn.registerPayment(payment);
 
         // Check the response
         assertEquals("jad", result.getUsername());
@@ -835,24 +832,24 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testRegisterPaymentWithDatabaseFailure() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
 
         // Create a mock log service
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Create the request
-        Account account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(2.0).build();
-        PerformedTransaction payment = PerformedTransaction.with()
+        var account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(2.0).build();
+        var payment = PerformedTransaction.with()
             .account(account)
             .transactionTypeId(1)
             .transactionAmount(2.0)
@@ -860,7 +857,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Run the method under test
-        Account result = ukelonn.registerPayment(payment);
+        var result = ukelonn.registerPayment(payment);
 
         // Check the response
         assertNull(result);
@@ -878,16 +875,16 @@ class UkelonnServiceProviderTest {
     @Test()
     void testGetJobTypesNullResultSet() throws Exception {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource database = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var database = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(database.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             ukelonn.setDataSource(database);
-            List<TransactionType> jobtypes = ukelonn.getJobTypes();
+            var jobtypes = ukelonn.getJobTypes();
             assertEquals(0, jobtypes.size(), "Expected a non-null, empty list");
         } finally {
             // Restore the real derby database
@@ -907,19 +904,19 @@ class UkelonnServiceProviderTest {
     @Test()
     void testGetJobTypesWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
-            ResultSet resultset = mock(ResultSet.class);
+            var resultset = mock(ResultSet.class);
             when(resultset.next()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
-            List<TransactionType> jobtypes = ukelonn.getJobTypes();
+            var jobtypes = ukelonn.getJobTypes();
             assertEquals(0, jobtypes.size(), "Expected a non-null, empty map");
         } finally {
             // Restore the real derby database
@@ -929,41 +926,41 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testModifyJobtype() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        var ukelonn = getUkelonnServiceSingleton();
 
         // Find a jobtyoe
-        List<TransactionType> jobtypes = ukelonn.getJobTypes();
-        TransactionType jobtype = jobtypes.get(0);
-        Double originalAmount = jobtype.getTransactionAmount();
+        var jobtypes = ukelonn.getJobTypes();
+        var jobtype = jobtypes.get(0);
+        var originalAmount = jobtype.getTransactionAmount();
 
         // Modify the amount of the jobtype
         jobtype = TransactionType.with(jobtype).transactionAmount(originalAmount + 1).build();
 
         // Update the job type in the database
-        List<TransactionType> updatedJobtypes = ukelonn.modifyJobtype(jobtype);
+        var updatedJobtypes = ukelonn.modifyJobtype(jobtype);
 
         // Verify that the updated amount is larger than the original amount
-        TransactionType updatedJobtype = updatedJobtypes.get(0);
+        var updatedJobtype = updatedJobtypes.get(0);
         assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test
     void testModifyJobtypeFailure() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Create a non-existing jobtype
-        TransactionType jobtype = TransactionType.with()
+        var jobtype = TransactionType.with()
             .id(-2000)
             .transactionTypeName("Foo")
             .transactionAmount(3.14)
@@ -978,13 +975,13 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testCreateJobtype() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        var ukelonn = getUkelonnServiceSingleton();
 
         // Get the list of jobtypes before adding a new job type
-        List<TransactionType> originalJobtypes = ukelonn.getJobTypes();
+        var originalJobtypes = ukelonn.getJobTypes();
 
         // Create new jobtype
-        TransactionType jobtype = TransactionType.with()
+        var jobtype = TransactionType.with()
             .id(-1)
             .transactionTypeName("Skrubb badegolv")
             .transactionAmount(200.0)
@@ -992,7 +989,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Update the job type in the database
-        List<TransactionType> updatedJobtypes = ukelonn.createJobtype(jobtype);
+        var updatedJobtypes = ukelonn.createJobtype(jobtype);
 
         // Verify that a new jobtype has been added
         assertThat(updatedJobtypes).hasSizeGreaterThan(originalJobtypes.size());
@@ -1000,21 +997,21 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testCreateJobtypeFailure() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Create a new jobtype
-        TransactionType jobtype = TransactionType.with()
+        var jobtype = TransactionType.with()
             .id(-2000)
             .transactionTypeName("Foo")
             .transactionAmount(3.14)
@@ -1029,41 +1026,41 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testModifyPaymenttype() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        var ukelonn = getUkelonnServiceSingleton();
 
         // Find a payment type
-        List<TransactionType> paymenttypes = ukelonn.getPaymenttypes();
-        TransactionType paymenttype = paymenttypes.get(0);
-        Double originalAmount = paymenttype.getTransactionAmount();
+        var paymenttypes = ukelonn.getPaymenttypes();
+        var paymenttype = paymenttypes.get(0);
+        var originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
         paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
 
         // Update the payment type in the database
-        List<TransactionType> updatedPaymenttypes = ukelonn.modifyPaymenttype(paymenttype);
+        var updatedPaymenttypes = ukelonn.modifyPaymenttype(paymenttype);
 
         // Verify that the updated amount is larger than the original amount
-        TransactionType updatedPaymenttype = updatedPaymenttypes.get(0);
+        var updatedPaymenttype = updatedPaymenttypes.get(0);
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test
     void testModifyPaymenttypeFailure() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource database = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var database = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(database.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(database);
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Create a non-existing payment type
-        TransactionType paymenttype = TransactionType.with()
+        var paymenttype = TransactionType.with()
             .id(-2001)
             .transactionTypeName("Bar")
             .transactionAmount(0.0)
@@ -1078,13 +1075,13 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testCreatePaymenttype() {
-        UkelonnService ukelonn = getUkelonnServiceSingleton();
+        var ukelonn = getUkelonnServiceSingleton();
 
         // Get the list of payment types before adding a new job type
-        List<TransactionType> originalPaymenttypes = ukelonn.getPaymenttypes();
+        var originalPaymenttypes = ukelonn.getPaymenttypes();
 
         // Create new payment type
-        TransactionType paymenttype = TransactionType.with()
+        var paymenttype = TransactionType.with()
             .id(-1)
             .transactionTypeName("Vipps")
             .transactionAmount(0.0)
@@ -1092,7 +1089,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Update the payments type in the database
-        List<TransactionType> updatedPaymenttypes = ukelonn.createPaymenttype(paymenttype);
+        var updatedPaymenttypes = ukelonn.createPaymenttype(paymenttype);
 
         // Verify that a new payment type has been added
         assertThat(updatedPaymenttypes).hasSizeGreaterThan(originalPaymenttypes.size());
@@ -1100,21 +1097,21 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testCreatePaymenttypeFailure() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Create a new payment type
-        TransactionType paymenttype = TransactionType.with()
+        var paymenttype = TransactionType.with()
             .id(-2001)
             .transactionTypeName("Bar")
             .transactionAmount(0.0)
@@ -1129,34 +1126,34 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testPasswordsEqualAndNotEmpty() {
-        PasswordsWithUser equalPasswords = PasswordsWithUser.with().password("zekret").password2("zekret").build();
+        var equalPasswords = PasswordsWithUser.with().password("zekret").password2("zekret").build();
         assertTrue(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(equalPasswords));
-        PasswordsWithUser differentPasswords = PasswordsWithUser.with().password("zekret").password2("secret").build();
+        var differentPasswords = PasswordsWithUser.with().password("zekret").password2("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(differentPasswords));
-        PasswordsWithUser firstPasswordNull = PasswordsWithUser.with().password2("secret").build();
+        var firstPasswordNull = PasswordsWithUser.with().password2("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(firstPasswordNull));
-        PasswordsWithUser secondPasswordNull = PasswordsWithUser.with().password("secret").build();
+        var secondPasswordNull = PasswordsWithUser.with().password("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordNull));
-        PasswordsWithUser bothPasswordsNull = PasswordsWithUser.with().build();
+        var bothPasswordsNull = PasswordsWithUser.with().build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsNull));
-        PasswordsWithUser firstPasswordEmpty = PasswordsWithUser.with().password("").password2("secret").build();
+        var firstPasswordEmpty = PasswordsWithUser.with().password("").password2("secret").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(firstPasswordEmpty));
-        PasswordsWithUser secondPasswordEmpty = PasswordsWithUser.with().password("secret").password2("").build();
+        var secondPasswordEmpty = PasswordsWithUser.with().password("secret").password2("").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(secondPasswordEmpty));
-        PasswordsWithUser bothPasswordsEmpty = PasswordsWithUser.with().password("").password2("").build();
+        var bothPasswordsEmpty = PasswordsWithUser.with().password("").password2("").build();
         assertFalse(UkelonnServiceProvider.passwordsEqualsAndNotEmpty(bothPasswordsEmpty));
     }
 
     @Test
     void testHasUserWithNonEmptyUsername() {
-        PasswordsWithUser passwords = PasswordsWithUser.with().build();
-        User userWithUsername = User.with().userId(1).username("foo").build();
+        var passwords = PasswordsWithUser.with().build();
+        var userWithUsername = User.with().userId(1).username("foo").build();
         passwords.setUser(userWithUsername);
         assertTrue(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-        User userWithEmptyUsername = User.with().userId(1).username("").build();
+        var userWithEmptyUsername = User.with().userId(1).username("").build();
         passwords.setUser(userWithEmptyUsername);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-        User userWithNullUsername = User.with().userId(1).username(null).build();
+        var userWithNullUsername = User.with().userId(1).username(null).build();
         passwords.setUser(userWithNullUsername);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
         passwords.setUser(null);
@@ -1165,12 +1162,12 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testNotifications() {
-        UkelonnService ukelonn = new UkelonnServiceProvider();
-        List<Notification> notificationsToJad = ukelonn.notificationsTo("jad");
+        var ukelonn = new UkelonnServiceProvider();
+        var notificationsToJad = ukelonn.notificationsTo("jad");
         assertThat(notificationsToJad).isEmpty();
 
         // Send notification to "jad"
-        Notification utbetalt = Notification.with().title("Ukelønn").message("150 kroner tbetalt til konto").build();
+        var utbetalt = Notification.with().title("Ukelønn").message("150 kroner tbetalt til konto").build();
         ukelonn.notificationTo("jad", utbetalt);
 
         // Verify that notifcations to a different user is empty
@@ -1187,8 +1184,8 @@ class UkelonnServiceProviderTest {
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
-        UserManagementServiceProvider useradmin = mock(UserManagementServiceProvider.class);
-        no.priv.bang.osgiservice.users.User user = no.priv.bang.osgiservice.users.User.with()
+        var useradmin = mock(UserManagementServiceProvider.class);
+        var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
             .email("jad@gmail.com")
@@ -1196,10 +1193,10 @@ class UkelonnServiceProviderTest {
             .lastname("Doe")
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
+        var ukelonn = getUkelonnServiceSingleton();
         ukelonn.setUserAdmin(useradmin);
-        Account account = ukelonn.getAccount("jad");
-        List<Integer> jobs = ukelonn.getJobs(account.getAccountId()).stream().map(Transaction::getId).collect(Collectors.toList());
+        var account = ukelonn.getAccount("jad");
+        var jobs = ukelonn.getJobs(account.getAccountId()).stream().map(Transaction::getId).collect(Collectors.toList());
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", UkelonnServiceProvider.joinIds(jobs).toString());
     }
 
@@ -1215,17 +1212,17 @@ class UkelonnServiceProviderTest {
     @Test()
     void testaddDummyPaymentToAccountSoThatAccountWillAppearInAccountsViewWhenSQLExceptionIsThrown() throws SQLException {
         // Swap the real derby database with a mock
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        DataSource originalDatasource = ukelonn.getDataSource();
+        var ukelonn = getUkelonnServiceSingleton();
+        var originalDatasource = ukelonn.getDataSource();
         try {
-            DataSource datasource = mock(DataSource.class);
-            Connection connection = mock(Connection.class);
+            var datasource = mock(DataSource.class);
+            var connection = mock(Connection.class);
             when(datasource.getConnection()).thenReturn(connection);
-            PreparedStatement statement = mock(PreparedStatement.class);
+            var statement = mock(PreparedStatement.class);
             when(connection.prepareStatement(anyString())).thenReturn(statement);
             when(statement.executeUpdate()).thenThrow(SQLException.class);
             ukelonn.setDataSource(datasource);
-            int updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView("jad");
+            var updateStatus = ukelonn.addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView("jad");
             assertEquals(-1, updateStatus);
         } finally {
             // Restore the real derby database
@@ -1235,40 +1232,40 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetResourceAsStringNoResource() {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var ukelonn = new UkelonnServiceProvider();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
-        String resource = ukelonn.getResourceAsString("finnesikke");
+        var resource = ukelonn.getResourceAsString("finnesikke");
         assertNull(resource);
     }
 
     @Test
     void testEarningsSumOverYear() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
+        var ukelonn = getUkelonnServiceSingleton();
+        var statistics = ukelonn.earningsSumOverYear("jad");
         assertThat(statistics).isNotEmpty();
-        SumYear firstYear = statistics.get(0);
+        var firstYear = statistics.get(0);
         assertEquals(1250.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
     }
 
     @Test
     void testEarningsSumOverYearWhenSqlExceptionIsThrown() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Try update the payment type in the database, which should cause an exception
-        List<SumYear> statistics = ukelonn.earningsSumOverYear("jad");
+        var statistics = ukelonn.earningsSumOverYear("jad");
         assertEquals(0, statistics.size()); // No exception was thrown but result is empty
 
         // Verify that the error has been logged
@@ -1278,10 +1275,10 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testEarningsSumOverMonth() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
+        var ukelonn = getUkelonnServiceSingleton();
+        var statistics = ukelonn.earningsSumOverMonth("jad");
         assertThat(statistics).isNotEmpty();
-        SumYearMonth firstYear = statistics.get(0);
+        var firstYear = statistics.get(0);
         assertEquals(125.0, firstYear.getSum(), 0.0);
         assertEquals(2016, firstYear.getYear());
         assertEquals(7, firstYear.getMonth());
@@ -1289,21 +1286,21 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testEarningsSumOverMonthWhenSqlExceptionIsThrown() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Try update the payment type in the database, which should cause an exception
-        List<SumYearMonth> statistics = ukelonn.earningsSumOverMonth("jad");
+        var statistics = ukelonn.earningsSumOverMonth("jad");
         assertEquals(0, statistics.size()); // No exception was thrown but result is empty
 
         // Verify that the error has been logged
@@ -1313,19 +1310,19 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetCreateModifyAndDeleteBonuses() {
-        UkelonnServiceProvider ukelonn = getUkelonnServiceSingleton();
-        int initialBonusCount = ukelonn.getAllBonuses().size();
+        var ukelonn = getUkelonnServiceSingleton();
+        var initialBonusCount = ukelonn.getAllBonuses().size();
 
         // Verify that without any bonuses addBonus() will
         // return the job registration transaction amount unchanged
-        double amount = 25.0;
+        var amount = 25.0;
         assertEquals(amount, ukelonn.addBonus(amount), 0.0);
 
         // Add an enabled bonus with start date before today and end date after today
         // this will show up as an active bonus
-        Date julestart = Date.from(LocalDateTime.now().minusDays(3).toInstant(ZoneOffset.UTC));
-        Date juleslutt = Date.from(LocalDateTime.now().plusDays(3).toInstant(ZoneOffset.UTC));
-        Bonus julebonus = Bonus.with()
+        var julestart = Date.from(LocalDateTime.now().minusDays(3).toInstant(ZoneOffset.UTC));
+        var juleslutt = Date.from(LocalDateTime.now().plusDays(3).toInstant(ZoneOffset.UTC));
+        var julebonus = Bonus.with()
             .bonusId(0)
             .enabled(true)
             .title("Julebonus")
@@ -1334,36 +1331,36 @@ class UkelonnServiceProviderTest {
             .startDate(julestart)
             .endDate(juleslutt)
             .build();
-        Bonus enabledBonus = ukelonn.createBonus(julebonus).stream().filter(b -> "Julebonus".equals(b.getTitle())).findFirst().get();
-        int bonusCountWithOneAddedBonus = ukelonn.getAllBonuses().size();
+        var enabledBonus = ukelonn.createBonus(julebonus).stream().filter(b -> "Julebonus".equals(b.getTitle())).findFirst().get();
+        var bonusCountWithOneAddedBonus = ukelonn.getAllBonuses().size();
         assertThat(bonusCountWithOneAddedBonus).isGreaterThan(initialBonusCount);
 
         // Verify that the active bonus will double the payment
         // of registered jobs.
-        double expectAmount = 2 * amount;
+        var expectAmount = 2 * amount;
         assertEquals(expectAmount, ukelonn.addBonus(amount), 0.0);
 
         // Add an extra active bonus to verify that two
         // concurrent bonuses will give the expected result
-        Bonus julebonus2 = ukelonn.createBonus(Bonus.with()
-                                               .bonusId(0)
-                                               .enabled(true)
-                                               .title("Julebonuz")
-                                               .description("Dobbelt betaling for utførte jobber")
-                                               .bonusFactor(1.25)
-                                               .startDate(julestart)
-                                               .endDate(juleslutt)
-                                               .build()).stream().filter(b -> "Julebonuz".equals(b.getTitle())).findFirst().get();
-        double expectAmount2 = julebonus.getBonusFactor() * amount + julebonus2.getBonusFactor() * amount - amount;
+        var julebonus2 = ukelonn.createBonus(Bonus.with()
+                                             .bonusId(0)
+                                             .enabled(true)
+                                             .title("Julebonuz")
+                                             .description("Dobbelt betaling for utførte jobber")
+                                             .bonusFactor(1.25)
+                                             .startDate(julestart)
+                                             .endDate(juleslutt)
+                                             .build()).stream().filter(b -> "Julebonuz".equals(b.getTitle())).findFirst().get();
+        var expectAmount2 = julebonus.getBonusFactor() * amount + julebonus2.getBonusFactor() * amount - amount;
         assertEquals(expectAmount2, ukelonn.addBonus(amount), 0.0);
         ukelonn.deleteBonus(julebonus2);
 
         // Add an inactive bonus with start and end date both in the future
         // Since we're outside of the startDate/endDate, this will not show up
         // as an active bonus
-        Date paaskestart = Date.from(LocalDateTime.now().plusDays(5).toInstant(ZoneOffset.UTC));
-        Date paaskeslutt = Date.from(LocalDateTime.now().plusDays(10).toInstant(ZoneOffset.UTC));
-        Bonus paaskebonus = Bonus.with()
+        var paaskestart = Date.from(LocalDateTime.now().plusDays(5).toInstant(ZoneOffset.UTC));
+        var paaskeslutt = Date.from(LocalDateTime.now().plusDays(10).toInstant(ZoneOffset.UTC));
+        var paaskebonus = Bonus.with()
             .enabled(true)
             .title("Påskebonus")
             .description("Dobbelt betaling for utførte jobber")
@@ -1371,13 +1368,13 @@ class UkelonnServiceProviderTest {
             .startDate(paaskestart)
             .endDate(paaskeslutt)
             .build();
-        Bonus inactiveBonus = ukelonn.createBonus(paaskebonus).stream().filter(b -> "Påskebonus".equals(b.getTitle())).findFirst().get();
+        var inactiveBonus = ukelonn.createBonus(paaskebonus).stream().filter(b -> "Påskebonus".equals(b.getTitle())).findFirst().get();
         assertThat(ukelonn.getAllBonuses()).hasSizeGreaterThan(bonusCountWithOneAddedBonus);
 
         // Verify that active count is larger than 0 and is less than total count
-        List<Bonus> activeBonuses = ukelonn.getActiveBonuses();
+        var activeBonuses = ukelonn.getActiveBonuses();
         assertThat(activeBonuses).isNotEmpty();
-        int activeBonusCount = activeBonuses.size();
+        var activeBonusCount = activeBonuses.size();
         assertThat(ukelonn.getAllBonuses()).hasSizeGreaterThan(activeBonusCount);
 
         // Verify that active count is greater than initial count
@@ -1385,8 +1382,8 @@ class UkelonnServiceProviderTest {
 
         // Change the enabled bonus to set the enabled flag to false, and keep the rest of the values
         // (ie. deactivate the currenly active bonus)
-        List<Bonus> bonuses = ukelonn.modifyBonus(disableBonus(enabledBonus));
-        Bonus disabledBonus = bonuses.stream().filter(b -> b.getBonusId() == enabledBonus.getBonusId()).findFirst().get();
+        var bonuses = ukelonn.modifyBonus(disableBonus(enabledBonus));
+        var disabledBonus = bonuses.stream().filter(b -> b.getBonusId() == enabledBonus.getBonusId()).findFirst().get();
         assertFalse(disabledBonus.isEnabled());
         assertEquals(enabledBonus.getTitle(), disabledBonus.getTitle());
         assertEquals(enabledBonus.getDescription(), disabledBonus.getDescription());
@@ -1398,9 +1395,9 @@ class UkelonnServiceProviderTest {
         assertThat(ukelonn.getActiveBonuses()).hasSizeLessThan(activeBonusCount);
 
         // Delete both bonuses and verify that the count decreases
-        int countBeforeDelete = bonuses.size();
+        var countBeforeDelete = bonuses.size();
         bonuses = ukelonn.deleteBonus(disabledBonus);
-        int countAfterFirstDelete = bonuses.size();
+        var countAfterFirstDelete = bonuses.size();
         assertThat(countAfterFirstDelete).isLessThan(countBeforeDelete);
         bonuses = ukelonn.deleteBonus(inactiveBonus);
         assertEquals(initialBonusCount, bonuses.size());
@@ -1408,11 +1405,11 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetActiveBonusesWithSQLException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
@@ -1420,7 +1417,7 @@ class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.getActiveBonuses();
+        var bonuses = ukelonn.getActiveBonuses();
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get list of active bonuses");
@@ -1428,11 +1425,11 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testGetAllBonusesWithSQLException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
@@ -1440,7 +1437,7 @@ class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.getAllBonuses();
+        var bonuses = ukelonn.getAllBonuses();
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to get list of all bonuses");
@@ -1448,11 +1445,11 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testAddBonusWithSQLException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
@@ -1460,7 +1457,7 @@ class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.createBonus(Bonus.with().build());
+        var bonuses = ukelonn.createBonus(Bonus.with().build());
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to add Bonus");
@@ -1468,11 +1465,11 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testUpdateBonusWithSQLException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
@@ -1480,7 +1477,7 @@ class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.modifyBonus(Bonus.with().build());
+        var bonuses = ukelonn.modifyBonus(Bonus.with().build());
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to update Bonus");
@@ -1488,11 +1485,11 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testDeleteBonusWithSQLException() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        DataSource datasource = mock(DataSource.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setLogservice(logservice);
         ukelonn.setDataSource(datasource);
         ukelonn.setUserAdmin(useradmin);
@@ -1500,7 +1497,7 @@ class UkelonnServiceProviderTest {
 
         // Verify that what we get with an SQL failure
         // is an empty result and a warning in the log
-        List<Bonus> bonuses = ukelonn.deleteBonus(Bonus.with().build());
+        var bonuses = ukelonn.deleteBonus(Bonus.with().build());
         assertThat(bonuses).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).startsWith("[WARNING] Failed to delete Bonus");
@@ -1508,38 +1505,38 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testAddRoleIfNotPresentWhenRoleIsPresent() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
-        Role userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
+        var useradmin = mock(UserManagementService.class);
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        var userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
         when(useradmin.getRoles()).thenReturn(Arrays.asList(userrole, adminrole));
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
 
-        Optional<Role> role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
+        var role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
         assertThat(role).isNotEmpty();
         assertEquals(UKELONNADMIN_ROLE, role.get().getRolename());
     }
 
     @Test
     void testAddRoleIfNotPresentWhenRoleIsNotPresent() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
-        Role userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
+        var useradmin = mock(UserManagementService.class);
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        var userrole = Role.with().id(2).rolename(UKELONNUSER_ROLE).description("ukelonn user").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(userrole));
         when(useradmin.addRole(any())).thenReturn(Arrays.asList(userrole, adminrole));
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
 
-        Optional<Role> role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
+        var role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
         assertThat(role).isNotEmpty();
         assertEquals(UKELONNADMIN_ROLE, role.get().getRolename());
     }
 
     @Test
     void testAddAdminroleToUserAdminWhenRoleIsMissing() {
-        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        var useradmin = mock(UserManagementService.class);
+        var ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
 
         ukelonn.addAdminroleToUserAdmin(Optional.of(adminrole));
@@ -1550,10 +1547,10 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testAddAdminroleToUserAdminWhenRoleIsPresent() {
-        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        var useradmin = mock(UserManagementService.class);
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
 
         ukelonn.addAdminroleToUserAdmin(Optional.of(adminrole));
@@ -1564,10 +1561,10 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testAddAdminroleToUserAdminWhenAdminUserIsNotPresent() {
-        Role adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn administrator").build();
+        var useradmin = mock(UserManagementService.class);
         when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
         ukelonn.setUserAdmin(useradmin);
 
         ukelonn.addAdminroleToUserAdmin(Optional.of(adminrole));
@@ -1578,8 +1575,8 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testDefaultLocale() {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setUserAdmin(useradmin);
         ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         assertEquals(NB_NO, ukelonn.defaultLocale());
@@ -1587,21 +1584,21 @@ class UkelonnServiceProviderTest {
 
     @Test
     void testAvailableLocales() {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setUserAdmin(useradmin);
         ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        List<LocaleBean> locales = ukelonn.availableLocales();
+        var locales = ukelonn.availableLocales();
         assertThat(locales).isNotEmpty().contains(LocaleBean.with().locale(ukelonn.defaultLocale()).build());
     }
 
     @Test
     void testDisplayTextsForDefaultLocale() {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ukelonn = new UkelonnServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ukelonn.setUserAdmin(useradmin);
         ukelonn.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        Map<String, String> displayTexts = ukelonn.displayTexts(ukelonn.defaultLocale());
+        var displayTexts = ukelonn.displayTexts(ukelonn.defaultLocale());
         assertThat(displayTexts).isNotEmpty();
     }
 

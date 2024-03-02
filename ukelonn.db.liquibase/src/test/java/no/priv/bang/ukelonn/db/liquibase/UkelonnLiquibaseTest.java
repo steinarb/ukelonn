@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -53,8 +52,8 @@ class UkelonnLiquibaseTest {
         ukelonnLiquibase.updateSchema(dataSource);
 
         try(Connection connection = createConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from transactions")) {
-                ResultSet results = statement.executeQuery();
+            try(var statement = connection.prepareStatement("select * from transactions")) {
+                var results = statement.executeQuery();
                 int count = 0;
                 while(results.next()) {
                     ++count;
@@ -63,8 +62,8 @@ class UkelonnLiquibaseTest {
                 assertEquals(0, count);
             }
 
-            Date fromDate = new Date();
-            Date toDate = new Date();
+            var fromDate = new Date();
+            var toDate = new Date();
             createBonuses(connection, fromDate, toDate);
             assertBonuses(connection, fromDate, toDate);
         }
@@ -72,7 +71,7 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testCreateInitialAndUpdateSchemaFailOnConnectionClose() throws Exception {
-        DataSource datasource = mock(DataSource.class);
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         var ukelonnLiquibase = new UkelonnLiquibase();
 
@@ -89,9 +88,9 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testCreateInitialAndUpdateSchemaFailOnLiquibaseUpdate() throws Exception {
-        Connection connection1 = spy(createConnection("ukelonn1"));
-        Connection connection2 = spy(createConnection("ukelonn2"));
-        DataSource datasource = mock(DataSource.class);
+        var connection1 = spy(createConnection("ukelonn1"));
+        var connection2 = spy(createConnection("ukelonn2"));
+        var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenReturn(connection1).thenReturn(connection2);
         var ukelonnLiquibase = new UkelonnLiquibase();
 
@@ -108,7 +107,7 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testUpdateSchemaFailOnConnectionCloseInAuthserviceSchemaSetup() throws Exception {
-        DataSource datasource = spy(dataSource);
+        var datasource = spy(dataSource);
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenThrow(SQLException.class);
@@ -122,7 +121,7 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testUpdateSchemaFailOnConnectionCloseOnSchemaUpdateAfterAuthserviceAdd() throws Exception {
-        DataSource datasource = spy(dataSource);
+        var datasource = spy(dataSource);
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenCallRealMethod()
@@ -137,8 +136,8 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testUpdateSchemaFailOnLiqubaseUpdateInAuthserviceSchemaSetup() throws Exception {
-        DataSource datasource = spy(dataSource);
-        Connection connection = spy(createConnection("ukelonn3"));
+        var datasource = spy(dataSource);
+        var connection = spy(createConnection("ukelonn3"));
         doThrow(SQLException.class).when(connection).setAutoCommit(anyBoolean());
         when(datasource.getConnection())
             .thenCallRealMethod()
@@ -154,8 +153,8 @@ class UkelonnLiquibaseTest {
 
     @Test
     void testUpdateSchemaFailOnLiqubaseUpdateOnSchemaUpdateAfterAuthserviceAdd() throws Exception {
-        DataSource datasource = spy(dataSource);
-        Connection connection = createConnection("ukelonn4");
+        var datasource = spy(dataSource);
+        var connection = createConnection("ukelonn4");
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenCallRealMethod()
@@ -174,7 +173,7 @@ class UkelonnLiquibaseTest {
     }
 
     private void createBonus(Connection connection, boolean enabled, String title, String description, double bonusFactor, Date startDate, Date endDate) throws Exception {
-        try (PreparedStatement statement = connection.prepareStatement("insert into bonuses (enabled, title, description, bonus_factor, start_date, end_date) values (?, ?, ?, ?, ?, ?)")) {
+        try (var statement = connection.prepareStatement("insert into bonuses (enabled, title, description, bonus_factor, start_date, end_date) values (?, ?, ?, ?, ?, ?)")) {
             statement.setBoolean(1, enabled);
             statement.setString(2, title);
             statement.setString(3, description);
@@ -186,8 +185,8 @@ class UkelonnLiquibaseTest {
     }
 
     private void assertBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
-        try (PreparedStatement statement = connection.prepareStatement("select * from bonuses")) {
-            try(ResultSet results = statement.executeQuery()) {
+        try (var statement = connection.prepareStatement("select * from bonuses")) {
+            try(var results = statement.executeQuery()) {
                 assertBonus(results, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
             }
         }
@@ -213,8 +212,8 @@ class UkelonnLiquibaseTest {
     }
 
     private static DataSource createDataSource(String dbname) throws SQLException {
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
+        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         var datasource = derbyDataSourceFactory.createDataSource(properties);
         return datasource;

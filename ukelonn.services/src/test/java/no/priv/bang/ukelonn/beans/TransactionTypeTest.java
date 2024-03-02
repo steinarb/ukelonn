@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ class TransactionTypeTest {
 
     @Test
     void testNoArgumentConstructor() {
-        TransactionType bean = TransactionType.with().build();
+        var bean = TransactionType.with().build();
         assertEquals(Integer.valueOf(0), bean.getId());
         assertNull(bean.getTransactionTypeName());
         assertNull(bean.getTransactionAmount());
@@ -34,7 +34,7 @@ class TransactionTypeTest {
 
     @Test
     void testConstructorWithArguments() {
-        TransactionType bean = TransactionType.with()
+        var bean = TransactionType.with()
             .id(1)
             .transactionTypeName("Vaske")
             .transactionAmount(45.0)
@@ -49,7 +49,7 @@ class TransactionTypeTest {
 
     @Test
     void testToString() {
-        TransactionType bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
+        var bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
         assertThat(bean.toString()).startsWith("TransactionType [");
     }
 

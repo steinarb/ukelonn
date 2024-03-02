@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Notification;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresUser
+@RequiresRoles("ukelonnadmin")
 public class NotificationResource {
 
     @Inject

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,67 +33,65 @@ import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.AccountWithJobIds;
-import no.priv.bang.ukelonn.beans.Transaction;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
 
 class AdminJobsTest {
 
     @Test
     void testDeleteAllJobsOfUser() {
-        AdminJobs resource = new AdminJobs();
+        var resource = new AdminJobs();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Set up the POST argument for the delete
-        Account account = getJodAccount();
-        List<Transaction> jobs = getJodJobs();
-        List<Integer> jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
-        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(jobIds).build();
+        var account = getJodAccount();
+        var jobs = getJodJobs();
+        var jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+        var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(jobIds).build();
 
         // Do the delete
-        List<Transaction> jobsAfterDelete = resource.delete(accountWithJobIds);
+        var jobsAfterDelete = resource.delete(accountWithJobIds);
         assertEquals(0, jobsAfterDelete.size());
     }
 
     @Test
     void testDeleteSomeJobsOfUser() {
-        AdminJobs resource = new AdminJobs();
+        var resource = new AdminJobs();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.deleteJobsFromAccount(anyInt(), anyList())).thenReturn(getFirstJodJob());
         resource.ukelonn = ukelonn;
 
         // Set up the POST argument for the delete
-        Account account = getJodAccount();
-        List<Transaction> jobs = getJodJobs();
-        List<Integer> idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
-        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
+        var account = getJodAccount();
+        var jobs = getJodJobs();
+        var idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
+        var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
 
         // Do the delete
-        List<Transaction> jobsAfterDelete = resource.delete(accountWithJobIds);
+        var jobsAfterDelete = resource.delete(accountWithJobIds);
         assertEquals(1, jobsAfterDelete.size());
     }
 
     @Test
     void verifyDeletingNoJobsOfUserHasNoEffect() {
-        AdminJobs resource = new AdminJobs();
+        var resource = new AdminJobs();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         when(ukelonn.deleteJobsFromAccount(anyInt(), anyList())).thenReturn(getJodJobs());
         resource.ukelonn = ukelonn;
 
-        Account account = getJodAccount();
+        var account = getJodAccount();
 
         // Delete with an empty argument
         List<Integer> idsOfJobsToDelete = Collections.emptyList();
-        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
-        List<Transaction> jobsAfterDelete = resource.delete(accountWithJobIds);
+        var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
+        var jobsAfterDelete = resource.delete(accountWithJobIds);
 
         // Verify that nothing has been deleted
         assertEquals(2, jobsAfterDelete.size());
@@ -101,30 +99,30 @@ class AdminJobsTest {
 
     @Test
     void verifyExceptionIsThrownWhenFailingToSetDeleteJobParameter() throws Exception {
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var ukelonn = new UkelonnServiceProvider();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that will fail during query setup
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         doThrow(SQLException.class).when(statement).setInt(anyInt(), anyInt());
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         ukelonn.setDataSource(datasource);
 
         // Create the jersey resource that is to be tested
-        AdminJobs resource = new AdminJobs();
+        var resource = new AdminJobs();
 
         // Inject fake OSGi services
         resource.ukelonn = ukelonn;
         resource.setLogservice(logservice);
 
         // trying to delete jobs here will throw a Jersey Internal Error exception
-        Account account = getJodAccount();
-        List<Integer> idsOfJobsToDelete = Arrays.asList(1);
-        AccountWithJobIds accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
+        var account = getJodAccount();
+        var idsOfJobsToDelete = Arrays.asList(1);
+        var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
         assertThrows(InternalServerErrorException.class, () -> resource.delete(accountWithJobIds));
     }
 

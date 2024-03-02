@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
 import javax.sql.DataSource;
 import javax.ws.rs.InternalServerErrorException;
 
@@ -42,54 +40,54 @@ class AdminPaymenttypeTest {
     @Test
     void testModifyPaymenttype() {
         // Create the resource that is to be tested
-        AdminPaymenttype resource = new AdminPaymenttype();
+        var resource = new AdminPaymenttype();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Find a payment type to modify
-        List<TransactionType> paymenttypes = getPaymenttypes();
-        TransactionType paymenttype = paymenttypes.get(1);
-        Double originalAmount = paymenttype.getTransactionAmount();
+        var paymenttypes = getPaymenttypes();
+        var paymenttype = paymenttypes.get(1);
+        var originalAmount = paymenttype.getTransactionAmount();
 
         // Modify the amount of the payment type
         paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
         when(ukelonn.modifyPaymenttype(paymenttype)).thenReturn(Arrays.asList(paymenttype));
 
         // Run the method that is to be tested
-        List<TransactionType> updatedPaymenttypes = resource.modify(paymenttype);
+        var updatedPaymenttypes = resource.modify(paymenttype);
 
         // Verify that the updated amount is larger than the original amount
-        TransactionType updatedPaymenttype = updatedPaymenttypes.get(0);
+        var updatedPaymenttype = updatedPaymenttypes.get(0);
         assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test
     void testModifyPaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
-        AdminPaymenttype resource = new AdminPaymenttype();
+        var resource = new AdminPaymenttype();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
         resource.ukelonn = ukelonn;
 
         // Inject a fake OSGi log service
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
 
         // Create a non-existing payment type
-        TransactionType paymenttype = TransactionType.with()
+        var paymenttype = TransactionType.with()
             .id(-2001)
             .transactionTypeName("Bar")
             .transactionAmount(0.0)
@@ -104,18 +102,18 @@ class AdminPaymenttypeTest {
     @Test
     void testCreatePaymenttype() {
         // Create the resource that is to be tested
-        AdminPaymenttype resource = new AdminPaymenttype();
+        var resource = new AdminPaymenttype();
 
         // Inject fake OSGi service UkelonnService
-        UkelonnService ukelonn = mock(UkelonnService.class);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Get the list of payment types before adding a new job type
-        List<TransactionType> originalPaymenttypes = getPaymenttypes();
-        List<TransactionType> newPaymenttypes = new ArrayList<>(originalPaymenttypes);
+        var originalPaymenttypes = getPaymenttypes();
+        var newPaymenttypes = new ArrayList<>(originalPaymenttypes);
 
         // Create new payment type
-        TransactionType paymenttype = TransactionType.with()
+        var paymenttype = TransactionType.with()
             .id(-2001)
             .transactionTypeName("Bar")
             .transactionAmount(0.0)
@@ -125,7 +123,7 @@ class AdminPaymenttypeTest {
         when(ukelonn.createPaymenttype(any())).thenReturn(newPaymenttypes);
 
         // Add the payment type to the database
-        List<TransactionType> updatedPaymenttypes = resource.create(paymenttype);
+        var updatedPaymenttypes = resource.create(paymenttype);
 
         // Verify that a new jobtype has been added
         assertThat(updatedPaymenttypes).hasSizeGreaterThan(originalPaymenttypes.size());
@@ -134,29 +132,29 @@ class AdminPaymenttypeTest {
     @Test
     void testCreatePaymenttypeFailure() throws Exception {
         // Create the resource that is to be tested
-        AdminPaymenttype resource = new AdminPaymenttype();
+        var resource = new AdminPaymenttype();
 
 
         // Inject fake OSGi service UkelonnService
-        UkelonnServiceProvider ukelonn = new UkelonnServiceProvider();
+        var ukelonn = new UkelonnServiceProvider();
         resource.ukelonn = ukelonn;
 
         // Inject a fake OSGi log service
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         ukelonn.setLogservice(logservice);
         resource.setLogservice(logservice);
 
         // Create a mock database that throws exceptions and inject it
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
-        PreparedStatement statement = mock(PreparedStatement.class);
+        var statement = mock(PreparedStatement.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
         ukelonn.setDataSource(datasource);
 
         // Create new payment type
-        TransactionType paymenttype = TransactionType.with()
+        var paymenttype = TransactionType.with()
             .id(-2001)
             .transactionTypeName("Bar")
             .transactionAmount(0.0)

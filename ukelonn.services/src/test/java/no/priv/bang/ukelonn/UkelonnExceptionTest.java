@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,23 @@ class UkelonnExceptionTest {
 
     @Test
     void testMessage() {
-        UkelonnException exception = new UkelonnException("Test");
+        var exception = new UkelonnException("Test");
         assertEquals("Test", exception.getMessage());
         assertNull(exception.getCause());
     }
 
     @Test
     void testMessageAndCause() {
-        NullPointerException cause = new NullPointerException();
-        UkelonnException exception = new UkelonnException("Test", cause);
+        var cause = new NullPointerException();
+        var exception = new UkelonnException("Test", cause);
         assertEquals("Test", exception.getMessage());
         assertEquals(cause, exception.getCause());
     }
 
     @Test
     void testCause() {
-        NullPointerException cause = new NullPointerException();
-        UkelonnException exception = new UkelonnException(cause);
+        var cause = new NullPointerException();
+        var exception = new UkelonnException(cause);
         assertEquals(cause.getClass().getName(), exception.getMessage());
         assertEquals(cause, exception.getCause());
     }

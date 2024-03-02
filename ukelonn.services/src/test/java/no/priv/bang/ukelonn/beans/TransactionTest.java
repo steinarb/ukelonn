@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class TransactionTest {
 
     @Test
     void testNoArgConstructor() {
-        Transaction bean = Transaction.with().build();
+        var bean = Transaction.with().build();
         assertEquals(-1, bean.getId());
         assertNull(bean.getTransactionType());
         assertNull(bean.getTransactionTime());
@@ -33,12 +33,12 @@ class TransactionTest {
 
     @Test
     void testConstructorWithArgs() {
-        int id = 5;
-        TransactionType transactionType = TransactionType.with().build();
-        Date transactionTime = new Date();
-        double transactionAmount = 100.0;
-        boolean paidOut = true;
-        Transaction bean = Transaction.with()
+        var id = 5;
+        var transactionType = TransactionType.with().build();
+        var transactionTime = new Date();
+        var transactionAmount = 100.0;
+        var paidOut = true;
+        var bean = Transaction.with()
             .id(id)
             .transactionType(transactionType)
             .transactionTime(transactionTime)

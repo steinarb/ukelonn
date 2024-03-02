@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,9 +68,9 @@ public class TestUtils {
      */
     public static UkelonnServiceProvider setupFakeOsgiServices() throws Exception {
         ukelonnServiceSingleton = new UkelonnServiceProvider();
-        LogService logservice = new MockLogService();
-        DataSource ukelonnDatasource = createUkelonnDatasource(logservice);
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var logservice = new MockLogService();
+        var ukelonnDatasource = createUkelonnDatasource(logservice);
+        var useradmin = mock(UserManagementService.class);
 
         ukelonnServiceSingleton.setDataSource(ukelonnDatasource);
         ukelonnServiceSingleton.setLogservice(logservice);
@@ -85,7 +85,7 @@ public class TestUtils {
      */
     public static void releaseFakeOsgiServices() throws Exception {
         rollbackMockDataInTestDatabase();
-        UkelonnServiceProvider ukelonnService = new UkelonnServiceProvider();
+        var ukelonnService = new UkelonnServiceProvider();
         if (ukelonnService != null) {
             ukelonnService.setDataSource(null); // Release the database
         }
@@ -93,7 +93,7 @@ public class TestUtils {
 
     public static void restoreTestDatabase() throws Exception {
         rollbackMockDataInTestDatabase();
-        DataSource ukelonnDatasource = createUkelonnDatasource(new MockLogService());
+        var ukelonnDatasource = createUkelonnDatasource(new MockLogService());
         getUkelonnServiceSingleton().setDataSource(ukelonnDatasource);
     }
 
@@ -114,23 +114,23 @@ public class TestUtils {
     }
 
     static DataSource createUkelonnDatasource(LogService logservice) throws SQLException {
-        DerbyDataSourceFactory datasourceFactory = new DerbyDataSourceFactory();
-        Properties derbyDbCredentials = createDerbyMemoryDbCredentials();
-        DataSource ukelonnDatasource = datasourceFactory.createDataSource(derbyDbCredentials);
-        TestLiquibaseRunner runner = createLiquibaseRunner(logservice);
+        var datasourceFactory = new DerbyDataSourceFactory();
+        var derbyDbCredentials = createDerbyMemoryDbCredentials();
+        var ukelonnDatasource = datasourceFactory.createDataSource(derbyDbCredentials);
+        var runner = createLiquibaseRunner(logservice);
         runner.prepare(ukelonnDatasource);
         return ukelonnDatasource;
     }
 
     static TestLiquibaseRunner createLiquibaseRunner(LogService logservice) {
-        TestLiquibaseRunner runner = new TestLiquibaseRunner();
+        var runner = new TestLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
         return runner;
     }
 
     private static Properties createDerbyMemoryDbCredentials() {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         return properties;
     }
