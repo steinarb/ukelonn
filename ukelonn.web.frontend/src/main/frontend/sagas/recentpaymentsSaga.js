@@ -12,10 +12,6 @@ export function* requestRecentPaymentsSaga() {
     yield takeLatest(RECENTPAYMENTS_REQUEST, receiveRecentPaymentsSaga);
 }
 
-function doRecentPayments(accountId) {
-    return axios.get('/api/payments/' + accountId);
-}
-
 // worker saga
 function* receiveRecentPaymentsSaga(action) {
     try {
@@ -31,4 +27,8 @@ function* receiveRecentPaymentsSaga(action) {
     } catch (error) {
         yield put(RECENTPAYMENTS_FAILURE(error));
     }
+}
+
+function doRecentPayments(accountId) {
+    return axios.get('/api/payments/' + accountId);
 }

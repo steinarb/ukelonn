@@ -8,8 +8,9 @@ import {
 } from '../actiontypes';
 import { emptyLoginResponse } from './constants';
 
-function doLogout() {
-    return axios.post('/api/logout', {});
+export default function* logoutSaga() {
+    yield takeLatest(LOGOUT_REQUEST, receiveLogoutSaga);
+    yield takeLatest(LOGOUT_RECEIVE, reloadPage);
 }
 
 function* receiveLogoutSaga() {
@@ -22,13 +23,12 @@ function* receiveLogoutSaga() {
     }
 }
 
+function doLogout() {
+    return axios.post('/api/logout', {});
+}
+
 function* reloadPage(action) {
     if (!action.payload.username) {
         yield put(RELOAD_WEB_PAGE());
     }
-}
-
-export default function* logoutSaga() {
-    yield takeLatest(LOGOUT_REQUEST, receiveLogoutSaga);
-    yield takeLatest(LOGOUT_RECEIVE, reloadPage);
 }

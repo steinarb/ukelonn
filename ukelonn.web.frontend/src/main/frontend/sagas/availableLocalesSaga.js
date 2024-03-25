@@ -11,10 +11,6 @@ export default function* availableLocalesSaga() {
     yield takeLatest(AVAILABLE_LOCALES_REQUEST, receiveAvailableLocalesSaga);
 }
 
-function doAvailableLocales() {
-    return axios.get('/api/availablelocales');
-}
-
 // worker saga
 function* receiveAvailableLocalesSaga() {
     try {
@@ -24,4 +20,8 @@ function* receiveAvailableLocalesSaga() {
     } catch (error) {
         yield put(AVAILABLE_LOCALES_ERROR(error));
     }
+}
+
+function doAvailableLocales() {
+    return axios.get('/api/availablelocales');
 }

@@ -17,6 +17,10 @@ import {
 } from '../actiontypes';
 import { findUsername } from '../common/login';
 
+export default function* locationSaga() {
+    yield takeLatest(LOCATION_CHANGE, locationChange);
+}
+
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const basename = yield select(state => state.router.basename);
@@ -95,10 +99,6 @@ function* locationChange(action) {
         yield put(GET_ALL_BONUSES());
         yield put(CLEAR_BONUS());
     }
-}
-
-export default function* locationSaga() {
-    yield takeLatest(LOCATION_CHANGE, locationChange);
 }
 
 function findPathname(location, basename) {

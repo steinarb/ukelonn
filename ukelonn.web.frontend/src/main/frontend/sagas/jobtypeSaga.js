@@ -12,6 +12,14 @@ import {
     CLEAR_JOB_TYPE_CREATE_FORM,
 } from '../actiontypes';
 
+export default function* jobtypeSaga() {
+    yield takeLatest(SELECT_JOB_TYPE, selectJobType);
+    yield takeLatest(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveModifiedJobType);
+    yield takeLatest(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedJobType);
+    yield takeLatest(MODIFY_JOBTYPE_RECEIVE, clearJobtypeForm);
+    yield takeLatest(CREATE_JOBTYPE_RECEIVE, clearJobtypeCreateForm);
+}
+
 function* selectJobType(action) {
     const transactionTypeId = action.payload;
     if (transactionTypeId === -1) {
@@ -48,12 +56,4 @@ function* clearJobtypeForm() {
 
 function* clearJobtypeCreateForm() {
     yield put(CLEAR_JOB_TYPE_CREATE_FORM());
-}
-
-export default function* jobtypeSaga() {
-    yield takeLatest(SELECT_JOB_TYPE, selectJobType);
-    yield takeLatest(SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveModifiedJobType);
-    yield takeLatest(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedJobType);
-    yield takeLatest(MODIFY_JOBTYPE_RECEIVE, clearJobtypeForm);
-    yield takeLatest(CREATE_JOBTYPE_RECEIVE, clearJobtypeCreateForm);
 }

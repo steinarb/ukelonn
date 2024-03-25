@@ -6,8 +6,8 @@ import {
     USERS_FAILURE,
 } from '../actiontypes';
 
-function doUsers() {
-    return axios.get('/api/users');
+export default function* usersSaga() {
+    yield takeLatest(USERS_REQUEST, receiveUsersSaga);
 }
 
 function* receiveUsersSaga() {
@@ -20,6 +20,6 @@ function* receiveUsersSaga() {
     }
 }
 
-export default function* usersSaga() {
-    yield takeLatest(USERS_REQUEST, receiveUsersSaga);
+function doUsers() {
+    return axios.get('/api/users');
 }

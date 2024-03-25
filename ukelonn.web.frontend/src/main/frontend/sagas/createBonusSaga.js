@@ -6,8 +6,8 @@ import {
     CREATE_BONUS_FAILURE,
 } from '../actiontypes';
 
-function doCreateBonus(bonus) {
-    return axios.post('/api/admin/createbonus', bonus);
+export default function* createBonusSaga() {
+    yield takeLatest(CREATE_BONUS_REQUEST, requestReceiveCreateBonusSaga);
 }
 
 function* requestReceiveCreateBonusSaga(action) {
@@ -20,6 +20,6 @@ function* requestReceiveCreateBonusSaga(action) {
     }
 }
 
-export default function* createBonusSaga() {
-    yield takeLatest(CREATE_BONUS_REQUEST, requestReceiveCreateBonusSaga);
+function doCreateBonus(bonus) {
+    return axios.post('/api/admin/createbonus', bonus);
 }

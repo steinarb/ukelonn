@@ -14,9 +14,10 @@ import {
 import { emptyAccount } from '../constants';
 import { findUsername } from '../common/login';
 
-
-function doAccount(username) {
-    return axios.get('/api/account/' + username );
+export default function* accountSaga() {
+    yield takeLatest(SELECT_ACCOUNT, fetchDataForSelectedAccount);
+    yield takeLatest(ACCOUNT_REQUEST, requestReceiveAccountSaga);
+    yield takeLatest(RECEIVED_NOTIFICATION, updateAccountOnNotification);
 }
 
 function* requestReceiveAccountSaga(action) {
@@ -32,6 +33,10 @@ function* requestReceiveAccountSaga(action) {
             yield put(ACCOUNT_FAILURE(error));
         }
     }
+}
+
+function doAccount(username) {
+    return axios.get('/api/account/' + username );
 }
 
 function* fetchDataForSelectedAccount(action) {
@@ -51,10 +56,4 @@ function* fetchDataForSelectedAccount(action) {
 function* updateAccountOnNotification() {
     const username = yield select(findUsername);
     yield put(ACCOUNT_REQUEST(username));
-}
-
-export default function* accountSaga() {
-    yield takeLatest(SELECT_ACCOUNT, fetchDataForSelectedAccount);
-    yield takeLatest(ACCOUNT_REQUEST, requestReceiveAccountSaga);
-    yield takeLatest(RECEIVED_NOTIFICATION, updateAccountOnNotification);
 }

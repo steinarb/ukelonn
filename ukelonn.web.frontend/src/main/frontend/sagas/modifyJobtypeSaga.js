@@ -6,8 +6,8 @@ import {
     MODIFY_JOBTYPE_FAILURE,
 } from '../actiontypes';
 
-function doModifyJobtype(jobtype) {
-    return axios.post('/api/admin/jobtype/modify', jobtype);
+export default function* modifyJobtypeSaga() {
+    yield takeLatest(MODIFY_JOBTYPE_REQUEST, receiveModifyJobtypeSaga);
 }
 
 function* receiveModifyJobtypeSaga(action) {
@@ -20,6 +20,6 @@ function* receiveModifyJobtypeSaga(action) {
     }
 }
 
-export default function* modifyJobtypeSaga() {
-    yield takeLatest(MODIFY_JOBTYPE_REQUEST, receiveModifyJobtypeSaga);
+function doModifyJobtype(jobtype) {
+    return axios.post('/api/admin/jobtype/modify', jobtype);
 }

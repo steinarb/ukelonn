@@ -6,8 +6,8 @@ import {
     MODIFY_PAYMENTTYPE_FAILURE,
 } from '../actiontypes';
 
-function doModifyPaymenttype(paymenttype) {
-    return axios.post('/api/admin/paymenttype/modify', paymenttype);
+export default function* modifyPaymenttypeSaga() {
+    yield takeLatest(MODIFY_PAYMENTTYPE_REQUEST, requestReceiveModifyPaymenttypeSaga);
 }
 
 function* requestReceiveModifyPaymenttypeSaga(action) {
@@ -20,6 +20,6 @@ function* requestReceiveModifyPaymenttypeSaga(action) {
     }
 }
 
-export default function* modifyPaymenttypeSaga() {
-    yield takeLatest(MODIFY_PAYMENTTYPE_REQUEST, requestReceiveModifyPaymenttypeSaga);
+function doModifyPaymenttype(paymenttype) {
+    return axios.post('/api/admin/paymenttype/modify', paymenttype);
 }

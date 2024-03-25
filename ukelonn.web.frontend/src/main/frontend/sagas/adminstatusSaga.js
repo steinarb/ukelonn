@@ -6,6 +6,10 @@ import {
     RECEIVE_ADMIN_STATUS_ERROR,
 } from '../actiontypes';
 
+export default function* adminStatusSaga() {
+    yield takeLatest(REQUEST_ADMIN_STATUS, requestAdminStatus);
+}
+
 function* requestAdminStatus(action) {
     try {
         const response = yield call(fetchAdminStatus, action.payload);
@@ -18,8 +22,4 @@ function* requestAdminStatus(action) {
 
 function fetchAdminStatus(user) {
     return axios.post('/api/admin/user/adminstatus', user);
-}
-
-export default function* adminStatusSaga() {
-    yield takeLatest(REQUEST_ADMIN_STATUS, requestAdminStatus);
 }

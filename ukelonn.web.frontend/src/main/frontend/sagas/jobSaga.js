@@ -14,6 +14,14 @@ import {
     CLEAR_EDIT_JOB_FORM,
 } from '../actiontypes';
 
+export default function* jobSaga() {
+    yield takeLatest(REGISTER_JOB_BUTTON_CLICKED, registerPerformedJob);
+    yield takeLatest(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED, buildRequestAndSaveModifiedJob);
+    yield takeLatest(DELETE_SELECTED_JOBS_BUTTON_CLICKED, deleteSelectedJobs);
+    yield takeLatest(REGISTERJOB_RECEIVE, fetchUpdatedSumsAndClearRegisterJobForm);
+    yield takeLatest(UPDATE_JOB_RECEIVE, clearEditJobForm);
+}
+
 function* registerPerformedJob() {
     const job = yield select(state => ({
         account: {
@@ -55,12 +63,4 @@ function* fetchUpdatedSumsAndClearRegisterJobForm(action) {
 
 function* clearEditJobForm() {
     yield put(CLEAR_EDIT_JOB_FORM());
-}
-
-export default function* jobSaga() {
-    yield takeLatest(REGISTER_JOB_BUTTON_CLICKED, registerPerformedJob);
-    yield takeLatest(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED, buildRequestAndSaveModifiedJob);
-    yield takeLatest(DELETE_SELECTED_JOBS_BUTTON_CLICKED, deleteSelectedJobs);
-    yield takeLatest(REGISTERJOB_RECEIVE, fetchUpdatedSumsAndClearRegisterJobForm);
-    yield takeLatest(UPDATE_JOB_RECEIVE, clearEditJobForm);
 }

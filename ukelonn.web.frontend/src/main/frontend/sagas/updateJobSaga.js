@@ -6,8 +6,8 @@ import {
     UPDATE_JOB_FAILURE,
 } from '../actiontypes';
 
-function doUpdateJob(updatedJob) {
-    return axios.post('/api/job/update', updatedJob);
+export default function* updateJobSaga() {
+    yield takeLatest(UPDATE_JOB_REQUEST, requestReceiveUpdateJobSaga);
 }
 
 function* requestReceiveUpdateJobSaga(action) {
@@ -20,6 +20,6 @@ function* requestReceiveUpdateJobSaga(action) {
     }
 }
 
-export default function* updateJobSaga() {
-    yield takeLatest(UPDATE_JOB_REQUEST, requestReceiveUpdateJobSaga);
+function doUpdateJob(updatedJob) {
+    return axios.post('/api/job/update', updatedJob);
 }

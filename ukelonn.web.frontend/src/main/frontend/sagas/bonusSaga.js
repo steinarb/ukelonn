@@ -14,6 +14,16 @@ import {
     CLEAR_BONUS,
 } from '../actiontypes';
 
+export default function* bonusSaga() {
+    yield takeLatest(SELECT_BONUS, selectBonus);
+    yield takeLatest(SAVE_BONUS_CHANGES_BUTTON_CLICKED, saveModifiedBonus);
+    yield takeLatest(CREATE_NEW_BONUS_BUTTON_CLICKED, saveCreatedBonus);
+    yield takeLatest(DELETE_SELECTED_BONUS_BUTTON_CLICKED, deleteSelectedBonus);
+    yield takeLatest(MODIFY_BONUS_RECEIVE, clearBonusForm);
+    yield takeLatest(CREATE_BONUS_RECEIVE, clearBonusForm);
+    yield takeLatest(DELETE_BONUS_RECEIVE, clearBonusForm);
+}
+
 function* selectBonus(action) {
     const bonusId = action.payload;
     if (bonusId === -1) {
@@ -62,14 +72,4 @@ function* deleteSelectedBonus() {
 
 function* clearBonusForm() {
     yield put(CLEAR_BONUS());
-}
-
-export default function* bonusSaga() {
-    yield takeLatest(SELECT_BONUS, selectBonus);
-    yield takeLatest(SAVE_BONUS_CHANGES_BUTTON_CLICKED, saveModifiedBonus);
-    yield takeLatest(CREATE_NEW_BONUS_BUTTON_CLICKED, saveCreatedBonus);
-    yield takeLatest(DELETE_SELECTED_BONUS_BUTTON_CLICKED, deleteSelectedBonus);
-    yield takeLatest(MODIFY_BONUS_RECEIVE, clearBonusForm);
-    yield takeLatest(CREATE_BONUS_RECEIVE, clearBonusForm);
-    yield takeLatest(DELETE_BONUS_RECEIVE, clearBonusForm);
 }

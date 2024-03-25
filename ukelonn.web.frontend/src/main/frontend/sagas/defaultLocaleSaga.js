@@ -11,10 +11,6 @@ export default function* defaultLocaleSaga() {
     yield takeLatest(DEFAULT_LOCALE_REQUEST, receiveDefaultLocaleSaga);
 }
 
-function doDefaultLocale() {
-    return axios.get('/api/defaultlocale');
-}
-
 // worker saga
 function* receiveDefaultLocaleSaga() {
     try {
@@ -24,4 +20,8 @@ function* receiveDefaultLocaleSaga() {
     } catch (error) {
         yield put(DEFAULT_LOCALE_ERROR(error));
     }
+}
+
+function doDefaultLocale() {
+    return axios.get('/api/defaultlocale');
 }

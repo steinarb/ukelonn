@@ -6,9 +6,8 @@ import {
     CHANGE_USER_FAILURE,
 } from '../actiontypes';
 
-
-function doModifyUser(user) {
-    return axios.post('/api/admin/user/modify', user);
+export default function* modifyUserSaga() {
+    yield takeLatest(CHANGE_USER_REQUEST, requestReceiveModifyUserSaga);
 }
 
 function* requestReceiveModifyUserSaga(action) {
@@ -21,6 +20,6 @@ function* requestReceiveModifyUserSaga(action) {
     }
 }
 
-export default function* modifyUserSaga() {
-    yield takeLatest(CHANGE_USER_REQUEST, requestReceiveModifyUserSaga);
+function doModifyUser(user) {
+    return axios.post('/api/admin/user/modify', user);
 }

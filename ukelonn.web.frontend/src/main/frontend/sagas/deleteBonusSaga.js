@@ -6,8 +6,8 @@ import {
     DELETE_BONUS_FAILURE,
 } from '../actiontypes';
 
-function doDeleteBonus(bonus) {
-    return axios.post('/api/admin/deletebonus', bonus);
+export default function* deleteBonusSaga() {
+    yield takeLatest(DELETE_BONUS_REQUEST, receiveDeleteBonusSaga);
 }
 
 function* receiveDeleteBonusSaga(action) {
@@ -20,6 +20,6 @@ function* receiveDeleteBonusSaga(action) {
     }
 }
 
-export default function* deleteBonusSaga() {
-    yield takeLatest(DELETE_BONUS_REQUEST, receiveDeleteBonusSaga);
+function doDeleteBonus(bonus) {
+    return axios.post('/api/admin/deletebonus', bonus);
 }

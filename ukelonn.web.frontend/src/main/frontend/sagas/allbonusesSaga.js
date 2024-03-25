@@ -11,10 +11,6 @@ export function* requestAllbonusesSaga() {
     yield takeLatest(GET_ALL_BONUSES, receiveAllbonusesSaga);
 }
 
-function doAllbonuses() {
-    return axios.get('/api/allbonuses');
-}
-
 // worker saga
 function* receiveAllbonusesSaga() {
     try {
@@ -24,4 +20,8 @@ function* receiveAllbonusesSaga() {
     } catch (error) {
         yield put(RECEIVE_ALL_BONUSES_FAILURE(error));
     }
+}
+
+function doAllbonuses() {
+    return axios.get('/api/allbonuses');
 }

@@ -7,8 +7,8 @@ import {
     SELECT_PAYMENT_TYPE,
 } from '../actiontypes';
 
-function doPaymenttypes() {
-    return axios.get('/api/paymenttypes');
+export default function* paymenttypesSaga() {
+    yield takeLatest(PAYMENTTYPES_REQUEST, receivePaymenttypesSaga);
 }
 
 function* receivePaymenttypesSaga() {
@@ -24,6 +24,6 @@ function* receivePaymenttypesSaga() {
     }
 }
 
-export default function* paymenttypesSaga() {
-    yield takeLatest(PAYMENTTYPES_REQUEST, receivePaymenttypesSaga);
+function doPaymenttypes() {
+    return axios.get('/api/paymenttypes');
 }

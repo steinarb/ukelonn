@@ -6,8 +6,8 @@ import {
     DELETE_JOBS_FAILURE,
 } from '../actiontypes';
 
-function doDeleteJobs(accountWithJobIds) {
-    return axios.post('/api/admin/jobs/delete', accountWithJobIds);
+export default function* deleteJobsSaga() {
+    yield takeLatest(DELETE_JOBS_REQUEST, requestReceiveDeleteJobsSaga);
 }
 
 function* requestReceiveDeleteJobsSaga(action) {
@@ -23,6 +23,6 @@ function* requestReceiveDeleteJobsSaga(action) {
     }
 }
 
-export default function* deleteJobsSaga() {
-    yield takeLatest(DELETE_JOBS_REQUEST, requestReceiveDeleteJobsSaga);
+function doDeleteJobs(accountWithJobIds) {
+    return axios.post('/api/admin/jobs/delete', accountWithJobIds);
 }

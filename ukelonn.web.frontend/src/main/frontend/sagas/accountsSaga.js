@@ -6,8 +6,8 @@ import {
     ACCOUNTS_FAILURE,
 } from '../actiontypes';
 
-function doAccounts() {
-    return axios.get('/api/accounts');
+export default function* accountsSaga() {
+    yield takeLatest(ACCOUNTS_REQUEST, requestReceiveAccountsSaga);
 }
 
 function* requestReceiveAccountsSaga() {
@@ -20,6 +20,6 @@ function* requestReceiveAccountsSaga() {
     }
 }
 
-export default function* accountsSaga() {
-    yield takeLatest(ACCOUNTS_REQUEST, requestReceiveAccountsSaga);
+function doAccounts() {
+    return axios.get('/api/accounts');
 }
