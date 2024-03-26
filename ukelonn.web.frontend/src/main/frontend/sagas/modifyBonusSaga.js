@@ -6,8 +6,8 @@ import {
     MODIFY_BONUS_FAILURE,
 } from '../actiontypes';
 
-function doModifyBonus(bonus) {
-    return axios.post('/api/admin/modifybonus', bonus);
+export default function* modifyBonusSaga() {
+    yield takeLatest(MODIFY_BONUS_REQUEST, receiveModifyBonusSaga);
 }
 
 function* receiveModifyBonusSaga(action) {
@@ -20,6 +20,6 @@ function* receiveModifyBonusSaga(action) {
     }
 }
 
-export default function* modifyBonusSaga() {
-    yield takeLatest(MODIFY_BONUS_REQUEST, receiveModifyBonusSaga);
+function doModifyBonus(bonus) {
+    return axios.post('/api/admin/modifybonus', bonus);
 }

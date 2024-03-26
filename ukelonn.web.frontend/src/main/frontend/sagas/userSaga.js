@@ -17,6 +17,17 @@ import {
     CLEAR_USER_AND_PASSWORDS,
 } from '../actiontypes';
 
+export default function* userSaga() {
+    yield takeLatest(SELECT_USER, queryAdminStatusForSelectedUser);
+    yield takeLatest(USERS_RECEIVE, clearUserForm);
+    yield takeLatest(SAVE_USER_BUTTON_CLICKED, collectAndSaveModifiedUser);
+    yield takeLatest(CHANGE_PASSWORD_BUTTON_CLICKED, collectDataAndSaveUpdatedPassword);
+    yield takeLatest(CREATE_USER_BUTTON_CLICKED, saveCreatedUser);
+    yield takeLatest(CHANGE_USER_RECEIVE, clearUserForm);
+    yield takeLatest(CHANGE_USER_PASSWORD_RECEIVE, clearUserAndPasswordForms);
+    yield takeLatest(CREATE_USER_RECEIVE, clearUserAndPasswordForms);
+}
+
 function* queryAdminStatusForSelectedUser(action) {
     if (action.payload.userid !== -1) {
         yield put(REQUEST_ADMIN_STATUS(action.payload));
@@ -69,15 +80,4 @@ function* clearUserForm() {
 
 function* clearUserAndPasswordForms() {
     yield put(CLEAR_USER_AND_PASSWORDS());
-}
-
-export default function* userSaga() {
-    yield takeLatest(SELECT_USER, queryAdminStatusForSelectedUser);
-    yield takeLatest(USERS_RECEIVE, clearUserForm);
-    yield takeLatest(SAVE_USER_BUTTON_CLICKED, collectAndSaveModifiedUser);
-    yield takeLatest(CHANGE_PASSWORD_BUTTON_CLICKED, collectDataAndSaveUpdatedPassword);
-    yield takeLatest(CREATE_USER_BUTTON_CLICKED, saveCreatedUser);
-    yield takeLatest(CHANGE_USER_RECEIVE, clearUserForm);
-    yield takeLatest(CHANGE_USER_PASSWORD_RECEIVE, clearUserAndPasswordForms);
-    yield takeLatest(CREATE_USER_RECEIVE, clearUserAndPasswordForms);
 }

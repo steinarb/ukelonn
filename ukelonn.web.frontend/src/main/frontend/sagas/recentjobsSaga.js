@@ -11,10 +11,6 @@ export function* requestRecentJobsSaga() {
     yield takeLatest(RECENTJOBS_REQUEST, receiveRecentJobsSaga);
 }
 
-function doRecentJobs(accountId) {
-    return axios.get('/api/jobs/' + accountId);
-}
-
 // worker saga
 function* receiveRecentJobsSaga(action) {
     try {
@@ -24,4 +20,8 @@ function* receiveRecentJobsSaga(action) {
     } catch (error) {
         yield put(RECENTJOBS_FAILURE(error));
     }
+}
+
+function doRecentJobs(accountId) {
+    return axios.get('/api/jobs/' + accountId);
 }

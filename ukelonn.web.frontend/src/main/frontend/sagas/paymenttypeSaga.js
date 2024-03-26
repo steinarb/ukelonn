@@ -13,6 +13,15 @@ import {
     CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 
+export default function* paymentSaga() {
+    yield takeLatest(SELECT_PAYMENT_TYPE, selectPaymentType);
+    yield takeLatest(SELECT_PAYMENT_TYPE_FOR_EDIT, selectPaymentTypeForEdit);
+    yield takeLatest(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED, buildRequestAndSaveModifiedPaymentType);
+    yield takeLatest(CREATE_PAYMENT_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedPaymentType);
+    yield takeLatest(MODIFY_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
+    yield takeLatest(CREATE_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
+}
+
 function* selectPaymentType(action) {
     const transactionTypeId = parseInt(action.payload);
     if (transactionTypeId === -1) {
@@ -60,13 +69,4 @@ function* buildRequestAndSaveCreatedPaymentType() {
 
 function* clearPaymenttypeForm() {
     yield put(CLEAR_PAYMENT_TYPE_FORM());
-}
-
-export default function* paymentSaga() {
-    yield takeLatest(SELECT_PAYMENT_TYPE, selectPaymentType);
-    yield takeLatest(SELECT_PAYMENT_TYPE_FOR_EDIT, selectPaymentTypeForEdit);
-    yield takeLatest(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED, buildRequestAndSaveModifiedPaymentType);
-    yield takeLatest(CREATE_PAYMENT_TYPE_BUTTON_CLICKED, buildRequestAndSaveCreatedPaymentType);
-    yield takeLatest(MODIFY_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
-    yield takeLatest(CREATE_PAYMENTTYPE_RECEIVE, clearPaymenttypeForm);
 }

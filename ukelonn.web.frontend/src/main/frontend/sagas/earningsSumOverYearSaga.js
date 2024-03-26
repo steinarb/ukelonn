@@ -6,8 +6,11 @@ import {
     EARNINGS_SUM_OVER_YEAR_FAILURE,
 } from '../actiontypes';
 
-function doEarningsSumOverYear(username) {
-    return axios.get('/api/statistics/earnings/sumoveryear/' + username);
+// watcher saga
+export default function* earningsSumOverYearSaga() {
+    yield all([
+        takeLatest(EARNINGS_SUM_OVER_YEAR_REQUEST, receiveEarningsSumOverYearSaga),
+    ]);
 }
 
 // worker saga
@@ -22,9 +25,6 @@ function* receiveEarningsSumOverYearSaga(action) {
     }
 }
 
-// watcher saga
-export default function* earningsSumOverYearSaga() {
-    yield all([
-        takeLatest(EARNINGS_SUM_OVER_YEAR_REQUEST, receiveEarningsSumOverYearSaga),
-    ]);
+function doEarningsSumOverYear(username) {
+    return axios.get('/api/statistics/earnings/sumoveryear/' + username);
 }

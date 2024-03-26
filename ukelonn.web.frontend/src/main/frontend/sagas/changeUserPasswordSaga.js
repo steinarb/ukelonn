@@ -6,8 +6,8 @@ import {
     CHANGE_USER_PASSWORD_FAILURE,
 } from '../actiontypes';
 
-function doChangePassword(passwords) {
-    return axios.post('/api/admin/user/password', passwords);
+export default function* changeUserPasswordSaga() {
+    yield takeLatest(CHANGE_USER_PASSWORD_REQUEST, requestReceiveChangePasswordSaga);
 }
 
 function* requestReceiveChangePasswordSaga(action) {
@@ -20,6 +20,6 @@ function* requestReceiveChangePasswordSaga(action) {
     }
 }
 
-export default function* changeUserPasswordSaga() {
-    yield takeLatest(CHANGE_USER_PASSWORD_REQUEST, requestReceiveChangePasswordSaga);
+function doChangePassword(passwords) {
+    return axios.post('/api/admin/user/password', passwords);
 }

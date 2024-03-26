@@ -6,8 +6,8 @@ import {
     CREATE_JOBTYPE_FAILURE,
 } from '../actiontypes';
 
-function doCreateJobtype(jobtype) {
-    return axios.post('/api/admin/jobtype/create', jobtype);
+export default function* createJobtypeSaga() {
+    yield takeLatest(CREATE_JOBTYPE_REQUEST, sendReceiveCreateJobtype);
 }
 
 function* sendReceiveCreateJobtype(action) {
@@ -20,6 +20,6 @@ function* sendReceiveCreateJobtype(action) {
     }
 }
 
-export default function* createJobtypeSaga() {
-    yield takeLatest(CREATE_JOBTYPE_REQUEST, sendReceiveCreateJobtype);
+function doCreateJobtype(jobtype) {
+    return axios.post('/api/admin/jobtype/create', jobtype);
 }

@@ -5,6 +5,11 @@ import {
     MODIFY_PASSWORDS_NOT_IDENTICAL,
 } from '../actiontypes';
 
+export default function* passwordSaga() {
+    yield takeLatest(MODIFY_PASSWORD1, comparePasswords);
+    yield takeLatest(MODIFY_PASSWORD2, comparePasswords);
+}
+
 function* comparePasswords() {
     const password1 = yield select(state => state.password1);
     const password2 = yield select(state => state.password2);
@@ -14,9 +19,4 @@ function* comparePasswords() {
     } else {
         yield put(MODIFY_PASSWORDS_NOT_IDENTICAL(password1 !== password2));
     }
-}
-
-export default function* passwordSaga() {
-    yield takeLatest(MODIFY_PASSWORD1, comparePasswords);
-    yield takeLatest(MODIFY_PASSWORD2, comparePasswords);
 }

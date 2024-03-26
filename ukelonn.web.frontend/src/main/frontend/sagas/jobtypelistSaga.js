@@ -11,10 +11,6 @@ export function* requestJobtypeListSaga() {
     yield takeLatest(JOBTYPELIST_REQUEST, receiveJobtypeListSaga);
 }
 
-function doJobtypeList() {
-    return axios.get('/api/jobtypes');
-}
-
 // worker saga
 function* receiveJobtypeListSaga() {
     try {
@@ -24,4 +20,8 @@ function* receiveJobtypeListSaga() {
     } catch (error) {
         yield put(JOBTYPELIST_FAILURE(error));
     }
+}
+
+function doJobtypeList() {
+    return axios.get('/api/jobtypes');
 }

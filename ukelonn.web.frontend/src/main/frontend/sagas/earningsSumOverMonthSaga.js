@@ -1,4 +1,4 @@
-import { all, takeLatest, call, put } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     EARNINGS_SUM_OVER_MONTH_REQUEST,
@@ -6,8 +6,9 @@ import {
     EARNINGS_SUM_OVER_MONTH_FAILURE,
 } from '../actiontypes';
 
-function doEarningsSumOverMonth(username) {
-    return axios.get('/api/statistics/earnings/sumovermonth/' + username);
+// watcher saga
+export default function* earningsSumOverMonthSaga() {
+    yield takeLatest(EARNINGS_SUM_OVER_MONTH_REQUEST, receiveEarningsSumOverMonthSaga);
 }
 
 // worker saga
@@ -22,9 +23,6 @@ function* receiveEarningsSumOverMonthSaga(action) {
     }
 }
 
-// watcher saga
-export default function* earningsSumOverMonthSaga() {
-    yield all([
-        yield takeLatest(EARNINGS_SUM_OVER_MONTH_REQUEST, receiveEarningsSumOverMonthSaga),
-    ]);
+function doEarningsSumOverMonth(username) {
+    return axios.get('/api/statistics/earnings/sumovermonth/' + username);
 }

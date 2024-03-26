@@ -7,16 +7,8 @@ import {
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
 
-function doRegisterPayment(payment) {
-    return axios.post('/api/registerpayment', payment);
-}
-
-function doNotifyPaymentdone(payment, paymenttype) {
-    const notification = {
-        title: 'Ukelønn',
-        message: payment.transactionAmount + ' kroner ' + paymenttype.transactionTypeName,
-    };
-    return axios.post('/api/notificationto/' + payment.account.username, notification);
+export default function* registerPaymentSaga() {
+    yield takeLatest(REGISTERPAYMENT_REQUEST, receiveRegisterPaymentSaga);
 }
 
 function* receiveRegisterPaymentSaga(action) {
@@ -33,6 +25,14 @@ function* receiveRegisterPaymentSaga(action) {
     }
 }
 
-export default function* registerPaymentSaga() {
-    yield takeLatest(REGISTERPAYMENT_REQUEST, receiveRegisterPaymentSaga);
+function doRegisterPayment(payment) {
+    return axios.post('/api/registerpayment', payment);
+}
+
+function doNotifyPaymentdone(payment, paymenttype) {
+    const notification = {
+        title: 'Ukelønn',
+        message: payment.transactionAmount + ' kroner ' + paymenttype.transactionTypeName,
+    };
+    return axios.post('/api/notificationto/' + payment.account.username, notification);
 }

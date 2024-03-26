@@ -1,5 +1,5 @@
 import { fork, all } from 'redux-saga/effects';
-import { requestInitialLoginStateSaga, requestCheckLoginStateSaga, requestLoginSaga } from './loginSaga';
+import loginSaga from './loginSaga';
 import logoutSaga from './logoutSaga';
 import reloadSaga from './reloadSaga';
 import locationSaga from './locationSaga';
@@ -46,9 +46,7 @@ import checkLoginOnApiErrorSaga from './checkLoginOnApiErrorSaga';
 
 export function* rootSaga() {
     yield all([
-        fork(requestInitialLoginStateSaga),
-        fork(requestCheckLoginStateSaga),
-        fork(requestLoginSaga),
+        fork(loginSaga),
         fork(logoutSaga),
         fork(reloadSaga),
         fork(locationSaga),

@@ -9,6 +9,12 @@ import {
     CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 
+export default function* paymentSaga() {
+    yield takeLatest(SELECT_PAYMENT_TYPE, selectPaymentType);
+    yield takeLatest(SELECT_PAYMENT_TYPE_FOR_EDIT, selectPaymentTypeForEdit);
+    yield takeLatest(REGISTER_PAYMENT_BUTTON_CLICKED, buildRequestAndRegisterPayment);
+}
+
 function* selectPaymentType(action) {
     const transactionTypeId = parseInt(action.payload);
     if (transactionTypeId === -1) {
@@ -47,10 +53,4 @@ function* buildRequestAndRegisterPayment() {
         transactionAmount: state.transactionAmount,
     }));
     yield put(REGISTERPAYMENT_REQUEST(payment));
-}
-
-export default function* paymentSaga() {
-    yield takeLatest(SELECT_PAYMENT_TYPE, selectPaymentType);
-    yield takeLatest(SELECT_PAYMENT_TYPE_FOR_EDIT, selectPaymentTypeForEdit);
-    yield takeLatest(REGISTER_PAYMENT_BUTTON_CLICKED, buildRequestAndRegisterPayment);
 }

@@ -6,8 +6,8 @@ import {
     CREATE_PAYMENTTYPE_FAILURE,
 } from '../actiontypes';
 
-function doCreatePaymenttype(paymenttype) {
-    return axios.post('/api/admin/paymenttype/create', paymenttype);
+export default function* createPaymenttypeSaga() {
+    yield takeLatest(CREATE_PAYMENTTYPE_REQUEST, requestReceiveCreatePaymenttype);
 }
 
 function* requestReceiveCreatePaymenttype(action) {
@@ -20,6 +20,6 @@ function* requestReceiveCreatePaymenttype(action) {
     }
 }
 
-export default function* createPaymenttypeSaga() {
-    yield takeLatest(CREATE_PAYMENTTYPE_REQUEST, requestReceiveCreatePaymenttype);
+function doCreatePaymenttype(paymenttype) {
+    return axios.post('/api/admin/paymenttype/create', paymenttype);
 }

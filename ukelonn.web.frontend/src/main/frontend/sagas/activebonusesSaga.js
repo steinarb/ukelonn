@@ -11,10 +11,6 @@ export function* requestActivebonusesSaga() {
     yield takeLatest(GET_ACTIVE_BONUSES, receiveActivebonusesSaga);
 }
 
-function doActivebonuses() {
-    return axios.get('/api/activebonuses');
-}
-
 // worker saga
 function* receiveActivebonusesSaga() {
     try {
@@ -24,4 +20,8 @@ function* receiveActivebonusesSaga() {
     } catch (error) {
         yield put(RECEIVE_ACTIVE_BONUSES_FAILURE(error));
     }
+}
+
+function doActivebonuses() {
+    return axios.get('/api/activebonuses');
 }

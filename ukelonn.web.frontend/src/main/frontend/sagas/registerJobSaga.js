@@ -7,8 +7,8 @@ import {
 } from '../actiontypes';
 import { emptyAccount } from '../constants';
 
-function doRegisterJob(performedJob) {
-    return axios.post('/api/job/register', performedJob);
+export default function* registerJobSaga() {
+    yield takeLatest(REGISTERJOB_REQUEST, requestReceiveRegisterJobSaga);
 }
 
 function* requestReceiveRegisterJobSaga(action) {
@@ -21,6 +21,6 @@ function* requestReceiveRegisterJobSaga(action) {
     }
 }
 
-export default function* registerJobSaga() {
-    yield takeLatest(REGISTERJOB_REQUEST, requestReceiveRegisterJobSaga);
+function doRegisterJob(performedJob) {
+    return axios.post('/api/job/register', performedJob);
 }

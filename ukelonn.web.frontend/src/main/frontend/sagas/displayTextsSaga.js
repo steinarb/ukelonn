@@ -14,10 +14,6 @@ export default function* displayTextsSaga() {
     yield takeLatest(UPDATE_LOCALE, receiveDisplayTextsSaga);
 }
 
-function doDisplayTexts(locale) {
-    return axios.get('/api/displaytexts?' + stringify({ locale }));
-}
-
 // worker saga
 function* receiveDisplayTextsSaga(action) {
     try {
@@ -27,4 +23,8 @@ function* receiveDisplayTextsSaga(action) {
     } catch (error) {
         yield put(DISPLAY_TEXTS_ERROR(error));
     }
+}
+
+function doDisplayTexts(locale) {
+    return axios.get('/api/displaytexts?' + stringify({ locale }));
 }

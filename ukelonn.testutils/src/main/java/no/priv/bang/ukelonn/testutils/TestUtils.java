@@ -28,10 +28,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.shiro.authc.SimpleAccount;
-import org.apache.shiro.config.Ini;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.realm.SimpleAccountRealm;
-import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
+import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.Transaction;
@@ -122,8 +121,10 @@ public class TestUtils {
 
     public static WebSecurityManager getSecurityManager() {
         if (securitymanager == null) {
-            var securityManagerFactory = new WebIniSecurityManagerFactory(Ini.fromResourcePath("classpath:test.shiro.ini"));
-            securitymanager = (WebSecurityManager) securityManagerFactory.getInstance();
+            var env = new IniWebEnvironment();
+            env.setConfigLocations("classpath:test.shiro.ini");
+            env.init();
+            securitymanager = env.getWebSecurityManager();
             realm = findRealmFromSecurityManager(securitymanager);
         }
 

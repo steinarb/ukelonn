@@ -6,9 +6,8 @@ import {
     CREATE_USER_FAILURE,
 } from '../actiontypes';
 
-function doCreateUser(passwords) {
-    delete passwords.user.fullname;
-    return axios.post('/api/admin/user/create', passwords);
+export default function* createUserSaga() {
+    yield takeLatest(CREATE_USER_REQUEST, requestReceiveCreateUserSaga);
 }
 
 function* requestReceiveCreateUserSaga(action) {
@@ -21,6 +20,7 @@ function* requestReceiveCreateUserSaga(action) {
     }
 }
 
-export default function* createUserSaga() {
-    yield takeLatest(CREATE_USER_REQUEST, requestReceiveCreateUserSaga);
+function doCreateUser(passwords) {
+    delete passwords.user.fullname;
+    return axios.post('/api/admin/user/create', passwords);
 }
