@@ -15,16 +15,13 @@ import {
 } from '../actiontypes';
 import { emptyLoginResponse } from './constants';
 
-export function* requestInitialLoginStateSaga() {
+export default function* loginSaga() {
     yield takeLatest(INITIAL_LOGIN_STATE_REQUEST, receiveInitialLoginStateSaga);
+    yield takeLatest(CHECK_LOGIN_STATE_REQUEST, receiveCheckLoginStateSaga);
+    yield takeLatest(LOGIN_REQUEST, receiveLoginSaga);
 }
 
-function doGetLogin() {
-    return axios.get('/api/login');
-}
-
-// worker saga
-export function* receiveInitialLoginStateSaga() {
+function* receiveInitialLoginStateSaga() {
     try {
         const response = yield call(doGetLogin);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
@@ -39,12 +36,7 @@ export function* receiveInitialLoginStateSaga() {
     }
 }
 
-export function* requestCheckLoginStateSaga() {
-    yield takeLatest(CHECK_LOGIN_STATE_REQUEST, receiveCheckLoginStateSaga);
-}
-
-// worker saga
-export function* receiveCheckLoginStateSaga() {
+function* receiveCheckLoginStateSaga() {
     try {
         const response = yield call(doGetLogin);
         const loginResponse = (response.headers['content-type'] == 'application/json') ? response.data : emptyLoginResponse;
@@ -54,16 +46,10 @@ export function* receiveCheckLoginStateSaga() {
     }
 }
 
-// watcher saga
-export function* requestLoginSaga() {
-    yield takeLatest(LOGIN_REQUEST, receiveLoginSaga);
+function doGetLogin() {
+    return axios.get('/api/login');
 }
 
-function doLogin(username, password) {
-    return axios.post('/api/login', { username, password });
-}
-
-// worker saga
 function* receiveLoginSaga(action) {
     try {
         const payload = action.payload || {};
@@ -73,4 +59,8 @@ function* receiveLoginSaga(action) {
     } catch (error) {
         yield put(LOGIN_FAILURE(error));
     }
+}
+
+function doLogin(username, password) {
+    return axios.post('/api/login', { username, password });
 }
