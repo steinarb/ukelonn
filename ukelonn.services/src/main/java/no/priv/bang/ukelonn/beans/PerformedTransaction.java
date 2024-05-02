@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,17 +42,17 @@ public class PerformedTransaction {
         return transactionDate;
     }
 
-    public static PerformedTransactionBuilder with() {
-        return new PerformedTransactionBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class PerformedTransactionBuilder {
+    public static class Builder {
         private Account account;
         private Integer transactionTypeId;
         private Double transactionAmount;
         private Date transactionDate;
 
-        private PerformedTransactionBuilder() {}
+        private Builder() {}
 
         public PerformedTransaction build() {
             PerformedTransaction performedTransaction = new PerformedTransaction();
@@ -63,22 +63,22 @@ public class PerformedTransaction {
             return performedTransaction;
         }
 
-        public PerformedTransactionBuilder account(Account account) {
+        public Builder account(Account account) {
             this.account = account;
             return this;
         }
 
-        public PerformedTransactionBuilder transactionTypeId(Integer transactionTypeId) {
+        public Builder transactionTypeId(Integer transactionTypeId) {
             this.transactionTypeId = transactionTypeId;
             return this;
         }
 
-        public PerformedTransactionBuilder transactionAmount(Double transactionAmount) {
+        public Builder transactionAmount(Double transactionAmount) {
             this.transactionAmount = transactionAmount;
             return this;
         }
 
-        public PerformedTransactionBuilder transactionDate(Date transactionDate) {
+        public Builder transactionDate(Date transactionDate) {
             this.transactionDate = transactionDate;
             return this;
         }

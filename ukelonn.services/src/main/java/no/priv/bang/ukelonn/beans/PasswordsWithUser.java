@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,16 +39,16 @@ public class PasswordsWithUser {
         return password2;
     }
 
-    public static PasswordsWithUserBuilder with() {
-        return new PasswordsWithUserBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class PasswordsWithUserBuilder {
+    public static class Builder {
         private User user;
         private String password;
         private String password2;
 
-        private PasswordsWithUserBuilder() {}
+        private Builder() {}
 
         public PasswordsWithUser build() {
             PasswordsWithUser passwords = new PasswordsWithUser();
@@ -58,17 +58,17 @@ public class PasswordsWithUser {
             return passwords;
         }
 
-        public PasswordsWithUserBuilder user(User user) {
+        public Builder user(User user) {
             this.user = user;
             return this;
         }
 
-        public PasswordsWithUserBuilder password(String password) {
+        public Builder password(String password) {
             this.password = password;
             return this;
         }
 
-        public PasswordsWithUserBuilder password2(String password2) {
+        public Builder password2(String password2) {
             this.password2 = password2;
             return this;
         }

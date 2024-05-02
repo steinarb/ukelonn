@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,11 @@ public class AccountWithJobIds {
         return jobIds;
     }
 
-    public static AccountWithJobIdsBuilder with() {
-        return new AccountWithJobIdsBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class AccountWithJobIdsBuilder {
+    public static class Builder {
 
         private Account account;
         List<Integer> jobIds = Collections.emptyList();
@@ -49,12 +49,12 @@ public class AccountWithJobIds {
             return accountWithJobIds;
         }
 
-        public AccountWithJobIdsBuilder account(Account account) {
+        public Builder account(Account account) {
             this.account = account;
             return this;
         }
 
-        public AccountWithJobIdsBuilder jobIds(List<Integer> jobIds) {
+        public Builder jobIds(List<Integer> jobIds) {
             this.jobIds = jobIds;
             return this;
         }

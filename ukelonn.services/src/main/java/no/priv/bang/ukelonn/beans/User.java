@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,12 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname + "]";
     }
 
-    public static UserBuilder with() {
-        return new UserBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static UserBuilder with(User user) {
-        UserBuilder builder = new UserBuilder();
+    public static Builder with(User user) {
+        Builder builder = new Builder();
         builder.userId = user.userId;
         builder.username = user.username;
         builder.email = user.email;
@@ -72,14 +72,14 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         return builder;
     }
 
-    public static class UserBuilder {
+    public static class Builder {
         private int userId = -1;
         private String username = "";
         private String email = "";
         private String firstname = "";
         private String lastname = "";
 
-        private UserBuilder() {}
+        private Builder() {}
 
         public User build() {
             User user = new User();
@@ -91,27 +91,27 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
             return user;
         }
 
-        public UserBuilder userId(int userId) {
+        public Builder userId(int userId) {
             this.userId = userId;
             return this;
         }
 
-        public UserBuilder username(String username) {
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
 
-        public UserBuilder email(String email) {
+        public Builder email(String email) {
             this.email = email;
             return this;
         }
 
-        public UserBuilder firstname(String firstname) {
+        public Builder firstname(String firstname) {
             this.firstname = firstname;
             return this;
         }
 
-        public UserBuilder lastname(String lastname) {
+        public Builder lastname(String lastname) {
             this.lastname = lastname;
             return this;
         }

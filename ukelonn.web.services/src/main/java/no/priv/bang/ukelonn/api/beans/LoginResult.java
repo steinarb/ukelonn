@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ public class LoginResult {
 
     private LoginResult() {}
 
-    public static LoginResultBuilder with() {
-        return new LoginResultBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
     public String getUsername() {
@@ -38,12 +38,12 @@ public class LoginResult {
         return errorMessage;
     }
 
-    public static class LoginResultBuilder {
+    public static class Builder {
         private String username = "";
         private String[] roles = {};
         private String errorMessage = "";
 
-        private LoginResultBuilder() {}
+        private Builder() {}
 
         public LoginResult build() {
             LoginResult loginResult = new LoginResult();
@@ -53,16 +53,16 @@ public class LoginResult {
             return loginResult;
         }
 
-        public LoginResultBuilder username(String username) {
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
 
-        public LoginResultBuilder roles(String[] roles) {
+        public Builder roles(String[] roles) {
             this.roles = roles;
             return this;
         }
-        public LoginResultBuilder errorMessage(String errorMessage) {
+        public Builder errorMessage(String errorMessage) {
             this.errorMessage = errorMessage;
             return this;
         }

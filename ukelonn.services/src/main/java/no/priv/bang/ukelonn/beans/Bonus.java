@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,11 +63,11 @@ public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
         return endDate;
     }
 
-    public static BonusBuilder with() {
-        return new BonusBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class BonusBuilder {
+    public static class Builder {
 
         private int bonusId;
         private boolean enabled;
@@ -78,7 +78,7 @@ public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
         private Date startDate;
         private Date endDate;
 
-        private BonusBuilder() { }
+        private Builder() { }
 
         public Bonus build() {
             Bonus bonus = new Bonus();
@@ -93,42 +93,42 @@ public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
             return bonus;
         }
 
-        public BonusBuilder bonusId(int bonusId) {
+        public Builder bonusId(int bonusId) {
             this.bonusId = bonusId;
             return this;
         }
 
-        public BonusBuilder enabled(boolean enabled) {
+        public Builder enabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
 
-        public BonusBuilder iconurl(String iconurl) {
+        public Builder iconurl(String iconurl) {
             this.iconurl = iconurl;
             return this;
         }
 
-        public BonusBuilder title(String title) {
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public BonusBuilder description(String description) {
+        public Builder description(String description) {
             this.description = description;
             return this;
         }
 
-        public BonusBuilder bonusFactor(double bonusFactor) {
+        public Builder bonusFactor(double bonusFactor) {
             this.bonusFactor = bonusFactor;
             return this;
         }
 
-        public BonusBuilder startDate(Date startDate) {
+        public Builder startDate(Date startDate) {
             this.startDate = startDate;
             return this;
         }
 
-        public BonusBuilder endDate(Date endDate) {
+        public Builder endDate(Date endDate) {
             this.endDate = endDate;
             return this;
         }

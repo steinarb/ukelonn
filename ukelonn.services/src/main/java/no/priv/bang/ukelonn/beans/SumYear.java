@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@ public class SumYear {
         return year;
     }
 
-    public static SumYearBuilder with() {
-        return new SumYearBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class SumYearBuilder {
+    public static class Builder {
         private double sum = 0.0;
         private int year = -1;
 
@@ -49,12 +49,12 @@ public class SumYear {
             sumYear.year = this.year;
         }
 
-        public SumYearBuilder sum(double sum) {
+        public Builder sum(double sum) {
             this.sum = sum;
             return this;
         }
 
-        public SumYearBuilder year(int year) {
+        public Builder year(int year) {
             this.year = year;
             return this;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,18 +50,18 @@ public class UpdatedTransaction {
         return transactionAmount;
     }
 
-    public static UpdatedTransactionBuilder with() {
-        return new UpdatedTransactionBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class UpdatedTransactionBuilder {
+    public static class Builder {
         private int id = -1;
         private int accountId = -1;
         private int transactionTypeId = -1;
         private Date transactionTime = null;
         private double transactionAmount = 0.0;
 
-        private UpdatedTransactionBuilder() {}
+        private Builder() {}
 
         public UpdatedTransaction build() {
             UpdatedTransaction updatedTransaction = new UpdatedTransaction();
@@ -73,27 +73,27 @@ public class UpdatedTransaction {
             return updatedTransaction;
         }
 
-        public UpdatedTransactionBuilder id(int id) {
+        public Builder id(int id) {
             this.id = id;
             return this;
         }
 
-        public UpdatedTransactionBuilder accountId(int accountId) {
+        public Builder accountId(int accountId) {
             this.accountId = accountId;
             return this;
         }
 
-        public UpdatedTransactionBuilder transactionTypeId(int transactionTypeId) {
+        public Builder transactionTypeId(int transactionTypeId) {
             this.transactionTypeId = transactionTypeId;
             return this;
         }
 
-        public UpdatedTransactionBuilder transactionTime(Date transactionTime) {
+        public Builder transactionTime(Date transactionTime) {
             this.transactionTime = transactionTime;
             return this;
         }
 
-        public UpdatedTransactionBuilder transactionAmount(double transactionAmount) {
+        public Builder transactionAmount(double transactionAmount) {
             this.transactionAmount = transactionAmount;
             return this;
         }
