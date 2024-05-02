@@ -15,11 +15,21 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class SumYearMonth extends SumYear {
+public class SumYearMonth {
 
+    private double sum;
+    private int year;
     private int month;
 
     private SumYearMonth() {}
+
+    public double getSum() {
+        return sum;
+    }
+
+    public int getYear() {
+        return year;
+    }
 
     public int getMonth() {
         return month;
@@ -29,26 +39,26 @@ public class SumYearMonth extends SumYear {
         return new Builder();
     }
 
-    public static class Builder extends SumYear.Builder {
+    public static class Builder {
+        private double sum = 0.0;
+        private int year = -1;
         private int month = -1;
 
-        @Override
         public SumYearMonth build() {
             SumYearMonth sumYearMonth = new SumYearMonth();
-            copyValues(sumYearMonth);
+            sumYearMonth.sum = this.sum;
+            sumYearMonth.year = this.year;
             sumYearMonth.month = this.month;
             return sumYearMonth;
         }
 
-        @Override
         public Builder sum(double sum) {
-            super.sum(sum);
+            this.sum = sum;
             return this;
         }
 
-        @Override
         public Builder year(int year) {
-            super.year(year);
+            this.year = year;
             return this;
         }
 

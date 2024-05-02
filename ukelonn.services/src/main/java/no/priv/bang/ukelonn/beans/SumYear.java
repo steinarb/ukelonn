@@ -40,13 +40,9 @@ public class SumYear {
 
         public SumYear build() {
             SumYear sumYear = new SumYear();
-            copyValues(sumYear);
-            return sumYear;
-        }
-
-        protected void copyValues(SumYear sumYear) {
             sumYear.sum = this.sum;
             sumYear.year = this.year;
+            return sumYear;
         }
 
         public Builder sum(double sum) {
