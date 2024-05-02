@@ -81,7 +81,7 @@ public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
         private Builder() { }
 
         public Bonus build() {
-            Bonus bonus = new Bonus();
+            var bonus = new Bonus();
             bonus.bonusId = this.bonusId;
             bonus.enabled = this.enabled;
             bonus.iconurl = this.iconurl;

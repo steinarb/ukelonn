@@ -43,7 +43,7 @@ public class AccountWithJobIds {
         List<Integer> jobIds = Collections.emptyList();
 
         public AccountWithJobIds build() {
-            AccountWithJobIds accountWithJobIds = new AccountWithJobIds();
+            var accountWithJobIds = new AccountWithJobIds();
             accountWithJobIds.account = this.account;
             accountWithJobIds.jobIds = this.jobIds;
             return accountWithJobIds;

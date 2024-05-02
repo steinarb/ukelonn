@@ -45,7 +45,7 @@ public class SumYearMonth {
         private int month = -1;
 
         public SumYearMonth build() {
-            SumYearMonth sumYearMonth = new SumYearMonth();
+            var sumYearMonth = new SumYearMonth();
             sumYearMonth.sum = this.sum;
             sumYearMonth.year = this.year;
             sumYearMonth.month = this.month;

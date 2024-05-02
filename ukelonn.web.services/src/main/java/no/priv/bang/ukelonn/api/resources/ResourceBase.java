@@ -34,13 +34,13 @@ public class ResourceBase {
         var logger = logservice.getLogger(getClass());
         try {
             var subject = Optional.ofNullable(SecurityUtils.getSubject());
-            boolean isCurrentUser = subject
+            var isCurrentUser = subject
                 .map(s -> (String)s.getPrincipal())
                 .map(principal -> principal.equals(username))
                 .orElse(false);
             return subject.map(s -> s.hasRole("ukelonnadmin") || isCurrentUser).orElse(false);
         } catch (Exception e) {
-            String message = "Failure retrieving Shiro subject";
+            var message = "Failure retrieving Shiro subject";
             logger.error(message, e);
             throw new InternalServerErrorException(message);
         }

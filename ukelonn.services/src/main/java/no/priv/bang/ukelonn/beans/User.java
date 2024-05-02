@@ -82,7 +82,7 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         private Builder() {}
 
         public User build() {
-            User user = new User();
+            var user = new User();
             user.userId = this.userId;
             user.username = this.username;
             user.email = this.email;

@@ -80,7 +80,7 @@ public class UkelonnLiquibase {
         }
 
         try (var connect = datasource.getConnection()) {
-            AuthserviceLiquibase authserviceLiquibase = new AuthserviceLiquibase();
+            var authserviceLiquibase = new AuthserviceLiquibase();
             authserviceLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException | AuthserviceException e) {
             throw e;

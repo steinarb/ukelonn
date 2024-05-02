@@ -17,7 +17,6 @@ package no.priv.bang.ukelonn.db.liquibase.production;
 
 import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -63,7 +62,7 @@ public class ProductionLiquibaseRunner implements PreHook {
     @Override
     public void prepare(DataSource datasource) throws SQLException {
         try {
-            UkelonnLiquibase liquibase = createUkelonnLiquibase();
+            var liquibase = createUkelonnLiquibase();
             liquibase.createInitialSchema(datasource);
             insertInitialDataInDatabase(datasource);
             liquibase.updateSchema(datasource);
@@ -73,7 +72,7 @@ public class ProductionLiquibaseRunner implements PreHook {
     }
 
     boolean insertInitialDataInDatabase(DataSource datasource) {
-        try(Connection connect = datasource.getConnection()) {
+        try(var connect = datasource.getConnection()) {
             try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
                 Map<String, Object> scopeObjects = Map.of(
                     Scope.Attr.database.name(), database,

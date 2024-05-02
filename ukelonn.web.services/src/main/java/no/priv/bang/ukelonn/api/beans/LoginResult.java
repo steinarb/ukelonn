@@ -46,7 +46,7 @@ public class LoginResult {
         private Builder() {}
 
         public LoginResult build() {
-            LoginResult loginResult = new LoginResult();
+            var loginResult = new LoginResult();
             loginResult.username = this.username;
             loginResult.roles = this.roles;
             loginResult.errorMessage = this.errorMessage;

@@ -51,7 +51,7 @@ public class PasswordsWithUser {
         private Builder() {}
 
         public PasswordsWithUser build() {
-            PasswordsWithUser passwords = new PasswordsWithUser();
+            var passwords = new PasswordsWithUser();
             passwords.user = this.user;
             passwords.password = this.password;
             passwords.password2 = this.password2;

@@ -86,7 +86,7 @@ public class Account extends Immutable { // NOSONAR Immutable handles added fiel
         private Builder() {}
 
         public Account build() {
-            Account account = new Account();
+            var account = new Account();
             account.accountId = this.accountid;
             account.username = this.username;
             account.firstName = this.firstName;

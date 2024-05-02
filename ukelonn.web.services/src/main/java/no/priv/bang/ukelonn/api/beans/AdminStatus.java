@@ -43,7 +43,7 @@ public class AdminStatus {
         private Builder() {}
 
         public AdminStatus build() {
-            AdminStatus adminStatus = new AdminStatus();
+            var adminStatus = new AdminStatus();
             adminStatus.user = this.user;
             adminStatus.administrator = this.administrator;
             return adminStatus;

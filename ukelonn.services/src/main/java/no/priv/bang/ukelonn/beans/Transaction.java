@@ -82,7 +82,7 @@ public class Transaction extends Immutable { // NOSONAR Immutable handles added 
         private Builder() {}
 
         public Transaction build() {
-            Transaction transaction = new Transaction();
+            var transaction = new Transaction();
             transaction.id = this.id;
             transaction.transactionType = this.transactionType;
             transaction.transactionTime = this.transactionTime;

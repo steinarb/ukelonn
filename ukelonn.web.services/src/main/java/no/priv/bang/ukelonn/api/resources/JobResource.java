@@ -59,7 +59,7 @@ public class JobResource extends ResourceBase {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Account doRegisterJob(PerformedTransaction performedJob) {
-        String username = performedJob.getAccount().getUsername();
+        var username = performedJob.getAccount().getUsername();
         if (!isCurrentUserOrAdmin(username, logservice)) {
             logger.warn(String.format("REST Endpoint /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
             throw new ForbiddenException();

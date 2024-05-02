@@ -64,7 +64,7 @@ public class UpdatedTransaction {
         private Builder() {}
 
         public UpdatedTransaction build() {
-            UpdatedTransaction updatedTransaction = new UpdatedTransaction();
+            var updatedTransaction = new UpdatedTransaction();
             updatedTransaction.id = this.id;
             updatedTransaction.accountId = this.accountId;
             updatedTransaction.transactionTypeId = this.transactionTypeId;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@ package no.priv.bang.ukelonn.api.resources;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
@@ -36,7 +34,6 @@ import org.osgi.service.log.Logger;
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.authservice.definitions.AuthservicePasswordEmptyException;
 import no.priv.bang.authservice.definitions.AuthservicePasswordsNotIdenticalException;
-import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
@@ -82,16 +79,16 @@ public class AdminUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public List<User> create(UserAndPasswords passwords) {
         try {
-            List<User> users = useradmin.addUser(passwords);
+            var users = useradmin.addUser(passwords);
 
             // Create an account with a balance for the new user
-            String username = passwords.getUser().getUsername();
-            Optional<User> createdUser = users.stream().filter(u -> username.equals(u.getUsername())).findFirst();
+            var username = passwords.getUser().getUsername();
+            var createdUser = users.stream().filter(u -> username.equals(u.getUsername())).findFirst();
             if (!createdUser.isPresent()) {
                 throw new UkelonnException(String.format("Found no user matching %s in the users table", username));
             }
 
-            no.priv.bang.ukelonn.beans.User user = no.priv.bang.ukelonn.beans.User.with()
+            var user = no.priv.bang.ukelonn.beans.User.with()
                 .userId(createdUser.get().getUserid())
                 .username(username)
                 .email(createdUser.get().getEmail())
@@ -129,7 +126,7 @@ public class AdminUserResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public AdminStatus adminStatus(User user) {
-        boolean administrator = userIsAdministrator(user);
+        var administrator = userIsAdministrator(user);
         return AdminStatus.with()
             .user(user)
             .administrator(administrator)
@@ -141,7 +138,7 @@ public class AdminUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public AdminStatus changeAdminStatus(AdminStatus status) {
         if (status.isAdministrator() != userIsAdministrator(status.getUser())) {
-            Optional<Role> ukelonnadmin = useradmin.getRoles().stream().filter(r -> UKELONNADMIN_ROLE.equals(r.getRolename())).findFirst();
+            var ukelonnadmin = useradmin.getRoles().stream().filter(r -> UKELONNADMIN_ROLE.equals(r.getRolename())).findFirst();
             if (!ukelonnadmin.isPresent()) {
                 // If no ukelonn admin role is present in the auth service
                 // administrator will always be false

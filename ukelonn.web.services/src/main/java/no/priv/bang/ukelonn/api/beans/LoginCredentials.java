@@ -40,7 +40,7 @@ public class LoginCredentials {
         private Builder() {}
 
         public LoginCredentials build() {
-            LoginCredentials loginCredentials = new LoginCredentials();
+            var loginCredentials = new LoginCredentials();
             loginCredentials.username = this.username;
             loginCredentials.password = this.password;
             return loginCredentials;

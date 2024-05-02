@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,7 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,9 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -121,13 +117,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Account> getAccounts() {
-        List<Account> accounts = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view")) {
-                try(ResultSet results = statement.executeQuery()) {
+        var accounts = new ArrayList<Account>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from accounts_view")) {
+                try(var results = statement.executeQuery()) {
                     if (results != null) {
                         while(results.next()) {
-                            Account newaccount = mapAccount(results);
+                            var newaccount = mapAccount(results);
                             accounts.add(newaccount);
                         }
                     }
@@ -143,10 +139,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account getAccount(String username) {
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
                 statement.setString(1, username);
-                try(ResultSet resultset = statement.executeQuery()) {
+                try(var resultset = statement.executeQuery()) {
                     if (resultset.next())
                     {
                         return mapAccount(resultset);
@@ -163,12 +159,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account registerPerformedJob(PerformedTransaction job) {
-        int accountId = job.getAccount().getAccountId();
-        int jobtypeId = job.getTransactionTypeId();
-        double jobamount = addBonus(job.getTransactionAmount());
-        Date timeofjob = job.getTransactionDate();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
+        var accountId = job.getAccount().getAccountId();
+        var jobtypeId = job.getTransactionTypeId();
+        var jobamount = addBonus(job.getTransactionAmount());
+        var timeofjob = job.getTransactionDate();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into transactions (account_id, transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
                 statement.setInt(1, accountId);
                 statement.setInt(2, jobtypeId);
                 statement.setDouble(3, jobamount);
@@ -176,7 +172,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 statement.executeUpdate();
             }
         } catch (SQLException exception) {
-            String message = String.format("Failed to register performed job in the database, account: %d  jobtype: %d  amount: %f", accountId, jobtypeId, jobamount);
+            var message = String.format("Failed to register performed job in the database, account: %d  jobtype: %d  amount: %f", accountId, jobtypeId, jobamount);
             logError(message, exception);
         }
 
@@ -185,13 +181,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> getJobTypes() {
-        List<TransactionType> jobtypes = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from transaction_types where transaction_is_work=true")) {
-                try(ResultSet resultSet = statement.executeQuery()) {
+        var jobtypes = new ArrayList<TransactionType>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from transaction_types where transaction_is_work=true")) {
+                try(var resultSet = statement.executeQuery()) {
                     if (resultSet != null) {
                         while (resultSet.next()) {
-                            TransactionType transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
+                            var transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
                             jobtypes.add(transactiontype);
                         }
                     }
@@ -211,7 +207,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Transaction> getPayments(int accountId) {
-        List<Transaction> payments = getTransactionsFromAccount(accountId, "/sql/query/payments_last_n.sql", "payments");
+        var payments = getTransactionsFromAccount(accountId, "/sql/query/payments_last_n.sql", "payments");
         payments = UkelonnServiceProvider.makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
@@ -220,13 +216,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                                                  String sqlTemplate,
                                                  String transactionType)
     {
-        List<Transaction> transactions = new ArrayList<>();
-        String sql = String.format(getResourceAsString(sqlTemplate), UkelonnServiceProvider.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var transactions = new ArrayList<Transaction>();
+        var sql = String.format(getResourceAsString(sqlTemplate), UkelonnServiceProvider.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, accountId);
                 trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
-                try(ResultSet resultSet = statement.executeQuery()) {
+                try(var resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         transactions.add(UkelonnServiceProvider.mapTransaction(resultSet));
                     }
@@ -242,9 +238,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public List<Transaction> deleteJobsFromAccount(int accountId, List<Integer> idsOfJobsToDelete) {
         if (!idsOfJobsToDelete.isEmpty()) {
-            String deleteQuery = "delete from transactions where transaction_id in (select transaction_id from transactions inner join transaction_types on transactions.transaction_type_id=transaction_types.transaction_type_id where transaction_id in (" + joinIds(idsOfJobsToDelete) + ") and transaction_types.transaction_is_work=? and account_id=?)";
-            try(Connection connection = datasource.getConnection()) {
-                try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) { // NOSONAR This string manipulation is OK and the only way to do it
+            var deleteQuery = "delete from transactions where transaction_id in (select transaction_id from transactions inner join transaction_types on transactions.transaction_type_id=transaction_types.transaction_type_id where transaction_id in (" + joinIds(idsOfJobsToDelete) + ") and transaction_types.transaction_is_work=? and account_id=?)";
+            try(var connection = datasource.getConnection()) {
+                try (var statement = connection.prepareStatement(deleteQuery)) { // NOSONAR This string manipulation is OK and the only way to do it
                     addParametersToDeleteJobsStatement(accountId, statement);
                     statement.executeUpdate();
                 }
@@ -270,9 +266,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Transaction> updateJob(UpdatedTransaction editedJob) {
-        String sql = "update transactions set transaction_type_id=?, transaction_time=?, transaction_amount=? where transaction_id=?";
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "update transactions set transaction_type_id=?, transaction_time=?, transaction_amount=? where transaction_id=?";
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, editedJob.getTransactionTypeId());
                 statement.setTimestamp(2, new java.sql.Timestamp(editedJob.getTransactionTime().getTime()));
                 statement.setDouble(3, editedJob.getTransactionAmount());
@@ -288,13 +284,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> getPaymenttypes() {
-        List<TransactionType> paymenttypes = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from transaction_types where transaction_is_wage_payment=true")) {
-                try(ResultSet resultSet = statement.executeQuery()) {
+        var paymenttypes = new ArrayList<TransactionType>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from transaction_types where transaction_is_wage_payment=true")) {
+                try(var resultSet = statement.executeQuery()) {
                     if (resultSet != null) {
                         while (resultSet.next()) {
-                            TransactionType transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
+                            var transactiontype = UkelonnServiceProvider.mapTransactionType(resultSet);
                             paymenttypes.add(transactiontype);
                         }
                     }
@@ -309,12 +305,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account registerPayment(PerformedTransaction payment) {
-        int accountId = payment.getAccount().getAccountId();
-        int transactionTypeId = payment.getTransactionTypeId();
-        double amount = 0 - payment.getTransactionAmount();
-        Date transactionDate = new Date();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
+        var accountId = payment.getAccount().getAccountId();
+        var transactionTypeId = payment.getTransactionTypeId();
+        var amount = 0 - payment.getTransactionAmount();
+        var transactionDate = new Date();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into transactions (account_id,transaction_type_id,transaction_amount, transaction_time) values (?, ?, ?, ?)")) {
                 statement.setInt(1, accountId);
                 statement.setInt(2, transactionTypeId);
                 statement.setDouble(3, amount);
@@ -322,7 +318,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            String message = String.format("Failed to register payment  accountId: %d  transactionTypeId: %d  amount: %f", accountId, transactionTypeId, amount);
+            var message = String.format("Failed to register payment  accountId: %d  transactionTypeId: %d  amount: %f", accountId, transactionTypeId, amount);
             logError(message, e);
             return null;
         }
@@ -332,15 +328,15 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> modifyJobtype(TransactionType jobtype) {
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=true, transaction_is_wage_payment=false where transaction_type_id=?")) {
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=true, transaction_is_wage_payment=false where transaction_type_id=?")) {
                 statement.setString(1, jobtype.getTransactionTypeName());
                 statement.setDouble(2, jobtype.getTransactionAmount());
                 statement.setInt(3, jobtype.getId());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            String message = String.format("Failed to update jobtype %d in the database", jobtype.getId());
+            var message = String.format("Failed to update jobtype %d in the database", jobtype.getId());
             logError(message, e);
             throw new UkelonnException(message, e);
         }
@@ -350,14 +346,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> createJobtype(TransactionType jobtype) {
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)")) {
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, true, false)")) {
                 statement.setString(1, jobtype.getTransactionTypeName());
                 statement.setObject(2, jobtype.getTransactionAmount());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            String message = String.format("Failed to create jobtype \"%s\" in the database", jobtype.getTransactionTypeName());
+            var message = String.format("Failed to create jobtype \"%s\" in the database", jobtype.getTransactionTypeName());
             logError(message, e);
             throw new UkelonnException(message, e);
         }
@@ -367,15 +363,15 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> modifyPaymenttype(TransactionType paymenttype) {
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=false, transaction_is_wage_payment=true where transaction_type_id=?")) {
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("update transaction_types set transaction_type_name=?, transaction_amount=?, transaction_is_work=false, transaction_is_wage_payment=true where transaction_type_id=?")) {
                 statement.setString(1, paymenttype.getTransactionTypeName());
                 statement.setDouble(2, paymenttype.getTransactionAmount());
                 statement.setInt(3, paymenttype.getId());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            String message = String.format("Failed to update payment type %d in the database", paymenttype.getId());
+            var message = String.format("Failed to update payment type %d in the database", paymenttype.getId());
             logError(message, e);
             throw new UkelonnException(message, e);
         }
@@ -385,14 +381,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<TransactionType> createPaymenttype(TransactionType paymenttype) {
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)")) {
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into transaction_types (transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment) values (?, ?, false, true)")) {
                 statement.setString(1, paymenttype.getTransactionTypeName());
                 statement.setObject(2, paymenttype.getTransactionAmount());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            String message = String.format("Failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName());
+            var message = String.format("Failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName());
             logError(message, e);
             throw new UkelonnException(message, e);
         }
@@ -402,9 +398,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public Account addAccount(User user) {
-        String username = user.getUsername();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement insertAccountSql = connection.prepareStatement("insert into accounts (username) values (?)")) {
+        var username = user.getUsername();
+        try(var connection = datasource.getConnection()) {
+            try(var insertAccountSql = connection.prepareStatement("insert into accounts (username) values (?)")) {
                 insertAccountSql.setString(1, username);
                 insertAccountSql.executeUpdate();
             }
@@ -413,7 +409,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
             return getAccount(user.getUsername());
         } catch (SQLException e) {
-            String message = "Database exception when account for new user";
+            var message = "Database exception when account for new user";
             logger.error(message, e);
             throw new UkelonnException(message, e);
         }
@@ -421,13 +417,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<SumYear> earningsSumOverYear(String username) {
-        List<SumYear> statistics = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select aggregate_amount, aggregate_year from sum_over_year_view where username=?")) {
+        var statistics = new ArrayList<SumYear>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select aggregate_amount, aggregate_year from sum_over_year_view where username=?")) {
                 statement.setString(1, username);
-                try(ResultSet resultSet = statement.executeQuery()) {
+                try(var resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        SumYear sumYear = SumYear.with()
+                        var sumYear = SumYear.with()
                             .sum(resultSet.getDouble(1))
                             .year(resultSet.getInt(2))
                             .build();
@@ -444,13 +440,13 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<SumYearMonth> earningsSumOverMonth(String username) {
-        List<SumYearMonth> statistics = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select aggregate_amount, aggregate_year, aggregate_month from sum_over_year_and_month_view where username=?")) {
+        var statistics = new ArrayList<SumYearMonth>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select aggregate_amount, aggregate_year, aggregate_month from sum_over_year_and_month_view where username=?")) {
                 statement.setString(1, username);
-                try(ResultSet resultSet = statement.executeQuery()) {
+                try(var resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        SumYearMonth sumYearMonth = SumYearMonth.with()
+                        var sumYearMonth = SumYearMonth.with()
                             .sum(resultSet.getDouble(1))
                             .year(resultSet.getInt(2))
                             .month(resultSet.getInt(3))
@@ -468,8 +464,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Notification> notificationsTo(String username) {
-        ConcurrentLinkedQueue<Notification> notifications = getNotificationQueueForUser(username);
-        Notification notification = notifications.poll();
+        var notifications = getNotificationQueueForUser(username);
+        var notification = notifications.poll();
         if (notification == null) {
             return Collections.emptyList();
         }
@@ -479,19 +475,19 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public void notificationTo(String username, Notification notification) {
-        ConcurrentLinkedQueue<Notification> notifications = getNotificationQueueForUser(username);
+        var notifications = getNotificationQueueForUser(username);
         notifications.add(notification);
     }
 
     @Override
     public List<Bonus> getActiveBonuses() {
-        List<Bonus> activebonuses = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from bonuses where enabled and start_date <= ? and end_date >= ?")) {
-                Timestamp today = Timestamp.from(new Date().toInstant());
+        var activebonuses = new ArrayList<Bonus>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from bonuses where enabled and start_date <= ? and end_date >= ?")) {
+                var today = Timestamp.from(new Date().toInstant());
                 statement.setTimestamp(1, today);
                 statement.setTimestamp(2, today);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     while (results.next()) {
                         buildBonusFromResultSetAndAddToList(activebonuses, results);
                     }
@@ -506,10 +502,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Bonus> getAllBonuses() {
-        List<Bonus> allbonuses = new ArrayList<>();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from bonuses")) {
-                try (ResultSet results = statement.executeQuery()) {
+        var allbonuses = new ArrayList<Bonus>();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from bonuses")) {
+                try (var results = statement.executeQuery()) {
                     while (results.next()) {
                         buildBonusFromResultSetAndAddToList(allbonuses, results);
                     }
@@ -524,17 +520,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Bonus> createBonus(Bonus newBonus) {
-        String title = newBonus.getTitle();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into bonuses (enabled, iconurl, title, description, bonus_factor, start_date, end_date) values (?, ?, ?, ?, ?, ?, ?)")) {
+        var title = newBonus.getTitle();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into bonuses (enabled, iconurl, title, description, bonus_factor, start_date, end_date) values (?, ?, ?, ?, ?, ?, ?)")) {
                 statement.setBoolean(1, newBonus.isEnabled());
                 statement.setString(2, newBonus.getIconurl());
                 statement.setString(3, title);
                 statement.setString(4, newBonus.getDescription());
                 statement.setDouble(5, newBonus.getBonusFactor());
-                Date startDate = newBonus.getStartDate() != null ? newBonus.getStartDate() : new Date();
+                var startDate = newBonus.getStartDate() != null ? newBonus.getStartDate() : new Date();
                 statement.setTimestamp(6, Timestamp.from(startDate.toInstant()));
-                Date endDate = newBonus.getEndDate() != null ? newBonus.getEndDate() : new Date();
+                var endDate = newBonus.getEndDate() != null ? newBonus.getEndDate() : new Date();
                 statement.setTimestamp(7, Timestamp.from(endDate.toInstant()));
                 statement.executeUpdate();
             }
@@ -547,9 +543,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Bonus> modifyBonus(Bonus updatedBonus) {
-        int id = updatedBonus.getBonusId();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("update bonuses set enabled=?, iconurl=?, title=?, description=?, bonus_factor=?, start_date=?, end_date=? where bonus_id=?")) {
+        var id = updatedBonus.getBonusId();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("update bonuses set enabled=?, iconurl=?, title=?, description=?, bonus_factor=?, start_date=?, end_date=? where bonus_id=?")) {
                 statement.setBoolean(1, updatedBonus.isEnabled());
                 statement.setString(2, updatedBonus.getIconurl());
                 statement.setString(3, updatedBonus.getTitle());
@@ -569,9 +565,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     @Override
     public List<Bonus> deleteBonus(Bonus removedBonus) {
-        int id = removedBonus.getBonusId();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("delete from bonuses where bonus_id=?")) {
+        var id = removedBonus.getBonusId();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("delete from bonuses where bonus_id=?")) {
                 statement.setInt(1, id);
                 statement.executeUpdate();
             }
@@ -602,17 +598,17 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     double addBonus(double transactionAmount) {
-        List<Bonus> activebonuses = getActiveBonuses();
+        var activebonuses = getActiveBonuses();
         if (activebonuses.isEmpty()) {
             return transactionAmount;
         }
 
-        double bonus = activebonuses.stream().mapToDouble(b -> b.getBonusFactor() * transactionAmount - transactionAmount).sum();
+        var bonus = activebonuses.stream().mapToDouble(b -> b.getBonusFactor() * transactionAmount - transactionAmount).sum();
         return transactionAmount + bonus;
     }
 
     void buildBonusFromResultSetAndAddToList(List<Bonus> allbonuses, ResultSet results) throws SQLException {
-        Bonus bonus = Bonus.with()
+        var bonus = Bonus.with()
             .bonusId(results.getInt("bonus_id"))
             .enabled(results.getBoolean("enabled"))
             .iconurl(results.getString("iconurl"))
@@ -634,12 +630,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     static StringBuilder joinIds(List<Integer> ids) {
-        StringBuilder commaList = new StringBuilder();
+        var commaList = new StringBuilder();
         if (ids == null) {
             return commaList;
         }
 
-        Iterator<Integer> iterator = ids.iterator();
+        var iterator = ids.iterator();
         if (!iterator.hasNext()) {
             return commaList; // Return an empty string builder instead of a null
         }
@@ -653,12 +649,12 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     static boolean hasUserWithNonEmptyUsername(PasswordsWithUser passwords) {
-        User user = passwords.getUser();
+        var user = passwords.getUser();
         if (user == null) {
             return false;
         }
 
-        String username = user.getUsername();
+        var username = user.getUsername();
         if (username == null) {
             return false;
         }
@@ -692,8 +688,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
      * @return the update status
      */
     int addDummyPaymentToAccountSoThatAccountWillAppearInAccountsView(String username) {
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_username.sql"))) {
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement(getResourceAsString("/sql/query/insert_empty_payment_in_account_keyed_by_username.sql"))) {
                 statement.setString(1, username);
                 return statement.executeUpdate();
             }
@@ -705,10 +701,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     String getResourceAsString(String resourceName) {
-        ByteArrayOutputStream resource = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
+        var resource = new ByteArrayOutputStream();
+        var buffer = new byte[1024];
         int length;
-        try(InputStream resourceStream = getClass().getResourceAsStream(resourceName)) {
+        try(var resourceStream = getClass().getResourceAsStream(resourceName)) {
             while ((length = resourceStream.read(buffer)) != -1) {
                 resource.write(buffer, 0, length);
             }
@@ -722,9 +718,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     public Account mapAccount(ResultSet results) throws SQLException {
-        String username = results.getString(UkelonnServiceProvider.USERNAME);
+        var username = results.getString(UkelonnServiceProvider.USERNAME);
         try {
-            no.priv.bang.osgiservice.users.User user = useradmin.getUser(username);
+            var user = useradmin.getUser(username);
             return Account.with()
                 .accountid(results.getInt("account_id"))
                 .username(username)
@@ -743,14 +739,14 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     private void addRolesIfNotPresent() {
-        Optional<Role> ukelonnadmin = addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
+        var ukelonnadmin = addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
         addRoleIfNotPresent(UKELONNUSER_ROLE, "Bruker av applikasjonen ukelonn");
         addAdminroleToUserAdmin(ukelonnadmin);
     }
 
     Optional<Role> addRoleIfNotPresent(String rolename, String description) {
-        List<Role> roles = useradmin.getRoles();
-        Optional<Role> existingRole = roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
+        var roles = useradmin.getRoles();
+        var existingRole = roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
         if (!existingRole.isPresent()) {
             roles = useradmin.addRole(Role.with().rolename(rolename).description(description).build());
             return roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
@@ -762,8 +758,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     void addAdminroleToUserAdmin(Optional<Role> ukelonnadmin) {
         if (ukelonnadmin.isPresent()) {
             try {
-                no.priv.bang.osgiservice.users.User admin = useradmin.getUser("admin");
-                List<Role> roles = useradmin.getRolesForUser("admin");
+                var admin = useradmin.getUser("admin");
+                var roles = useradmin.getRolesForUser("admin");
                 if (roles.stream().noneMatch(r -> ukelonnadmin.get().equals(r))) {
                     useradmin.addUserRoles(UserRoles.with().user(admin).roles(Arrays.asList(ukelonnadmin.get())).build());
                 }
@@ -784,9 +780,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     static List<Transaction> makePaymentAmountsPositive(List<Transaction> payments) {
-        List<Transaction> paymentsWithPositiveAmounts = new ArrayList<>(payments.size());
-        for (Transaction payment : payments) {
-            double amount = Math.abs(payment.getTransactionAmount());
+        var paymentsWithPositiveAmounts = new ArrayList<Transaction>(payments.size());
+        for (var payment : payments) {
+            var amount = Math.abs(payment.getTransactionAmount());
             paymentsWithPositiveAmounts.add(Transaction.with(payment).transactionAmount(amount).build());
         }
 
@@ -804,9 +800,9 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     Map<String, String> transformResourceBundleToMap(Locale locale) {
-        Map<String, String> map = new HashMap<>();
-        ResourceBundle bundle = ResourceBundle.getBundle(RESOURCES_BASENAME, locale);
-        Enumeration<String> keys = bundle.getKeys();
+        var map = new HashMap<String, String>();
+        var bundle = ResourceBundle.getBundle(RESOURCES_BASENAME, locale);
+        var keys = bundle.getKeys();
         while(keys.hasMoreElements()) {
             String key = keys.nextElement();
             map.put(key, bundle.getString(key));

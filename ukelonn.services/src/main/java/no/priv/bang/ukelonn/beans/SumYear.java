@@ -39,7 +39,7 @@ public class SumYear {
         private int year = -1;
 
         public SumYear build() {
-            SumYear sumYear = new SumYear();
+            var sumYear = new SumYear();
             sumYear.sum = this.sum;
             sumYear.year = this.year;
             return sumYear;

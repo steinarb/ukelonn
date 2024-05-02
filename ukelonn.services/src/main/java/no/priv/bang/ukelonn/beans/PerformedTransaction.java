@@ -55,7 +55,7 @@ public class PerformedTransaction {
         private Builder() {}
 
         public PerformedTransaction build() {
-            PerformedTransaction performedTransaction = new PerformedTransaction();
+            var performedTransaction = new PerformedTransaction();
             performedTransaction.account = this.account;
             performedTransaction.transactionTypeId = this.transactionTypeId != null ? this.transactionTypeId : -1;
             performedTransaction.transactionAmount = this.transactionAmount != null ? this.transactionAmount : 0.0;

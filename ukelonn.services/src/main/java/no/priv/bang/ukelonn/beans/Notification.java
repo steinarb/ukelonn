@@ -41,7 +41,7 @@ public class Notification {
         private Builder() {}
 
         public Notification build() {
-            Notification notification = new Notification();
+            var notification = new Notification();
             notification.title = this.title;
             notification.message = this.message;
             return notification;

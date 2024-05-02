@@ -77,7 +77,7 @@ public class TransactionType extends Immutable { // NOSONAR Immutable handles ad
         private Builder() {}
 
         public TransactionType build() {
-            TransactionType transactionType = new TransactionType();
+            var transactionType = new TransactionType();
             transactionType.id = this.id;
             transactionType.transactionTypeName = this.transactionTypeName;
             transactionType.transactionAmount = this.transactionAmount;

@@ -44,7 +44,7 @@ public class LocaleBean extends Immutable { // NOSONAR Immutable handles added f
         private Builder() {}
 
         public LocaleBean build() {
-            LocaleBean localeBean = new LocaleBean();
+            var localeBean = new LocaleBean();
             localeBean.code = locale != null ? locale.toString() : null;
             localeBean.displayLanguage = locale != null ? locale.getDisplayLanguage(locale) : null;
             return localeBean;

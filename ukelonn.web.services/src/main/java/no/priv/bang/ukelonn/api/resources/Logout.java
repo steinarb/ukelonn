@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresUser;
-import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.api.beans.LoginResult;
@@ -38,7 +37,7 @@ public class Logout {
 
     @POST
     public LoginResult doLogout() {
-        Subject subject = SecurityUtils.getSubject();
+        var subject = SecurityUtils.getSubject();
 
         subject.logout();
         return LoginResult.with().build();
