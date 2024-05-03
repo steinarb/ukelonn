@@ -36,15 +36,12 @@ class AccountTest {
             .balance(expectedBalance)
             .build();
 
-        assertEquals(expectedAccountId, account.getAccountId());
-        assertEquals(expectedUsername, account.getUsername());
-        assertEquals(expectedFirstname, account.getFirstName());
-        assertEquals(expectedLastname, account.getLastName());
-        assertEquals(expectedBalance, account.getBalance(), 0.0);
+        assertEquals(expectedAccountId, account.accountId());
+        assertEquals(expectedUsername, account.username());
+        assertEquals(expectedFirstname, account.firstName());
+        assertEquals(expectedLastname, account.lastName());
+        assertEquals(expectedBalance, account.balance(), 0.0);
         assertEquals("Jane Doe", account.getFullName());
-
-        account.setBalance(2);
-        assertEquals(2.0, account.getBalance(), 0.0);
     }
 
     @Test
@@ -80,9 +77,9 @@ class AccountTest {
     @Test
     void testToString() {
         var account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
-        assertEquals("Account [getAccountId()=1, getUsername()=jad, getFirstName()=Jane, getLastName()=Doe]", account.toString());
+        assertEquals("Account[accountId=1, username=jad, firstName=Jane, lastName=Doe, balance=1.0]", account.toString());
         var accountWithNullStrings = Account.with().accountid(1).build();
-        assertEquals("Account [getAccountId()=1, getUsername()=null, getFirstName()=null, getLastName()=null]", accountWithNullStrings.toString());
+        assertEquals("Account[accountId=1, username=null, firstName=null, lastName=null, balance=0.0]", accountWithNullStrings.toString());
     }
 
 }

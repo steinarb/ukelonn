@@ -24,11 +24,11 @@ class TransactionTest {
     @Test
     void testNoArgConstructor() {
         var bean = Transaction.with().build();
-        assertEquals(-1, bean.getId());
-        assertNull(bean.getTransactionType());
-        assertNull(bean.getTransactionTime());
-        assertEquals(0.0, bean.getTransactionAmount(), 0.0);
-        assertFalse(bean.isPaidOut());
+        assertEquals(-1, bean.id());
+        assertNull(bean.transactionType());
+        assertNull(bean.transactionTime());
+        assertEquals(0.0, bean.transactionAmount(), 0.0);
+        assertFalse(bean.paidOut());
     }
 
     @Test
@@ -45,11 +45,11 @@ class TransactionTest {
             .transactionAmount(transactionAmount)
             .paidOut(paidOut)
             .build();
-        assertEquals(id, bean.getId());
-        assertEquals(transactionType, bean.getTransactionType());
-        assertEquals(transactionTime, bean.getTransactionTime());
-        assertEquals(transactionAmount, bean.getTransactionAmount(), 0.0);
-        assertTrue(bean.isPaidOut());
+        assertEquals(id, bean.id());
+        assertEquals(transactionType, bean.transactionType());
+        assertEquals(transactionTime, bean.transactionTime());
+        assertEquals(transactionAmount, bean.transactionAmount(), 0.0);
+        assertTrue(bean.paidOut());
     }
 
 }

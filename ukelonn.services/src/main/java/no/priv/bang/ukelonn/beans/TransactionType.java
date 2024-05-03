@@ -15,43 +15,13 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class TransactionType extends Immutable { // NOSONAR Immutable handles added fields
-    private int id;
-    private String transactionTypeName;
-    private Double transactionAmount;
-    private boolean transactionIsWork;
-    private boolean transactionIsWagePayment;
-
-    private TransactionType() {}
-
-    public Integer getId() {
-        return Integer.valueOf(id);
-    }
-
-    public String getTransactionTypeName() {
-        return transactionTypeName;
-    }
-
-    public Double getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public boolean isTransactionIsWork() {
-        return transactionIsWork;
-    }
-
-    public boolean isTransactionIsWagePayment() {
-        return transactionIsWagePayment;
-    }
-
-    @Override
-    public String toString() {
-        return "TransactionType [id=" + id + ", transactionTypeName=" + transactionTypeName + ", transactionAmount="
-            + transactionAmount + ", transactionIsWork=" + transactionIsWork + ", transactionIsWagePayment="
-            + transactionIsWagePayment + "]";
-    }
+public record TransactionType(
+    int id,
+    String transactionTypeName,
+    Double transactionAmount,
+    boolean transactionIsWork,
+    boolean transactionIsWagePayment)
+{
 
     public static Builder with(TransactionType transactiontype) {
         Builder builder = new Builder();
@@ -77,13 +47,7 @@ public class TransactionType extends Immutable { // NOSONAR Immutable handles ad
         private Builder() {}
 
         public TransactionType build() {
-            var transactionType = new TransactionType();
-            transactionType.id = this.id;
-            transactionType.transactionTypeName = this.transactionTypeName;
-            transactionType.transactionAmount = this.transactionAmount;
-            transactionType.transactionIsWork = this.transactionIsWork;
-            transactionType.transactionIsWagePayment = this.transactionIsWagePayment;
-            return transactionType;
+            return new TransactionType(id, transactionTypeName, transactionAmount, transactionIsWork, transactionIsWagePayment);
         }
 
         public Builder id(int id) {

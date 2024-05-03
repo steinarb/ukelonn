@@ -15,32 +15,18 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class PasswordsWithUser {
-
-    private User user;
-    private String password;
-    private String password2;
-
-    private PasswordsWithUser() {}
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getPassword2() {
-        return password2;
-    }
+public record PasswordsWithUser(User user, String password, String password2) {
 
     public static Builder with() {
         return new Builder();
+    }
+
+    public static Builder with(PasswordsWithUser passwordsWithUser) {
+        var builder = new Builder();
+        builder.user = passwordsWithUser.user();
+        builder.password = passwordsWithUser.password();
+        builder.password2 = passwordsWithUser.password2;
+        return builder;
     }
 
     public static class Builder {
@@ -51,11 +37,7 @@ public class PasswordsWithUser {
         private Builder() {}
 
         public PasswordsWithUser build() {
-            var passwords = new PasswordsWithUser();
-            passwords.user = this.user;
-            passwords.password = this.password;
-            passwords.password2 = this.password2;
-            return passwords;
+            return new PasswordsWithUser(this.user, this.password, this.password2);
         }
 
         public Builder user(User user) {

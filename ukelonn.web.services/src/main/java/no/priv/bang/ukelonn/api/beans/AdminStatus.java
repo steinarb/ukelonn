@@ -17,23 +17,10 @@ package no.priv.bang.ukelonn.api.beans;
 
 import no.priv.bang.osgiservice.users.User;
 
-public class AdminStatus {
-
-    private User user;
-    private boolean administrator;
-
-    private AdminStatus() {}
+public record AdminStatus(User user, boolean administrator) {
 
     public static Builder with() {
         return new Builder();
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public boolean isAdministrator() {
-        return administrator;
     }
 
     public static class Builder {
@@ -43,10 +30,7 @@ public class AdminStatus {
         private Builder() {}
 
         public AdminStatus build() {
-            var adminStatus = new AdminStatus();
-            adminStatus.user = this.user;
-            adminStatus.administrator = this.administrator;
-            return adminStatus;
+            return new AdminStatus(this.user, this.administrator);
         }
 
         public Builder user(User user) {

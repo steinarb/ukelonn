@@ -15,20 +15,7 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class Notification {
-
-    private String title;
-    private String message;
-
-    private Notification() {}
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getMessage() {
-        return message;
-    }
+public record Notification(String title, String message) {
 
     public static Builder with() {
         return new Builder();
@@ -41,10 +28,7 @@ public class Notification {
         private Builder() {}
 
         public Notification build() {
-            var notification = new Notification();
-            notification.title = this.title;
-            notification.message = this.message;
-            return notification;
+            return new Notification(this.title, this.message);
         }
 
         public Builder title(String title) {

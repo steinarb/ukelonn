@@ -25,11 +25,11 @@ class TransactionTypeTest {
     @Test
     void testNoArgumentConstructor() {
         var bean = TransactionType.with().build();
-        assertEquals(Integer.valueOf(0), bean.getId());
-        assertNull(bean.getTransactionTypeName());
-        assertNull(bean.getTransactionAmount());
-        assertFalse(bean.isTransactionIsWork());
-        assertFalse(bean.isTransactionIsWagePayment());
+        assertEquals(Integer.valueOf(0), bean.id());
+        assertNull(bean.transactionTypeName());
+        assertNull(bean.transactionAmount());
+        assertFalse(bean.transactionIsWork());
+        assertFalse(bean.transactionIsWagePayment());
     }
 
     @Test
@@ -40,17 +40,17 @@ class TransactionTypeTest {
             .transactionAmount(45.0)
             .transactionIsWork(true)
             .build();
-        assertEquals(Integer.valueOf(1), bean.getId());
-        assertEquals("Vaske", bean.getTransactionTypeName());
-        assertEquals(Double.valueOf(45), bean.getTransactionAmount());
-        assertTrue(bean.isTransactionIsWork());
-        assertFalse(bean.isTransactionIsWagePayment());
+        assertEquals(Integer.valueOf(1), bean.id());
+        assertEquals("Vaske", bean.transactionTypeName());
+        assertEquals(Double.valueOf(45), bean.transactionAmount());
+        assertTrue(bean.transactionIsWork());
+        assertFalse(bean.transactionIsWagePayment());
     }
 
     @Test
     void testToString() {
         var bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
-        assertThat(bean.toString()).startsWith("TransactionType [");
+        assertThat(bean.toString()).startsWith("TransactionType[");
     }
 
 }

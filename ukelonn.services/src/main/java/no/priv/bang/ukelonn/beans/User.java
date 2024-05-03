@@ -17,45 +17,11 @@ package no.priv.bang.ukelonn.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import no.priv.bang.beans.immutable.Immutable;
-
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class User extends Immutable { // NOSONAR Immutable handles added fields
-    private int userId;
-    private String username;
-    private String email;
-    private String firstname;
-    private String lastname;
+public record User(int userId, String username, String email, String firstname, String lastname) {
 
-    private User() {}
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public String getFullname() {
-        return new StringBuilder(getFirstname()).append(" ").append(getLastname()).toString();
-    }
-
-    @Override
-    public String toString() {
-        return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+    public String fullname() {
+        return new StringBuilder(firstname()).append(" ").append(lastname()).toString();
     }
 
     public static Builder with() {
@@ -82,13 +48,7 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         private Builder() {}
 
         public User build() {
-            var user = new User();
-            user.userId = this.userId;
-            user.username = this.username;
-            user.email = this.email;
-            user.firstname = this.firstname;
-            user.lastname = this.lastname;
-            return user;
+            return new User(userId, username, email, firstname, lastname);
         }
 
         public Builder userId(int userId) {

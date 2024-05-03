@@ -20,35 +20,13 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class UpdatedTransaction {
-
-    private int id;
-    private int accountId;
-    private int transactionTypeId;
-    private Date transactionTime;
-    private double transactionAmount;
-
-    private UpdatedTransaction() {}
-
-    public int getId() {
-        return id;
-    }
-
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public int getTransactionTypeId() {
-        return transactionTypeId;
-    }
-
-    public Date getTransactionTime() {
-        return transactionTime;
-    }
-
-    public double getTransactionAmount() {
-        return transactionAmount;
-    }
+public record UpdatedTransaction(
+    int id,
+    int accountId,
+    int transactionTypeId,
+    Date transactionTime,
+    double transactionAmount)
+{
 
     public static Builder with() {
         return new Builder();
@@ -64,13 +42,7 @@ public class UpdatedTransaction {
         private Builder() {}
 
         public UpdatedTransaction build() {
-            var updatedTransaction = new UpdatedTransaction();
-            updatedTransaction.id = this.id;
-            updatedTransaction.accountId = this.accountId;
-            updatedTransaction.transactionTypeId = this.transactionTypeId;
-            updatedTransaction.transactionTime = this.transactionTime;
-            updatedTransaction.transactionAmount = this.transactionAmount;
-            return updatedTransaction;
+            return new UpdatedTransaction(id, accountId, transactionTypeId, transactionTime, transactionAmount);
         }
 
         public Builder id(int id) {

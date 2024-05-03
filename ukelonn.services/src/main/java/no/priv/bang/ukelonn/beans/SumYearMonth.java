@@ -15,25 +15,7 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class SumYearMonth {
-
-    private double sum;
-    private int year;
-    private int month;
-
-    private SumYearMonth() {}
-
-    public double getSum() {
-        return sum;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getMonth() {
-        return month;
-    }
+public record SumYearMonth(double sum, int year, int month) {
 
     public static Builder with() {
         return new Builder();
@@ -45,11 +27,7 @@ public class SumYearMonth {
         private int month = -1;
 
         public SumYearMonth build() {
-            var sumYearMonth = new SumYearMonth();
-            sumYearMonth.sum = this.sum;
-            sumYearMonth.year = this.year;
-            sumYearMonth.month = this.month;
-            return sumYearMonth;
+            return new SumYearMonth(sum, year, month);
         }
 
         public Builder sum(double sum) {

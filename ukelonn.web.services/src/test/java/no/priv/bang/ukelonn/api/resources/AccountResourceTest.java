@@ -66,8 +66,8 @@ class AccountResourceTest extends ServletTestBase {
         var result = resource.getAccount("jad");
 
         // Check the result
-        assertEquals("jad", result.getUsername());
-        assertEquals(673.0, result.getBalance(), 0.0);
+        assertEquals("jad", result.username());
+        assertEquals(673.0, result.balance(), 0.0);
     }
 
     /**
@@ -137,8 +137,8 @@ class AccountResourceTest extends ServletTestBase {
         var result = resource.getAccount("jad");
 
         // Check the response
-        assertEquals("jad", result.getUsername());
-        assertEquals(673.0, result.getBalance(), 0.0);
+        assertEquals("jad", result.username());
+        assertEquals(673.0, result.balance(), 0.0);
     }
 
     @Test

@@ -24,6 +24,7 @@ import java.util.Date;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.beans.Account;
 import no.priv.bang.ukelonn.beans.PerformedTransaction;
 
 class RegisterPaymentTest {
@@ -32,13 +33,13 @@ class RegisterPaymentTest {
     void testRegisterPayment() throws Exception {
         // Create the request
         var account = getJadAccount();
-        var originalBalance = account.getBalance();
-        account.setBalance(0.0);
+        var originalBalance = account.balance();
+        account = Account.with(account).balance(0.0).build();
         var paymenttypes = getPaymenttypes();
         var payment = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(paymenttypes.get(0).getId())
-            .transactionAmount(account.getBalance())
+            .transactionTypeId(paymenttypes.get(0).id())
+            .transactionAmount(account.balance())
             .transactionDate(new Date())
             .build();
 
@@ -54,7 +55,7 @@ class RegisterPaymentTest {
         var result = resource.doRegisterPayment(payment);
 
         // Check the response
-        assertEquals("jad", result.getUsername());
-        assertThat(result.getBalance()).isLessThan(originalBalance);
+        assertEquals("jad", result.username());
+        assertThat(result.balance()).isLessThan(originalBalance);
     }
 }

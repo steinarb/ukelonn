@@ -17,58 +17,22 @@ package no.priv.bang.ukelonn.beans;
 
 import java.util.Date;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
-    int bonusId;
-    private boolean enabled;
-    private String iconurl;
-    private String title;
-    private String description;
-    private double bonusFactor;
-    private Date startDate;
-    private Date endDate;
-
-    private Bonus() { }
-
-    public int getBonusId() {
-        return bonusId;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getIconurl() {
-        return iconurl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public double getBonusFactor() {
-        return bonusFactor;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
+public record Bonus(
+    int bonusId,
+    boolean enabled,
+    String iconurl,
+    String title,
+    String description,
+    double bonusFactor,
+    Date startDate,
+    Date endDate)
+{
 
     public static Builder with() {
         return new Builder();
     }
 
     public static class Builder {
-
         private int bonusId;
         private boolean enabled;
         private String iconurl;
@@ -81,16 +45,7 @@ public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
         private Builder() { }
 
         public Bonus build() {
-            var bonus = new Bonus();
-            bonus.bonusId = this.bonusId;
-            bonus.enabled = this.enabled;
-            bonus.iconurl = this.iconurl;
-            bonus.title = this.title;
-            bonus.description = this.description;
-            bonus.bonusFactor = this.bonusFactor;
-            bonus.startDate = this.startDate;
-            bonus.endDate = this.endDate;
-            return bonus;
+            return new Bonus(bonusId, enabled, iconurl, title, description, bonusFactor, startDate, endDate);
         }
 
         public Builder bonusId(int bonusId) {

@@ -15,27 +15,10 @@
  */
 package no.priv.bang.ukelonn.api.beans;
 
-public class LoginResult {
-    private String username;
-    private String[] roles;
-    private String errorMessage;
-
-    private LoginResult() {}
+public record LoginResult(String username, String[] roles, String errorMessage) {
 
     public static Builder with() {
         return new Builder();
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String[] getRoles() {
-        return roles;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 
     public static class Builder {
@@ -46,11 +29,7 @@ public class LoginResult {
         private Builder() {}
 
         public LoginResult build() {
-            var loginResult = new LoginResult();
-            loginResult.username = this.username;
-            loginResult.roles = this.roles;
-            loginResult.errorMessage = this.errorMessage;
-            return loginResult;
+            return new LoginResult(this.username, this.roles, this.errorMessage);
         }
 
         public Builder username(String username) {

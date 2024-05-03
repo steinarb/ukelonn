@@ -57,7 +57,7 @@ public class AdminJobtype {
         try {
             return ukelonn.modifyJobtype(jobtype);
         } catch (UkelonnException e) {
-            logger.error(String.format("REST endpoint /api/jobtype/modify failed to modify jobtype %d in the database", jobtype.getId()), e);
+            logger.error(String.format("REST endpoint /api/jobtype/modify failed to modify jobtype %d in the database", jobtype.id()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }
@@ -69,7 +69,7 @@ public class AdminJobtype {
         try {
             return ukelonn.createJobtype(jobtype);
         } catch (UkelonnException e) {
-            logger.error(String.format("REST endpoint /api/jobtype/modify failed to create jobtype \"%s\" in the database", jobtype.getTransactionTypeName()), e);
+            logger.error(String.format("REST endpoint /api/jobtype/modify failed to create jobtype \"%s\" in the database", jobtype.transactionTypeName()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }

@@ -17,63 +17,33 @@ package no.priv.bang.ukelonn.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import no.priv.bang.beans.immutable.Immutable;
-
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Account extends Immutable { // NOSONAR Immutable handles added fields
-    private int accountId;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private double balance;
-
-    private Account() {
-        // No-arg constructor required by jackson
-    }
-
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
+public record Account(int accountId, String username,String firstName, String lastName, double balance) {
 
     public String getFullName() {
-        if (getFirstName() != null && getLastName() != null) {
-            return getFirstName() + " " + getLastName();
+        if (firstName() != null && lastName() != null) {
+            return firstName() + " " + lastName();
         }
 
-        if (getFirstName() != null) {
-            return getFirstName();
+        if (firstName() != null) {
+            return firstName();
         }
 
-        return getUsername();
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    @Override
-    public String toString() {
-        return "Account [getAccountId()=" + getAccountId() + ", getUsername()=" + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
+        return username();
     }
 
     public static Builder with() {
         return new Builder();
+    }
+
+    public static Builder with(Account account) {
+        var builder = new Builder();
+        builder.accountid = account.accountId;
+        builder.username = account.username;
+        builder.firstName = account.firstName;
+        builder.lastName = account.lastName;
+        builder.balance = account.balance;
+        return builder;
     }
 
     public static class Builder {
@@ -86,13 +56,7 @@ public class Account extends Immutable { // NOSONAR Immutable handles added fiel
         private Builder() {}
 
         public Account build() {
-            var account = new Account();
-            account.accountId = this.accountid;
-            account.username = this.username;
-            account.firstName = this.firstName;
-            account.lastName = this.lastName;
-            account.balance = this.balance;
-            return account;
+            return new Account(this.accountid, this.username, this.firstName, this.lastName, this.balance);
         }
 
         public Builder accountid(int accountid) {

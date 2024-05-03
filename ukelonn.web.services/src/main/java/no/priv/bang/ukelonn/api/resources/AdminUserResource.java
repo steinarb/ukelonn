@@ -137,29 +137,29 @@ public class AdminUserResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public AdminStatus changeAdminStatus(AdminStatus status) {
-        if (status.isAdministrator() != userIsAdministrator(status.getUser())) {
+        if (status.administrator() != userIsAdministrator(status.user())) {
             var ukelonnadmin = useradmin.getRoles().stream().filter(r -> UKELONNADMIN_ROLE.equals(r.getRolename())).findFirst();
             if (!ukelonnadmin.isPresent()) {
                 // If no ukelonn admin role is present in the auth service
                 // administrator will always be false
                 return AdminStatus.with()
-                    .user(status.getUser())
+                    .user(status.user())
                     .administrator(false)
                     .build();
             }
 
-            if (status.isAdministrator()) {
+            if (status.administrator()) {
                 // admin role is missing, add the role
-                useradmin.addUserRoles(UserRoles.with().user(status.getUser()).roles(Arrays.asList(ukelonnadmin.get())).build());
+                useradmin.addUserRoles(UserRoles.with().user(status.user()).roles(Arrays.asList(ukelonnadmin.get())).build());
             } else {
                 // admin role is present, remove the role
-                useradmin.removeUserRoles(UserRoles.with().user(status.getUser()).roles(Arrays.asList(ukelonnadmin.get())).build());
+                useradmin.removeUserRoles(UserRoles.with().user(status.user()).roles(Arrays.asList(ukelonnadmin.get())).build());
             }
         }
 
         return AdminStatus.with()
-            .user(status.getUser())
-            .administrator(userIsAdministrator(status.getUser()))
+            .user(status.user())
+            .administrator(userIsAdministrator(status.user()))
             .build();
     }
 

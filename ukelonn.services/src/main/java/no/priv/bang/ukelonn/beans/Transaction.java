@@ -17,46 +17,13 @@ package no.priv.bang.ukelonn.beans;
 
 import java.util.Date;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class Transaction extends Immutable { // NOSONAR Immutable handles added fields
-    private int id;
-    private TransactionType transactionType;
-    private Date transactionTime;
-    private double transactionAmount;
-    private boolean paidOut;
-
-    private Transaction() {}
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return this.transactionType.getTransactionTypeName();
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public Date getTransactionTime() {
-        return transactionTime;
-    }
-
-    public double getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public boolean isPaidOut() {
-        return paidOut;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction [id=" + id + ", transactionType=" + transactionType + ", transactionTime=" + transactionTime
-            + ", transactionAmount=" + transactionAmount + "]";
-    }
+public record Transaction(
+    int id,
+    TransactionType transactionType,
+    Date transactionTime,
+    double transactionAmount,
+    boolean paidOut)
+{
 
     public static Builder with(Transaction transaction) {
         Builder builder = new Builder();
@@ -82,13 +49,7 @@ public class Transaction extends Immutable { // NOSONAR Immutable handles added 
         private Builder() {}
 
         public Transaction build() {
-            var transaction = new Transaction();
-            transaction.id = this.id;
-            transaction.transactionType = this.transactionType;
-            transaction.transactionTime = this.transactionTime;
-            transaction.transactionAmount = this.transactionAmount;
-            transaction.paidOut = this.paidOut;
-            return transaction;
+            return new Transaction(id, transactionType, transactionTime, transactionAmount, paidOut);
         }
 
         public Builder id(int id) {

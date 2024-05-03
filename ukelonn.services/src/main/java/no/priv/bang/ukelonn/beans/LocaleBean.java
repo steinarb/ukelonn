@@ -16,23 +16,9 @@
 package no.priv.bang.ukelonn.beans;
 
 import java.util.Locale;
+import java.util.Optional;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class LocaleBean extends Immutable { // NOSONAR Immutable handles added fields
-
-    private String code;
-    private String displayLanguage;
-
-    private LocaleBean() {}
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDisplayLanguage() {
-        return displayLanguage;
-    }
+public record LocaleBean(String code, String displayLanguage) {
 
     public static Builder with() {
         return new Builder();
@@ -44,10 +30,9 @@ public class LocaleBean extends Immutable { // NOSONAR Immutable handles added f
         private Builder() {}
 
         public LocaleBean build() {
-            var localeBean = new LocaleBean();
-            localeBean.code = locale != null ? locale.toString() : null;
-            localeBean.displayLanguage = locale != null ? locale.getDisplayLanguage(locale) : null;
-            return localeBean;
+            String locale = Optional.ofNullable(this.locale).map(l -> l.toString()).orElse(null);
+            String displayLanguage = Optional.ofNullable(this.locale).map(l -> l.getDisplayLanguage(l)).orElse(null);
+            return new LocaleBean(locale, displayLanguage);
         }
 
         public Builder locale(Locale locale) {

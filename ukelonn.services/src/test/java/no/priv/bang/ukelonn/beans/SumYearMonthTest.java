@@ -27,9 +27,9 @@ class SumYearMonthTest {
         var year = 2016;
         var month = 11;
         var bean = SumYearMonth.with().sum(sum).year(year).month(month).build();
-        assertEquals(sum, bean.getSum(), 0.0);
-        assertEquals(year, bean.getYear());
-        assertEquals(month, bean.getMonth());
+        assertEquals(sum, bean.sum(), 0.0);
+        assertEquals(year, bean.year());
+        assertEquals(month, bean.month());
     }
 
     @Test
@@ -38,9 +38,9 @@ class SumYearMonthTest {
         var year = -1;
         var month = -1;
         var bean = SumYearMonth.with().build();
-        assertEquals(sum, bean.getSum(), 0.0);
-        assertEquals(year, bean.getYear());
-        assertEquals(month, bean.getMonth());
+        assertEquals(sum, bean.sum(), 0.0);
+        assertEquals(year, bean.year());
+        assertEquals(month, bean.month());
     }
 
 }

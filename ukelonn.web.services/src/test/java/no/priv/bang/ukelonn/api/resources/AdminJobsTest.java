@@ -49,7 +49,7 @@ class AdminJobsTest {
         // Set up the POST argument for the delete
         var account = getJodAccount();
         var jobs = getJodJobs();
-        var jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+        var jobIds = Arrays.asList(jobs.get(0).id(), jobs.get(1).id());
         var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(jobIds).build();
 
         // Do the delete
@@ -69,7 +69,7 @@ class AdminJobsTest {
         // Set up the POST argument for the delete
         var account = getJodAccount();
         var jobs = getJodJobs();
-        var idsOfJobsToDelete = Arrays.asList(jobs.get(0).getId());
+        var idsOfJobsToDelete = Arrays.asList(jobs.get(0).id());
         var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(idsOfJobsToDelete).build();
 
         // Do the delete

@@ -128,8 +128,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.getRoles()).isNotEmpty();
-        assertEquals("", result.getErrorMessage());
+        assertThat(result.roles()).isNotEmpty();
+        assertEquals("", result.errorMessage());
     }
 
     @Test
@@ -163,8 +163,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.getRoles()).isNotEmpty();
-        assertEquals("", result.getErrorMessage());
+        assertThat(result.roles()).isNotEmpty();
+        assertEquals("", result.errorMessage());
     }
 
     @Disabled("Gets wrong password exception instead of unknown user exception, don't know why")
@@ -196,8 +196,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.getRoles().length);
-        assertEquals("Unknown account", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("Unknown account", result.errorMessage());
     }
 
     @Test
@@ -231,8 +231,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.getRoles().length);
-        assertEquals("Wrong password", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("Wrong password", result.errorMessage());
     }
 
     @Test
@@ -296,8 +296,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         LoginResult result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.getRoles()).isNotEmpty();
-        assertEquals("", result.getErrorMessage());
+        assertThat(result.roles()).isNotEmpty();
+        assertEquals("", result.errorMessage());
     }
 
     /**
@@ -336,8 +336,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.getRoles().length);
-        assertEquals("", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("", result.errorMessage());
     }
 
     @Test
@@ -366,8 +366,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.getRoles().length);
-        assertEquals("", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("", result.errorMessage());
     }
 
     /**
@@ -401,8 +401,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.getRoles().length);
-        assertEquals("", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("", result.errorMessage());
     }
 
     @Test
@@ -491,10 +491,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        var expectedAccountBalance = getJadAccount().getBalance();
+        var expectedAccountBalance = getJadAccount().balance();
         var result = ServletTestBase.mapper.readValue(getBinaryContent(response), Account.class);
-        assertEquals("jad", result.getUsername());
-        assertEquals(expectedAccountBalance, result.getBalance(), 0.0);
+        assertEquals("jad", result.username());
+        assertEquals(expectedAccountBalance, result.balance(), 0.0);
     }
 
     /**
@@ -560,10 +560,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
 
-        var expectedAccountBalance = getJadAccount().getBalance();
+        var expectedAccountBalance = getJadAccount().balance();
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
-        assertEquals("jad", result.getUsername());
-        assertEquals(expectedAccountBalance, result.getBalance(), 0.0);
+        assertEquals("jad", result.username());
+        assertEquals(expectedAccountBalance, result.balance(), 0.0);
     }
 
     @Test
@@ -625,15 +625,15 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testRegisterJob() throws Exception {
         // Create the request
         var account = getJadAccount();
-        var originalBalance = account.getBalance();
+        var originalBalance = account.balance();
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
-        account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
+        account = Account.with(account).balance(account.balance() + jobTypes.get(0).transactionAmount()).build();
         var jobAsJson = mapper.writeValueAsString(job);
         var request = buildPostUrl("/job/register");
         request.setBodyContent(jobAsJson);
@@ -660,8 +660,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
-        assertEquals("jad", result.getUsername());
-        assertThat(result.getBalance()).isGreaterThan(originalBalance);
+        assertEquals("jad", result.username());
+        assertThat(result.balance()).isGreaterThan(originalBalance);
     }
 
     /**
@@ -677,8 +677,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
         var jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
@@ -715,15 +715,15 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
         var account = getJadAccount();
-        var originalBalance = account.getBalance();
+        var originalBalance = account.balance();
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
-        account.setBalance(account.getBalance() + jobTypes.get(0).getTransactionAmount());
+        account = Account.with(account).balance(account.balance() + jobTypes.get(0).transactionAmount()).build();
         var jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
         var request = buildPostUrl("/job/register");
         request.setBodyContent(jobAsJson);
@@ -750,8 +750,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
-        assertEquals("jad", result.getUsername());
-        assertThat(result.getBalance()).isGreaterThan(originalBalance);
+        assertEquals("jad", result.username());
+        assertThat(result.balance()).isGreaterThan(originalBalance);
     }
 
     @Test
@@ -761,8 +761,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
         var jobAsJson = ServletTestBase.mapper.writeValueAsString(job);
@@ -819,7 +819,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testGetJobs() throws Exception {
         // Set up the request
         var account = getJadAccount();
-        var request = buildGetUrl(String.format("/jobs/%d", account.getAccountId()));
+        var request = buildGetUrl(String.format("/jobs/%d", account.accountId()));
 
         // Create a response object that will receive and hold the servlet output
         var response = new MockHttpServletResponse();
@@ -851,7 +851,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up the request
         var account = getJodAccount();
         var jobs = getJodJobs();
-        var jobIds = Arrays.asList(jobs.get(0).getId(), jobs.get(1).getId());
+        var jobIds = Arrays.asList(jobs.get(0).id(), jobs.get(1).id());
         var accountWithJobIds = AccountWithJobIds.with().account(account).jobIds(jobIds).build();
         var accountWithJobIdsAsJson = ServletTestBase.mapper.writeValueAsString(accountWithJobIds);
         var request = buildPostUrl("/admin/jobs/delete");
@@ -885,8 +885,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Find the job that is to be modified
         var account = getJodAccount();
         var job = getJodJobs().get(0);
-        var originalTransactionTypeId = job.getTransactionType().getId();
-        var originalTransactionAmount = job.getTransactionAmount();
+        var originalTransactionTypeId = job.transactionType().id();
+        var originalTransactionAmount = job.transactionAmount();
 
         // Find a different job type that has a different amount than the
         // job's original type
@@ -895,11 +895,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Create a new job object with a different jobtype and the same id
         var now = new Date();
         var editedJob = UpdatedTransaction.with()
-            .id(job.getId())
-            .accountId(account.getAccountId())
-            .transactionTypeId(newJobType.getId())
+            .id(job.id())
+            .accountId(account.accountId())
+            .transactionTypeId(newJobType.id())
             .transactionTime(now)
-            .transactionAmount(newJobType.getTransactionAmount())
+            .transactionAmount(newJobType.transactionAmount())
             .build();
 
         // Build the HTTP request
@@ -928,18 +928,18 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         var updatedJobs = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
-        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).collect(Collectors.toList()).get(0);
 
-        assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
-        assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(job.getTransactionTime().getTime());
-        assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
+        assertEquals(editedJob.transactionTypeId(), editedJobFromDatabase.transactionType().id());
+        assertThat(editedJobFromDatabase.transactionTime().getTime()).isGreaterThan(job.transactionTime().getTime());
+        assertEquals(editedJob.transactionAmount(), editedJobFromDatabase.transactionAmount(), 0.0);
     }
 
     @Test
     void testGetPayments() throws Exception {
         // Set up the request
         var account = getJadAccount();
-        var request = buildGetUrl(String.format("/payments/%d", account.getAccountId()));
+        var request = buildGetUrl(String.format("/payments/%d", account.accountId()));
 
         // Create a response object that will receive and hold the servlet output
         var response = new MockHttpServletResponse();
@@ -1000,15 +1000,15 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testRegisterPayments() throws Exception {
         // Create the request
         var account = getJadAccount();
-        var originalBalance = account.getBalance();
+        var originalBalance = account.balance();
         var paymentTypes = getPaymenttypes();
         var payment = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(paymentTypes.get(0).getId())
-            .transactionAmount(paymentTypes.get(0).getTransactionAmount())
+            .transactionTypeId(paymentTypes.get(0).id())
+            .transactionAmount(paymentTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
-        account.setBalance(0.0);
+        account = Account.with(account).balance(0.0).build();
         var paymentAsJson = ServletTestBase.mapper.writeValueAsString(payment);
         var request = buildPostUrl("/registerpayment");
         request.setBodyContent(paymentAsJson);
@@ -1035,8 +1035,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), Account.class);
-        assertEquals("jad", result.getUsername());
-        assertThat(result.getBalance()).isLessThan(originalBalance);
+        assertEquals("jad", result.username());
+        assertThat(result.balance()).isLessThan(originalBalance);
     }
 
     @Test
@@ -1044,7 +1044,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Find a jobtype to modify
         var jobtypes = getJobtypes();
         var jobtype = jobtypes.get(0);
-        var originalAmount = jobtype.getTransactionAmount();
+        var originalAmount = jobtype.transactionAmount();
 
         // Modify the amount of the jobtype
         jobtype = TransactionType.with(jobtype).transactionAmount(originalAmount + 1).build();
@@ -1077,7 +1077,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         List<TransactionType> updatedJobtypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         var updatedJobtype = updatedJobtypes.get(0);
-        assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
+        assertThat(updatedJobtype.transactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test
@@ -1130,7 +1130,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Find a payment type to modify
         var paymenttypes = getPaymenttypes();
         var paymenttype = paymenttypes.get(1);
-        var originalAmount = paymenttype.getTransactionAmount();
+        var originalAmount = paymenttype.transactionAmount();
 
         // Modify the amount of the payment type
         paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
@@ -1163,7 +1163,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var updatedPaymenttypes = mapper.readValue(getBinaryContent(response), new TypeReference<List<TransactionType>>() {});
         TransactionType updatedPaymenttype = updatedPaymenttypes.get(0);
-        assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
+        assertThat(updatedPaymenttype.transactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test
@@ -1477,8 +1477,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, notificationsResponse2.getStatus());
         assertEquals("application/json", notificationsResponse2.getContentType());
         var notificationsToJad2 = mapper.readValue(getBinaryContent(notificationsResponse2), new TypeReference<List<Notification>>() {});
-        assertEquals(utbetalt.getTitle(), notificationsToJad2.get(0).getTitle());
-        assertEquals(utbetalt.getMessage(), notificationsToJad2.get(0).getMessage());
+        assertEquals(utbetalt.title(), notificationsToJad2.get(0).title());
+        assertEquals(utbetalt.message(), notificationsToJad2.get(0).message());
     }
 
     @Test
@@ -1696,8 +1696,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         var updatedStatus = mapper.readValue(getBinaryContent(response), AdminStatus.class);
-        assertEquals(user, updatedStatus.getUser());
-        assertTrue(updatedStatus.isAdministrator());
+        assertEquals(user, updatedStatus.user());
+        assertTrue(updatedStatus.administrator());
     }
 
     @Test
@@ -1741,8 +1741,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         var updatedStatus = mapper.readValue(getBinaryContent(response), AdminStatus.class);
-        assertEquals(user, updatedStatus.getUser());
-        assertTrue(updatedStatus.isAdministrator());
+        assertEquals(user, updatedStatus.user());
+        assertTrue(updatedStatus.administrator());
     }
 
     @Test
@@ -1926,12 +1926,12 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(500, response.getStatus());
         assertEquals("application/json", response.getContentType());
         var errorMessage = mapper.readValue(getBinaryContent(response), ErrorMessage.class);
-        assertEquals(500, errorMessage.getStatus());
-        assertThat(errorMessage.getMessage()).startsWith("Unknown locale");
+        assertEquals(500, errorMessage.status());
+        assertThat(errorMessage.message()).startsWith("Unknown locale");
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
+        return getJobtypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).collect(Collectors.toList()).get(0);
     }
 
 

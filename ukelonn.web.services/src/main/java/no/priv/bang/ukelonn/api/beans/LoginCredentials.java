@@ -15,22 +15,10 @@
  */
 package no.priv.bang.ukelonn.api.beans;
 
-public class LoginCredentials {
-    private String username;
-    private String password;
-
-    private LoginCredentials() {}
+public record LoginCredentials(String username, String password) {
 
     public static Builder with() {
         return new Builder();
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public static class Builder {
@@ -40,10 +28,7 @@ public class LoginCredentials {
         private Builder() {}
 
         public LoginCredentials build() {
-            var loginCredentials = new LoginCredentials();
-            loginCredentials.username = this.username;
-            loginCredentials.password = this.password;
-            return loginCredentials;
+            return new LoginCredentials(this.username, this.password);
         }
 
         public Builder username(String username) {

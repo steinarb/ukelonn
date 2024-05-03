@@ -26,8 +26,8 @@ class SumYearTest {
         var sum = 250.0;
         var year = 2016;
         var bean = SumYear.with().sum(sum).year(year).build();
-        assertEquals(sum, bean.getSum(), 0.0);
-        assertEquals(year, bean.getYear());
+        assertEquals(sum, bean.sum(), 0.0);
+        assertEquals(year, bean.year());
     }
 
     @Test
@@ -35,8 +35,8 @@ class SumYearTest {
         var sum = 0.0;
         var year = -1;
         var bean = SumYear.with().build();
-        assertEquals(sum, bean.getSum(), 0.0);
-        assertEquals(year, bean.getYear());
+        assertEquals(sum, bean.sum(), 0.0);
+        assertEquals(year, bean.year());
     }
 
 }

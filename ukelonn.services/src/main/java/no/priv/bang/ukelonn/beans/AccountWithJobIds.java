@@ -18,20 +18,7 @@ package no.priv.bang.ukelonn.beans;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountWithJobIds {
-    Account account;
-    List<Integer> jobIds;
-
-    private AccountWithJobIds() {
-        // No-args constructor required by jackson
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-    public List<Integer> getJobIds() {
-        return jobIds;
-    }
+public record AccountWithJobIds(Account account, List<Integer> jobIds) {
 
     public static Builder with() {
         return new Builder();
@@ -43,10 +30,7 @@ public class AccountWithJobIds {
         List<Integer> jobIds = Collections.emptyList();
 
         public AccountWithJobIds build() {
-            var accountWithJobIds = new AccountWithJobIds();
-            accountWithJobIds.account = this.account;
-            accountWithJobIds.jobIds = this.jobIds;
-            return accountWithJobIds;
+            return new AccountWithJobIds(this.account, this.jobIds);
         }
 
         public Builder account(Account account) {

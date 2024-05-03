@@ -15,20 +15,7 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class SumYear {
-
-    private double sum;
-    private int year;
-
-    protected SumYear() {}
-
-    public double getSum() {
-        return sum;
-    }
-
-    public int getYear() {
-        return year;
-    }
+public record SumYear(double sum, int year) {
 
     public static Builder with() {
         return new Builder();
@@ -39,10 +26,7 @@ public class SumYear {
         private int year = -1;
 
         public SumYear build() {
-            var sumYear = new SumYear();
-            sumYear.sum = this.sum;
-            sumYear.year = this.year;
-            return sumYear;
+            return new SumYear(sum, year);
         }
 
         public Builder sum(double sum) {
