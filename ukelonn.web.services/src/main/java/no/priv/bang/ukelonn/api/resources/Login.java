@@ -61,7 +61,7 @@ public class Login {
         var subject = SecurityUtils.getSubject();
         var decodedPassword = new String(Base64.getDecoder().decode(credentials.password()));
 
-        UsernamePasswordToken token = new UsernamePasswordToken(credentials.username(), decodedPassword, true);
+        var token = new UsernamePasswordToken(credentials.username(), decodedPassword, true);
         try {
             subject.login(token);
 
