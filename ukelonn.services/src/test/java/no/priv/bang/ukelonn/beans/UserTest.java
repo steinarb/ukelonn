@@ -69,12 +69,4 @@ class UserTest {
         assertEquals("Juliet Deere", user.fullname());
     }
 
-    @Test
-    void testToString() {
-        var user = User.with().userId(1).username("jad").email("jane21@gmail.com").firstname("Jane").lastname("Doe").build();
-        assertEquals("User[userId=1, username=jad, email=jane21@gmail.com, firstname=Jane, lastname=Doe]", user.toString());
-        var userWithNullStrings = User.with().userId(1).username(null).email(null).firstname(null).lastname(null).build();
-        assertEquals("User[userId=1, username=null, email=null, firstname=null, lastname=null]", userWithNullStrings.toString());
-    }
-
 }

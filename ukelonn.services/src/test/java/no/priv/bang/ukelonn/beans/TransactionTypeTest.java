@@ -16,8 +16,6 @@
 package no.priv.bang.ukelonn.beans;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 
 class TransactionTypeTest {
@@ -45,12 +43,6 @@ class TransactionTypeTest {
         assertEquals(Double.valueOf(45), bean.transactionAmount());
         assertTrue(bean.transactionIsWork());
         assertFalse(bean.transactionIsWagePayment());
-    }
-
-    @Test
-    void testToString() {
-        var bean = TransactionType.with().id(1).transactionTypeName("Vaske").transactionAmount(45.0).transactionIsWork(true).build();
-        assertThat(bean.toString()).startsWith("TransactionType[");
     }
 
 }

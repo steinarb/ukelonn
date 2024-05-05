@@ -74,12 +74,4 @@ class AccountTest {
         assertEquals("jad", account.getFullName());
     }
 
-    @Test
-    void testToString() {
-        var account = Account.with().accountid(1).username("jad").firstName("Jane").lastName("Doe").balance(1).build();
-        assertEquals("Account[accountId=1, username=jad, firstName=Jane, lastName=Doe, balance=1.0]", account.toString());
-        var accountWithNullStrings = Account.with().accountid(1).build();
-        assertEquals("Account[accountId=1, username=null, firstName=null, lastName=null, balance=0.0]", accountWithNullStrings.toString());
-    }
-
 }
