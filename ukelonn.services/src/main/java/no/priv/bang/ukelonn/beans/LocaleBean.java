@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,26 @@
 package no.priv.bang.ukelonn.beans;
 
 import java.util.Locale;
+import java.util.Optional;
 
-import no.priv.bang.beans.immutable.Immutable;
+public record LocaleBean(String code, String displayLanguage) {
 
-public class LocaleBean extends Immutable { // NOSONAR Immutable handles added fields
-
-    private String code;
-    private String displayLanguage;
-
-    private LocaleBean() {}
-
-    public String getCode() {
-        return code;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public String getDisplayLanguage() {
-        return displayLanguage;
-    }
-
-    public static LocaleBeanBuilder with() {
-        return new LocaleBeanBuilder();
-    }
-
-    public static class LocaleBeanBuilder {
+    public static class Builder {
         private Locale locale;
 
-        private LocaleBeanBuilder() {}
+        private Builder() {}
 
         public LocaleBean build() {
-            LocaleBean localeBean = new LocaleBean();
-            localeBean.code = locale != null ? locale.toString() : null;
-            localeBean.displayLanguage = locale != null ? locale.getDisplayLanguage(locale) : null;
-            return localeBean;
+            String locale = Optional.ofNullable(this.locale).map(l -> l.toString()).orElse(null);
+            String displayLanguage = Optional.ofNullable(this.locale).map(l -> l.getDisplayLanguage(l)).orElse(null);
+            return new LocaleBean(locale, displayLanguage);
         }
 
-        public LocaleBeanBuilder locale(Locale locale) {
+        public Builder locale(Locale locale) {
             this.locale = locale;
             return this;
         }

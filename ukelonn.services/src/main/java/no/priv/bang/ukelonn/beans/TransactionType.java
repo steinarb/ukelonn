@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,16 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-import no.priv.bang.beans.immutable.Immutable;
+public record TransactionType(
+    int id,
+    String transactionTypeName,
+    Double transactionAmount,
+    boolean transactionIsWork,
+    boolean transactionIsWagePayment)
+{
 
-public class TransactionType extends Immutable { // NOSONAR Immutable handles added fields
-    private int id;
-    private String transactionTypeName;
-    private Double transactionAmount;
-    private boolean transactionIsWork;
-    private boolean transactionIsWagePayment;
-
-    private TransactionType() {}
-
-    public Integer getId() {
-        return Integer.valueOf(id);
-    }
-
-    public String getTransactionTypeName() {
-        return transactionTypeName;
-    }
-
-    public Double getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public boolean isTransactionIsWork() {
-        return transactionIsWork;
-    }
-
-    public boolean isTransactionIsWagePayment() {
-        return transactionIsWagePayment;
-    }
-
-    @Override
-    public String toString() {
-        return "TransactionType [id=" + id + ", transactionTypeName=" + transactionTypeName + ", transactionAmount="
-            + transactionAmount + ", transactionIsWork=" + transactionIsWork + ", transactionIsWagePayment="
-            + transactionIsWagePayment + "]";
-    }
-
-    public static TransactionTypeBuilder with(TransactionType transactiontype) {
-        TransactionTypeBuilder builder = new TransactionTypeBuilder();
+    public static Builder with(TransactionType transactiontype) {
+        Builder builder = new Builder();
         builder.id = transactiontype.id;
         builder.transactionTypeName = transactiontype.transactionTypeName;
         builder.transactionAmount = transactiontype.transactionAmount;
@@ -63,50 +33,44 @@ public class TransactionType extends Immutable { // NOSONAR Immutable handles ad
         return builder;
     }
 
-    public static TransactionTypeBuilder with() {
-        return new TransactionTypeBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class TransactionTypeBuilder {
+    public static class Builder {
         private int id;
         private String transactionTypeName;
         private Double transactionAmount;
         private boolean transactionIsWork;
         private boolean transactionIsWagePayment;
 
-        private TransactionTypeBuilder() {}
+        private Builder() {}
 
         public TransactionType build() {
-            TransactionType transactionType = new TransactionType();
-            transactionType.id = this.id;
-            transactionType.transactionTypeName = this.transactionTypeName;
-            transactionType.transactionAmount = this.transactionAmount;
-            transactionType.transactionIsWork = this.transactionIsWork;
-            transactionType.transactionIsWagePayment = this.transactionIsWagePayment;
-            return transactionType;
+            return new TransactionType(id, transactionTypeName, transactionAmount, transactionIsWork, transactionIsWagePayment);
         }
 
-        public TransactionTypeBuilder id(int id) {
+        public Builder id(int id) {
             this.id = id;
             return this;
         }
 
-        public TransactionTypeBuilder transactionTypeName(String transactionTypeName) {
+        public Builder transactionTypeName(String transactionTypeName) {
             this.transactionTypeName = transactionTypeName;
             return this;
         }
 
-        public TransactionTypeBuilder transactionAmount(Double transactionAmount) {
+        public Builder transactionAmount(Double transactionAmount) {
             this.transactionAmount = transactionAmount;
             return this;
         }
 
-        public TransactionTypeBuilder transactionIsWork(boolean transactionIsWork) {
+        public Builder transactionIsWork(boolean transactionIsWork) {
             this.transactionIsWork = transactionIsWork;
             return this;
         }
 
-        public TransactionTypeBuilder transactionIsWagePayment(boolean transactionIsWagePayment) {
+        public Builder transactionIsWagePayment(boolean transactionIsWagePayment) {
             this.transactionIsWagePayment = transactionIsWagePayment;
             return this;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,44 +17,28 @@ package no.priv.bang.ukelonn.api.beans;
 
 import no.priv.bang.osgiservice.users.User;
 
-public class AdminStatus {
+public record AdminStatus(User user, boolean administrator) {
 
-    private User user;
-    private boolean administrator;
-
-    private AdminStatus() {}
-
-    public static AdminStatusBuilder with() {
-        return new AdminStatusBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public boolean isAdministrator() {
-        return administrator;
-    }
-
-    public static class AdminStatusBuilder {
+    public static class Builder {
         private User user;
         private boolean administrator;
 
-        private AdminStatusBuilder() {}
+        private Builder() {}
 
         public AdminStatus build() {
-            AdminStatus adminStatus = new AdminStatus();
-            adminStatus.user = this.user;
-            adminStatus.administrator = this.administrator;
-            return adminStatus;
+            return new AdminStatus(this.user, this.administrator);
         }
 
-        public AdminStatusBuilder user(User user) {
+        public Builder user(User user) {
             this.user = user;
             return this;
         }
 
-        public AdminStatusBuilder administrator(boolean administrator) {
+        public Builder administrator(boolean administrator) {
             this.administrator = administrator;
             return this;
         }

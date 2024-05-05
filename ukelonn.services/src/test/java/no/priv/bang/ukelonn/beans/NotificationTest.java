@@ -24,15 +24,15 @@ class NotificationTest {
     @Test
     void testGetters() {
         var bean = Notification.with().title("Ukelønn").message("150 kroner utbetalt til konto").build();
-        assertEquals("Ukelønn", bean.getTitle());
-        assertEquals("150 kroner utbetalt til konto", bean.getMessage());
+        assertEquals("Ukelønn", bean.title());
+        assertEquals("150 kroner utbetalt til konto", bean.message());
     }
 
     @Test
     void testNoArgsConstructor() {
         var bean = Notification.with().build();
-        assertEquals("", bean.getTitle());
-        assertEquals("", bean.getMessage());
+        assertEquals("", bean.title());
+        assertEquals("", bean.message());
     }
 
 }

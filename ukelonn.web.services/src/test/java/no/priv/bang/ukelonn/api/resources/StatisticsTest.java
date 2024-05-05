@@ -38,7 +38,7 @@ class StatisticsTest {
         var username = "jad";
         var earningsSumOverYear = resource.earningsSumOverYear(username);
         assertThat(earningsSumOverYear).isNotEmpty();
-        assertEquals(2016, earningsSumOverYear.get(0).getYear());
+        assertEquals(2016, earningsSumOverYear.get(0).year());
     }
 
     @Test
@@ -51,7 +51,7 @@ class StatisticsTest {
         var username = "jad";
         var earningsSumOverYear = resource.earningsSumOverMonth(username);
         assertThat(earningsSumOverYear).isNotEmpty();
-        assertEquals(2016, earningsSumOverYear.get(0).getYear());
+        assertEquals(2016, earningsSumOverYear.get(0).year());
     }
 
 }

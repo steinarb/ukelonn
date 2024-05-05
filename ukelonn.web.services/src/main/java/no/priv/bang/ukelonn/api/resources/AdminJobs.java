@@ -55,7 +55,7 @@ public class AdminJobs {
     @Consumes(MediaType.APPLICATION_JSON)
     public List<Transaction> delete(AccountWithJobIds accountWithJobIds) {
         try {
-            return ukelonn.deleteJobsFromAccount(accountWithJobIds.getAccount().getAccountId(), accountWithJobIds.getJobIds());
+            return ukelonn.deleteJobsFromAccount(accountWithJobIds.account().accountId(), accountWithJobIds.jobIds());
         } catch (Exception e) {
             String message = "REST endpoint /ukelonn/admin/jobs/delete failed with exception";
             logger.error(message, e);

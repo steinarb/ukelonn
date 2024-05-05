@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,70 +15,47 @@
  */
 package no.priv.bang.ukelonn.beans;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Date;
 
-public class PerformedTransaction {
+public record PerformedTransaction(Account account, int transactionTypeId, double transactionAmount, Date transactionDate) {
 
-    private Account account = null;
-    private int transactionTypeId;
-    private double transactionAmount;
-    private Date transactionDate;
-
-    private PerformedTransaction() {}
-
-    public Account getAccount() {
-        return account;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public int getTransactionTypeId() {
-        return transactionTypeId;
-    }
-
-    public double getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public static PerformedTransactionBuilder with() {
-        return new PerformedTransactionBuilder();
-    }
-
-    public static class PerformedTransactionBuilder {
+    public static class Builder {
         private Account account;
         private Integer transactionTypeId;
         private Double transactionAmount;
         private Date transactionDate;
 
-        private PerformedTransactionBuilder() {}
+        private Builder() {}
 
         public PerformedTransaction build() {
-            PerformedTransaction performedTransaction = new PerformedTransaction();
-            performedTransaction.account = this.account;
-            performedTransaction.transactionTypeId = this.transactionTypeId != null ? this.transactionTypeId : -1;
-            performedTransaction.transactionAmount = this.transactionAmount != null ? this.transactionAmount : 0.0;
-            performedTransaction.transactionDate = this.transactionDate != null ? this.transactionDate : new Date();
-            return performedTransaction;
+            var transactionTypeId = ofNullable(this.transactionTypeId).orElse(-1);
+            var transactionAmount = ofNullable(this.transactionAmount).orElse(0.0);
+            var transactionDate = ofNullable(this.transactionDate).orElse(new Date());
+            return new PerformedTransaction(this.account, transactionTypeId, transactionAmount, transactionDate);
         }
 
-        public PerformedTransactionBuilder account(Account account) {
+        public Builder account(Account account) {
             this.account = account;
             return this;
         }
 
-        public PerformedTransactionBuilder transactionTypeId(Integer transactionTypeId) {
+        public Builder transactionTypeId(Integer transactionTypeId) {
             this.transactionTypeId = transactionTypeId;
             return this;
         }
 
-        public PerformedTransactionBuilder transactionAmount(Double transactionAmount) {
+        public Builder transactionAmount(Double transactionAmount) {
             this.transactionAmount = transactionAmount;
             return this;
         }
 
-        public PerformedTransactionBuilder transactionDate(Date transactionDate) {
+        public Builder transactionDate(Date transactionDate) {
             this.transactionDate = transactionDate;
             return this;
         }

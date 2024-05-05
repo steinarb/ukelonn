@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.production;
 
-import java.sql.Connection;
+import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
+
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -35,7 +36,6 @@ import liquibase.changelog.ChangeLogParameters;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
@@ -62,7 +62,7 @@ public class ProductionLiquibaseRunner implements PreHook {
     @Override
     public void prepare(DataSource datasource) throws SQLException {
         try {
-            UkelonnLiquibase liquibase = createUkelonnLiquibase();
+            var liquibase = createUkelonnLiquibase();
             liquibase.createInitialSchema(datasource);
             insertInitialDataInDatabase(datasource);
             liquibase.updateSchema(datasource);
@@ -72,14 +72,14 @@ public class ProductionLiquibaseRunner implements PreHook {
     }
 
     boolean insertInitialDataInDatabase(DataSource datasource) {
-        try(Connection connect = datasource.getConnection()) {
+        try(var connect = datasource.getConnection()) {
             try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
                 Map<String, Object> scopeObjects = Map.of(
                     Scope.Attr.database.name(), database,
                     Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, initialDataResourceName())
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
                             .execute());

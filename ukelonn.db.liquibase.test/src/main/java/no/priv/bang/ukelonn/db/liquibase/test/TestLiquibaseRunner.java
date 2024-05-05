@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
+
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -41,9 +41,6 @@ import liquibase.changelog.RanChangeSet;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
-import liquibase.database.Database;
-import liquibase.database.DatabaseConnection;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
@@ -69,7 +66,7 @@ public class TestLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        var liquibase = new UkelonnLiquibase();
         try {
             liquibase.createInitialSchema(datasource);
             insertMockData(datasource);
@@ -80,14 +77,14 @@ public class TestLiquibaseRunner implements PreHook {
     }
 
     public boolean insertMockData(DataSource datasource) {
-        try(Connection connect = datasource.getConnection()) {
+        try(var connect = datasource.getConnection()) {
             try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
                 Map<String, Object> scopeObjects = Map.of(
                     Scope.Attr.database.name(), database,
                     Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, dummyDataResourceName())
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
                             .execute());
@@ -101,16 +98,16 @@ public class TestLiquibaseRunner implements PreHook {
     }
 
     public boolean rollbackMockData(DataSource datasource) {
-        try(Connection connect = datasource.getConnection()) {
-            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+        try(var connect = datasource.getConnection()) {
+            var databaseConnection = new JdbcConnection(connect);
             try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(PreparedStatement statement = connect.prepareStatement("delete from user_roles")) {
+                try(var statement = connect.prepareStatement("delete from user_roles")) {
                     statement.executeUpdate();
                 }
-                try(PreparedStatement statement = connect.prepareStatement("delete from users")) {
+                try(var statement = connect.prepareStatement("delete from users")) {
                     statement.executeUpdate();
                 }
-                Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
+                var liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
                 liquibase.rollback(3, "");
             }
             return true;
@@ -129,9 +126,9 @@ public class TestLiquibaseRunner implements PreHook {
      * @throws SQLException
      */
     List<RanChangeSet> getChangeLogHistory(DataSource datasource) throws DatabaseException, SQLException {
-        try(Connection connect = datasource.getConnection()) {
+        try(var connect = datasource.getConnection()) {
             try(var databaseConnection = new JdbcConnection(connect)) {
-                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
+                var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
                 var logHistoryService = Scope.getCurrentScope().getSingleton(ChangeLogHistoryServiceFactory.class).getChangeLogService(database);
                 return logHistoryService.getRanChangeSets();
             } catch (Exception e) {

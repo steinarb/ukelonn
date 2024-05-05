@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,27 @@ package no.priv.bang.ukelonn.beans;
 import java.util.Collections;
 import java.util.List;
 
-public class AccountWithJobIds {
-    Account account;
-    List<Integer> jobIds;
+public record AccountWithJobIds(Account account, List<Integer> jobIds) {
 
-    private AccountWithJobIds() {
-        // No-args constructor required by jackson
+    public static Builder with() {
+        return new Builder();
     }
 
-    public Account getAccount() {
-        return account;
-    }
-    public List<Integer> getJobIds() {
-        return jobIds;
-    }
-
-    public static AccountWithJobIdsBuilder with() {
-        return new AccountWithJobIdsBuilder();
-    }
-
-    public static class AccountWithJobIdsBuilder {
+    public static class Builder {
 
         private Account account;
         List<Integer> jobIds = Collections.emptyList();
 
         public AccountWithJobIds build() {
-            AccountWithJobIds accountWithJobIds = new AccountWithJobIds();
-            accountWithJobIds.account = this.account;
-            accountWithJobIds.jobIds = this.jobIds;
-            return accountWithJobIds;
+            return new AccountWithJobIds(this.account, this.jobIds);
         }
 
-        public AccountWithJobIdsBuilder account(Account account) {
+        public Builder account(Account account) {
             this.account = account;
             return this;
         }
 
-        public AccountWithJobIdsBuilder jobIds(List<Integer> jobIds) {
+        public Builder jobIds(List<Integer> jobIds) {
             this.jobIds = jobIds;
             return this;
         }

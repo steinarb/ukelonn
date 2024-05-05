@@ -32,7 +32,7 @@ class JobsTest {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
         resource.ukelonn = ukelonn;
-        var jobs = resource.jobs(account.getAccountId());
+        var jobs = resource.jobs(account.accountId());
         assertEquals(10, jobs.size());
     }
 

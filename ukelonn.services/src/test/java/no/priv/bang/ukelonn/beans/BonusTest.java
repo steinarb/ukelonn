@@ -43,27 +43,27 @@ class BonusTest {
             .startDate(startDate)
             .endDate(endDate)
             .build();
-        assertEquals(bonusId, bean.getBonusId());
-        assertTrue(bean.isEnabled());
-        assertEquals(iconurl, bean.getIconurl());
-        assertEquals(title, bean.getTitle());
-        assertEquals(description, bean.getDescription());
-        assertEquals(bonusFactor, bean.getBonusFactor(), 0.0);
-        assertEquals(startDate, bean.getStartDate());
-        assertEquals(endDate, bean.getEndDate());
+        assertEquals(bonusId, bean.bonusId());
+        assertTrue(bean.enabled());
+        assertEquals(iconurl, bean.iconurl());
+        assertEquals(title, bean.title());
+        assertEquals(description, bean.description());
+        assertEquals(bonusFactor, bean.bonusFactor(), 0.0);
+        assertEquals(startDate, bean.startDate());
+        assertEquals(endDate, bean.endDate());
     }
 
     @Test
     void testNoArgsConstructor() {
         var bean = Bonus.with().build();
-        assertEquals(0, bean.getBonusId());
-        assertFalse(bean.isEnabled());
-        assertNull(bean.getIconurl());
-        assertNull(bean.getTitle());
-        assertNull(bean.getDescription());
-        assertEquals(0.0, bean.getBonusFactor(), 0.0);
-        assertNull(bean.getStartDate());
-        assertNull(bean.getEndDate());
+        assertEquals(0, bean.bonusId());
+        assertFalse(bean.enabled());
+        assertNull(bean.iconurl());
+        assertNull(bean.title());
+        assertNull(bean.description());
+        assertEquals(0.0, bean.bonusFactor(), 0.0);
+        assertNull(bean.startDate());
+        assertNull(bean.endDate());
     }
 
 }

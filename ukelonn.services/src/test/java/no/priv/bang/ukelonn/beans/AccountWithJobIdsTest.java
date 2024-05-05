@@ -25,8 +25,8 @@ class AccountWithJobIdsTest {
     @Test
     void testDefaultValues() {
         var bean = AccountWithJobIds.with().build();
-        assertNull(bean.getAccount());
-        assertEquals(0, bean.getJobIds().size());
+        assertNull(bean.account());
+        assertEquals(0, bean.jobIds().size());
     }
 
     @Test
@@ -34,8 +34,8 @@ class AccountWithJobIdsTest {
         var account = Account.with().build();
         var ids = Arrays.asList(1, 2, 3, 4);
         var bean = AccountWithJobIds.with().account(account).jobIds(ids).build();
-        assertEquals(account, bean.getAccount());
-        assertEquals(4, bean.getJobIds().size());
+        assertEquals(account, bean.account());
+        assertEquals(4, bean.jobIds().size());
     }
 
 }

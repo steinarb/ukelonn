@@ -90,7 +90,7 @@ public class TestUtils {
     private static Map<Integer, TransactionType> transactionttypes = Collections.unmodifiableMap(
         Stream.of(jobtypes, paymenttypes)
         .flatMap(Collection::stream)
-        .collect(Collectors.toMap(TransactionType::getId, t -> t)));
+        .collect(Collectors.toMap(TransactionType::id, t -> t)));
     private static List<Transaction> jadJobs = Arrays.asList(
         Transaction.with().id(3).transactionType(jobtype1).transactionTime(new Date()).transactionAmount(45.0).paidOut(true).build(),
         Transaction.with().id(4).transactionType(jobtype2).transactionTime(new Date()).transactionAmount(35.0).paidOut(true).build(),
@@ -172,21 +172,11 @@ public class TestUtils {
 
     private static no.priv.bang.osgiservice.users.User copyUserForUserManagement(User user) {
         return no.priv.bang.osgiservice.users.User.with()
-            .userid(user.getUserId())
-            .username(user.getUsername())
-            .email(user.getEmail())
-            .firstname(user.getFirstname())
-            .lastname(user.getLastname())
-            .build();
-    }
-
-    public static Account copyAccount(Account account) {
-        return Account.with()
-            .accountid(account.getAccountId())
-            .username(account.getUsername())
-            .firstName(account.getFirstName())
-            .lastName(account.getLastName())
-            .balance(account.getBalance())
+            .userid(user.userId())
+            .username(user.username())
+            .email(user.email())
+            .firstname(user.firstname())
+            .lastname(user.firstname())
             .build();
     }
 
@@ -200,10 +190,10 @@ public class TestUtils {
 
     public static Transaction convertUpdatedTransaction(UpdatedTransaction transaction) {
         return Transaction.with()
-            .id(transaction.getId())
-            .transactionType(transactionttypes.get(transaction.getTransactionTypeId()))
-            .transactionTime(transaction.getTransactionTime())
-            .transactionAmount(transaction.getTransactionAmount())
+            .id(transaction.id())
+            .transactionType(transactionttypes.get(transaction.transactionTypeId()))
+            .transactionTime(transaction.transactionTime())
+            .transactionAmount(transaction.transactionAmount())
             .build();
     }
 
@@ -232,11 +222,11 @@ public class TestUtils {
     }
 
     public static Account getJadAccount() {
-        return copyAccount(jadAccount);
+        return Account.with(jadAccount).build();
     }
 
     public static Account getJodAccount() {
-        return copyAccount(jodAccount);
+        return Account.with(jodAccount).build();
     }
 
     public static List<Transaction> getJadJobs() {

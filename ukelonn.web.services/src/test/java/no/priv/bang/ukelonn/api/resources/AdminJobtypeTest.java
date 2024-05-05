@@ -49,7 +49,7 @@ class AdminJobtypeTest {
         // Find a jobtype to modify
         var jobtypes = getJobtypes();
         var jobtype = jobtypes.get(0);
-        var originalAmount = jobtype.getTransactionAmount();
+        var originalAmount = jobtype.transactionAmount();
 
         // Modify the amount of the jobtype
         jobtype = TransactionType.with(jobtype).transactionAmount(originalAmount + 1).build();
@@ -60,7 +60,7 @@ class AdminJobtypeTest {
 
         // Verify that the updated amount is larger than the original amount
         var updatedJobtype = updatedJobtypes.get(0);
-        assertThat(updatedJobtype.getTransactionAmount()).isGreaterThan(originalAmount);
+        assertThat(updatedJobtype.transactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test

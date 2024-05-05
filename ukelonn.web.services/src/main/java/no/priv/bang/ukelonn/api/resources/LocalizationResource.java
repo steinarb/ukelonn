@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class LocalizationResource extends ResourceBase {
         try {
             return ukelonn.displayTexts(Locale.forLanguageTag(locale.replace('_', '-')));
         } catch (MissingResourceException e) {
-            String message = String.format("Unknown locale '%s' used when fetching GUI texts", locale);
+            var message = String.format("Unknown locale '%s' used when fetching GUI texts", locale);
             logger.error(message);
             throw new WebApplicationException(response(500, message));
         }
