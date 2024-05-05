@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,17 +51,17 @@ public class Login {
 
     @GET
     public LoginResult loginStatus() {
-        Subject subject = SecurityUtils.getSubject();
+        var subject = SecurityUtils.getSubject();
         return createLoginResultFromSubject(subject);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public LoginResult doLogin(LoginCredentials credentials) {
-        Subject subject = SecurityUtils.getSubject();
-        var decodedPassword = new String(Base64.getDecoder().decode(credentials.getPassword()));
+        var subject = SecurityUtils.getSubject();
+        var decodedPassword = new String(Base64.getDecoder().decode(credentials.password()));
 
-        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), decodedPassword, true);
+        var token = new UsernamePasswordToken(credentials.username(), decodedPassword, true);
         try {
             subject.login(token);
 
@@ -101,7 +101,7 @@ public class Login {
                 roles =  new String[]{ "ukelonnadmin" };
             }
 
-            String username = (String) subject.getPrincipal();
+            var username = (String) subject.getPrincipal();
             return LoginResult.with()
                 .username(username)
                 .roles(roles)

@@ -32,7 +32,7 @@ class PaymentsTest {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
         resource.ukelonn = ukelonn;
-        var jobs = resource.payments(account.getAccountId());
+        var jobs = resource.payments(account.accountId());
         assertEquals(10, jobs.size());
     }
 

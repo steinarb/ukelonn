@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,58 +17,22 @@ package no.priv.bang.ukelonn.beans;
 
 import java.util.Date;
 
-import no.priv.bang.beans.immutable.Immutable;
+public record Bonus(
+    int bonusId,
+    boolean enabled,
+    String iconurl,
+    String title,
+    String description,
+    double bonusFactor,
+    Date startDate,
+    Date endDate)
+{
 
-public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
-    int bonusId;
-    private boolean enabled;
-    private String iconurl;
-    private String title;
-    private String description;
-    private double bonusFactor;
-    private Date startDate;
-    private Date endDate;
-
-    private Bonus() { }
-
-    public int getBonusId() {
-        return bonusId;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getIconurl() {
-        return iconurl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public double getBonusFactor() {
-        return bonusFactor;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public static BonusBuilder with() {
-        return new BonusBuilder();
-    }
-
-    public static class BonusBuilder {
-
+    public static class Builder {
         private int bonusId;
         private boolean enabled;
         private String iconurl;
@@ -78,57 +42,48 @@ public class Bonus extends Immutable { // NOSONAR Immutable handles added fields
         private Date startDate;
         private Date endDate;
 
-        private BonusBuilder() { }
+        private Builder() { }
 
         public Bonus build() {
-            Bonus bonus = new Bonus();
-            bonus.bonusId = this.bonusId;
-            bonus.enabled = this.enabled;
-            bonus.iconurl = this.iconurl;
-            bonus.title = this.title;
-            bonus.description = this.description;
-            bonus.bonusFactor = this.bonusFactor;
-            bonus.startDate = this.startDate;
-            bonus.endDate = this.endDate;
-            return bonus;
+            return new Bonus(bonusId, enabled, iconurl, title, description, bonusFactor, startDate, endDate);
         }
 
-        public BonusBuilder bonusId(int bonusId) {
+        public Builder bonusId(int bonusId) {
             this.bonusId = bonusId;
             return this;
         }
 
-        public BonusBuilder enabled(boolean enabled) {
+        public Builder enabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
 
-        public BonusBuilder iconurl(String iconurl) {
+        public Builder iconurl(String iconurl) {
             this.iconurl = iconurl;
             return this;
         }
 
-        public BonusBuilder title(String title) {
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public BonusBuilder description(String description) {
+        public Builder description(String description) {
             this.description = description;
             return this;
         }
 
-        public BonusBuilder bonusFactor(double bonusFactor) {
+        public Builder bonusFactor(double bonusFactor) {
             this.bonusFactor = bonusFactor;
             return this;
         }
 
-        public BonusBuilder startDate(Date startDate) {
+        public Builder startDate(Date startDate) {
             this.startDate = startDate;
             return this;
         }
 
-        public BonusBuilder endDate(Date endDate) {
+        public Builder endDate(Date endDate) {
             this.endDate = endDate;
             return this;
         }

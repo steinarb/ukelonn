@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,44 +15,32 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class SumYearMonth extends SumYear {
+public record SumYearMonth(double sum, int year, int month) {
 
-    private int month;
-
-    private SumYearMonth() {}
-
-    public int getMonth() {
-        return month;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static SumYearMonthBuilder with() {
-        return new SumYearMonthBuilder();
-    }
-
-    public static class SumYearMonthBuilder extends SumYearBuilder {
+    public static class Builder {
+        private double sum = 0.0;
+        private int year = -1;
         private int month = -1;
 
-        @Override
         public SumYearMonth build() {
-            SumYearMonth sumYearMonth = new SumYearMonth();
-            copyValues(sumYearMonth);
-            sumYearMonth.month = this.month;
-            return sumYearMonth;
+            return new SumYearMonth(sum, year, month);
         }
 
-        @Override
-        public SumYearMonthBuilder sum(double sum) {
-            super.sum(sum);
+        public Builder sum(double sum) {
+            this.sum = sum;
             return this;
         }
 
-        @Override
-        public SumYearMonthBuilder year(int year) {
-            super.year(year);
+        public Builder year(int year) {
+            this.year = year;
             return this;
         }
 
-        public SumYearMonthBuilder month(int month) {
+        public Builder month(int month) {
             this.month = month;
             return this;
         }

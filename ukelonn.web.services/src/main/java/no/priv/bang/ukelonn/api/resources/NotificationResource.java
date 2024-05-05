@@ -26,7 +26,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.authz.annotation.RequiresUser;
 
 import no.priv.bang.ukelonn.UkelonnService;
@@ -35,7 +34,6 @@ import no.priv.bang.ukelonn.beans.Notification;
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @RequiresUser
-@RequiresRoles("ukelonnadmin")
 public class NotificationResource {
 
     @Inject

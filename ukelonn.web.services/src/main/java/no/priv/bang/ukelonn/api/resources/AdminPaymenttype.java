@@ -57,7 +57,7 @@ public class AdminPaymenttype {
         try {
             return ukelonn.modifyPaymenttype(paymenttype);
         } catch (UkelonnException e) {
-            logger.error(String.format("REST endpoint /api/paymenttype/modify failed to modify payment type %d in the database", paymenttype.getId()), e);
+            logger.error(String.format("REST endpoint /api/paymenttype/modify failed to modify payment type %d in the database", paymenttype.id()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }
@@ -69,7 +69,7 @@ public class AdminPaymenttype {
         try {
             return ukelonn.createPaymenttype(paymenttype);
         } catch (UkelonnException e) {
-            logger.error(String.format("REST endpoint /api/jobtype/modify failed to create payment type \"%s\" in the database", paymenttype.getTransactionTypeName()), e);
+            logger.error(String.format("REST endpoint /api/jobtype/modify failed to create payment type \"%s\" in the database", paymenttype.transactionTypeName()), e);
             throw new InternalServerErrorException("See log for the cause of the problem");
         }
     }

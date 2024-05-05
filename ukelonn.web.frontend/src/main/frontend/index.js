@@ -12,6 +12,7 @@ import {
     DEFAULT_LOCALE_REQUEST,
     AVAILABLE_LOCALES_REQUEST,
 } from './actiontypes';
+import { push } from 'redux-first-history';
 import createUkelonnReducer from './reducers';
 import { rootSaga } from './sagas';
 const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('bundle.js'))[0].replace('/bundle.js', '');
@@ -35,6 +36,10 @@ sagaMiddleware.run(rootSaga);
 store.dispatch(INITIAL_LOGIN_STATE_REQUEST());
 store.dispatch(DEFAULT_LOCALE_REQUEST());
 store.dispatch(AVAILABLE_LOCALES_REQUEST());
+// Use redux to reload the current path to trigger the locationChange() saga
+const router = store.getState().router;
+const pathname = router.location.pathname;
+store.dispatch(push(pathname));
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {

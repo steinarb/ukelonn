@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,105 +17,69 @@ package no.priv.bang.ukelonn.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import no.priv.bang.beans.immutable.Immutable;
-
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Account extends Immutable { // NOSONAR Immutable handles added fields
-    private int accountId;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private double balance;
-
-    private Account() {
-        // No-arg constructor required by jackson
-    }
-
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
+public record Account(int accountId, String username,String firstName, String lastName, double balance) {
 
     public String getFullName() {
-        if (getFirstName() != null && getLastName() != null) {
-            return getFirstName() + " " + getLastName();
+        if (firstName() != null && lastName() != null) {
+            return firstName() + " " + lastName();
         }
 
-        if (getFirstName() != null) {
-            return getFirstName();
+        if (firstName() != null) {
+            return firstName();
         }
 
-        return getUsername();
+        return username();
     }
 
-    public double getBalance() {
-        return balance;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public static Builder with(Account account) {
+        var builder = new Builder();
+        builder.accountid = account.accountId;
+        builder.username = account.username;
+        builder.firstName = account.firstName;
+        builder.lastName = account.lastName;
+        builder.balance = account.balance;
+        return builder;
     }
 
-    @Override
-    public String toString() {
-        return "Account [getAccountId()=" + getAccountId() + ", getUsername()=" + getUsername() + ", getFirstName()=" + getFirstName() + ", getLastName()=" + getLastName() + "]";
-    }
-
-    public static AccountBuilder with() {
-        return new AccountBuilder();
-    }
-
-    public static class AccountBuilder {
+    public static class Builder {
         private int accountid;
         private String username;
         private String firstName;
         private String lastName;
         private double balance;
 
-        private AccountBuilder() {}
+        private Builder() {}
 
         public Account build() {
-            Account account = new Account();
-            account.accountId = this.accountid;
-            account.username = this.username;
-            account.firstName = this.firstName;
-            account.lastName = this.lastName;
-            account.balance = this.balance;
-            return account;
+            return new Account(this.accountid, this.username, this.firstName, this.lastName, this.balance);
         }
 
-        public AccountBuilder accountid(int accountid) {
+        public Builder accountid(int accountid) {
             this.accountid = accountid;
             return this;
         }
 
-        public AccountBuilder username(String username) {
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
 
-        public AccountBuilder firstName(String firstName) {
+        public Builder firstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public AccountBuilder lastName(String lastName) {
+        public Builder lastName(String lastName) {
             this.lastName = lastName;
             return this;
         }
 
-        public AccountBuilder balance(double balance) {
+        public Builder balance(double balance) {
             this.balance = balance;
             return this;
         }

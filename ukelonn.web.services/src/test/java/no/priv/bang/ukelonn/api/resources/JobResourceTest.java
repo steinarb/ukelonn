@@ -57,12 +57,12 @@ class JobResourceTest extends ServletTestBase {
     void testRegisterJob() throws Exception {
         // Create the request
         var account = getJadAccount();
-        var originalBalance = account.getBalance();
+        var originalBalance = account.balance();
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
 
@@ -84,8 +84,7 @@ class JobResourceTest extends ServletTestBase {
 
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
-        var accountWithUpdatedBalance = copyAccount(account);
-        accountWithUpdatedBalance.setBalance(account.getBalance() + job.getTransactionAmount());
+        var accountWithUpdatedBalance = Account.with(account).balance(account.balance() + job.transactionAmount()).build();
         when(ukelonn.registerPerformedJob(any())).thenReturn(accountWithUpdatedBalance);
         resource.ukelonn = ukelonn;
 
@@ -93,8 +92,8 @@ class JobResourceTest extends ServletTestBase {
         var result = resource.doRegisterJob(job);
 
         // Check the response
-        assertEquals("jad", result.getUsername());
-        assertThat(result.getBalance()).isGreaterThan(originalBalance);
+        assertEquals("jad", result.username());
+        assertThat(result.balance()).isGreaterThan(originalBalance);
     }
 
     /**
@@ -110,8 +109,8 @@ class JobResourceTest extends ServletTestBase {
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
 
@@ -149,12 +148,12 @@ class JobResourceTest extends ServletTestBase {
     void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
         // Create the request
         var account = getJadAccount();
-        var originalBalance = account.getBalance();
+        var originalBalance = account.balance();
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
 
@@ -176,8 +175,7 @@ class JobResourceTest extends ServletTestBase {
 
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
-        var accountWithUpdatedBalance = copyAccount(account);
-        accountWithUpdatedBalance.setBalance(account.getBalance() + job.getTransactionAmount());
+        var accountWithUpdatedBalance = Account.with(account).balance(account.balance() + job.transactionAmount()).build();
         when(ukelonn.registerPerformedJob(any())).thenReturn(accountWithUpdatedBalance);
         resource.ukelonn = ukelonn;
 
@@ -185,8 +183,8 @@ class JobResourceTest extends ServletTestBase {
         var result = resource.doRegisterJob(job);
 
         // Check the response
-        assertEquals("jad", result.getUsername());
-        assertThat(result.getBalance()).isGreaterThan(originalBalance);
+        assertEquals("jad", result.username());
+        assertThat(result.balance()).isGreaterThan(originalBalance);
     }
 
     @Test
@@ -196,8 +194,8 @@ class JobResourceTest extends ServletTestBase {
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
 
@@ -240,8 +238,8 @@ class JobResourceTest extends ServletTestBase {
         var jobTypes = getJobtypes();
         var job = PerformedTransaction.with()
             .account(account)
-            .transactionTypeId(jobTypes.get(0).getId())
-            .transactionAmount(jobTypes.get(0).getTransactionAmount())
+            .transactionTypeId(jobTypes.get(0).id())
+            .transactionAmount(jobTypes.get(0).transactionAmount())
             .transactionDate(new Date())
             .build();
 
@@ -276,12 +274,12 @@ class JobResourceTest extends ServletTestBase {
 
         var account = getJadAccount();
         var job = getJadJobs().get(0);
-        var jobId = job.getId();
+        var jobId = job.id();
 
         // Save initial values of the job for comparison later
-        var originalTransactionTypeId = job.getTransactionType().getId();
-        var originalTransactionTime = job.getTransactionTime();
-        var originalTransactionAmount = job.getTransactionAmount();
+        var originalTransactionTypeId = job.transactionType().id();
+        var originalTransactionTime = job.transactionTime();
+        var originalTransactionAmount = job.transactionAmount();
 
         // Find a different job type that has a different amount
         var newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
@@ -290,20 +288,20 @@ class JobResourceTest extends ServletTestBase {
         var now = new Date();
         var editedJob = UpdatedTransaction.with()
             .id(jobId)
-            .accountId(account.getAccountId())
-            .transactionTypeId(newJobType.getId())
+            .accountId(account.accountId())
+            .transactionTypeId(newJobType.id())
             .transactionTime(now)
-            .transactionAmount(newJobType.getTransactionAmount())
+            .transactionAmount(newJobType.transactionAmount())
             .build();
         when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
 
         var updatedJobs = resource.doUpdateJob(editedJob);
 
-        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.getId() == job.getId()).collect(Collectors.toList()).get(0);
+        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).collect(Collectors.toList()).get(0);
 
-        assertEquals(editedJob.getTransactionTypeId(), editedJobFromDatabase.getTransactionType().getId().intValue());
-        assertThat(editedJobFromDatabase.getTransactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
-        assertEquals(editedJob.getTransactionAmount(), editedJobFromDatabase.getTransactionAmount(), 0.0);
+        assertEquals(editedJob.transactionTypeId(), editedJobFromDatabase.transactionType().id());
+        assertThat(editedJobFromDatabase.transactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
+        assertEquals(editedJob.transactionAmount(), editedJobFromDatabase.transactionAmount(), 0.0);
     }
 
     @Test
@@ -329,7 +327,7 @@ class JobResourceTest extends ServletTestBase {
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->!t.getId().equals(transactionTypeId)).filter(t->t.getTransactionAmount() != amount).collect(Collectors.toList()).get(0);
+        return getJobtypes().stream().filter(t->!(t.id() == transactionTypeId)).filter(t->t.transactionAmount() != amount).collect(Collectors.toList()).get(0);
     }
 
 }

@@ -26,9 +26,9 @@ class PerformedTransactionTest {
     @Test
     void testNoArgsConstructor() {
         var bean = PerformedTransaction.with().build();
-        assertNull(bean.getAccount());
-        assertEquals(-1, bean.getTransactionTypeId());
-        assertEquals(0.0, bean.getTransactionAmount(), 0.0);
+        assertNull(bean.account());
+        assertEquals(-1, bean.transactionTypeId());
+        assertEquals(0.0, bean.transactionAmount(), 0.0);
     }
 
     @Test
@@ -41,10 +41,10 @@ class PerformedTransactionTest {
             .transactionAmount(3.14)
             .transactionDate(now)
             .build();
-        assertEquals(account, bean.getAccount());
-        assertEquals(1, bean.getTransactionTypeId());
-        assertEquals(3.14, bean.getTransactionAmount(), 0.0);
-        assertEquals(now, bean.getTransactionDate());
+        assertEquals(account, bean.account());
+        assertEquals(1, bean.transactionTypeId());
+        assertEquals(3.14, bean.transactionAmount(), 0.0);
+        assertEquals(now, bean.transactionDate());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,43 +15,28 @@
  */
 package no.priv.bang.ukelonn.api.beans;
 
-public class LoginCredentials {
-    private String username;
-    private String password;
+public record LoginCredentials(String username, String password) {
 
-    private LoginCredentials() {}
-
-    public static LoginCredentialsBuilder with() {
-        return new LoginCredentialsBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public static class LoginCredentialsBuilder {
+    public static class Builder {
         private String username;
         private String password;
 
-        private LoginCredentialsBuilder() {}
+        private Builder() {}
 
         public LoginCredentials build() {
-            LoginCredentials loginCredentials = new LoginCredentials();
-            loginCredentials.username = this.username;
-            loginCredentials.password = this.password;
-            return loginCredentials;
+            return new LoginCredentials(this.username, this.password);
         }
 
-        public LoginCredentialsBuilder username(String username) {
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
 
-        public LoginCredentialsBuilder password(String password) {
+        public Builder password(String password) {
             this.password = password;
             return this;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,60 +15,42 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class PasswordsWithUser {
+public record PasswordsWithUser(User user, String password, String password2) {
 
-    private User user;
-    private String password;
-    private String password2;
-
-    private PasswordsWithUser() {}
-
-    public User getUser() {
-        return user;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public static Builder with(PasswordsWithUser passwordsWithUser) {
+        var builder = new Builder();
+        builder.user = passwordsWithUser.user();
+        builder.password = passwordsWithUser.password();
+        builder.password2 = passwordsWithUser.password2;
+        return builder;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getPassword2() {
-        return password2;
-    }
-
-    public static PasswordsWithUserBuilder with() {
-        return new PasswordsWithUserBuilder();
-    }
-
-    public static class PasswordsWithUserBuilder {
+    public static class Builder {
         private User user;
         private String password;
         private String password2;
 
-        private PasswordsWithUserBuilder() {}
+        private Builder() {}
 
         public PasswordsWithUser build() {
-            PasswordsWithUser passwords = new PasswordsWithUser();
-            passwords.user = this.user;
-            passwords.password = this.password;
-            passwords.password2 = this.password2;
-            return passwords;
+            return new PasswordsWithUser(this.user, this.password, this.password2);
         }
 
-        public PasswordsWithUserBuilder user(User user) {
+        public Builder user(User user) {
             this.user = user;
             return this;
         }
 
-        public PasswordsWithUserBuilder password(String password) {
+        public Builder password(String password) {
             this.password = password;
             return this;
         }
 
-        public PasswordsWithUserBuilder password2(String password2) {
+        public Builder password2(String password2) {
             this.password2 = password2;
             return this;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,44 +15,28 @@
  */
 package no.priv.bang.ukelonn.beans;
 
-public class Notification {
+public record Notification(String title, String message) {
 
-    private String title;
-    private String message;
-
-    private Notification() {}
-
-    public String getTitle() {
-        return title;
+    public static Builder with() {
+        return new Builder();
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public static NotificationBuilder with() {
-        return new NotificationBuilder();
-    }
-
-    public static class NotificationBuilder {
+    public static class Builder {
         private String title = "";
         private String message = "";
 
-        private NotificationBuilder() {}
+        private Builder() {}
 
         public Notification build() {
-            Notification notification = new Notification();
-            notification.title = this.title;
-            notification.message = this.message;
-            return notification;
+            return new Notification(this.title, this.message);
         }
 
-        public NotificationBuilder title(String title) {
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public NotificationBuilder message(String message) {
+        public Builder message(String message) {
             this.message = message;
             return this;
         }

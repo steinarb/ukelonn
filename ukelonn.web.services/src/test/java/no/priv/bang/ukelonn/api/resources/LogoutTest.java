@@ -53,8 +53,8 @@ class LogoutTest extends ServletTestBase {
         var result = resource.doLogout();
 
         // Check the response
-        assertEquals(0, result.getRoles().length);
-        assertEquals("", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("", result.errorMessage());
     }
 
     /**
@@ -80,7 +80,7 @@ class LogoutTest extends ServletTestBase {
         var result = resource.doLogout();
 
         // Check the response
-        assertEquals(0, result.getRoles().length);
-        assertEquals("", result.getErrorMessage());
+        assertEquals(0, result.roles().length);
+        assertEquals("", result.errorMessage());
     }
 }

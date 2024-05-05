@@ -46,7 +46,6 @@ import liquibase.changelog.ChangeLogParameters;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
@@ -55,6 +54,8 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
+
+import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
 import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 
 class TestLiquibaseRunnerTest {
@@ -416,7 +417,7 @@ class TestLiquibaseRunnerTest {
                     Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "sql/data/db-changelog.xml")
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
                             .execute());

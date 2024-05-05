@@ -33,21 +33,21 @@ class UpdatedTransactionTest {
             .transactionTime(now)
             .transactionAmount(3.14)
             .build();
-        assertEquals(31, bean.getId());
-        assertEquals(2, bean.getAccountId());
-        assertEquals(2, bean.getTransactionTypeId());
-        assertEquals(now, bean.getTransactionTime());
-        assertEquals(3.14, bean.getTransactionAmount(), 0.0);
+        assertEquals(31, bean.id());
+        assertEquals(2, bean.accountId());
+        assertEquals(2, bean.transactionTypeId());
+        assertEquals(now, bean.transactionTime());
+        assertEquals(3.14, bean.transactionAmount(), 0.0);
     }
 
     @Test
     void testNoArgsConstructor() {
         var bean = UpdatedTransaction.with().build();
-        assertEquals(-1, bean.getId());
-        assertEquals(-1, bean.getTransactionTypeId());
-        assertEquals(-1, bean.getTransactionTypeId());
-        assertNull(bean.getTransactionTime());
-        assertEquals(0.0, bean.getTransactionAmount(), 0.0);
+        assertEquals(-1, bean.id());
+        assertEquals(-1, bean.transactionTypeId());
+        assertEquals(-1, bean.transactionTypeId());
+        assertNull(bean.transactionTime());
+        assertEquals(0.0, bean.transactionAmount(), 0.0);
     }
 
 }

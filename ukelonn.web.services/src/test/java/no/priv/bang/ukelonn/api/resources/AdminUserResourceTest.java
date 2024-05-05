@@ -208,8 +208,8 @@ class AdminUserResourceTest {
             .build();
 
         var status = resource.adminStatus(user);
-        assertEquals(user, status.getUser());
-        assertTrue(status.isAdministrator());
+        assertEquals(user, status.user());
+        assertTrue(status.administrator());
     }
 
     @Test
@@ -233,8 +233,8 @@ class AdminUserResourceTest {
             .lastname(newLastname)
             .build();
         var status = resource.adminStatus(user);
-        assertEquals(user, status.getUser());
-        assertFalse(status.isAdministrator());
+        assertEquals(user, status.user());
+        assertFalse(status.administrator());
     }
 
     @Test
@@ -261,8 +261,8 @@ class AdminUserResourceTest {
 
         var status = AdminStatus.with().user(user).administrator(true).build();
         var changedStatus = resource.changeAdminStatus(status);
-        assertEquals(user, changedStatus.getUser());
-        assertTrue(changedStatus.isAdministrator());
+        assertEquals(user, changedStatus.user());
+        assertTrue(changedStatus.administrator());
     }
 
     @Test
@@ -289,8 +289,8 @@ class AdminUserResourceTest {
 
         var status = AdminStatus.with().user(user).administrator(false).build();
         var changedStatus = resource.changeAdminStatus(status);
-        assertEquals(user, changedStatus.getUser());
-        assertFalse(changedStatus.isAdministrator());
+        assertEquals(user, changedStatus.user());
+        assertFalse(changedStatus.administrator());
     }
 
     @Test
@@ -317,8 +317,8 @@ class AdminUserResourceTest {
 
         var status = AdminStatus.with().user(user).administrator(true).build();
         var changedStatus = resource.changeAdminStatus(status);
-        assertEquals(user, changedStatus.getUser());
-        assertTrue(changedStatus.isAdministrator());
+        assertEquals(user, changedStatus.user());
+        assertTrue(changedStatus.administrator());
     }
 
     @Test
@@ -343,8 +343,8 @@ class AdminUserResourceTest {
 
         var status = AdminStatus.with().user(user).administrator(true).build();
         var changedStatus = resource.changeAdminStatus(status);
-        assertEquals(user, changedStatus.getUser());
-        assertFalse(changedStatus.isAdministrator());
+        assertEquals(user, changedStatus.user());
+        assertFalse(changedStatus.administrator());
     }
 
     @Test

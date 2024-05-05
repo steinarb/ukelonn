@@ -49,7 +49,7 @@ class AdminPaymenttypeTest {
         // Find a payment type to modify
         var paymenttypes = getPaymenttypes();
         var paymenttype = paymenttypes.get(1);
-        var originalAmount = paymenttype.getTransactionAmount();
+        var originalAmount = paymenttype.transactionAmount();
 
         // Modify the amount of the payment type
         paymenttype = TransactionType.with(paymenttype).transactionAmount(originalAmount + 1).build();
@@ -60,7 +60,7 @@ class AdminPaymenttypeTest {
 
         // Verify that the updated amount is larger than the original amount
         var updatedPaymenttype = updatedPaymenttypes.get(0);
-        assertThat(updatedPaymenttype.getTransactionAmount()).isGreaterThan(originalAmount);
+        assertThat(updatedPaymenttype.transactionAmount()).isGreaterThan(originalAmount);
     }
 
     @Test

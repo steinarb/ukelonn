@@ -38,12 +38,12 @@ class PasswordsWithUserTest {
         var password = "zecret";
         var password2 = "zecret2";
         var passwords = PasswordsWithUser.with().user(user).password(password).password2(password2).build();
-        assertEquals("jad", passwords.getUser().getUsername());
-        assertEquals(password, passwords.getPassword());
-        assertEquals(password2, passwords.getPassword2());
+        assertEquals("jad", passwords.user().username());
+        assertEquals(password, passwords.password());
+        assertEquals(password2, passwords.password2());
         var user2 = User.with().build();
-        passwords.setUser(user2);
-        assertEquals(user2, passwords.getUser());
+        passwords = PasswordsWithUser.with(passwords).user(user2).build();
+        assertEquals(user2, passwords.user());
     }
 
 }
