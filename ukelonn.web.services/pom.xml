@@ -82,11 +82,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.beans</groupId>
-            <artifactId>beans.immutable</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <scope>test</scope>
