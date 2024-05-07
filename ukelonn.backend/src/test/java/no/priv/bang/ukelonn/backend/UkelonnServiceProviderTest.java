@@ -285,11 +285,11 @@ class UkelonnServiceProviderTest {
 
         // Create a user in the database, and retrieve it (to get the user id)
         var updatedUsers = usermanagement.addUser(passwords);
-        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
+        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.username())).findFirst().get();
 
         // Add a new account to the database
         var userWithUserId = User.with()
-            .userId(createdUser.getUserid())
+            .userId(createdUser.userid())
             .username(newUsername)
             .email(newEmailaddress)
             .firstname(newFirstname)
@@ -333,11 +333,11 @@ class UkelonnServiceProviderTest {
         var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
         // Create a user in the database, and retrieve it (to get the user id)
         var updatedUsers = usermanagement.addUser(passwords);
-        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
+        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.username())).findFirst().get();
 
         // Add a new account to the database and expect to fail
         var userWithUserId = User.with()
-            .userId(createdUser.getUserid())
+            .userId(createdUser.userid())
             .username(newUsername)
             .email(newEmailaddress)
             .firstname(newFirstname)
@@ -1514,7 +1514,7 @@ class UkelonnServiceProviderTest {
 
         var role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
         assertThat(role).isNotEmpty();
-        assertEquals(UKELONNADMIN_ROLE, role.get().getRolename());
+        assertEquals(UKELONNADMIN_ROLE, role.get().rolename());
     }
 
     @Test
@@ -1529,7 +1529,7 @@ class UkelonnServiceProviderTest {
 
         var role = ukelonn.addRoleIfNotPresent(UKELONNADMIN_ROLE, "Administrator av applikasjonen ukelonn");
         assertThat(role).isNotEmpty();
-        assertEquals(UKELONNADMIN_ROLE, role.get().getRolename());
+        assertEquals(UKELONNADMIN_ROLE, role.get().rolename());
     }
 
     @Test
