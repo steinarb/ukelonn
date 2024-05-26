@@ -21,6 +21,7 @@ import org.apache.shiro.config.Ini;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.web.env.IniWebEnvironment;
+import org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
@@ -66,6 +67,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
     @Activate
     public void activate() {
         var environment = new IniWebEnvironment();
+        environment.getObjects().put("authc", new PassThruAuthenticationFilter());
         environment.setIni(INI_FILE);
         environment.setServletContext(getServletContext());
         environment.init();
