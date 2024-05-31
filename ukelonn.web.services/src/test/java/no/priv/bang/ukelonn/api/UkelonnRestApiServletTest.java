@@ -1287,10 +1287,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Verify that the first user has the modified values
         var updatedUsers = mapper.readValue(getBinaryContent(response), new TypeReference<List<User>>() {});
         var firstUser = updatedUsers.get(userToModify);
-        assertEquals(modifiedUsername, firstUser.getUsername());
-        assertEquals(modifiedEmailaddress, firstUser.getEmail());
-        assertEquals(modifiedFirstname, firstUser.getFirstname());
-        assertEquals(modifiedLastname, firstUser.getLastname());
+        assertEquals(modifiedUsername, firstUser.username());
+        assertEquals(modifiedEmailaddress, firstUser.email());
+        assertEquals(modifiedFirstname, firstUser.firstname());
+        assertEquals(modifiedLastname, firstUser.lastname());
     }
 
     @Test
@@ -1347,10 +1347,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Verify that the last user has the expected values
         assertThat(updatedUsers).hasSizeGreaterThan(originalUserCount);
         var lastUser = updatedUsers.get(updatedUsers.size() - 1);
-        assertEquals(newUsername, lastUser.getUsername());
-        assertEquals(newEmailaddress, lastUser.getEmail());
-        assertEquals(newFirstname, lastUser.getFirstname());
-        assertEquals(newLastname, lastUser.getLastname());
+        assertEquals(newUsername, lastUser.username());
+        assertEquals(newEmailaddress, lastUser.email());
+        assertEquals(newFirstname, lastUser.firstname());
+        assertEquals(newLastname, lastUser.lastname());
     }
 
     @Test
