@@ -69,7 +69,7 @@ public class AdminUserResource {
         try {
             return useradmin.modifyUser(user);
         } catch (AuthserviceException e) {
-            logger.error(String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.getUserid()));
+            logger.error(String.format("REST endpoint /ukelonn/api/admin/user/modify failed to modify user %d", user.userid()));
             throw new InternalServerErrorException("See log for details");
         }
     }
@@ -82,18 +82,18 @@ public class AdminUserResource {
             var users = useradmin.addUser(passwords);
 
             // Create an account with a balance for the new user
-            var username = passwords.getUser().getUsername();
-            var createdUser = users.stream().filter(u -> username.equals(u.getUsername())).findFirst();
+            var username = passwords.user().username();
+            var createdUser = users.stream().filter(u -> username.equals(u.username())).findFirst();
             if (!createdUser.isPresent()) {
                 throw new UkelonnException(String.format("Found no user matching %s in the users table", username));
             }
 
             var user = no.priv.bang.ukelonn.beans.User.with()
-                .userId(createdUser.get().getUserid())
+                .userId(createdUser.get().userid())
                 .username(username)
-                .email(createdUser.get().getEmail())
-                .firstname(createdUser.get().getFirstname())
-                .lastname(createdUser.get().getLastname())
+                .email(createdUser.get().email())
+                .firstname(createdUser.get().firstname())
+                .lastname(createdUser.get().lastname())
                 .build();
             ukelonn.addAccount(user);
 
@@ -138,7 +138,7 @@ public class AdminUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public AdminStatus changeAdminStatus(AdminStatus status) {
         if (status.administrator() != userIsAdministrator(status.user())) {
-            var ukelonnadmin = useradmin.getRoles().stream().filter(r -> UKELONNADMIN_ROLE.equals(r.getRolename())).findFirst();
+            var ukelonnadmin = useradmin.getRoles().stream().filter(r -> UKELONNADMIN_ROLE.equals(r.rolename())).findFirst();
             if (!ukelonnadmin.isPresent()) {
                 // If no ukelonn admin role is present in the auth service
                 // administrator will always be false
@@ -164,7 +164,7 @@ public class AdminUserResource {
     }
 
     boolean userIsAdministrator(User user) {
-        return useradmin.getRolesForUser(user.getUsername()).stream().anyMatch(r -> UKELONNADMIN_ROLE.equals(r.getRolename()));
+        return useradmin.getRolesForUser(user.username()).stream().anyMatch(r -> UKELONNADMIN_ROLE.equals(r.rolename()));
     }
 
 }

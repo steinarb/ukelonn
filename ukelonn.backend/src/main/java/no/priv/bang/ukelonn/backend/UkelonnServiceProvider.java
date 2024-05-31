@@ -724,8 +724,8 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             return Account.with()
                 .accountid(results.getInt("account_id"))
                 .username(username)
-                .firstName(user.getFirstname())
-                .lastName(user.getLastname())
+                .firstName(user.firstname())
+                .lastName(user.lastname())
                 .balance(results.getDouble("balance"))
                 .build();
         } catch (AuthserviceException e) {
@@ -746,10 +746,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
 
     Optional<Role> addRoleIfNotPresent(String rolename, String description) {
         var roles = useradmin.getRoles();
-        var existingRole = roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
+        var existingRole = roles.stream().filter(r -> rolename.equals(r.rolename())).findFirst();
         if (!existingRole.isPresent()) {
             roles = useradmin.addRole(Role.with().rolename(rolename).description(description).build());
-            return roles.stream().filter(r -> rolename.equals(r.getRolename())).findFirst();
+            return roles.stream().filter(r -> rolename.equals(r.rolename())).findFirst();
         }
 
         return existingRole;

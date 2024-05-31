@@ -78,10 +78,10 @@ class AdminUserResourceTest {
 
         // Verify that the first user has the modified values
         var firstUser = updatedUsers.get(0);
-        assertEquals(modifiedUsername, firstUser.getUsername());
-        assertEquals(modifiedEmailaddress, firstUser.getEmail());
-        assertEquals(modifiedFirstname, firstUser.getFirstname());
-        assertEquals(modifiedLastname, firstUser.getLastname());
+        assertEquals(modifiedUsername, firstUser.username());
+        assertEquals(modifiedEmailaddress, firstUser.email());
+        assertEquals(modifiedFirstname, firstUser.firstname());
+        assertEquals(modifiedLastname, firstUser.lastname());
     }
 
     @Test
@@ -157,10 +157,10 @@ class AdminUserResourceTest {
         // Verify that the modified user has the modified values
         assertThat(updatedUsers).hasSizeGreaterThan(originalUserCount);
         var lastUser = updatedUsers.get(updatedUsers.size() - 1);
-        assertEquals(newUsername, lastUser.getUsername());
-        assertEquals(newEmailaddress, lastUser.getEmail());
-        assertEquals(newFirstname, lastUser.getFirstname());
-        assertEquals(newLastname, lastUser.getLastname());
+        assertEquals(newUsername, lastUser.username());
+        assertEquals(newEmailaddress, lastUser.email());
+        assertEquals(newFirstname, lastUser.firstname());
+        assertEquals(newLastname, lastUser.lastname());
     }
 
     @Test
