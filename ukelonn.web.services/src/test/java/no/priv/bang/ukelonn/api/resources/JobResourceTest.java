@@ -26,8 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -297,7 +295,7 @@ class JobResourceTest extends ServletTestBase {
 
         var updatedJobs = resource.doUpdateJob(editedJob);
 
-        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).collect(Collectors.toList()).get(0);
+        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).toList().get(0);
 
         assertEquals(editedJob.transactionTypeId(), editedJobFromDatabase.transactionType().id());
         assertThat(editedJobFromDatabase.transactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
@@ -327,7 +325,7 @@ class JobResourceTest extends ServletTestBase {
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->!(t.id() == transactionTypeId)).filter(t->t.transactionAmount() != amount).collect(Collectors.toList()).get(0);
+        return getJobtypes().stream().filter(t->!(t.id() == transactionTypeId)).filter(t->t.transactionAmount() != amount).toList().get(0);
     }
 
 }
