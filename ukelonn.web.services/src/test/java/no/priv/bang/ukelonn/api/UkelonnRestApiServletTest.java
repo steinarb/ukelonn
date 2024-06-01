@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.ServletConfig;
@@ -196,7 +195,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Unknown account", result.errorMessage());
     }
 
@@ -231,7 +230,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Wrong password", result.errorMessage());
     }
 
@@ -336,7 +335,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
@@ -366,7 +365,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
@@ -401,7 +400,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
@@ -928,7 +927,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals(200, response.getStatus());
         assertEquals("application/json", response.getContentType());
         var updatedJobs = mapper.readValue(getBinaryContent(response), new TypeReference<List<Transaction>>() { });
-        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).collect(Collectors.toList()).get(0);
+        var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).toList().get(0);
 
         assertEquals(editedJob.transactionTypeId(), editedJobFromDatabase.transactionType().id());
         assertThat(editedJobFromDatabase.transactionTime().getTime()).isGreaterThan(job.transactionTime().getTime());
@@ -1105,7 +1104,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
-        var updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).collect(Collectors.toList());
+        var updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).toList();
         when(ukelonn.createJobtype(any())).thenReturn(updatedjobtypes);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
@@ -1191,7 +1190,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
-        var updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).collect(Collectors.toList());
+        var updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).toList();
         when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
@@ -1326,7 +1325,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var logservice = new MockLogService();
         var ukelonn = mock(UkelonnService.class);
         var useradmin = mock(UserManagementService.class);
-        var updatedusers = Stream.concat(getUsersForUserManagement().stream(), Stream.of(user)).collect(Collectors.toList());
+        var updatedusers = Stream.concat(getUsersForUserManagement().stream(), Stream.of(user)).toList();
         when(useradmin.addUser(any())).thenReturn(updatedusers);
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
@@ -1855,7 +1854,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testAvailableLocales() throws Exception {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
-        when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
+        when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).toList());
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
@@ -1931,7 +1930,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).collect(Collectors.toList()).get(0);
+        return getJobtypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).toList().get(0);
     }
 
 

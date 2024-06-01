@@ -15,6 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -53,7 +54,7 @@ class LogoutTest extends ServletTestBase {
         var result = resource.doLogout();
 
         // Check the response
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
@@ -80,7 +81,7 @@ class LogoutTest extends ServletTestBase {
         var result = resource.doLogout();
 
         // Check the response
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 }

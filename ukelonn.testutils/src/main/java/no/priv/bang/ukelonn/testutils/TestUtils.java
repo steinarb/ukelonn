@@ -185,7 +185,7 @@ public class TestUtils {
     }
 
     public static List<TransactionType> copyTransactiontypes(List<TransactionType> transactiontypes) {
-        return transactiontypes.stream().map(transactiontype -> copyTransactionType(transactiontype)).collect(Collectors.toList());
+        return transactiontypes.stream().map(transactiontype -> copyTransactionType(transactiontype)).toList();
     }
 
     public static Transaction convertUpdatedTransaction(UpdatedTransaction transaction) {
@@ -202,7 +202,7 @@ public class TestUtils {
     }
 
     public static List<Transaction> copyTransactions(List<Transaction> transactions) {
-        return transactions.stream().map(transaction -> copyTransaction(transaction)).collect(Collectors.toList());
+        return transactions.stream().map(transaction -> copyTransaction(transaction)).toList();
     }
 
     public static List<TransactionType> getJobtypes() {
@@ -242,7 +242,7 @@ public class TestUtils {
     }
 
     public static List<Transaction> getFirstJodJob() {
-        return jodJobs.stream().limit(1).collect(Collectors.toList());
+        return jodJobs.stream().limit(1).toList();
     }
 
     public static List<Account> getDummyAccounts() {

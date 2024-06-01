@@ -15,7 +15,11 @@
  */
 package no.priv.bang.ukelonn.api.beans;
 
-public record LoginResult(String username, String[] roles, String errorMessage) {
+import static java.util.Collections.*;
+
+import java.util.List;
+
+public record LoginResult(String username, List<String> roles, String errorMessage) {
 
     public static Builder with() {
         return new Builder();
@@ -23,7 +27,7 @@ public record LoginResult(String username, String[] roles, String errorMessage) 
 
     public static class Builder {
         private String username = "";
-        private String[] roles = {};
+        private List<String> roles = emptyList();
         private String errorMessage = "";
 
         private Builder() {}
@@ -37,7 +41,7 @@ public record LoginResult(String username, String[] roles, String errorMessage) 
             return this;
         }
 
-        public Builder roles(String[] roles) {
+        public Builder roles(List<String> roles) {
             this.roles = roles;
             return this;
         }
