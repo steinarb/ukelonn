@@ -117,7 +117,7 @@ class LoginTest extends ServletTestBase {
         LoginResult result = resource.doLogin(credentials);
 
         // Check the response
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Unknown account", result.errorMessage());
     }
 
@@ -142,7 +142,7 @@ class LoginTest extends ServletTestBase {
         LoginResult result = resource.doLogin(credentials);
 
         // Check the response
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Wrong password", result.errorMessage());
     }
 
@@ -166,7 +166,7 @@ class LoginTest extends ServletTestBase {
             createSubjectAndBindItToThread(request, response);
             LoginResult result = resource.doLogin(credentials);
             // Check the response
-            assertEquals(0, result.roles().length);
+            assertThat(result.roles()).isEmpty();
             assertEquals("Locked account", result.errorMessage());
         } finally {
             unlockAccount("jad");
@@ -187,7 +187,7 @@ class LoginTest extends ServletTestBase {
         resource.setLogservice(logservice);
         LoginResult result = resource.doLogin(credentials);
         // Check the response
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Unknown error", result.errorMessage());
     }
 
@@ -271,7 +271,7 @@ class LoginTest extends ServletTestBase {
         LoginResult result = resource.loginStatus();
 
         // Check the response
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 

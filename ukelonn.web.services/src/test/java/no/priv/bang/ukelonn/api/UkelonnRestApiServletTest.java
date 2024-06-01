@@ -196,7 +196,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Unknown account", result.errorMessage());
     }
 
@@ -231,7 +231,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("Wrong password", result.errorMessage());
     }
 
@@ -336,7 +336,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
@@ -366,7 +366,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
@@ -401,7 +401,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         assertEquals("application/json", response.getContentType());
 
         var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertEquals(0, result.roles().length);
+        assertThat(result.roles()).isEmpty();
         assertEquals("", result.errorMessage());
     }
 
