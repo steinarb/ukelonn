@@ -34,10 +34,11 @@ public record PerformedTransaction(Account account, int transactionTypeId, doubl
         private Builder() {}
 
         public PerformedTransaction build() {
-            var transactionTypeId = ofNullable(this.transactionTypeId).orElse(-1);
-            var transactionAmount = ofNullable(this.transactionAmount).orElse(0.0);
-            var transactionDate = ofNullable(this.transactionDate).orElse(new Date());
-            return new PerformedTransaction(this.account, transactionTypeId, transactionAmount, transactionDate);
+            return new PerformedTransaction(
+                this.account,
+                ofNullable(this.transactionTypeId).orElse(-1),
+                ofNullable(this.transactionAmount).orElse(0.0),
+                ofNullable(this.transactionDate).orElse(new Date()));
         }
 
         public Builder account(Account account) {

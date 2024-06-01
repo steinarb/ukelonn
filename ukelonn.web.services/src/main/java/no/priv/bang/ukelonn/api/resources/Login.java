@@ -15,6 +15,7 @@
  */
 package no.priv.bang.ukelonn.api.resources;
 
+import java.util.Arrays;
 import java.util.Base64;
 
 import javax.inject.Inject;
@@ -104,7 +105,7 @@ public class Login {
             var username = (String) subject.getPrincipal();
             return LoginResult.with()
                 .username(username)
-                .roles(roles)
+                .roles(Arrays.asList(roles))
                 .build();
         }
 

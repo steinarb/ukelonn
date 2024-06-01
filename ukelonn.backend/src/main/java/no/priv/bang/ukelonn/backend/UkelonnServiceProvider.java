@@ -119,7 +119,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<Account> getAccounts() {
         var accounts = new ArrayList<Account>();
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement("select * from accounts_view")) {
+            try(var statement = connection.prepareStatement("select account_id, username, balance from accounts_view")) {
                 try(var results = statement.executeQuery()) {
                     if (results != null) {
                         while(results.next()) {
@@ -140,7 +140,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Override
     public Account getAccount(String username) {
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
+            try(var statement = connection.prepareStatement("select account_id, username, balance from accounts_view where username=?")) {
                 statement.setString(1, username);
                 try(var resultset = statement.executeQuery()) {
                     if (resultset.next())
@@ -183,7 +183,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<TransactionType> getJobTypes() {
         var jobtypes = new ArrayList<TransactionType>();
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement("select * from transaction_types where transaction_is_work=true")) {
+            try(var statement = connection.prepareStatement("select transaction_type_id, transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment from transaction_types where transaction_is_work=true")) {
                 try(var resultSet = statement.executeQuery()) {
                     if (resultSet != null) {
                         while (resultSet.next()) {
@@ -286,7 +286,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<TransactionType> getPaymenttypes() {
         var paymenttypes = new ArrayList<TransactionType>();
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement("select * from transaction_types where transaction_is_wage_payment=true")) {
+            try(var statement = connection.prepareStatement("select transaction_type_id, transaction_type_name, transaction_amount, transaction_is_work, transaction_is_wage_payment from transaction_types where transaction_is_wage_payment=true")) {
                 try(var resultSet = statement.executeQuery()) {
                     if (resultSet != null) {
                         while (resultSet.next()) {
@@ -483,7 +483,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<Bonus> getActiveBonuses() {
         var activebonuses = new ArrayList<Bonus>();
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement("select * from bonuses where enabled and start_date <= ? and end_date >= ?")) {
+            try(var statement = connection.prepareStatement("select bonus_id, enabled, iconurl, title, description, bonus_factor, start_date, end_date from bonuses where enabled and start_date <= ? and end_date >= ?")) {
                 var today = Timestamp.from(new Date().toInstant());
                 statement.setTimestamp(1, today);
                 statement.setTimestamp(2, today);
@@ -504,7 +504,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     public List<Bonus> getAllBonuses() {
         var allbonuses = new ArrayList<Bonus>();
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement("select * from bonuses")) {
+            try(var statement = connection.prepareStatement("select bonus_id, enabled, iconurl, title, description, bonus_factor, start_date, end_date from bonuses")) {
                 try (var results = statement.executeQuery()) {
                     while (results.next()) {
                         buildBonusFromResultSetAndAddToList(allbonuses, results);

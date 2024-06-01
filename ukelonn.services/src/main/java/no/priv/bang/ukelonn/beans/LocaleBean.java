@@ -15,8 +15,9 @@
  */
 package no.priv.bang.ukelonn.beans;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.Locale;
-import java.util.Optional;
 
 public record LocaleBean(String code, String displayLanguage) {
 
@@ -30,9 +31,9 @@ public record LocaleBean(String code, String displayLanguage) {
         private Builder() {}
 
         public LocaleBean build() {
-            String locale = Optional.ofNullable(this.locale).map(l -> l.toString()).orElse(null);
-            String displayLanguage = Optional.ofNullable(this.locale).map(l -> l.getDisplayLanguage(l)).orElse(null);
-            return new LocaleBean(locale, displayLanguage);
+            var localeCode = ofNullable(this.locale).map(Object::toString).orElse(null);
+            var displayLanguage = ofNullable(this.locale).map(l -> l.getDisplayLanguage(l)).orElse(null);
+            return new LocaleBean(localeCode, displayLanguage);
         }
 
         public Builder locale(Locale locale) {

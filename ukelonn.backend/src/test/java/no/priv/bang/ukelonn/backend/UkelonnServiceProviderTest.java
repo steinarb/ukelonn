@@ -32,8 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.AfterAll;
@@ -696,7 +694,7 @@ class UkelonnServiceProviderTest {
 
             var updatedJobs = ukelonn.updateJob(editedJob);
 
-            var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).collect(Collectors.toList()).get(0);
+            var editedJobFromDatabase = updatedJobs.stream().filter(t->t.id() == job.id()).toList().get(0);
 
             assertEquals(editedJob.transactionTypeId(), editedJobFromDatabase.transactionType().id());
             assertThat(editedJobFromDatabase.transactionTime().getTime()).isGreaterThan(originalTransactionTime.getTime());
@@ -725,7 +723,7 @@ class UkelonnServiceProviderTest {
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
-        return ukelonn.getJobTypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).collect(Collectors.toList()).get(0);
+        return ukelonn.getJobTypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).toList().get(0);
     }
 
     @Test
@@ -1196,7 +1194,7 @@ class UkelonnServiceProviderTest {
         var ukelonn = getUkelonnServiceSingleton();
         ukelonn.setUserAdmin(useradmin);
         var account = ukelonn.getAccount("jad");
-        var jobs = ukelonn.getJobs(account.accountId()).stream().map(Transaction::id).collect(Collectors.toList());
+        var jobs = ukelonn.getJobs(account.accountId()).stream().map(Transaction::id).toList();
         assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", UkelonnServiceProvider.joinIds(jobs).toString());
     }
 

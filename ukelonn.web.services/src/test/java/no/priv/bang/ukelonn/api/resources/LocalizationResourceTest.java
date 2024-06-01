@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.stream.Collectors;
-
 import javax.ws.rs.WebApplicationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +48,7 @@ class LocalizationResourceTest {
     void testAvailableLocales() {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
-        when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
+        when(ukelonn.availableLocales()).thenReturn(Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).toList());
         var resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
         var availableLocales = resource.availableLocales();
