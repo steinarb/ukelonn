@@ -179,6 +179,11 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Import-Package>*,org.apache.shiro.web.filter.authc</Import-Package> <!-- import of package containing PassThruAuthenticationFilter for the Shiro INI parser -->
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>

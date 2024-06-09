@@ -65,6 +65,7 @@ public class UkelonnShiroFilter extends AbstractShiroFilter { // NOSONAR
 
     @Activate
     public void activate() {
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader()); // Set class loader that can find PassThruAuthenticationFilter for the Shiro INI parser
         var environment = new IniWebEnvironment();
         environment.setIni(INI_FILE);
         environment.setServletContext(getServletContext());
