@@ -52,7 +52,7 @@ class JobResourceTest extends ServletTestBase {
     }
 
     @Test
-    void testRegisterJob() throws Exception {
+    void testRegisterJob() {
         // Create the request
         var account = getJadAccount();
         var originalBalance = account.balance();
@@ -101,7 +101,7 @@ class JobResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testRegisterJobOtherUsername() throws Exception {
+    void testRegisterJobOtherUsername() {
         // Create the request
         var account = getJodAccount();
         var jobTypes = getJobtypes();
@@ -143,7 +143,7 @@ class JobResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testRegisterJobtWhenLoggedInAsAdministrator() throws Exception {
+    void testRegisterJobtWhenLoggedInAsAdministrator() {
         // Create the request
         var account = getJadAccount();
         var originalBalance = account.balance();
@@ -186,7 +186,7 @@ class JobResourceTest extends ServletTestBase {
     }
 
     @Test
-    void testRegisterJobNoUsername() throws Exception {
+    void testRegisterJobNoUsername() {
         // Create the request
         var account = Account.with().build();
         var jobTypes = getJobtypes();
@@ -230,7 +230,7 @@ class JobResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testRegisterJobInternalServerError() throws Exception {
+    void testRegisterJobInternalServerError() {
         // Create the request
         var account = Account.with().build();
         var jobTypes = getJobtypes();

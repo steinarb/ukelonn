@@ -82,7 +82,7 @@ class ProductionLiquibaseRunnerTest {
     }
 
     @Test
-    void testCreateUkelonnLiquibaseDefault() throws Exception {
+    void testCreateUkelonnLiquibaseDefault() {
         var runner = new ProductionLiquibaseRunner();
         var logservice = new MockLogService();
         runner.setLogService(logservice);

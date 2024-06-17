@@ -129,61 +129,51 @@ class UkelonnServiceBaseTest {
 
                 @Override
                 public List<SumYear> earningsSumOverYear(String username) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<SumYearMonth> earningsSumOverMonth(String username) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<Bonus> getActiveBonuses() {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<Bonus> getAllBonuses() {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<Bonus> createBonus(Bonus newBonus) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<Bonus> modifyBonus(Bonus updatedBonus) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<Bonus> deleteBonus(Bonus removedBonus) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public Locale defaultLocale() {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public List<LocaleBean> availableLocales() {
-                    // TODO Auto-generated method stub
                     return null;
                 }
 
                 @Override
                 public Map<String, String> displayTexts(Locale locale) {
-                    // TODO Auto-generated method stub
                     return null;
                 }
             };
