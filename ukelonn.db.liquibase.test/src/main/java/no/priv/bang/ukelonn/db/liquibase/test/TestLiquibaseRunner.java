@@ -15,8 +15,6 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.test;
 
-import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
-
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -33,14 +31,9 @@ import org.osgi.service.log.Logger;
 
 import liquibase.Liquibase;
 import liquibase.Scope;
-import liquibase.Scope.ScopedRunner;
 import liquibase.ThreadLocalScopeManager;
 import liquibase.changelog.ChangeLogHistoryServiceFactory;
-import liquibase.changelog.ChangeLogParameters;
 import liquibase.changelog.RanChangeSet;
-import liquibase.command.CommandScope;
-import liquibase.command.core.UpdateCommandStep;
-import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
@@ -69,27 +62,16 @@ public class TestLiquibaseRunner implements PreHook {
         var liquibase = new UkelonnLiquibase();
         try {
             liquibase.createInitialSchema(datasource);
-            insertMockData(datasource);
+            insertMockData(datasource, liquibase);
             liquibase.updateSchema(datasource);
         } catch (Exception e) {
             logger.error("Failed to create derby test database schema", e);
         }
     }
 
-    public boolean insertMockData(DataSource datasource) {
+    public boolean insertMockData(DataSource datasource, UkelonnLiquibase liquibase) {
         try(var connect = datasource.getConnection()) {
-            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
-                Map<String, Object> scopeObjects = Map.of(
-                    Scope.Attr.database.name(), database,
-                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
-
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DATABASE_ARG, database)
-                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, dummyDataResourceName())
-                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
-                            .execute());
-            }
-
+            liquibase.applyLiquibaseChangelist(connect, dummyDataResourceName(), getClass().getClassLoader());
             return true;
         } catch (Exception e) {
             logger.error("Failed to fill derby test database with data.", e);
