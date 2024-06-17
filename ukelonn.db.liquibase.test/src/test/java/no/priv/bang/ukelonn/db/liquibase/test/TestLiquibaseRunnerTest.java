@@ -61,7 +61,7 @@ import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 class TestLiquibaseRunnerTest {
 
     @Test
-    void testPrepareDatabase() throws SQLException, DatabaseException {
+    void testPrepareDatabase() throws Exception {
         var dataSourceFactory = new DerbyDataSourceFactory();
         var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_pure", "no");
         var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);

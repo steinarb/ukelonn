@@ -25,7 +25,7 @@ import no.priv.bang.ukelonn.UkelonnService;
 class AccountsTest {
 
     @Test
-    void testGetAccounts() throws Exception {
+    void testGetAccounts() {
         // Create the object to be tested
         var resource = new Accounts();
 

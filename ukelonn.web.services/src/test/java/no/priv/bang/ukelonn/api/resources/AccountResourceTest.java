@@ -40,7 +40,7 @@ class AccountResourceTest extends ServletTestBase {
     }
 
     @Test
-    void testGetAccount() throws Exception {
+    void testGetAccount() {
         // Create the request and response for the Shiro login
         var request = mock(HttpServletRequest.class);
         var session = mock(HttpSession.class);
@@ -77,7 +77,7 @@ class AccountResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testGetAccountOtherUsername() throws Exception {
+    void testGetAccountOtherUsername() {
         // Create the request and response for the Shiro login
         var request = mock(HttpServletRequest.class);
         var session = mock(HttpSession.class);
@@ -111,7 +111,7 @@ class AccountResourceTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testGetAccountWhenLoggedInAsAdministrator() throws Exception {
+    void testGetAccountWhenLoggedInAsAdministrator() {
         // Create the request and response for the Shiro login
         var request = mock(HttpServletRequest.class);
         var session = mock(HttpSession.class);
@@ -142,7 +142,7 @@ class AccountResourceTest extends ServletTestBase {
     }
 
     @Test
-    void testGetAccountNoUsername() throws Exception {
+    void testGetAccountNoUsername() {
         // Create the request and response for the Shiro login
         var request = mock(HttpServletRequest.class);
         var session = mock(HttpSession.class);
@@ -166,7 +166,7 @@ class AccountResourceTest extends ServletTestBase {
     }
 
     @Test
-    void testGetAccountUsernameNotPresentInDatabase() throws Exception {
+    void testGetAccountUsernameNotPresentInDatabase() {
         // Create the request and response for the Shiro login
         var request = mock(HttpServletRequest.class);
         var session = mock(HttpSession.class);
