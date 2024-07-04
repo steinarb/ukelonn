@@ -29,6 +29,8 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
+
 import static no.priv.bang.ukelonn.db.liquibase.production.ProductionLiquibaseRunner.*;
 
 class ProductionLiquibaseRunnerTest {
@@ -72,12 +74,13 @@ class ProductionLiquibaseRunnerTest {
     @Test
     void testInsertInitialDataInDatabaseFailToCreateLiquibase() throws Exception {
         var runner = new ProductionLiquibaseRunner();
+        var liquibase = new UkelonnLiquibase();
         var logservice = new MockLogService();
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
         var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        var successfullyinserteddata = runner.insertInitialDataInDatabase(datasource );
+        var successfullyinserteddata = runner.insertInitialDataInDatabase(datasource, liquibase);
         assertFalse(successfullyinserteddata);
     }
 

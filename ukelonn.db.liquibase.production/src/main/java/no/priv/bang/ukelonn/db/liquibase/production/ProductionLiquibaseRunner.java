@@ -15,8 +15,6 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.production;
 
-import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
-
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -30,15 +28,7 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
 import liquibase.Scope;
-import liquibase.Scope.ScopedRunner;
 import liquibase.ThreadLocalScopeManager;
-import liquibase.changelog.ChangeLogParameters;
-import liquibase.command.CommandScope;
-import liquibase.command.core.UpdateCommandStep;
-import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(immediate=true, property = "name=ukelonndb")
@@ -64,27 +54,16 @@ public class ProductionLiquibaseRunner implements PreHook {
         try {
             var liquibase = createUkelonnLiquibase();
             liquibase.createInitialSchema(datasource);
-            insertInitialDataInDatabase(datasource);
+            insertInitialDataInDatabase(datasource, liquibase);
             liquibase.updateSchema(datasource);
         } catch (Exception e) {
             logger.error("Failed to create ukelonn database schema in the PostgreSQL ukelonn database", e);
         }
     }
 
-    boolean insertInitialDataInDatabase(DataSource datasource) {
+    boolean insertInitialDataInDatabase(DataSource datasource, UkelonnLiquibase liquibase) {
         try(var connect = datasource.getConnection()) {
-            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
-                Map<String, Object> scopeObjects = Map.of(
-                    Scope.Attr.database.name(), database,
-                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
-
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DATABASE_ARG, database)
-                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, initialDataResourceName())
-                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
-                            .execute());
-            }
-
+            liquibase.applyLiquibaseChangelist(connect, initialDataResourceName(), getClass().getClassLoader());
             return true;
         } catch (Exception e) {
             logger.error("Failed to fill ukelonn PostgreSQL database with initial data.", e);
@@ -95,11 +74,11 @@ public class ProductionLiquibaseRunner implements PreHook {
     UkelonnLiquibase createUkelonnLiquibase() {
         if (ukelonnLiquibaseFactory == null) {
             ukelonnLiquibaseFactory = new UkelonnLiquibaseFactory() { // NOSONAR
-                    @Override
-                    public UkelonnLiquibase create() {
-                        return new UkelonnLiquibase();
-                    }
-                };
+                @Override
+                public UkelonnLiquibase create() {
+                    return new UkelonnLiquibase();
+                }
+            };
         }
 
         return ukelonnLiquibaseFactory.create();
