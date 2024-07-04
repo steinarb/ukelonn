@@ -23,7 +23,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -40,22 +39,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-import liquibase.Scope;
-import liquibase.Scope.ScopedRunner;
-import liquibase.changelog.ChangeLogParameters;
-import liquibase.command.CommandScope;
-import liquibase.command.core.UpdateCommandStep;
-import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
-import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
 import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 
 class TestLiquibaseRunnerTest {
@@ -236,11 +224,12 @@ class TestLiquibaseRunnerTest {
     @Test
     void testFailToInsertMockData() throws SQLException {
         var runner = new TestLiquibaseRunner();
+        var liquibase = new UkelonnLiquibase();
         runner.setLogService(new MockLogService());
         var datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
 
-        var result = runner.insertMockData(datasource);
+        var result = runner.insertMockData(datasource, liquibase);
         assertFalse(result);
     }
 
@@ -397,7 +386,7 @@ class TestLiquibaseRunnerTest {
      */
     @Disabled("Not an actual unit test. This test is a convenient way to populate a derby network server running on localhost, with the ukelonn schema and test data, using liquibase.")
     @Test
-    void addUkelonnSchemaAndDataToDerbyServer() throws SQLException, LiquibaseException { // NOSONAR This isn't an actual test, see the comments
+    void addUkelonnSchemaAndDataToDerbyServer() throws Exception { // NOSONAR This isn't an actual test, see the comments
         var createUkelonnDatabase = true;
         var dataSource = new ClientConnectionPoolDataSource();
         dataSource.setServerName("localhost");
@@ -411,21 +400,7 @@ class TestLiquibaseRunnerTest {
         liquibase.createInitialSchema(dataSource);
 
         try(var connect = dataSource.getConnection()) {
-            try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
-                Map<String, Object> scopeObjects = Map.of(
-                    Scope.Attr.database.name(), database,
-                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
-
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DATABASE_ARG, database)
-                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "sql/data/db-changelog.xml")
-                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
-                            .execute());
-            } catch (LiquibaseException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new UkelonnException("Failed to close resource when inserting data");
-            }
+            liquibase.applyLiquibaseChangelist(connect, "sql/data/db-changelog.xml", getClass().getClassLoader());
         }
 
         liquibase.updateSchema(dataSource);
