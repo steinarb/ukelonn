@@ -31,7 +31,6 @@ import org.osgi.service.log.Logger;
 
 import liquibase.Liquibase;
 import liquibase.Scope;
-import liquibase.ThreadLocalScopeManager;
 import liquibase.changelog.ChangeLogHistoryServiceFactory;
 import liquibase.changelog.RanChangeSet;
 import liquibase.database.DatabaseFactory;
@@ -54,7 +53,6 @@ public class TestLiquibaseRunner implements PreHook {
     @Activate
     public void activate(Map<String, Object> config) {
         databaselanguage = (String) config.get("databaselanguage");
-        Scope.setScopeManager(new ThreadLocalScopeManager());
     }
 
     @Override
