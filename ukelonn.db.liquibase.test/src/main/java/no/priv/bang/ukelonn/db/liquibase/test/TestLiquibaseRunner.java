@@ -31,8 +31,10 @@ import org.osgi.service.log.Logger;
 
 import liquibase.Liquibase;
 import liquibase.Scope;
+import liquibase.changelog.ChangeLogHistoryService;
 import liquibase.changelog.ChangeLogHistoryServiceFactory;
 import liquibase.changelog.RanChangeSet;
+import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
@@ -108,8 +110,8 @@ public class TestLiquibaseRunner implements PreHook {
     List<RanChangeSet> getChangeLogHistory(DataSource datasource) throws DatabaseException, SQLException {
         try(var connect = datasource.getConnection()) {
             try(var databaseConnection = new JdbcConnection(connect)) {
-                var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
-                var logHistoryService = Scope.getCurrentScope().getSingleton(ChangeLogHistoryServiceFactory.class).getChangeLogService(database);
+                var database = findCorrectDatabaseImplementation(databaseConnection);
+                var logHistoryService = findChangeLogService(database);
                 return logHistoryService.getRanChangeSets();
             } catch (Exception e) {
                 logger.error("Failed to create derby test database schema", e);
@@ -117,6 +119,14 @@ public class TestLiquibaseRunner implements PreHook {
         }
 
         return Collections.emptyList();
+    }
+
+    private Database findCorrectDatabaseImplementation(JdbcConnection databaseConnection) throws DatabaseException {
+        return DatabaseFactory.getInstance().findCorrectDatabaseImplementation(databaseConnection);
+    }
+
+    private ChangeLogHistoryService findChangeLogService(Database database) {
+        return Scope.getCurrentScope().getSingleton(ChangeLogHistoryServiceFactory.class).getChangeLogService(database);
     }
 
     String dummyDataResourceName() {
