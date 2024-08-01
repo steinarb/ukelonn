@@ -27,8 +27,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
-import liquibase.Scope;
-import liquibase.ThreadLocalScopeManager;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 
 @Component(immediate=true, property = "name=ukelonndb")
@@ -46,7 +44,6 @@ public class ProductionLiquibaseRunner implements PreHook {
     @Activate
     public void activate(Map<String, Object> config) {
         databaselanguage = (String) config.get("databaselanguage");
-        Scope.setScopeManager(new ThreadLocalScopeManager());
     }
 
     @Override
