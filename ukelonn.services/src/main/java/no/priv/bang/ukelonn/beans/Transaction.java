@@ -16,6 +16,7 @@
 package no.priv.bang.ukelonn.beans;
 
 import java.util.Date;
+import static java.util.Optional.*;
 
 public record Transaction(
     int id,
@@ -24,6 +25,9 @@ public record Transaction(
     double transactionAmount,
     boolean paidOut)
 {
+    public String getName() {
+        return ofNullable(transactionType).map(TransactionType::transactionTypeName).orElse(null);
+    }
 
     public static Builder with(Transaction transaction) {
         Builder builder = new Builder();

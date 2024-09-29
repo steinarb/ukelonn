@@ -26,6 +26,7 @@ class TransactionTest {
         var bean = Transaction.with().build();
         assertEquals(-1, bean.id());
         assertNull(bean.transactionType());
+        assertNull(bean.getName());
         assertNull(bean.transactionTime());
         assertEquals(0.0, bean.transactionAmount(), 0.0);
         assertFalse(bean.paidOut());
@@ -34,7 +35,7 @@ class TransactionTest {
     @Test
     void testConstructorWithArgs() {
         var id = 5;
-        var transactionType = TransactionType.with().build();
+        var transactionType = TransactionType.with().transactionTypeName("Paid to account").build();
         var transactionTime = new Date();
         var transactionAmount = 100.0;
         var paidOut = true;
@@ -46,6 +47,7 @@ class TransactionTest {
             .paidOut(paidOut)
             .build();
         assertEquals(id, bean.id());
+        assertEquals(transactionType.transactionTypeName(), bean.getName());
         assertEquals(transactionType, bean.transactionType());
         assertEquals(transactionTime, bean.transactionTime());
         assertEquals(transactionAmount, bean.transactionAmount(), 0.0);
