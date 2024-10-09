@@ -9,7 +9,7 @@ export default defineConfig({
         manifest: true,
         rollupOptions: {
             // overwrite default .html entry
-            input: 'src/index.js',
+            input: 'index.js',
             output: {
                 entryFileNames: `assets/[name].js`,
                 chunkFileNames: `assets/[name].js`,
