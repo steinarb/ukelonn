@@ -66,10 +66,10 @@ class TestLiquibaseRunnerTest {
                 try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    var account_id = onAccount.getInt("account_id");
+                    var accountId = onAccount.getInt("account_id");
                     var username = onAccount.getString("username");
                     var balance = onAccount.getFloat("balance");
-                    assertEquals(4, account_id);
+                    assertEquals(4, accountId);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
@@ -106,10 +106,10 @@ class TestLiquibaseRunnerTest {
                 try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    var account_id = onAccount.getInt("account_id");
+                    var accountId = onAccount.getInt("account_id");
                     var username = onAccount.getString("username");
                     var balance = onAccount.getFloat("balance");
-                    assertEquals(4, account_id);
+                    assertEquals(4, accountId);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
@@ -147,10 +147,10 @@ class TestLiquibaseRunnerTest {
                 try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    var account_id = onAccount.getInt("account_id");
+                    var accountId = onAccount.getInt("account_id");
                     var username = onAccount.getString("username");
                     var balance = onAccount.getFloat("balance");
-                    assertEquals(4, account_id);
+                    assertEquals(4, accountId);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
