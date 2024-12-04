@@ -18,7 +18,6 @@ package no.priv.bang.ukelonn.db.liquibase;
 import java.sql.Connection;
 import javax.sql.DataSource;
 
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
 import no.priv.bang.authservice.definitions.AuthserviceException;
@@ -66,7 +65,7 @@ public class UkelonnLiquibase extends LiquibaseClassPathChangeLogRunner {
         }
     }
 
-    private void applyLiquibaseChangelist(Connection connect, String liquibaseChangeLogClassPathResource) throws Exception, DatabaseException {
+    private void applyLiquibaseChangelist(Connection connect, String liquibaseChangeLogClassPathResource) throws Exception {
         applyLiquibaseChangelist(connect, liquibaseChangeLogClassPathResource, getClass().getClassLoader());
     }
 
