@@ -421,8 +421,7 @@ class TestLiquibaseRunnerTest {
     private SimpleAuthenticationInfo createAuthenticationInfo(String principal, String hashedPassword, String salt) {
         var decodedPassword = Sha256Hash.fromBase64String(hashedPassword);
         var decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
-        var authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
-        return authenticationInfo;
+        return new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
     }
 
     private int findTheNumberOfRowsInTable(DataSource datasource, String tableName) throws Exception {
@@ -430,8 +429,7 @@ class TestLiquibaseRunnerTest {
         try(var connection = datasource.getConnection()) {
             try(var selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
                 var userResults = selectAllRowsInTable.executeQuery();
-                var numberOfRows = countResults(userResults);
-                return numberOfRows;
+                return countResults(userResults);
             }
         }
     }
