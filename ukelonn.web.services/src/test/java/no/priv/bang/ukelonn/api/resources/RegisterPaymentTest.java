@@ -30,7 +30,7 @@ import no.priv.bang.ukelonn.beans.PerformedTransaction;
 class RegisterPaymentTest {
 
     @Test
-    void testRegisterPayment() throws Exception {
+    void testRegisterPayment() {
         // Create the request
         var account = getJadAccount();
         var originalBalance = account.balance();

@@ -251,7 +251,7 @@ class LoginTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testGetLoginStateWhenNotLoggedIn() throws Exception {
+    void testGetLoginStateWhenNotLoggedIn() {
         // Set up the request
         HttpSession session = mock(HttpSession.class);
         HttpServletRequest request = mock(HttpServletRequest.class);

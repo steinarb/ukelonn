@@ -172,7 +172,7 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
-    void testFailWhenPrepareDatabase() throws SQLException, DatabaseException {
+    void testFailWhenPrepareDatabase() throws SQLException {
         var datasource = mock(DataSource.class);
         var runner = new TestLiquibaseRunner();
         var logservice = new MockLogService();

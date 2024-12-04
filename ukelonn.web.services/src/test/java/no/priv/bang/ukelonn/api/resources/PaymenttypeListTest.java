@@ -25,7 +25,7 @@ import no.priv.bang.ukelonn.UkelonnService;
 class PaymenttypeListTest {
 
     @Test
-    void testGetPaymenttypes() throws Exception {
+    void testGetPaymenttypes() {
         // Create the resource that is to be tested
         var resource = new PaymenttypeList();
 
