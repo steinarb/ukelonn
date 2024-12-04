@@ -81,8 +81,8 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  *
  */
 class UkelonnRestApiServletTest extends ServletTestBase {
-    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
-    private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
+    private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static final Locale EN_UK = Locale.forLanguageTag("en-uk");
 
     UkelonnRestApiServletTest() {
         super("/ukelonn", "/api");

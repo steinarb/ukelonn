@@ -203,11 +203,11 @@ class UkelonnLiquibaseTest {
         assertEquals(endDate, new Date(results.getTimestamp("end_date").getTime()));
     }
 
-    static private Connection createConnection() throws Exception {
+    private static Connection createConnection() throws Exception {
         return dataSource.getConnection();
     }
 
-    static private Connection createConnection(String dbname) throws Exception {
+    private static Connection createConnection(String dbname) throws Exception {
         return createDataSource(dbname).getConnection();
     }
 

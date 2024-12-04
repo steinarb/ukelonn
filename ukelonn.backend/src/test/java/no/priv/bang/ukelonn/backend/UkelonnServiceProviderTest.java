@@ -59,7 +59,7 @@ import no.priv.bang.ukelonn.beans.User;
 import static no.priv.bang.ukelonn.UkelonnConstants.*;
 
 class UkelonnServiceProviderTest {
-    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     @BeforeAll
     static void setupForAllTests() throws Exception {
