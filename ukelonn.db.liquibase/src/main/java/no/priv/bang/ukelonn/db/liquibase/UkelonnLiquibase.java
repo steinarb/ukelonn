@@ -16,6 +16,8 @@
 package no.priv.bang.ukelonn.db.liquibase;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import liquibase.exception.LiquibaseException;
@@ -43,7 +45,7 @@ public class UkelonnLiquibase extends LiquibaseClassPathChangeLogRunner {
             applyLiquibaseChangelist(connect, "ukelonn-db-changelog/db-changelog-1.0.1.xml");
         } catch (LiquibaseException e) {
             throw e;
-        } catch (Exception e1) {
+        } catch (SQLException e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
         }
 
@@ -52,7 +54,7 @@ public class UkelonnLiquibase extends LiquibaseClassPathChangeLogRunner {
             authserviceLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException | AuthserviceException e) {
             throw e;
-        } catch (Exception e1) {
+        } catch (SQLException e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
         }
 
@@ -60,12 +62,12 @@ public class UkelonnLiquibase extends LiquibaseClassPathChangeLogRunner {
             applyLiquibaseChangelist(connect, "ukelonn-db-changelog/db-changelog.xml");
         } catch (LiquibaseException e) {
             throw e;
-        } catch (Exception e1) {
+        } catch (SQLException e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
         }
     }
 
-    private void applyLiquibaseChangelist(Connection connect, String liquibaseChangeLogClassPathResource) throws Exception {
+    private void applyLiquibaseChangelist(Connection connect, String liquibaseChangeLogClassPathResource) throws LiquibaseException {
         applyLiquibaseChangelist(connect, liquibaseChangeLogClassPathResource, getClass().getClassLoader());
     }
 
