@@ -203,9 +203,7 @@ class LoginTest extends ServletTestBase {
         // Create the servlet and do the login
         Login resource = new Login();
         resource.setLogservice(logservice);
-        assertThrows(InternalServerErrorException.class, () -> {
-                resource.doLogin(credentials);
-            });
+        assertThrows(InternalServerErrorException.class, () -> resource.doLogin(credentials));
     }
 
     /**
