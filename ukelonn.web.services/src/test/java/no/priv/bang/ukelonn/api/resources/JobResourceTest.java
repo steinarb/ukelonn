@@ -325,7 +325,7 @@ class JobResourceTest extends ServletTestBase {
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->!(t.id() == transactionTypeId)).filter(t->t.transactionAmount() != amount).toList().get(0);
+        return getJobtypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).toList().get(0);
     }
 
 }
