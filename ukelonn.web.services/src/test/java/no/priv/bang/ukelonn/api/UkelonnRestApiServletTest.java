@@ -389,19 +389,15 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
-        // Log in non-admin user
-        loginUser(request, response, "jad", "1ad");
+        // Set up Shiro to be in a not logged-in state
+        var subject = createSubjectAndBindItToThread(request, response);
+        subject.logout();
 
         // Do the logout
         servlet.service(request, response);
 
         // Check the response
-        assertEquals(200, response.getStatus());
-        assertEquals("application/json", response.getContentType());
-
-        var result = ServletTestBase.mapper.readValue(response.getOutputStreamContent(), LoginResult.class);
-        assertThat(result.roles()).isEmpty();
-        assertEquals("", result.errorMessage());
+        assertEquals(401, response.getStatus());
     }
 
     @Test
