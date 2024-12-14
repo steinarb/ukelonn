@@ -203,11 +203,11 @@ class UkelonnLiquibaseTest {
         assertEquals(endDate, new Date(results.getTimestamp("end_date").getTime()));
     }
 
-    static private Connection createConnection() throws Exception {
+    private static Connection createConnection() throws Exception {
         return dataSource.getConnection();
     }
 
-    static private Connection createConnection(String dbname) throws Exception {
+    private static Connection createConnection(String dbname) throws Exception {
         return createDataSource(dbname).getConnection();
     }
 
@@ -215,8 +215,7 @@ class UkelonnLiquibaseTest {
         var derbyDataSourceFactory = new DerbyDataSourceFactory();
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
-        var datasource = derbyDataSourceFactory.createDataSource(properties);
-        return datasource;
+        return derbyDataSourceFactory.createDataSource(properties);
     }
 
 }

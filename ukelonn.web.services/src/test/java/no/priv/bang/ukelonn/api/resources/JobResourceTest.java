@@ -280,7 +280,7 @@ class JobResourceTest extends ServletTestBase {
         var originalTransactionAmount = job.transactionAmount();
 
         // Find a different job type that has a different amount
-        var newJobType = findJobTypeWithDifferentIdAndAmount(ukelonn, originalTransactionTypeId, originalTransactionAmount);
+        var newJobType = findJobTypeWithDifferentIdAndAmount(originalTransactionTypeId, originalTransactionAmount);
 
         // Create a new job object with a different jobtype and the same id
         var now = new Date();
@@ -324,8 +324,8 @@ class JobResourceTest extends ServletTestBase {
         assertThrows(InternalServerErrorException.class, () -> resource.doUpdateJob(emptyTransaction));
     }
 
-    private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
-        return getJobtypes().stream().filter(t->!(t.id() == transactionTypeId)).filter(t->t.transactionAmount() != amount).toList().get(0);
+    private TransactionType findJobTypeWithDifferentIdAndAmount(Integer transactionTypeId, double amount) {
+        return getJobtypes().stream().filter(t->t.id() != transactionTypeId).filter(t->t.transactionAmount() != amount).toList().get(0);
     }
 
 }

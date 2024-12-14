@@ -76,7 +76,7 @@ class UsersTest {
         useradmin.setLogservice(logservice);
 
         // Do a get operation that will fail
-        assertThrows(InternalServerErrorException.class, () -> resource.get());
+        assertThrows(InternalServerErrorException.class, resource::get);
     }
 
 }

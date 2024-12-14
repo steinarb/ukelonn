@@ -34,6 +34,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 public class UkelonnServiceIntegrationTest extends KarafTestSupport {
 
     @Configuration
+    @Override
     public Option[] config() {
         final var ukelonnFeatureRepo = maven()
             .groupId("no.priv.bang.ukelonn")
