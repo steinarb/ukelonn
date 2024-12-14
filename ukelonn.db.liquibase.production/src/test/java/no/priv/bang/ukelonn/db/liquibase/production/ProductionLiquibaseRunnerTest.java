@@ -131,8 +131,7 @@ class ProductionLiquibaseRunnerTest {
         var derbyDataSourceFactory = new DerbyDataSourceFactory();
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
-        var datasource = derbyDataSourceFactory.createDataSource(properties);
-        return datasource;
+        return derbyDataSourceFactory.createDataSource(properties);
     }
 
 }

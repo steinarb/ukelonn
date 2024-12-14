@@ -35,7 +35,7 @@ class LogoutTest extends ServletTestBase {
     }
 
     @Test
-    void testLogoutOk() throws Exception {
+    void testLogoutOk() {
         // Set up the request
         var request = mock(HttpServletRequest.class);
         var session = mock(HttpSession.class);
@@ -64,7 +64,7 @@ class LogoutTest extends ServletTestBase {
      * @throws Exception
      */
     @Test
-    void testLogoutNotLoggedIn() throws Exception {
+    void testLogoutNotLoggedIn() {
         // Set up the request and response used to do the login
         var request = mock(HttpServletRequest.class);
         var response = mock(HttpServletResponse.class);

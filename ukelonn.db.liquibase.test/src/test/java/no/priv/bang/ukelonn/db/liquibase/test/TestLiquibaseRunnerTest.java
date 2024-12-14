@@ -66,10 +66,10 @@ class TestLiquibaseRunnerTest {
                 try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    var account_id = onAccount.getInt("account_id");
+                    var accountId = onAccount.getInt("account_id");
                     var username = onAccount.getString("username");
                     var balance = onAccount.getFloat("balance");
-                    assertEquals(4, account_id);
+                    assertEquals(4, accountId);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
@@ -106,10 +106,10 @@ class TestLiquibaseRunnerTest {
                 try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    var account_id = onAccount.getInt("account_id");
+                    var accountId = onAccount.getInt("account_id");
                     var username = onAccount.getString("username");
                     var balance = onAccount.getFloat("balance");
-                    assertEquals(4, account_id);
+                    assertEquals(4, accountId);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
@@ -147,10 +147,10 @@ class TestLiquibaseRunnerTest {
                 try(var onAccount = statement.executeQuery()) {
                     assertNotNull(onAccount);
                     assertTrue(onAccount.next());
-                    var account_id = onAccount.getInt("account_id");
+                    var accountId = onAccount.getInt("account_id");
                     var username = onAccount.getString("username");
                     var balance = onAccount.getFloat("balance");
-                    assertEquals(4, account_id);
+                    assertEquals(4, accountId);
                     assertEquals("jad", username);
                     assertThat(balance).isPositive();
                 }
@@ -172,7 +172,7 @@ class TestLiquibaseRunnerTest {
     }
 
     @Test
-    void testFailWhenPrepareDatabase() throws SQLException, DatabaseException {
+    void testFailWhenPrepareDatabase() throws SQLException {
         var datasource = mock(DataSource.class);
         var runner = new TestLiquibaseRunner();
         var logservice = new MockLogService();
@@ -421,8 +421,7 @@ class TestLiquibaseRunnerTest {
     private SimpleAuthenticationInfo createAuthenticationInfo(String principal, String hashedPassword, String salt) {
         var decodedPassword = Sha256Hash.fromBase64String(hashedPassword);
         var decodedSalt = Util.bytes(Base64.getDecoder().decode(salt));
-        var authenticationInfo = new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
-        return authenticationInfo;
+        return new SimpleAuthenticationInfo(principal, decodedPassword, decodedSalt, "ukelonn");
     }
 
     private int findTheNumberOfRowsInTable(DataSource datasource, String tableName) throws Exception {
@@ -430,8 +429,7 @@ class TestLiquibaseRunnerTest {
         try(var connection = datasource.getConnection()) {
             try(var selectAllRowsInTable = connection.prepareStatement(selectAllRowsStatement)) {
                 var userResults = selectAllRowsInTable.executeQuery();
-                var numberOfRows = countResults(userResults);
-                return numberOfRows;
+                return countResults(userResults);
             }
         }
     }

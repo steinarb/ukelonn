@@ -25,7 +25,7 @@ import no.priv.bang.ukelonn.UkelonnService;
 class JobtypeListTest {
 
     @Test
-    void testGetJobtypes() throws Exception {
+    void testGetJobtypes() {
         // Create the resource that is to be tested
         var resource = new JobtypeList();
 

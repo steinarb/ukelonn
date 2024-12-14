@@ -89,8 +89,9 @@ public class TestLiquibaseRunner implements PreHook {
                 try(var statement = connect.prepareStatement("delete from users")) {
                     statement.executeUpdate();
                 }
-                var liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
-                liquibase.rollback(3, "");
+                try(var liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.rollback(3, "");
+                }
             }
             return true;
         } catch (Exception e) {
