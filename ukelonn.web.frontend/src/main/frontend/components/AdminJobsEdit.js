@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import {
     JOB_TABLE_ROW_CLICK,
     MODIFY_JOB_DATE,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { LOGIN_REQUEST } from '../actiontypes';
 import LoginErrorMessage from './LoginErrorMessage';
 

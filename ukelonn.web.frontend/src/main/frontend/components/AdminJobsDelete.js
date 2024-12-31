@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import {
     MODIFY_MARK_JOB_FOR_DELETE,
     DELETE_SELECTED_JOBS_BUTTON_CLICKED,
