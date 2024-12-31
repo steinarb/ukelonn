@@ -1,19 +1,29 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router';
 import {
-    MODIFY_MARK_JOB_FOR_DELETE,
-    DELETE_SELECTED_JOBS_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetJobsQuery,
+    usePostJobsDeleteMutation,
+} from '../api';
+import { Link } from 'react-router';
+import { MODIFY_MARK_JOB_FOR_DELETE } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Logout from './Logout';
 
 export default function AdminJobsDelete() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const accountFirstName = useSelector(state => state.accountFirstName);
-    const jobs = useSelector(state => state.jobs);
+    const accountId = useSelector(state => state.accountId);
+    const account = { accountId };
+    const { data: jobs = [] } = useGetJobsQuery(accountId);
+    const jobIds = useSelector(state => state.jobIdsSelectedForDelete);
     const dispatch = useDispatch();
+    const [ postJobsDelete ] = usePostJobsDeleteMutation();
+    const onDeleteSelectedClicked = async () => await postJobsDelete({account, jobIds });
 
     return (
         <div>
@@ -49,8 +59,8 @@ export default function AdminJobsDelete() {
                                   <tr key={job.id}>
                                       <td><input
                                               type="checkbox"
-                                              checked={job.delete}
-                                              onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ ...job, delete: e.target.checked }))}/></td>
+                                              checked={jobIds.includes(job.id)}
+                                              onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ id: job.id, delete: e.target.checked }))}/></td>
                                       <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
@@ -59,7 +69,7 @@ export default function AdminJobsDelete() {
                     </tbody>
                 </table>
                 <button
-                    onClick={() => dispatch(DELETE_SELECTED_JOBS_BUTTON_CLICKED())}>
+                    onClick={onDeleteSelectedClicked}>
                     {text.deleteMarkedJobs}
                 </button>
             </div>

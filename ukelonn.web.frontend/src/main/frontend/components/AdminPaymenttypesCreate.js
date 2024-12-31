@@ -1,20 +1,25 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router';
 import {
-    MODIFY_TRANSACTION_TYPE_NAME,
-    MODIFY_JOB_AMOUNT,
-    CREATE_PAYMENT_TYPE_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostPaymenttypeCreateMutation,
+} from '../api';
+import { Link } from 'react-router';
+import { MODIFY_TRANSACTION_TYPE_NAME, MODIFY_JOB_AMOUNT } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 import { numberAsString } from './utils';
 
 export default function AdminPaymenttypesCreate() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const transactionTypeName = useSelector(state => state.transactionTypeName);
     const transactionAmount = useSelector(state => numberAsString(state.transactionAmount));
     const dispatch = useDispatch();
+    const [ postPaymenttypeCreate ] = usePostPaymenttypeCreateMutation();
+    const onCreatePaymentTypeClicked = async () => await postPaymenttypeCreate({ transactionTypeName, transactionAmount });
 
     return (
         <div>
@@ -53,7 +58,7 @@ export default function AdminPaymenttypesCreate() {
                         <div/>
                         <div>
                             <button
-                                onClick={() => dispatch(CREATE_PAYMENT_TYPE_BUTTON_CLICKED())}>
+                                onClick={onCreatePaymentTypeClicked}>
                                 {text.createNewPaymentType}
                             </button>
                         </div>

@@ -1,10 +1,20 @@
 import React from 'react';
+import {
+    useGetLoginQuery,
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetSumoveryearQuery,
+    useGetSumovermonthQuery,
+} from '../api';
 import { useSelector } from 'react-redux';
 
 export default function EarningsMessage() {
-    const text = useSelector(state => state.displayTexts);
-    const earningsSumOverYear = useSelector(state => state.earningsSumOverYear);
-    const earningsSumOverMonth = useSelector(state => state.earningsSumOverMonth);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const { data: loginStatus = {}, isSuccess : loginIsSuccess } = useGetLoginQuery();
+    const { data: earningsSumOverYear = [] } = useGetSumoveryearQuery(loginStatus.username, { skip: !loginIsSuccess });
+    const { data: earningsSumOverMonth = [] } = useGetSumovermonthQuery(loginStatus.username, { skip: !loginIsSuccess });
 
     if (!(earningsSumOverYear.length || earningsSumOverMonth.length)) {
         return '';

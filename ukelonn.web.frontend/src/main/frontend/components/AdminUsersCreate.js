@@ -1,5 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostUserCreateMutation,
+    usePostUserChangeadminstatusMutation,
+} from '../api';
 import { Link } from 'react-router';
 import { isEmail } from 'validator';
 import {
@@ -10,26 +16,36 @@ import {
     MODIFY_PASSWORD1,
     MODIFY_PASSWORD2,
     MODIFY_USER_IS_ADMINISTRATOR,
-    CREATE_USER_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 
 export default function AdminUsersCreate() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const usernames = useSelector(state => state.usernames);
-    const userUsername = useSelector(state => state.userUsername);
-    const userEmail = useSelector(state => state.userEmail);
-    const userFirstname = useSelector(state => state.userFirstname);
-    const userLastname = useSelector(state => state.userLastname);
+    const username = useSelector(state => state.userUsername);
+    const email = useSelector(state => state.userEmail);
+    const firstname = useSelector(state => state.userFirstname);
+    const lastname = useSelector(state => state.userLastname);
+    const user = { username, email, firstname, lastname };
     const userIsAdministrator = useSelector(state => state.userIsAdministrator);
     const password1 = useSelector(state => state.password1);
     const password2 = useSelector(state => state.password2);
     const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
+    const userAndPasswords = { user, password1, password2, passwordsNotIdentical };
     const dispatch = useDispatch();
+    const [ postUserCreate ] = usePostUserCreateMutation();
+    const [ postUserChangeadminstatus ] = usePostUserChangeadminstatusMutation();
+    const onCreateUserClicked = async () => {
+        const { data: updatedUsers } = await postUserCreate(userAndPasswords);
+        const createdUser = updatedUsers.find(u => u.username = username) || {};
+        await postUserChangeadminstatus({ administrator, user: createdUser });
+    };
 
-    const usernameEmpty = !userUsername;
-    const usernameExists = usernames.indexOf(userUsername) > -1;
+    const usernameEmpty = !username;
+    const usernameExists = usernames.indexOf(username) > -1;
 
     return (
         <div>
@@ -50,7 +66,7 @@ export default function AdminUsersCreate() {
                             <input
                                 id="username"
                                 type="text"
-                                value={userUsername}
+                                value={username}
                                 onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                             { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
                             { usernameExists && <span>{text.usernameExists}</span> }
@@ -62,9 +78,9 @@ export default function AdminUsersCreate() {
                             <input
                                 id="email"
                                 type="text"
-                                value={userEmail}
+                                value={email}
                                 onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
-                            { userEmail && !isEmail(userEmail) && <span>{text.notAValidEmailAddress}</span> }
+                            { email && !isEmail(email) && <span>{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div>
@@ -73,7 +89,7 @@ export default function AdminUsersCreate() {
                             <input
                                 id="firstname"
                                 type="text"
-                                value={userFirstname}
+                                value={firstname}
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
@@ -83,7 +99,7 @@ export default function AdminUsersCreate() {
                             <input
                                 id="lastname"
                                 type="text"
-                                value={userLastname}
+                                value={lastname}
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
@@ -122,7 +138,7 @@ export default function AdminUsersCreate() {
                         <div/>
                         <div>
                             <button
-                                onClick={() => dispatch(CREATE_USER_BUTTON_CLICKED())}>
+                                onClick={onCreateUserClicked}>
                                 {text.createUser}
                             </button>
                         </div>

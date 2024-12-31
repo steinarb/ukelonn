@@ -1,11 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 import { Link } from 'react-router';
 import Locale from './Locale';
 import Logout from './Logout';
 
 export default function AdminJobtypes() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
 
     return (
         <div>

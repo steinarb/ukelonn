@@ -1,20 +1,28 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostJobtypeCreateMutation,
+} from '../api';
 import { Link } from 'react-router';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_JOB_AMOUNT,
-    CREATE_NEW_JOB_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 import { numberAsString } from './utils';
 
 export default function AdminJobtypesCreate() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const transactionTypeName = useSelector(state => state.transactionTypeName);
     const transactionAmount = useSelector(state => numberAsString(state.transactionAmount));
     const dispatch = useDispatch();
+    const [ postJobtypeCreate ] = usePostJobtypeCreateMutation();
+    const onSaveChangesToJobtypeClicked = async () => await postJobtypeCreate({ transactionTypeName, transactionAmount });
 
     return (
         <div>
@@ -53,7 +61,7 @@ export default function AdminJobtypesCreate() {
                         <div/>
                         <div>
                             <button
-                                onClick={() => dispatch(CREATE_NEW_JOB_TYPE_BUTTON_CLICKED())}>
+                                onClick={onSaveChangesToJobtypeClicked}>
                                 {text.createNewJobType}
                             </button>
                         </div>

@@ -1,23 +1,33 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router';
 import {
-    JOB_TABLE_ROW_CLICK,
-    MODIFY_JOB_DATE,
-    SAVE_CHANGES_TO_JOB_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetJobsQuery,
+    usePostJobUpdateMutation,
+} from '../api';
+import { Link } from 'react-router';
+import { JOB_TABLE_ROW_CLICK, MODIFY_JOB_DATE } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
 import Logout from './Logout';
 
 export default function AdminJobsEdit() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const firstname = useSelector(state => state.accountFirstname);
+    const accountId = useSelector(state => state.accountId);
+    const id = useSelector(state => state.transactionId);
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionDate = useSelector(state => state.transactionDate.split('T')[0]);
-    const jobs = useSelector(state => state.jobs);
+    const transactionTime = useSelector(state => state.transactionDate);
+    const transactionDateJustDate = transactionTime.split('T')[0];
+    const { data: jobs = [] } = useGetJobsQuery(accountId);
     const dispatch = useDispatch();
+    const [ postJobUpdate ] = usePostJobUpdateMutation();
+    const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId, id, transactionTypeId, transactionAmount, transactionTime });
 
     return (
         <div>
@@ -74,7 +84,7 @@ export default function AdminJobsEdit() {
                                 <input
                                     id="date"
                                     type="date"
-                                    value={transactionDate}
+                                    value={transactionDateJustDate}
                                     onChange={e => dispatch(MODIFY_JOB_DATE(e.target.value))}
                                 />
                             </div>
@@ -83,7 +93,7 @@ export default function AdminJobsEdit() {
                             <div/>
                             <div>
                                 <button
-                                    onClick={() => dispatch(SAVE_CHANGES_TO_JOB_BUTTON_CLICKED())}>
+                                    onClick={onSaveEditToJobClicked}>
                                     {text.saveChangesToJob}
                                 </button>
                             </div>

@@ -1,9 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetActivebonusesQuery,
+} from '../api';
 
 export default function BonusBanner() {
-    const text = useSelector(state => state.displayTexts);
-    const activebonuses = useSelector(state => state.activebonuses);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const { data: activebonuses = [] } = useGetActivebonusesQuery();
     if (!activebonuses.length) {
         return null;
     }

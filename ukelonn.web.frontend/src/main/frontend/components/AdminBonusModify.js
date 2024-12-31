@@ -1,8 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostModifybonusMutation,
+} from '../api';
 import { Link } from 'react-router';
 import {
-    SELECT_BONUS,
     MODIFY_BONUS_ENABLED,
     MODIFY_BONUS_ICONURL,
     MODIFY_BONUS_TITLE,
@@ -10,23 +14,28 @@ import {
     MODIFY_BONUS_FACTOR,
     MODIFY_BONUS_START_DATE,
     MODIFY_BONUS_END_DATE,
-    SAVE_BONUS_CHANGES_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
+import Bonuses from './Bonuses';
 
 export default function AdminBonusesModify() {
-    const text = useSelector(state => state.displayTexts);
-    const allbonuses = useSelector(state => state.allbonuses);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const bonusId = useSelector(state => state.bonusId);
-    const bonusEnabled = useSelector(state => state.bonusEnabled);
-    const bonusIconurl = useSelector(state => state.bonusIconurl);
-    const bonusTitle = useSelector(state => state.bonusTitle);
-    const bonusDescription = useSelector(state => state.bonusDescription);
+    const title = useSelector(state => state.bonusTitle);
+    const description = useSelector(state => state.bonusDescription);
+    const enabled = useSelector(state => state.bonusEnabled);
+    const iconurl = useSelector(state => state.bonusIconurl);
     const bonusFactor = useSelector(state => state.bonusFactor);
-    const bonusStartDate = useSelector(state => state.bonusStartDate.split('T')[0]);
-    const bonusEndDate = useSelector(state => state.bonusEndDate.split('T')[0]);
+    const startDate = useSelector(state => state.bonusStartDate);
+    const bonusStartDate = startDate.split('T')[0];
+    const endDate = useSelector(state => state.bonusEndDate);
+    const bonusEndDate = endDate.split('T')[0];
     const dispatch = useDispatch();
+    const [ postModifybonus ] = usePostModifybonusMutation();
+    const onSaveModifiedBonusClicked = async () => await postModifybonus({ bonusId, title, description, enabled, iconurl, bonusFactor, startDate, endDate });
 
     return (
         <div>
@@ -44,10 +53,7 @@ export default function AdminBonusesModify() {
                     <div>
                         <label htmlFor="bonus">{text.chooseBonus}</label>
                         <div>
-                            <select id="bonus" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
-                                <option key="-1" value="-1" />
-                                {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
-                            </select>
+                            <Bonuses />
                         </div>
                     </div>
                     <div>
@@ -56,7 +62,7 @@ export default function AdminBonusesModify() {
                             <input
                                 id="enabled"
                                 type="checkbox"
-                                checked={bonusEnabled}
+                                checked={enabled}
                                 onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                         </div>
                     </div>
@@ -66,7 +72,7 @@ export default function AdminBonusesModify() {
                             <input
                                 id="iconurl"
                                 type="text"
-                                value={bonusIconurl}
+                                value={iconurl}
                                 onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
@@ -76,7 +82,7 @@ export default function AdminBonusesModify() {
                             <input
                                 id="title"
                                 type="text"
-                                value={bonusTitle}
+                                value={title}
                                 onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
@@ -86,7 +92,7 @@ export default function AdminBonusesModify() {
                             <input
                                 id="description"
                                 type="text"
-                                value={bonusDescription}
+                                value={description}
                                 onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
@@ -127,7 +133,7 @@ export default function AdminBonusesModify() {
                         <div/>
                         <div>
                             <button
-                                onClick={() => dispatch(SAVE_BONUS_CHANGES_BUTTON_CLICKED())}>
+                                onClick={onSaveModifiedBonusClicked}>
                                 {text.saveChangesToBonus}
                             </button>
                         </div>

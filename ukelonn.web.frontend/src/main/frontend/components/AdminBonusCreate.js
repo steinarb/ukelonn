@@ -9,21 +9,29 @@ import {
     MODIFY_BONUS_FACTOR,
     MODIFY_BONUS_START_DATE,
     MODIFY_BONUS_END_DATE,
-    CREATE_NEW_BONUS_BUTTON_CLICKED,
 } from '../actiontypes';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostCreatebonusMutation,
+} from '../api';
 import Locale from './Locale';
 import Logout from './Logout';
 
 export default function AdminBonusCreate() {
-    const text = useSelector(state => state.displayTexts);
-    const bonusEnabled = useSelector(state => state.bonusEnabled);
-    const bonusIconurl = useSelector(state => state.bonusIconurl);
-    const bonusTitle = useSelector(state => state.bonusTitle);
-    const bonusDescription = useSelector(state => state.bonusDescription);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const enabled = useSelector(state => state.bonusEnabled);
+    const iconurl = useSelector(state => state.bonusIconurl);
+    const title = useSelector(state => state.bonusTitle);
+    const description = useSelector(state => state.bonusDescription);
     const bonusFactor = useSelector(state => state.bonusFactor);
-    const bonusStartDate = useSelector(state => state.bonusStartDate.split('T')[0]);
-    const bonusEndDate = useSelector(state => state.bonusEndDate.split('T')[0]);
+    const startDate = useSelector(state => state.bonusStartDate.split('T')[0]);
+    const endDate = useSelector(state => state.bonusEndDate.split('T')[0]);
     const dispatch = useDispatch();
+    const [ postCreatebonus ] = usePostCreatebonusMutation();
+    const onCreateBonusClicked = async () => await postCreatebonus({ enabled, title, description, bonusFactor, startDate, endDate });
 
     return (
         <div>
@@ -44,7 +52,7 @@ export default function AdminBonusCreate() {
                             <input
                                 id="enabled"
                                 type="checkbox"
-                                checked={bonusEnabled}
+                                checked={enabled}
                                 onChange={e => dispatch(MODIFY_BONUS_ENABLED(e.target.checked))} />
                         </div>
                     </div>
@@ -54,7 +62,7 @@ export default function AdminBonusCreate() {
                             <input
                                 id="iconurl"
                                 type="text"
-                                value={bonusIconurl}
+                                value={iconurl}
                                 onChange={e => dispatch(MODIFY_BONUS_ICONURL(e.target.value))} />
                         </div>
                     </div>
@@ -64,7 +72,7 @@ export default function AdminBonusCreate() {
                             <input
                                 id="title"
                                 type="text"
-                                value={bonusTitle}
+                                value={title}
                                 onChange={e => dispatch(MODIFY_BONUS_TITLE(e.target.value))} />
                         </div>
                     </div>
@@ -74,7 +82,7 @@ export default function AdminBonusCreate() {
                             <input
                                 id="description"
                                 type="text"
-                                value={bonusDescription}
+                                value={description}
                                 onChange={e => dispatch(MODIFY_BONUS_DESCRIPTION(e.target.value))} />
                         </div>
                     </div>
@@ -95,7 +103,7 @@ export default function AdminBonusCreate() {
                             <input
                                 id="startdate"
                                 type="date"
-                                value={bonusStartDate}
+                                value={startDate}
                                 onChange={e => dispatch(MODIFY_BONUS_START_DATE(e.target.value))}
                             />
                         </div>
@@ -106,7 +114,7 @@ export default function AdminBonusCreate() {
                             <input
                                 id="enddate"
                                 type="date"
-                                value={bonusEndDate}
+                                value={endDate}
                                 onChange={e => dispatch(MODIFY_BONUS_END_DATE(e.target.value))}
                             />
                         </div>
@@ -115,7 +123,7 @@ export default function AdminBonusCreate() {
                         <div/>
                         <div>
                             <button
-                                onClick={() => dispatch(CREATE_NEW_BONUS_BUTTON_CLICKED())}>
+                                onClick={onCreateBonusClicked}>
                                 {text.createNewBonus}
                             </button>
                         </div>

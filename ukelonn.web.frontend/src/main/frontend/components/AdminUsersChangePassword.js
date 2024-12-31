@@ -1,21 +1,32 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router';
 import {
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
-    CHANGE_PASSWORD_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostUserPasswordMutation,
+} from '../api';
+import { Link } from 'react-router';
+import { MODIFY_PASSWORD1, MODIFY_PASSWORD2 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
 import Logout from './Logout';
 
 export default function AdminUsersChangePassword() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const userid = useSelector(state => state.userid);
+    const username = useSelector(state => state.userUsername);
+    const email = useSelector(state => state.userEmail);
+    const firstname = useSelector(state => state.userFirstname);
+    const lastname = useSelector(state => state.userLastname);
+    const user = {userid, username, email, firstname, lastname };
     const password1 = useSelector(state => state.password1);
     const password2 = useSelector(state => state.password2);
     const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
     const dispatch = useDispatch();
+    const [ postUserPassword ] = usePostUserPasswordMutation();
+    const onChangePasswordClicked = async () => await postUserPassword({ user, password1, password2 });
 
     return (
         <div>
@@ -61,7 +72,7 @@ export default function AdminUsersChangePassword() {
                         <div/>
                         <div>
                             <button
-                                onClick={() => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED())}>
+                                onClick={onChangePasswordClicked}>
                                 {text.changePassword}
                             </button>
                         </div>
