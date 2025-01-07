@@ -24,10 +24,6 @@ const store = configureStore({
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(routerMiddleware).concat(api.middleware).prepend(listeners.middleware),
 });
 const history = createReduxHistory(store);
-// Use redux to reload the current path to trigger the locationChange() saga
-const router = store.getState().router;
-const pathname = router.location.pathname;
-store.dispatch(push(pathname));
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {
