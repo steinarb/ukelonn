@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package no.priv.bang.ukelonn.api.resources;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 
 import javax.inject.Inject;
@@ -25,8 +24,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
@@ -64,13 +63,13 @@ public class LocalizationResource extends ResourceBase {
     @GET
     @Path("displaytexts")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, String> displayTexts(@QueryParam("locale")String locale) {
+    public Response displayTexts(@QueryParam("locale")String locale) {
         try {
-            return ukelonn.displayTexts(Locale.forLanguageTag(locale.replace('_', '-')));
+            return Response.ok(ukelonn.displayTexts(Locale.forLanguageTag(locale.replace('_', '-')))).build();
         } catch (MissingResourceException e) {
             var message = String.format("Unknown locale '%s' used when fetching GUI texts", locale);
             logger.error(message);
-            throw new WebApplicationException(response(500, message));
+            return response(500, message);
         }
     }
 
