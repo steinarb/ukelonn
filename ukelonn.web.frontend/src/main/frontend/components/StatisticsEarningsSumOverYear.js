@@ -1,17 +1,23 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useSearchParams } from 'react-router-dom';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetSumoveryearQuery,
+} from '../api';
+import { Link, useSearchParams } from 'react-router';
 import { stringify } from 'qs';
-import { findUsernameFromAccountOrQueryParameter } from '../common/account';
 import Locale from './Locale';
 import Logout from './Logout';
 
 export default function StatisticsEarningsSumOverYear(props) {
-    const text = useSelector(state => state.displayTexts);
-    const earningsSumOverYear = useSelector(state => state.earningsSumOverYear);
-
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const [ queryParams ] = useSearchParams();
-    const username = findUsernameFromAccountOrQueryParameter(props, queryParams);
+    const username = queryParams.get('username');
+    const { data: earningsSumOverYear = [] } = useGetSumoveryearQuery(username);
+
     const statistics = '/statistics?' + stringify({ username });
 
     return (

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,8 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
-import javax.ws.rs.WebApplicationException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -64,7 +63,8 @@ class LocalizationResourceTest {
         when(ukelonn.displayTexts(any())).thenReturn(texts);
         var resource = new LocalizationResource();
         resource.ukelonn = ukelonn;
-        var displayTexts = resource.displayTexts(ukelonn.defaultLocale().toString());
+        @SuppressWarnings("unchecked")
+        var displayTexts = (Map<String, String>)resource.displayTexts(ukelonn.defaultLocale().toString()).getEntity();
         assertThat(displayTexts).isNotEmpty();
     }
 
@@ -76,7 +76,8 @@ class LocalizationResourceTest {
         var logservice = new MockLogService();
         resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
-        assertThrows(WebApplicationException.class, () -> resource.displayTexts("en_UK"));
+        var response = resource.displayTexts("en_UK");
+        assertThat(response).hasFieldOrPropertyWithValue("status", 500);
     }
 
 }

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router';
+import { useGetLoginQuery } from '../api';
 
 export default function Home() {
-    const loginResponse = useSelector(state => state.loginResponse);
+    const { data: loginResponse = { roles: [] } } = useGetLoginQuery();
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return <Navigate to="/admin" />;

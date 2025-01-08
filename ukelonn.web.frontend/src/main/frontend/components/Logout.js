@@ -1,10 +1,17 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { LOGOUT_REQUEST } from '../actiontypes';
+import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostLogoutMutation,
+} from '../api';
 
 export default function Logout() {
-    const text = useSelector(state => state.displayTexts);
-    const dispatch = useDispatch();
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const [ postLogout ] = usePostLogoutMutation();
+    const onLogoutClicked = async () => postLogout();
 
-    return (<button onClick={() => dispatch(LOGOUT_REQUEST())}>{text.logout}</button>);
+    return (<button onClick={onLogoutClicked}>{text.logout}</button>);
 }

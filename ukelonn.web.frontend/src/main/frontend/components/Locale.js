@@ -1,11 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useGetDefaultlocaleQuery, useGetAvailablelocalesQuery } from '../api';
 import { UPDATE_LOCALE } from '../actiontypes';
 
 export default function Locale(props) {
     const { className } = props;
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
-    const availableLocales = useSelector(state => state.availableLocales);
+    const { data: availableLocales = [] } = useGetAvailablelocalesQuery(undefined, { skip: !defaultLocaleIsSuccess });
     const dispatch = useDispatch();
 
     return (

@@ -1,11 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { stringify } from 'qs';
 import {
-    MODIFY_PAYMENT_AMOUNT,
-    REGISTER_PAYMENT_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostPaymentRegisterMutation,
+    usePostNotificationToMutation,
+} from '../api';
+import { Link } from 'react-router';
+import { stringify } from 'qs';
+import { MODIFY_PAYMENT_AMOUNT } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
@@ -14,11 +17,23 @@ import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
 export default function Admin() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const accountId = useSelector(state => state.accountId);
     const username = useSelector(state => state.accountUsername);
-    const balance = useSelector(state => state.accountBalance);
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
+    const transactionTypeName = useSelector(state => state.transactionTypeName);
     const transactionAmount = useSelector(state => state.transactionAmount);
+    const [ postPaymentRegister ] = usePostPaymentRegisterMutation();
+    const [ postNotificationTo ] = usePostNotificationToMutation();
+    const onRegisterPaymentClicked = async () => {
+        await postPaymentRegister({ account, transactionTypeId, transactionAmount });
+        const notification = { title: 'Ukelønn', message: transactionAmount + ' kroner ' + transactionTypeName };
+        await postNotificationTo({ username, notification });
+    };
+    const account = { accountId, username };
+    const balance = useSelector(state => state.accountBalance);
     const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
@@ -76,7 +91,7 @@ export default function Admin() {
                             <button
                                 className="btn btn-primary"
                                 disabled={noUser}
-                                onClick={() => dispatch(REGISTER_PAYMENT_BUTTON_CLICKED())}>
+                                onClick={onRegisterPaymentClicked}>
                                 {text.registerPayment}
                             </button>
                         </div>

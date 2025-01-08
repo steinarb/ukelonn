@@ -1,26 +1,38 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostUserModifyMutation,
+    usePostUserChangeadminstatusMutation,
+} from '../api';
+import { Link } from 'react-router';
 import {
     MODIFY_USER_USERNAME,
     MODIFY_USER_EMAIL,
     MODIFY_USER_FIRSTNAME,
     MODIFY_USER_LASTNAME,
     MODIFY_USER_IS_ADMINISTRATOR,
-    SAVE_USER_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
 import Logout from './Logout';
 
 export default function AdminUsersModify() {
-    const text = useSelector(state => state.displayTexts);
-    const userUsername = useSelector(state => state.userUsername);
-    const userEmail = useSelector(state => state.userEmail);
-    const userFirstname = useSelector(state => state.userFirstname);
-    const userLastname = useSelector(state => state.userLastname);
-    const userIsAdministrator = useSelector(state => state.userIsAdministrator);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const userid = useSelector(state => state.userid);
+    const username = useSelector(state => state.userUsername);
+    const email = useSelector(state => state.userEmail);
+    const firstname = useSelector(state => state.userFirstname);
+    const lastname = useSelector(state => state.userLastname);
+    const user = {userid, username, email, firstname, lastname };
+    const administrator = useSelector(state => state.userIsAdministrator);
     const dispatch = useDispatch();
+    const [ postUserModify ] =  usePostUserModifyMutation();
+    const [ postUserChangeadminstatus ] = usePostUserChangeadminstatusMutation();
+    const onSaveUserClicked = async () => { await postUserModify(user); await postUserChangeadminstatus({ administrator, user }); };
 
     return (
         <div>
@@ -48,7 +60,7 @@ export default function AdminUsersModify() {
                                 id="username"
                                 className="form-control"
                                 type="text"
-                                value={userUsername}
+                                value={username}
                                 onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                         </div>
                     </div>
@@ -59,7 +71,7 @@ export default function AdminUsersModify() {
                                 id="email"
                                 className="form-control"
                                 type="text"
-                                value={userEmail}
+                                value={email}
                                 onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
                         </div>
                     </div>
@@ -70,7 +82,7 @@ export default function AdminUsersModify() {
                                 id="firstname"
                                 className="form-control"
                                 type="text"
-                                value={userFirstname}
+                                value={firstname}
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
@@ -81,7 +93,7 @@ export default function AdminUsersModify() {
                                 id="lastname"
                                 className="form-control"
                                 type="text"
-                                value={userLastname}
+                                value={lastname}
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
@@ -92,7 +104,7 @@ export default function AdminUsersModify() {
                                     id="administrator"
                                     className="form-check-input"
                                     type="checkbox"
-                                    checked={userIsAdministrator}
+                                    checked={administrator}
                                     onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                                 <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
@@ -103,7 +115,7 @@ export default function AdminUsersModify() {
                         <div className="col-7">
                             <button
                                 className="btn btn-primary"
-                                onClick={() => dispatch(SAVE_USER_BUTTON_CLICKED())}>
+                                onClick={onSaveUserClicked}>
                                 {text.saveUserModifications}
                             </button>
                         </div>

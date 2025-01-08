@@ -1,18 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    ACCOUNT_RECEIVE,
-    REGISTERJOB_RECEIVE,
-    REGISTERPAYMENT_RECEIVE,
-    SELECT_ACCOUNT,
-} from '../actiontypes';
+import { SELECT_ACCOUNT } from '../actiontypes';
+import { api } from '../api';
 
 const defaultValue = '';
 
 const accountLastnameReducer = createReducer(defaultValue, builder => {
     builder
-        .addCase(ACCOUNT_RECEIVE, (state, action) => action.payload.lastName)
-        .addCase(REGISTERJOB_RECEIVE, (state, action) => action.payload.lastName)
-        .addCase(REGISTERPAYMENT_RECEIVE, (state, action) => action.payload.lastName)
+        .addMatcher(api.endpoints.getAccount.matchFulfilled, (state, action) => action.payload.lastName)
+        .addMatcher(api.endpoints.postJobRegister.matchFulfilled, (state, action) => action.payload.lastName)
+        .addMatcher(api.endpoints.postPaymentRegister.matchFulfilled, (state, action) => action.payload.lastName)
         .addCase(SELECT_ACCOUNT, (state, action) => action.payload.lastName);
 });
 

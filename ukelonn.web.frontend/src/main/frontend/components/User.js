@@ -1,11 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { stringify } from 'qs';
 import {
-    MODIFY_JOB_DATE,
-    REGISTER_JOB_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetLoginQuery,
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetAccountQuery,
+    useGetJobtypesQuery,
+    usePostJobRegisterMutation,
+} from '../api';
+import { Link } from 'react-router';
+import { stringify } from 'qs';
+import { MODIFY_JOB_DATE } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Jobtypes from './Jobtypes';
@@ -14,15 +19,19 @@ import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
 export default function User() {
-    const text = useSelector(state => state.displayTexts);
-    const accountId = useSelector(state => state.accountId);
-    const firstname = useSelector(state => state.accountFirstname);
-    const username = useSelector(state => state.accountUsername);
-    const accountBalance = useSelector(state => state.accountBalance);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const { data: loginResponse = { username: '' }, isSuccess: loginIsSuccess } = useGetLoginQuery();
+    const { data: account = {} } = useGetAccountQuery(loginResponse.username, { skip: !loginIsSuccess });
+    const { accountId, firstName: firstname, username, balance } = account;
+    const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionDate = useSelector(state => state.transactionDate.split('T')[0]);
-    const notificationMessage = useSelector(state => state.notificationMessage);
+    const transactionDate = useSelector(state => state.transactionDate);
     const dispatch = useDispatch();
+    const [ postJobRegister ] = usePostJobRegisterMutation();
+    const onRegisterJobClicked = async () => await postJobRegister({ account, transactionTypeId, transactionAmount, transactionDate });
+    const transactionDateJustDate = transactionDate.split('T')[0];
     const title = text.weeklyAllowanceFor + ' ' + firstname;
     const performedjobs = '/performedjobs?' + stringify({ accountId, username, parentTitle: title });
     const performedpayments = '/performedpayments?' + stringify({ accountId, username, parentTitle: title });
@@ -30,7 +39,7 @@ export default function User() {
 
     return (
         <div>
-            <Notification notificationMessage={notificationMessage}/>
+            <Notification />
             <nav className="navbar navbar-light bg-light">
                 <a className="btn btn-primary" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;{text.returnToTop}</a>
                 <h1 id="logo">{title}</h1>
@@ -44,7 +53,7 @@ export default function User() {
                             <label>{text.owedAmount}:</label>
                         </div>
                         <div className="col">
-                            {accountBalance}
+                            {balance}
                         </div>
                     </div>
                     <div className="row">
@@ -82,7 +91,7 @@ export default function User() {
                             <div className="col-7">
                                 <button
                                     className="btn btn-primary"
-                                    onClick={() => dispatch(REGISTER_JOB_BUTTON_CLICKED())}>
+                                    onClick={onRegisterJobClicked}>
                                     {text.registerJob}
                                 </button>
                             </div>

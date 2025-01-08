@@ -4,12 +4,14 @@ import {
     SELECTED_BONUS,
     CLEAR_BONUS,
 } from '../actiontypes';
+import { isAllbonusesLoaded } from '../matchers';
 import { isUnselected } from '../common/reducers';
 
 const bonusEndDateReducer = createReducer(new Date().toISOString(), builder => {
     builder
         .addCase(MODIFY_BONUS_END_DATE, (state, action) => action.payload + 'T' + state.split('T')[1])
         .addCase(SELECTED_BONUS, (state, action) => isUnselected(action.payload.bonusId) ? new Date().toISOString() : new Date(action.payload.endDate).toISOString())
+        .addMatcher(isAllbonusesLoaded, () => new Date().toISOString())
         .addCase(CLEAR_BONUS, () => new Date().toISOString());
 });
 

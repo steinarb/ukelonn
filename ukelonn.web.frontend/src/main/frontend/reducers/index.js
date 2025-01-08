@@ -1,15 +1,13 @@
 import { combineReducers } from 'redux';
+import { createReducer } from '@reduxjs/toolkit';
+import { api } from '../api';
 import notificationAvailable from './notificationAvailableReducer';
-import notificationMessage from './notificationMessageReducer';
 import accountId from './accountIdReducer';
 import accountUsername from './accountUsernameReducer';
 import accountFirstname from './accountFirstnameReducer';
 import accountLastname from './accountLastnameReducer';
 import accountBalance from './accountBalanceReducer';
 import accountFullname from './accountFullnameReducer';
-import jobs from './jobsReducer';
-import payments from './paymentsReducer';
-import jobtypes from './jobtypesReducer';
 import haveReceivedResponseFromLogin from './haveReceivedResponseFromLoginReducer';
 import loginResponse from './loginResponseReducer';
 import transactionId from './transactionIdReducer';
@@ -17,9 +15,6 @@ import transactionTypeId from './transactionTypeIdReducer';
 import transactionTypeName from './transactionTypeNameReducer';
 import transactionAmount from './transactionAmountReducer';
 import transactionDate from './transactionDateReducer';
-import accounts from './accountsReducer';
-import paymenttypes from './paymenttypesReducer';
-import users from './usersReducer';
 import usernames from './usernamesReducer';
 import password1 from './password1Reducer';
 import password2 from './password2Reducer';
@@ -30,8 +25,6 @@ import userEmail from './userEmailReducer';
 import userFirstname from './userFirstnameReducer';
 import userLastname from './userLastnameReducer';
 import userIsAdministrator from './userIsAdministratorReducer';
-import activebonuses from './activebonusesReducer';
-import allbonuses from './allbonusesReducer';
 import bonusId from './bonusIdReducer';
 import bonusEnabled from './bonusEnabledReducer';
 import bonusIconurl from './bonusIconurlReducer';
@@ -40,28 +33,20 @@ import bonusDescription from './bonusDescriptionReducer';
 import bonusFactor from './bonusFactorReducer';
 import bonusStartDate from './bonusStartDateReducer';
 import bonusEndDate from './bonusEndDateReducer';
-import earningsSumOverYear from './earningsSumOverYearReducer';
-import earningsSumOverMonth from './earningsSumOverMonthReducer';
+import jobIdsSelectedForDelete from './jobIdsSelectedForDeleteReducer';
 import locale from './localeReducer';
-import availableLocales from './availableLocalesReducer';
-import displayTexts from './displayTextsReducer';
 
-export default (routerReducer) => combineReducers({
+export default (routerReducer, basename) => combineReducers({
     router: routerReducer,
+    [api.reducerPath]: api.reducer,
     locale,
-    availableLocales,
-    displayTexts,
     notificationAvailable,
-    notificationMessage,
     accountId,
     accountUsername,
     accountFirstname,
     accountLastname,
     accountBalance,
     accountFullname,
-    jobs,
-    payments,
-    jobtypes,
     haveReceivedResponseFromLogin,
     loginResponse,
     transactionId,
@@ -69,9 +54,6 @@ export default (routerReducer) => combineReducers({
     transactionTypeName,
     transactionAmount,
     transactionDate,
-    accounts,
-    paymenttypes,
-    users,
     usernames,
     password1,
     password2,
@@ -82,8 +64,6 @@ export default (routerReducer) => combineReducers({
     userFirstname,
     userLastname,
     userIsAdministrator,
-    activebonuses,
-    allbonuses,
     bonusId,
     bonusEnabled,
     bonusIconurl,
@@ -92,6 +72,6 @@ export default (routerReducer) => combineReducers({
     bonusFactor,
     bonusStartDate,
     bonusEndDate,
-    earningsSumOverYear,
-    earningsSumOverMonth,
+    jobIdsSelectedForDelete,
+    basename: createReducer(basename, (builder) => builder),
 });
