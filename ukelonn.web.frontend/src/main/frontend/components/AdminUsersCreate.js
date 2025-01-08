@@ -1,6 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostUserCreateMutation,
+    usePostUserChangeadminstatusMutation,
+} from '../api';
+import { Link } from 'react-router';
 import { isEmail } from 'validator';
 import {
     MODIFY_USER_USERNAME,
@@ -10,27 +16,37 @@ import {
     MODIFY_PASSWORD1,
     MODIFY_PASSWORD2,
     MODIFY_USER_IS_ADMINISTRATOR,
-    CREATE_USER_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 
 export default function AdminUsersCreate() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const usernames = useSelector(state => state.usernames);
-    const userUsername = useSelector(state => state.userUsername);
-    const userEmail = useSelector(state => state.userEmail);
-    const userFirstname = useSelector(state => state.userFirstname);
-    const userLastname = useSelector(state => state.userLastname);
-    const userIsAdministrator = useSelector(state => state.userIsAdministrator);
+    const username = useSelector(state => state.userUsername);
+    const email = useSelector(state => state.userEmail);
+    const firstname = useSelector(state => state.userFirstname);
+    const lastname = useSelector(state => state.userLastname);
+    const user = { username, email, firstname, lastname };
+    const administrator = useSelector(state => state.userIsAdministrator);
     const password1 = useSelector(state => state.password1);
     const password2 = useSelector(state => state.password2);
     const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
+    const userAndPasswords = { user, password1, password2, passwordsNotIdentical };
     const dispatch = useDispatch();
+    const [ postUserCreate ] = usePostUserCreateMutation();
+    const [ postUserChangeadminstatus ] = usePostUserChangeadminstatusMutation();
+    const onCreateUserClicked = async () => {
+        const { data: updatedUsers } = await postUserCreate(userAndPasswords);
+        const createdUser = updatedUsers.find(u => u.username = username) || {};
+        await postUserChangeadminstatus({ administrator, user: createdUser });
+    };
 
-    const usernameEmpty = !userUsername;
-    const usernameExists = usernames.indexOf(userUsername) > -1;
-    const emailIsNotValid = userEmail && !isEmail(userEmail);
+    const usernameEmpty = !username;
+    const usernameExists = usernames.indexOf(username) > -1;
+    const emailIsNotValid = email && !isEmail(email);
     const usernameInputClass = 'form-control' + (usernameEmpty || usernameExists ? ' is-invalid' : '');
     const emailInputClass = 'form-control' + (emailIsNotValid ? ' is-invalid' : '');
     const passwordGroupClass = 'form-control' + (passwordsNotIdentical ? ' is-invalid' : '');
@@ -55,7 +71,7 @@ export default function AdminUsersCreate() {
                                 id="username"
                                 className={usernameInputClass}
                                 type="text"
-                                value={userUsername}
+                                value={username}
                                 onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
                             { usernameEmpty && <span className="invalid-feedback d-block">{text.usernameCanNotBeEmpty}</span> }
                             { usernameExists && <span className="invalid-feedback d-block">{text.usernameExists}</span> }
@@ -68,9 +84,9 @@ export default function AdminUsersCreate() {
                                 id="email"
                                 className={emailInputClass}
                                 type="text"
-                                value={userEmail}
+                                value={email}
                                 onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
-                            { userEmail && !isEmail(userEmail) && <span className="invalid-feedback d-block">{text.notAValidEmailAddress}</span> }
+                            { email && !isEmail(email) && <span className="invalid-feedback d-block">{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -80,7 +96,7 @@ export default function AdminUsersCreate() {
                                 id="firstname"
                                 className="form-control"
                                 type="text"
-                                value={userFirstname}
+                                value={firstname}
                                 onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
                         </div>
                     </div>
@@ -91,7 +107,7 @@ export default function AdminUsersCreate() {
                                 id="lastname"
                                 className="form-control"
                                 type="text"
-                                value={userLastname}
+                                value={lastname}
                                 onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
                         </div>
                     </div>
@@ -125,7 +141,7 @@ export default function AdminUsersCreate() {
                                     id="administrator"
                                     className="form-control"
                                     type="checkbox"
-                                    checked={userIsAdministrator}
+                                    checked={administrator}
                                     onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
                                 <label htmlFor="administrator" className="form-check-label">{text.administrator}</label>
                             </div>
@@ -136,7 +152,7 @@ export default function AdminUsersCreate() {
                         <div className="col-7">
                             <button
                                 className="btn btn-primary"
-                                onClick={() => dispatch(CREATE_USER_BUTTON_CLICKED())}>
+                                onClick={onCreateUserClicked}>
                                 {text.createUser}
                             </button>
                         </div>

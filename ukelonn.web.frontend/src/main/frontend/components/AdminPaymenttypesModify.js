@@ -1,20 +1,29 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostPaymenttypeModifyMutation,
+} from '../api';
+import { Link } from 'react-router';
 import {
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
-    SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED,
 } from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
 import Logout from './Logout';
 
 export default function AdminPaymenttypesModify() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
+    const id = useSelector(state => state.transactionTypeId);
     const transactionTypeName = useSelector(state => state.transactionTypeName);
     const transactionAmount = useSelector(state => state.transactionAmount);
     const dispatch = useDispatch();
+    const [ postPaymenttypeModify ] = usePostPaymenttypeModifyMutation();
+    const onSaveChangesToPaymenttypeClicked = async () => await postPaymenttypeModify({ id, transactionTypeName, transactionAmount });
 
     return (
         <div>
@@ -64,7 +73,7 @@ export default function AdminPaymenttypesModify() {
                         <div className="col-7">
                             <button
                                 className="btn btn-primary"
-                                onClick={() => dispatch(SAVE_CHANGES_TO_PAYMENT_TYPE_BUTTON_CLICKED())}>
+                                onClick={onSaveChangesToPaymenttypeClicked}>
                                 {text.saveChangesToPaymentType}
                             </button>
                         </div>

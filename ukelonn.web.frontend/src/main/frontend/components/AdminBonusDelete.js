@@ -1,20 +1,24 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
-    SELECT_BONUS,
-    DELETE_SELECTED_BONUS_BUTTON_CLICKED,
-} from '../actiontypes';
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostDeletebonusMutation,
+} from '../api';
+import { Link } from 'react-router';
 import Locale from './Locale';
 import Logout from './Logout';
+import Bonuses from './Bonuses';
 
 export default function AdminBonusesDelete() {
-    const text = useSelector(state => state.displayTexts);
-    const allbonuses = useSelector(state => state.allbonuses);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const bonusId = useSelector(state => state.bonusId);
-    const bonusTitle = useSelector(state => state.bonusTitle);
-    const bonusDescription = useSelector(state => state.bonusDescription);
-    const dispatch = useDispatch();
+    const title = useSelector(state => state.title);
+    const description = useSelector(state => state.bonusDescription);
+    const [ postDeletebonus ] = usePostDeletebonusMutation();
+    const onDeleteBonusClicked = async () => await postDeletebonus({ bonusId, title, description });
 
     return (
         <div>
@@ -33,22 +37,19 @@ export default function AdminBonusesDelete() {
                     <div className="form-group row mb-2">
                         <label htmlFor="bonus" className="col-form-label col-5">{text.chooseBonus}</label>
                         <div className="col-7">
-                            <select id="bonus" className="form-control" value={bonusId} onChange={e => dispatch(SELECT_BONUS(parseInt(e.target.value)))}>
-                                <option key="-1" value="-1" />
-                                {allbonuses.map(b => <option key={b.bonusId} value={b.bonusId}>{b.title}</option>)}
-                            </select>
+                            <Bonuses />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
-                            <input readOnly id="title" className="form-control" type="text" value={bonusTitle} />
+                            <input readOnly id="title" className="form-control" type="text" value={title} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
-                            <input readOnly id="description" className="form-control" type="text" value={bonusDescription} />
+                            <input readOnly id="description" className="form-control" type="text" value={description} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -56,7 +57,7 @@ export default function AdminBonusesDelete() {
                         <div className="col-7">
                             <button
                                 className="btn btn-primary"
-                                onClick={() => dispatch(DELETE_SELECTED_BONUS_BUTTON_CLICKED())}>
+                                onClick={onDeleteBonusClicked}>
                                 {text.deleteSelectedBonus}
                             </button>
                         </div>

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
-import { LOGIN_REQUEST } from '../actiontypes';
+import { useGetLoginQuery, usePostLoginMutation } from '../api';
+import { Navigate } from 'react-router';
 import LoginErrorMessage from './LoginErrorMessage';
 
 export default function Login() {
-    const loginResponse = useSelector(state => state.loginResponse);
-    const dispatch = useDispatch();
+    const { data: loginResponse = { roles: [] } } = useGetLoginQuery();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
+    const [ postLogin ] = usePostLoginMutation();
+    const onLoginClicked = async () => { await postLogin({ username, password: btoa(password) }) };
+
     if (loginResponse.roles.length > 0) {
         if (loginResponse.roles[0] === 'ukelonnadmin') {
             return (<Navigate to="/admin" />);
@@ -40,7 +41,7 @@ export default function Login() {
                     </div>
                     <div className="form-group row">
                         <div className="offset-xs-3 col-xs-9">
-                            <button className="btn btn-primary" onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}>Login</button>
+                            <button className="btn btn-primary" onClick={onLoginClicked}>Login</button>
                         </div>
                     </div>
                 </form>

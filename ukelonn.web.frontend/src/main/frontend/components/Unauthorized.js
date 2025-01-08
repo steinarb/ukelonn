@@ -1,12 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+    useGetLoginQuery,
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 import Locale from './Locale';
 import Logout from './Logout';
 
 
 export default function Unauthorized() {
-    const loginResponse = useSelector(state => state.loginResponse);
-    const text = useSelector(state => state.displayTexts);
+    const { data: loginResponse = { roles: [] } } = useGetLoginQuery();
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
 
     return (
         <div>
