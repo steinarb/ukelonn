@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useGetJobtypesQuery } from '../api';
 import { SELECTED_JOB_TYPE } from '../actiontypes';
 
-function Jobtypes(props) {
+export default function Jobtypes(props) {
     const { id, className } = props;
     const transactionTypeId = useSelector(state => state.transactionTypeId);
     const { data: jobtypes = [] } = useGetJobtypesQuery()
     const dispatch = useDispatch();
-    const onJobTypeSelected = e => dispatch(SELECTED_JOB_TYPE(jobtypes.find(t => t.id === parseInt(e.target.value))));
+    const onJobTypeSelected = e => dispatch(SELECTED_JOB_TYPE(jobtypes.find(t => t.id === parseInt(e.target.value)) || { id: -1 }));
 
     return (
         <select id={id} className={className} onChange={onJobTypeSelected} value={transactionTypeId}>
@@ -17,5 +17,3 @@ function Jobtypes(props) {
         </select>
     );
 }
-
-export default Jobtypes;
