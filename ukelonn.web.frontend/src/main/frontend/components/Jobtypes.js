@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useGetJobtypesQuery } from '../api';
 import { SELECTED_JOB_TYPE } from '../actiontypes';
 
-function Jobtypes(props) {
+export default function Jobtypes(props) {
     const { id, className } = props;
     const transactionTypeId = useSelector(state => state.transactionTypeId);
     const { data: jobtypes = [] } = useGetJobtypesQuery()
@@ -17,5 +17,3 @@ function Jobtypes(props) {
         </select>
     );
 }
-
-export default Jobtypes;

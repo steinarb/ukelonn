@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useGetPaymenttypesQuery } from '../api';
 import { SELECTED_PAYMENT_TYPE } from '../actiontypes';
 
-function Paymenttypes(props) {
+export default function Paymenttypes(props) {
     const { id, className } = props;
     const paymentTypeId = useSelector(state => state.transactionTypeId);
     const { data: paymenttypes = [] } = useGetPaymenttypesQuery();
@@ -17,5 +17,3 @@ function Paymenttypes(props) {
         </select>
     );
 }
-
-export default Paymenttypes;
