@@ -50,8 +50,8 @@ listeners.startListening({
     effect: async (action, listenerApi) => {
         listenerApi.dispatch(api.endpoints.postUserAdminstatus.initiate(action.payload));
         if (await listenerApi.condition(api.endpoints.postUserAdminstatus.matchFulfilled)) {
-            const { data: administrator } = api.endpoints.postUserAdminstatus.select(action.payload)(listenerApi.getState());
-            listenerApi.dispatch(MODIFY_USER_IS_ADMINISTRATOR(administrator));
+            const { data: adminstatus } = api.endpoints.postUserAdminstatus.select(action.payload)(listenerApi.getState());
+            listenerApi.dispatch(MODIFY_USER_IS_ADMINISTRATOR(adminstatus.administrator));
         }
     }
 })
