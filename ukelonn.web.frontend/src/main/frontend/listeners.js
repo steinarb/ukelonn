@@ -45,14 +45,11 @@ listeners.startListening({
     }
 })
 
+// reload admin status from backend when user is changed
 listeners.startListening({
     actionCreator: SELECT_USER,
     effect: async (action, listenerApi) => {
-        listenerApi.dispatch(api.endpoints.postUserAdminstatus.initiate(action.payload));
-        if (await listenerApi.condition(api.endpoints.postUserAdminstatus.matchFulfilled)) {
-            const { data: adminstatus } = api.endpoints.postUserAdminstatus.select(action.payload)(listenerApi.getState());
-            listenerApi.dispatch(MODIFY_USER_IS_ADMINISTRATOR(adminstatus.administrator));
-        }
+        listenerApi.dispatch(api.endpoints.postUserAdminstatus.initiate(action.payload, { forceRefetch: true }));
     }
 })
 

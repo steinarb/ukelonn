@@ -8,7 +8,7 @@ export default function JobtypesBox(props) {
     const transactionTypeId = useSelector(state => state.transactionTypeId);
     const { data: jobtypes = [] } = useGetJobtypesQuery()
     const dispatch = useDispatch();
-    const onJobTypeSelected = (e) => { dispatch(SELECTED_JOB_TYPE(jobtypes.find(t => t.id === parseInt(e.target.value)))) }
+    const onJobTypeSelected = (e) => { dispatch(SELECTED_JOB_TYPE(jobtypes.find(t => t.id === parseInt(e.target.value)) || { id: -1 })) }
 
     return (
         <select multiple="true" size="10" id={id} className={className} onChange={onJobTypeSelected} value={transactionTypeId}>
