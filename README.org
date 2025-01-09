@@ -76,26 +76,34 @@ Se fila LICENSE for teksten på lisensen.
 
 * Hva ligger på de forskjellige branchene
 
-I øyeblikket er det fire hoved-brancher:
+I øyeblikket er det tre aktive brancher:
  1. master
     Dette er branchen som er i produksjon.  Hver push av denne branchen forårsaker [[https://travis-ci.org/steinarb/ukelonn][et bygg på travis-ci]] (dette er den eneste branchen med en [[https://github.com/steinarb/ukelonn/blob/master/.travis.yml][.travis.yml]]-fil) med snapshot deploy til et eget maven-repository, som er [[Oppsett av webappen på en server med debian GNU/linux][det som brukes til å installere applikasjonen i karaf-instansen på produksjonsserveren]].  Det som ligger på master er i øyeblikket work/using-react-with-bootstrap4
  2. using-react
     Denne branchen har et GUI basert på [[https://reactjs.org][react.js]] med navigasjon mellom skjermbilder besørget av [[https://reactjs.org][react-router v4]], datamodell i [[https://reactjs.org][redux]], med REST-API-kommunikasjon gjort av [[https://reactjs.org][saga]] og [[https://reactjs.org][axios]].  Denne branchen er uten styling
-    1. work/using-react-with-bootstrap4 er using-react stylet opp som en "responsive" mobilvennlig webapp, med [[https://getbootstrap.com][bootstrap v4]]
-    2. work/using-react-with-material-design som er using-react stylet opp som en "responsive" mobilvennlig webapp, med [[https://getmdl.io][material design lite]]
- 3. using-vaadin
+ 3. work/using-react-with-bootstrap4 er using-react stylet opp som en "responsive" mobilvennlig webapp, med [[https://getbootstrap.com][bootstrap v5]]
+
+** Gamle brancher
+
+Dette er brancher som på et tidspunkt var aktive varianter av applikasjonen.
+
+Men i skrivende stund er det kun react-branchene (ustylet og stylet med bootstrap), som er aktive.
+
+Branchene der det er lenge siden noe utvikling har skjedd, er:
+ 1. using-vaadin
     Denne branchen bruker [[https://vaadin.com/home][vaadin]].
     Her brukes Vaadins [[https://vaadin.com/docs/-/part/touchkit/mobile-components.html][Mobile User Interface Components]] for å få noe som ser "app-aktig" ut, iallefall på registrering av jobber, gjort av ungene.
     Admin-grensesnittet er også blitt mer mobilt men vil trives bedre på en tablet enn på en mobil (det er mer som skal vises fram).
     Denne branchen er i skrivende stund "i produksjon" i heimen (i den litt eldre versjonen som ligger på master).
     Denne branchen bruker [[http://ops4j.github.io/pax/web/SNAPSHOT/User-Guide.html#whiteboard-extender][Pax web whiteboard extender]] der servlet'er og filtre blir publisert som OSGi-servicer som blir plukket opp av pax web.  For å lage servicene som plukkes opp av Pax Web, brukes OSGi Declarative Services (DS).
- 4. using-primefaces
+ 2. using-primefaces
     Denne branchen bruker [[https://en.wikipedia.org/wiki/JavaServer_Faces][JSF]] med [[http://www.primefaces.org/][primefaces]] og var den første som var ferdig.
     Jeg støtte på [[https://github.com/primefaces/primefaces/issues/1864][en bug]] i primefaces mobile som gjorde at versjonen som kjører nå ikke er så pen (siden jeg ikke kunne bruke primefaces mobile så måtte jeg gjøre et triks med å blåse opp fontene for at ting ikke skulle være uleselig på mobil, så sluttresultatet så litt rart ut). Branchen bygger fortsatt og har fått alle databasendringene men har mest historisk interesse idag
- 5. using-rendersnake
+ 3. using-rendersnake
     Denne branchen var ment å være "back to basic" og bruke [[http://rendersnake.org/][rendersnake]] sammen med en REST-ful backend, men den er i skrivende stund ikke forbi "hello world"-stadiet.  Denne branchen var utgangspunktet for using-react og er i øyeblikket i praksis død
+ 4. work/using-react-with-material-design som er using-react stylet opp som en "responsive" mobilvennlig webapp, med [[https://getmdl.io][material design lite]]
 
-Jeg har også plan om å lage en branch med en versjon som bruker [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet. Spark er allerede en OSGi-bundle, så det burde la seg gjøre å få den til å spille i [[http://karaf.apache.org][Karaf]] på en sånn måte at jeg kan beholde database-laget (der all business-intelligensen er), mens jeg fjerner alt som har med servlets å gjøre. Har gjort et forsøk på å dra spark inn i karaf men har ikke lykkes ennå. Forhåpentligvis kan jeg også beholde [[https://shiro.apache.org][Shiro]] for å håndtere autentisering og autorisasjon.
+Det ble aldri noe av min plan om å lage en branch med en versjon som brukte [[http://sparkjava.com][spark]] med [[https://blog.openshift.com/developing-single-page-web-applications-using-java-8-spark-mongodb-and-angularjs/][angular.js]], men denne er foreløpig på plan-stadiet.
 
 * Kjapp test av programvaren uten å bygge koden
 
