@@ -18,9 +18,9 @@ const defaultValue = '';
 const transactionTypeNameReducer = createReducer(defaultValue, builder => {
     builder
         .addCase(MODIFY_TRANSACTION_TYPE_NAME, (state, action) => action.payload)
-        .addCase(SELECTED_JOB_TYPE, (state, action) => isUnselected(action.payload.accountId) ? defaultValue : action.payload.transactionTypeName)
-        .addCase(SELECTED_PAYMENT_TYPE, (state, action) => isUnselected(action.payload.accountId) ? defaultValue : (action.payload.transactionTypeName || defaultValue))
-        .addCase(SELECTED_PAYMENT_TYPE_FOR_EDIT, (state, action) => isUnselected(action.payload.accountId) ? defaultValue : (action.payload.transactionTypeName || defaultValue))
+        .addCase(SELECTED_JOB_TYPE, (state, action) => isUnselected(action.payload.id) ? defaultValue : action.payload.transactionTypeName)
+        .addCase(SELECTED_PAYMENT_TYPE, (state, action) => isUnselected(action.payload.id) ? defaultValue : (action.payload.transactionTypeName || defaultValue))
+        .addCase(SELECTED_PAYMENT_TYPE_FOR_EDIT, (state, action) => isUnselected(action.payload.id) ? defaultValue : (action.payload.transactionTypeName || defaultValue))
         .addMatcher(api.endpoints.postJobRegister.matchFulfilled, () => defaultValue)
         .addCase(CLEAR_JOB_FORM, () => defaultValue)
         .addMatcher(isClearTransactionTypeForm, () => defaultValue)
