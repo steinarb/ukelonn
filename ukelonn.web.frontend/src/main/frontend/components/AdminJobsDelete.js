@@ -16,10 +16,8 @@ export default function AdminJobsDelete() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const accountFirstName = useSelector(state => state.accountFirstName);
-    const accountId = useSelector(state => state.accountId);
-    const account = { accountId };
-    const { data: jobs = [] } = useGetJobsQuery(accountId);
+    const account = useSelector(state => state.account);
+    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
     const jobIds = useSelector(state => state.jobIdsSelectedForDelete);
     const dispatch = useDispatch();
     const [ postJobsDelete ] = usePostJobsDeleteMutation();
@@ -33,7 +31,7 @@ export default function AdminJobsDelete() {
                     &nbsp;
                     {text.administrateJobsAndJobTypes}
                 </Link>
-                <h1>{text.deleteErronouslyRegisteredJobsFor} {accountFirstName}</h1>
+                <h1>{text.deleteErronouslyRegisteredJobsFor} {account.firstname}</h1>
                 <Locale />
             </nav>
 

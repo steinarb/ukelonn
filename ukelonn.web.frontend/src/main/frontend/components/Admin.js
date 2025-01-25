@@ -20,8 +20,8 @@ export default function Admin() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const accountId = useSelector(state => state.accountId);
-    const username = useSelector(state => state.accountUsername);
+    const account = useSelector(state => state.account);
+    const username = account.username;
     const transactionTypeId = useSelector(state => state.transactionTypeId);
     const transactionTypeName = useSelector(state => state.transactionTypeName);
     const transactionAmount = useSelector(state => state.transactionAmount);
@@ -32,13 +32,11 @@ export default function Admin() {
         const notification = { title: 'Ukelønn', message: transactionAmount + ' kroner ' + transactionTypeName };
         await postNotificationTo({ username, notification });
     };
-    const account = { accountId, username };
-    const balance = useSelector(state => state.accountBalance);
     const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
-    const performedjobs = noUser ? '#' : '/performedjobs?' + stringify({ parentTitle, accountId, username });
-    const performedpayments = noUser ? '#' : '/performedpayments?' + stringify({ parentTitle, accountId, username });
+    const performedjobs = noUser ? '#' : '/performedjobs?' + stringify({ parentTitle, accountId: account.accountId, username });
+    const performedpayments = noUser ? '#' : '/performedpayments?' + stringify({ parentTitle, accountId: account.accountId, username });
     const statistics = noUser ? '#' : '/statistics?' + stringify({ username });
 
     return (
@@ -64,7 +62,7 @@ export default function Admin() {
                     <div>
                         <label htmlFor="account-balance">{text.owedAmount}:</label>
                         <div>
-                            <input id="account-balance" type="text" value={balance} readOnly={true} />
+                            <input id="account-balance" type="text" value={account.balance} readOnly={true} />
                         </div>
                     </div>
                     <div>

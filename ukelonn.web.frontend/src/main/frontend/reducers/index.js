@@ -2,12 +2,7 @@ import { combineReducers } from 'redux';
 import { createReducer } from '@reduxjs/toolkit';
 import { api } from '../api';
 import notificationAvailable from './notificationAvailableReducer';
-import accountId from './accountIdReducer';
-import accountUsername from './accountUsernameReducer';
-import accountFirstname from './accountFirstnameReducer';
-import accountLastname from './accountLastnameReducer';
-import accountBalance from './accountBalanceReducer';
-import accountFullname from './accountFullnameReducer';
+import account from './accountSlice';
 import haveReceivedResponseFromLogin from './haveReceivedResponseFromLoginReducer';
 import loginResponse from './loginResponseReducer';
 import transactionId from './transactionIdReducer';
@@ -41,12 +36,7 @@ export default (routerReducer, basename) => combineReducers({
     [api.reducerPath]: api.reducer,
     locale,
     notificationAvailable,
-    accountId,
-    accountUsername,
-    accountFirstname,
-    accountLastname,
-    accountBalance,
-    accountFullname,
+    account,
     haveReceivedResponseFromLogin,
     loginResponse,
     transactionId,

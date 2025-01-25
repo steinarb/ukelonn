@@ -1,8 +1,8 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { selectAccount } from './accountSlice';
 import {
     MODIFY_JOB_AMOUNT,
     MODIFY_PAYMENT_AMOUNT,
-    SELECT_ACCOUNT,
     SELECTED_JOB_TYPE,
     SELECTED_PAYMENT_TYPE,
     SELECTED_PAYMENT_TYPE_FOR_EDIT,
@@ -23,7 +23,7 @@ const transactionAmountReducer = createReducer(defaultValue, builder => {
     builder
         .addCase(MODIFY_JOB_AMOUNT, (state, action) => action.payload)
         .addCase(MODIFY_PAYMENT_AMOUNT, (state, action) => action.payload)
-        .addCase(SELECT_ACCOUNT, (state, action) => action.payload.balance)
+        .addCase(selectAccount, (state, action) => action.payload.balance)
         .addCase(SELECTED_JOB_TYPE, (state, action) => isUnselected(action.payload.id) ? defaultValue : action.payload.transactionAmount)
         .addCase(SELECTED_PAYMENT_TYPE, (state, action) => isUnselected(action.payload.id) ? defaultValue : (action.payload.transactionAmount || defaultValue))
         .addCase(SELECTED_PAYMENT_TYPE_FOR_EDIT, (state, action) => isUnselected(action.payload.id) ? defaultValue : (action.payload.transactionAmount || defaultValue))

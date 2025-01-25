@@ -12,7 +12,6 @@ export const MODIFY_PASSWORD1 = createAction('MODIFY_PASSWORD1');
 export const MODIFY_PASSWORD2 = createAction('MODIFY_PASSWORD2');
 export const MODIFY_PASSWORDS_NOT_IDENTICAL = createAction('MODIFY_PASSWORDS_NOT_IDENTICAL');
 export const CLEAR_USER_AND_PASSWORDS = createAction('CLEAR_USER_AND_PASSWORDS');
-export const SELECT_ACCOUNT = createAction('SELECT_ACCOUNT');
 export const SELECTED_JOB_TYPE = createAction('SELECTED_JOB_TYPE');
 export const MODIFY_JOB_AMOUNT = createAction('MODIFY_JOB_AMOUNT');
 export const MODIFY_JOB_DATE = createAction('MODIFY_JOB_DATE');

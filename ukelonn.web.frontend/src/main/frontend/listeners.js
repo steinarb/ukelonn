@@ -26,20 +26,20 @@ listeners.startListening({
 })
 
 // Set payment amount based on selected payment type
-// must be in an RTK listener since it uses state.accountBalance
+// must be in an RTK listener since it uses state.account.balance
 // when payment type amount is empty
 listeners.startListening({
     actionCreator: SELECTED_PAYMENT_TYPE,
     effect: (action, listenerApi) => {
         const paymenttype = action.payload;
         if (paymenttype === -1) {
-            const balance = listenerApi.getState().accountBalance;
+            const balance = listenerApi.getState().account.balance;
             listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(balance));
         }
         if (paymenttype && paymenttype.transactionAmount > 0) {
             listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(paymenttype.transactionAmount));
         } else {
-            const balance = listenerApi.getState().accountBalance;
+            const balance = listenerApi.getState().account.balance;
             listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(balance));
         }
     }
