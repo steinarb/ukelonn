@@ -1,16 +1,13 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { LOCATION_CHANGE } from 'redux-first-history';
+import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
+import { clearTransactionType } from './reducers/transactionTypeSlice';
 import { api } from './api';
 import {
-    SELECTED_PAYMENT_TYPE,
-    MODIFY_PAYMENT_AMOUNT,
     SELECT_USER,
     MODIFY_USER_IS_ADMINISTRATOR,
     MODIFY_PASSWORDS_NOT_IDENTICAL,
     CLEAR_USER_AND_PASSWORDS,
-    CLEAR_JOB_TYPE_FORM,
-    CLEAR_JOB_TYPE_CREATE_FORM,
-    CLEAR_PAYMENT_TYPE_FORM,
     CLEAR_BONUS,
 } from './actiontypes';
 import { isUsersLoaded, isPasswordModified, isRejectedRequest } from './matchers';
@@ -29,18 +26,18 @@ listeners.startListening({
 // must be in an RTK listener since it uses state.account.balance
 // when payment type amount is empty
 listeners.startListening({
-    actionCreator: SELECTED_PAYMENT_TYPE,
+    actionCreator: selectPaymentType,
     effect: (action, listenerApi) => {
         const paymenttype = action.payload;
         if (paymenttype === -1) {
             const balance = listenerApi.getState().account.balance;
-            listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(balance));
+            listenerApi.dispatch(setAmount(balance));
         }
         if (paymenttype && paymenttype.transactionAmount > 0) {
-            listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(paymenttype.transactionAmount));
+            listenerApi.dispatch(setAmount(paymenttype.transactionAmount));
         } else {
             const balance = listenerApi.getState().account.balance;
-            listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(balance));
+            listenerApi.dispatch(setAmount(balance));
         }
     }
 })
@@ -82,15 +79,15 @@ listeners.startListening({
         const pathname = findPathname(location, listenerApi.getState().basename);
 
         if (pathname === '/admin/jobtypes/modify') {
-            listenerApi.dispatch(CLEAR_JOB_TYPE_FORM());
+            listenerApi.dispatch(clearTransactionType());
         }
 
         if (pathname === '/admin/jobtypes/create') {
-            listenerApi.dispatch(CLEAR_JOB_TYPE_CREATE_FORM());
+            listenerApi.dispatch(clearTransactionType());
         }
 
         if (pathname === '/admin/paymenttypes/modify' || pathname === '/admin/paymenttypes/create') {
-            listenerApi.dispatch((CLEAR_PAYMENT_TYPE_FORM()));
+            listenerApi.dispatch((clearTransactionType()));
         }
 
         if (pathname === '/admin/users/modify' || pathname === '/admin/users/password' || pathname === '/admin/users/create') {

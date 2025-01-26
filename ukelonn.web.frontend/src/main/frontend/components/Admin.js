@@ -6,9 +6,9 @@ import {
     usePostPaymentRegisterMutation,
     usePostNotificationToMutation,
 } from '../api';
+import { setAmount } from '../reducers/transactionSlice';
 import { Link } from 'react-router';
 import { stringify } from 'qs';
-import { MODIFY_PAYMENT_AMOUNT } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
@@ -22,9 +22,10 @@ export default function Admin() {
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const account = useSelector(state => state.account);
     const username = account.username;
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
-    const transactionTypeName = useSelector(state => state.transactionTypeName);
-    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transaction = useSelector(state => state.transaction);
+    const transactionTypeId = transaction.transactionType.id;
+    const transactionTypeName = transaction.transactionType.transactionTypeName;
+    const transactionAmount = transaction.transactionAmount;
     const [ postPaymentRegister ] = usePostPaymentRegisterMutation();
     const [ postNotificationTo ] = usePostNotificationToMutation();
     const onRegisterPaymentClicked = async () => {
@@ -78,7 +79,7 @@ export default function Admin() {
                                 id="amount"
                                 type="text"
                                 value={transactionAmount}
-                                onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
+                                onChange={e => dispatch(setAmount(e.target.value))} />
                         </div>
                     </div>
                     <div>

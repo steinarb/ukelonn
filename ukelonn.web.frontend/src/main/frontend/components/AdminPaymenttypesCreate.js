@@ -1,4 +1,5 @@
 import React from 'react';
+import { setName, setAmount } from '../reducers/transactionTypeSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
@@ -6,7 +7,6 @@ import {
     usePostPaymenttypeCreateMutation,
 } from '../api';
 import { Link } from 'react-router';
-import { MODIFY_TRANSACTION_TYPE_NAME, MODIFY_JOB_AMOUNT } from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 import { numberAsString } from './utils';
@@ -15,8 +15,9 @@ export default function AdminPaymenttypesCreate() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const transactionTypeName = useSelector(state => state.transactionTypeName);
-    const transactionAmount = useSelector(state => numberAsString(state.transactionAmount));
+    const transactionType = useSelector(state => state.transactionType);
+    const transactionTypeName =  transactionType.transactionTypeName;
+    const transactionAmount = numberAsString(transactionType.transactionAmount);
     const dispatch = useDispatch();
     const [ postPaymenttypeCreate ] = usePostPaymenttypeCreateMutation();
     const onCreatePaymentTypeClicked = async () => await postPaymenttypeCreate({ transactionTypeName, transactionAmount });
@@ -41,7 +42,7 @@ export default function AdminPaymenttypesCreate() {
                                 id="name"
                                 type="text"
                                 value={transactionTypeName}
-                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                                onChange={e => dispatch(setName(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -51,7 +52,7 @@ export default function AdminPaymenttypesCreate() {
                                 id="amount"
                                 type="text"
                                 value={transactionAmount}
-                                onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
+                                onChange={e => dispatch(setAmount(parseInt(e.target.value)))} />
                         </div>
                     </div>
                     <div>

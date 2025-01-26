@@ -25,9 +25,10 @@ export default function User() {
     const { data: loginResponse = { username: '' }, isSuccess: loginIsSuccess } = useGetLoginQuery();
     const { data: account = {} } = useGetAccountQuery(loginResponse.username, { skip: !loginIsSuccess });
     const { accountId, firstName: firstname, username, balance } = account;
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
-    const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionDate = useSelector(state => state.transactionDate);
+    const transaction = useSelector(state => state.transaction);
+    const transactionTypeId = transaction.transactionType.id;
+    const transactionAmount = transaction.transactionAmount;
+    const transactionDate = transaction.transactionTime;
     const dispatch = useDispatch();
     const [ postJobRegister ] = usePostJobRegisterMutation();
     const onRegisterJobClicked = async () => await postJobRegister({ account, transactionTypeId, transactionAmount, transactionDate });

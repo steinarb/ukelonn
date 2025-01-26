@@ -1,15 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { setName, setAmount } from '../reducers/transactionTypeSlice';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostJobtypeModifyMutation,
 } from '../api';
 import { Link } from 'react-router';
-import {
-    MODIFY_TRANSACTION_TYPE_NAME,
-    MODIFY_JOB_AMOUNT,
-} from '../actiontypes';
 import Locale from './Locale';
 import JobtypesBox from './JobtypesBox';
 import Logout from './Logout';
@@ -19,9 +16,10 @@ export default function AdminJobtypesModify() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const id = useSelector(state => numberAsString(state.transactionTypeId));
-    const transactionAmount = useSelector(state => numberAsString(state.transactionAmount));
-    const transactionTypeName = useSelector(state => state.transactionTypeName);
+    const transactionType = useSelector(state => state.transactionType);
+    const id = numberAsString(transactionType.id);
+    const transactionAmount = numberAsString(transactionType.transactionAmount);
+    const transactionTypeName = transactionType.transactionTypeName;
     const dispatch = useDispatch();
     const [ postJobtypeModify ] = usePostJobtypeModifyMutation();
     const onSaveChangesToJobtypeClicked = async () => await postJobtypeModify({ id, transactionTypeName, transactionAmount });
@@ -52,7 +50,7 @@ export default function AdminJobtypesModify() {
                                 id="name"
                                 type="text"
                                 value={transactionTypeName}
-                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                                onChange={e => dispatch(setName(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -62,7 +60,7 @@ export default function AdminJobtypesModify() {
                                 id="amount"
                                 type="text"
                                 value={transactionAmount}
-                                onChange={e => dispatch(MODIFY_JOB_AMOUNT(parseInt(e.target.value)))} />
+                                onChange={e => dispatch(setAmount(parseInt(e.target.value)))} />
                         </div>
                     </div>
                     <div>

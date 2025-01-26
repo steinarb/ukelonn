@@ -5,11 +5,8 @@ import notificationAvailable from './notificationAvailableReducer';
 import account from './accountSlice';
 import haveReceivedResponseFromLogin from './haveReceivedResponseFromLoginReducer';
 import loginResponse from './loginResponseReducer';
-import transactionId from './transactionIdReducer';
-import transactionTypeId from './transactionTypeIdReducer';
-import transactionTypeName from './transactionTypeNameReducer';
-import transactionAmount from './transactionAmountReducer';
-import transactionDate from './transactionDateReducer';
+import transaction from './transactionSlice';
+import transactionType from './transactionTypeSlice';
 import usernames from './usernamesReducer';
 import password1 from './password1Reducer';
 import password2 from './password2Reducer';
@@ -39,11 +36,8 @@ export default (routerReducer, basename) => combineReducers({
     account,
     haveReceivedResponseFromLogin,
     loginResponse,
-    transactionId,
-    transactionTypeId,
-    transactionTypeName,
-    transactionAmount,
-    transactionDate,
+    transaction,
+    transactionType,
     usernames,
     password1,
     password2,

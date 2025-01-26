@@ -1,15 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { setName, setAmount } from '../reducers/transactionTypeSlice';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostPaymenttypeModifyMutation,
 } from '../api';
 import { Link } from 'react-router';
-import {
-    MODIFY_TRANSACTION_TYPE_NAME,
-    MODIFY_PAYMENT_AMOUNT,
-} from '../actiontypes';
 import Locale from './Locale';
 import PaymenttypesBox from './PaymenttypesBox';
 import Logout from './Logout';
@@ -18,9 +15,10 @@ export default function AdminPaymenttypesModify() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const id = useSelector(state => state.transactionTypeId);
-    const transactionTypeName = useSelector(state => state.transactionTypeName);
-    const transactionAmount = useSelector(state => state.transactionAmount);
+    const transactionType = useSelector(state => state.transactionType);
+    const id = transactionType.id;
+    const transactionTypeName = transactionType.transactionTypeName;
+    const transactionAmount = transactionType.transactionAmount || '';
     const dispatch = useDispatch();
     const [ postPaymenttypeModify ] = usePostPaymenttypeModifyMutation();
     const onSaveChangesToPaymenttypeClicked = async () => await postPaymenttypeModify({ id, transactionTypeName, transactionAmount });
@@ -51,7 +49,7 @@ export default function AdminPaymenttypesModify() {
                                 id="name"
                                 type="text"
                                 value={transactionTypeName}
-                                onChange={e => dispatch(MODIFY_TRANSACTION_TYPE_NAME(e.target.value))} />
+                                onChange={e => dispatch(setName(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -61,7 +59,7 @@ export default function AdminPaymenttypesModify() {
                                 id="amount"
                                 type="text"
                                 value={transactionAmount}
-                                onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
+                                onChange={e => dispatch(setAmount(e.target.value))} />
                         </div>
                     </div>
                     <div>

@@ -18,10 +18,11 @@ export default function AdminJobsEdit() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const account = useSelector(state => state.account);
-    const id = useSelector(state => state.transactionId);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
-    const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionTime = useSelector(state => state.transactionDate);
+    const transaction = useSelector(state => state.transaction);
+    const id = transaction.id;
+    const transactionTypeId = transaction.transactionType.id;
+    const transactionAmount = transaction.transactionAmount || '';
+    const transactionTime = transaction.transactionTime;
     const transactionDateJustDate = transactionTime.split('T')[0];
     const { data: jobs = [] } = useGetJobsQuery(account.accountId);
     const dispatch = useDispatch();
