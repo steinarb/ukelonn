@@ -11,11 +11,7 @@ import usernames from './usernamesReducer';
 import password1 from './password1Reducer';
 import password2 from './password2Reducer';
 import passwordsNotIdentical from './passwordsNotIdenticalReducer';
-import userid from './useridReducer';
-import userUsername from './userUsernameReducer';
-import userEmail from './userEmailReducer';
-import userFirstname from './userFirstnameReducer';
-import userLastname from './userLastnameReducer';
+import user from './userSlice';
 import userIsAdministrator from './userIsAdministratorReducer';
 import bonusId from './bonusIdReducer';
 import bonusEnabled from './bonusEnabledReducer';
@@ -42,11 +38,7 @@ export default (routerReducer, basename) => combineReducers({
     password1,
     password2,
     passwordsNotIdentical,
-    userid,
-    userUsername,
-    userEmail,
-    userFirstname,
-    userLastname,
+    user,
     userIsAdministrator,
     bonusId,
     bonusEnabled,

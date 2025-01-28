@@ -6,17 +6,10 @@ import {
     usePostUserCreateMutation,
     usePostUserChangeadminstatusMutation,
 } from '../api';
+import { setUsername, setEmail, setFirstname, setLastname } from '../reducers/userSlice';
+import { MODIFY_PASSWORD1, MODIFY_PASSWORD2, MODIFY_USER_IS_ADMINISTRATOR } from '../actiontypes';
 import { Link } from 'react-router';
 import { isEmail } from 'validator';
-import {
-    MODIFY_USER_USERNAME,
-    MODIFY_USER_EMAIL,
-    MODIFY_USER_FIRSTNAME,
-    MODIFY_USER_LASTNAME,
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
-    MODIFY_USER_IS_ADMINISTRATOR,
-} from '../actiontypes';
 import Locale from './Locale';
 import Logout from './Logout';
 
@@ -25,11 +18,7 @@ export default function AdminUsersCreate() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const usernames = useSelector(state => state.usernames);
-    const username = useSelector(state => state.userUsername);
-    const email = useSelector(state => state.userEmail);
-    const firstname = useSelector(state => state.userFirstname);
-    const lastname = useSelector(state => state.userLastname);
-    const user = { username, email, firstname, lastname };
+    const user = useSelector(state => state.user);
     const userIsAdministrator = useSelector(state => state.userIsAdministrator);
     const password1 = useSelector(state => state.password1);
     const password2 = useSelector(state => state.password2);
@@ -44,8 +33,8 @@ export default function AdminUsersCreate() {
         await postUserChangeadminstatus({ administrator, user: createdUser });
     };
 
-    const usernameEmpty = !username;
-    const usernameExists = usernames.indexOf(username) > -1;
+    const usernameEmpty = !user.username;
+    const usernameExists = usernames.indexOf(user.username) > -1;
 
     return (
         <div>
@@ -66,8 +55,8 @@ export default function AdminUsersCreate() {
                             <input
                                 id="username"
                                 type="text"
-                                value={username}
-                                onChange={e => dispatch(MODIFY_USER_USERNAME(e.target.value))} />
+                                value={user.username}
+                                onChange={e => dispatch(setUsername(e.target.value))} />
                             { usernameEmpty && <span>{text.usernameCanNotBeEmpty}</span> }
                             { usernameExists && <span>{text.usernameExists}</span> }
                         </div>
@@ -78,9 +67,9 @@ export default function AdminUsersCreate() {
                             <input
                                 id="email"
                                 type="text"
-                                value={email}
-                                onChange={e => dispatch(MODIFY_USER_EMAIL(e.target.value))} />
-                            { email && !isEmail(email) && <span>{text.notAValidEmailAddress}</span> }
+                                value={user.email}
+                                onChange={e => dispatch(setEmail(e.target.value))} />
+                            { user.email && !isEmail(user.email) && <span>{text.notAValidEmailAddress}</span> }
                         </div>
                     </div>
                     <div>
@@ -89,8 +78,8 @@ export default function AdminUsersCreate() {
                             <input
                                 id="firstname"
                                 type="text"
-                                value={firstname}
-                                onChange={e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value))} />
+                                value={user.firstname}
+                                onChange={e => dispatch(setFirstname(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -99,8 +88,8 @@ export default function AdminUsersCreate() {
                             <input
                                 id="lastname"
                                 type="text"
-                                value={lastname}
-                                onChange={e => dispatch(MODIFY_USER_LASTNAME(e.target.value))} />
+                                value={user.lastname}
+                                onChange={e => dispatch(setLastname(e.target.value))} />
                         </div>
                     </div>
                     <div>

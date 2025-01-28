@@ -1,13 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 export const UPDATE_FIRSTTIMEAFTERLOGIN = createAction('UPDATE_FIRSTTIMEAFTERLOGIN');
-export const SELECT_USER = createAction('SELECT_USER');
-export const MODIFY_USER_USERNAME = createAction('MODIFY_USER_USERNAME');
-export const MODIFY_USER_EMAIL = createAction('MODIFY_USER_EMAIL');
-export const MODIFY_USER_FIRSTNAME = createAction('MODIFY_USER_FIRSTNAME');
-export const MODIFY_USER_LASTNAME = createAction('MODIFY_USER_LASTNAME');
 export const MODIFY_USER_IS_ADMINISTRATOR = createAction('MODIFY_USER_IS_ADMINISTRATOR');
-export const CLEAR_USER = createAction('CLEAR_USER');
 export const MODIFY_PASSWORD1 = createAction('MODIFY_PASSWORD1');
 export const MODIFY_PASSWORD2 = createAction('MODIFY_PASSWORD2');
 export const MODIFY_PASSWORDS_NOT_IDENTICAL = createAction('MODIFY_PASSWORDS_NOT_IDENTICAL');

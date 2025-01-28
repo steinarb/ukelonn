@@ -15,12 +15,7 @@ export default function AdminUsersChangePassword() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const userid = useSelector(state => state.userid);
-    const username = useSelector(state => state.userUsername);
-    const email = useSelector(state => state.userEmail);
-    const firstname = useSelector(state => state.userFirstname);
-    const lastname = useSelector(state => state.userLastname);
-    const user = {userid, username, email, firstname, lastname };
+    const user = useSelector(state => state.user);
     const password1 = useSelector(state => state.password1);
     const password2 = useSelector(state => state.password2);
     const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);

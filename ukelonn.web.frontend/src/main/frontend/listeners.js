@@ -2,9 +2,9 @@ import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
 import { clearTransactionType } from './reducers/transactionTypeSlice';
+import { selectUser } from './reducers/userSlice';
 import { api } from './api';
 import {
-    SELECT_USER,
     MODIFY_USER_IS_ADMINISTRATOR,
     MODIFY_PASSWORDS_NOT_IDENTICAL,
     CLEAR_USER_AND_PASSWORDS,
@@ -44,7 +44,7 @@ listeners.startListening({
 
 // reload admin status from backend when user is changed
 listeners.startListening({
-    actionCreator: SELECT_USER,
+    actionCreator: selectUser,
     effect: async (action, listenerApi) => {
         listenerApi.dispatch(api.endpoints.postUserAdminstatus.initiate(action.payload, { forceRefetch: true }));
     }
