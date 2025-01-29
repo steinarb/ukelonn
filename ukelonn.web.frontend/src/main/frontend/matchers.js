@@ -1,8 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { api } from './api';
 import {
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
 } from './actiontypes';
 
 export const isClearTransactionTypeForm = isAnyOf(
@@ -24,11 +22,6 @@ export const isUsersLoaded = isAnyOf(
     api.endpoints.postUserModify.matchFulfilled,
     api.endpoints.postUserPassword.matchFulfilled,
     api.endpoints.postUserCreate.matchFulfilled,
-);
-
-export const isPasswordModified = isAnyOf(
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
 );
 
 export const isAllbonusesLoaded = isAnyOf(

@@ -7,7 +7,8 @@ import {
     usePostUserChangeadminstatusMutation,
 } from '../api';
 import { setUsername, setEmail, setFirstname, setLastname } from '../reducers/userSlice';
-import { MODIFY_PASSWORD1, MODIFY_PASSWORD2, MODIFY_USER_IS_ADMINISTRATOR } from '../actiontypes';
+import { setPassword1, setPassword2 } from '../reducers/passwordSlice';
+import { MODIFY_USER_IS_ADMINISTRATOR } from '../actiontypes';
 import { Link } from 'react-router';
 import { isEmail } from 'validator';
 import Locale from './Locale';
@@ -20,10 +21,8 @@ export default function AdminUsersCreate() {
     const usernames = useSelector(state => state.usernames);
     const user = useSelector(state => state.user);
     const userIsAdministrator = useSelector(state => state.userIsAdministrator);
-    const password1 = useSelector(state => state.password1);
-    const password2 = useSelector(state => state.password2);
-    const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
-    const userAndPasswords = { user, password1, password2, passwordsNotIdentical };
+    const password = useSelector(state => state.password);
+    const userAndPasswords = { user, ...password };
     const dispatch = useDispatch();
     const [ postUserCreate ] = usePostUserCreateMutation();
     const [ postUserChangeadminstatus ] = usePostUserChangeadminstatusMutation();
@@ -98,8 +97,8 @@ export default function AdminUsersCreate() {
                             <input
                                 id="password1"
                                 type='password'
-                                value={password1}
-                                onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
+                                value={password.password1}
+                                onChange={e => dispatch(setPassword1(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -108,9 +107,9 @@ export default function AdminUsersCreate() {
                             <input
                                 id="password2"
                                 type="password"
-                                value={password2}
-                                onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))}/>
-                            { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
+                                value={password.password2}
+                                onChange={e => dispatch(setPassword2(e.target.value))}/>
+                            { password.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div>

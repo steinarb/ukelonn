@@ -8,11 +8,9 @@ import loginResponse from './loginResponseReducer';
 import transaction from './transactionSlice';
 import transactionType from './transactionTypeSlice';
 import usernames from './usernamesReducer';
-import password1 from './password1Reducer';
-import password2 from './password2Reducer';
-import passwordsNotIdentical from './passwordsNotIdenticalReducer';
 import user from './userSlice';
 import userIsAdministrator from './userIsAdministratorReducer';
+import password from './passwordSlice';
 import bonusId from './bonusIdReducer';
 import bonusEnabled from './bonusEnabledReducer';
 import bonusIconurl from './bonusIconurlReducer';
@@ -35,11 +33,9 @@ export default (routerReducer, basename) => combineReducers({
     transaction,
     transactionType,
     usernames,
-    password1,
-    password2,
-    passwordsNotIdentical,
     user,
     userIsAdministrator,
+    password,
     bonusId,
     bonusEnabled,
     bonusIconurl,

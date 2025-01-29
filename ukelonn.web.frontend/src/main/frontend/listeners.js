@@ -2,15 +2,14 @@ import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
 import { clearTransactionType } from './reducers/transactionTypeSlice';
-import { selectUser } from './reducers/userSlice';
+import { selectUser, clearUser } from './reducers/userSlice';
+import { clearPassword } from './reducers/passwordSlice';
 import { api } from './api';
 import {
     MODIFY_USER_IS_ADMINISTRATOR,
-    MODIFY_PASSWORDS_NOT_IDENTICAL,
-    CLEAR_USER_AND_PASSWORDS,
     CLEAR_BONUS,
 } from './actiontypes';
-import { isUsersLoaded, isPasswordModified, isRejectedRequest } from './matchers';
+import { isUsersLoaded, isRejectedRequest } from './matchers';
 
 const listeners = createListenerMiddleware();
 
@@ -50,27 +49,6 @@ listeners.startListening({
     }
 })
 
-listeners.startListening({
-    matcher: isUsersLoaded,
-    effect: (action, listenerApi) => {
-        listenerApi.dispatch(CLEAR_USER_AND_PASSWORDS());
-    }
-})
-
-listeners.startListening({
-    matcher: isPasswordModified,
-    effect: (action, listenerApi) => {
-        const password1 = listenerApi.getState().password1;
-        const password2 = listenerApi.getState().password2;
-        if (!password2) {
-            // if second password is empty we don't compare because it probably hasn't been typed into yet
-            listenerApi.dispatch(MODIFY_PASSWORDS_NOT_IDENTICAL(false));
-        } else {
-            listenerApi.dispatch(MODIFY_PASSWORDS_NOT_IDENTICAL(password1 !== password2));
-        }
-    }
-})
-
 // Blank forms when navigating
 listeners.startListening({
     type: LOCATION_CHANGE,
@@ -91,7 +69,8 @@ listeners.startListening({
         }
 
         if (pathname === '/admin/users/modify' || pathname === '/admin/users/password' || pathname === '/admin/users/create') {
-            listenerApi.dispatch(CLEAR_USER_AND_PASSWORDS());
+            listenerApi.dispatch(clearUser());
+            listenerApi.dispatch(clearPassword());
         }
 
         if (pathname === '/admin/users/create') {

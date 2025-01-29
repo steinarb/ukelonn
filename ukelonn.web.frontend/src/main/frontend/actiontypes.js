@@ -2,10 +2,6 @@ import { createAction } from '@reduxjs/toolkit';
 
 export const UPDATE_FIRSTTIMEAFTERLOGIN = createAction('UPDATE_FIRSTTIMEAFTERLOGIN');
 export const MODIFY_USER_IS_ADMINISTRATOR = createAction('MODIFY_USER_IS_ADMINISTRATOR');
-export const MODIFY_PASSWORD1 = createAction('MODIFY_PASSWORD1');
-export const MODIFY_PASSWORD2 = createAction('MODIFY_PASSWORD2');
-export const MODIFY_PASSWORDS_NOT_IDENTICAL = createAction('MODIFY_PASSWORDS_NOT_IDENTICAL');
-export const CLEAR_USER_AND_PASSWORDS = createAction('CLEAR_USER_AND_PASSWORDS');
 export const MODIFY_JOB_DATE = createAction('MODIFY_JOB_DATE');
 export const SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED = createAction('SAVE_CHANGES_TO_JOB_TYPE_BUTTON_CLICKED');
 export const JOB_TABLE_ROW_CLICK = createAction('JOB_TABLE_ROW_CLICK');

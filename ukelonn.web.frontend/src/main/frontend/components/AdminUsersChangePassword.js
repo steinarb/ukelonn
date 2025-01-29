@@ -5,8 +5,8 @@ import {
     useGetDisplaytextsQuery,
     usePostUserPasswordMutation,
 } from '../api';
+import { setPassword1, setPassword2 } from '../reducers/passwordSlice';
 import { Link } from 'react-router';
-import { MODIFY_PASSWORD1, MODIFY_PASSWORD2 } from '../actiontypes';
 import Locale from './Locale';
 import Users from './Users';
 import Logout from './Logout';
@@ -16,12 +16,10 @@ export default function AdminUsersChangePassword() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const user = useSelector(state => state.user);
-    const password1 = useSelector(state => state.password1);
-    const password2 = useSelector(state => state.password2);
-    const passwordsNotIdentical = useSelector(state => state.passwordsNotIdentical);
+    const password = useSelector(state => state.password);
     const dispatch = useDispatch();
     const [ postUserPassword ] = usePostUserPasswordMutation();
-    const onChangePasswordClicked = async () => await postUserPassword({ user, password1, password2 });
+    const onChangePasswordClicked = async () => await postUserPassword({ user, ...password });
 
     return (
         <div>
@@ -48,8 +46,8 @@ export default function AdminUsersChangePassword() {
                             <input
                                 id="password1"
                                 type="password"
-                                value={password1}
-                                onChange={e => dispatch(MODIFY_PASSWORD1(e.target.value))} />
+                                value={password.password1}
+                                onChange={e => dispatch(setPassword1(e.target.value))} />
                         </div>
                     </div>
                     <div>
@@ -58,9 +56,9 @@ export default function AdminUsersChangePassword() {
                             <input
                                 id="password2"
                                 type="password"
-                                value={password2}
-                                onChange={e => dispatch(MODIFY_PASSWORD2(e.target.value))} />
-                            { passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
+                                value={password.password2}
+                                onChange={e => dispatch(setPassword2(e.target.value))} />
+                            { password.passwordsNotIdentical && <span>{text.passwordsAreNotIdentical}</span> }
                         </div>
                     </div>
                     <div>

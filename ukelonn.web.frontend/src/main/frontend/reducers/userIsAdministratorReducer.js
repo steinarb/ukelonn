@@ -1,9 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { selectUser, clearUser } from './userSlice';
-import {
-    MODIFY_USER_IS_ADMINISTRATOR,
-    CLEAR_USER_AND_PASSWORDS,
-} from '../actiontypes';
+import { MODIFY_USER_IS_ADMINISTRATOR } from '../actiontypes';
 import { api } from '../api';
 import { isUnselected } from '../common/reducers';
 
@@ -15,5 +12,4 @@ export default createReducer(defaultValue, builder => {
         .addMatcher(api.endpoints.postUserAdminstatus.matchFulfilled, (state, action) => action.payload.administrator)
         .addCase(selectUser, (state, action) => isUnselected(action.payload.userid) ? defaultValue : state)
         .addCase(clearUser, () => defaultValue)
-        .addCase(CLEAR_USER_AND_PASSWORDS, () => defaultValue);
 });
