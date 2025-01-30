@@ -14,11 +14,9 @@ export default function AdminBonusesDelete() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const bonusId = useSelector(state => state.bonusId);
-    const title = useSelector(state => state.bonusTitle);
-    const description = useSelector(state => state.bonusDescription);
+    const bonus = useSelector(state => state.bonus);
     const [ postDeletebonus ] = usePostDeletebonusMutation();
-    const onDeleteBonusClicked = async () => await postDeletebonus({ bonusId, title, description });
+    const onDeleteBonusClicked = async () => await postDeletebonus(bonus);
 
     return (
         <div>
@@ -43,13 +41,13 @@ export default function AdminBonusesDelete() {
                     <div>
                         <label htmlFor="title">{text.title}</label>
                         <div>
-                            <input readOnly id="title" type="text" value={title} />
+                            <input readOnly id="title" type="text" value={bonus.title} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="description">{text.description}</label>
                         <div>
-                            <input readOnly id="description" type="text" value={description} />
+                            <input readOnly id="description" type="text" value={bonus.description} />
                         </div>
                     </div>
                     <div>

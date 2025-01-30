@@ -11,14 +11,7 @@ import usernames from './usernamesReducer';
 import user from './userSlice';
 import userIsAdministrator from './userIsAdministratorReducer';
 import password from './passwordSlice';
-import bonusId from './bonusIdReducer';
-import bonusEnabled from './bonusEnabledReducer';
-import bonusIconurl from './bonusIconurlReducer';
-import bonusTitle from './bonusTitleReducer';
-import bonusDescription from './bonusDescriptionReducer';
-import bonusFactor from './bonusFactorReducer';
-import bonusStartDate from './bonusStartDateReducer';
-import bonusEndDate from './bonusEndDateReducer';
+import bonus from './bonusSlice';
 import jobIdsSelectedForDelete from './jobIdsSelectedForDeleteReducer';
 import locale from './localeReducer';
 
@@ -36,14 +29,7 @@ export default (routerReducer, basename) => combineReducers({
     user,
     userIsAdministrator,
     password,
-    bonusId,
-    bonusEnabled,
-    bonusIconurl,
-    bonusTitle,
-    bonusDescription,
-    bonusFactor,
-    bonusStartDate,
-    bonusEndDate,
+    bonus,
     jobIdsSelectedForDelete,
     basename: createReducer(basename, (builder) => builder),
 });

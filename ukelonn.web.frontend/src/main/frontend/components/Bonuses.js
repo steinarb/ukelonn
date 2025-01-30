@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetAllbonusesQuery } from '../api';
-import { SELECTED_BONUS } from '../actiontypes';
+import { selectBonus } from '../reducers/bonusSlice';
 
 export default function Bonuses() {
     const { data: allbonuses = [] } = useGetAllbonusesQuery();
     const bonusId = useSelector(state => state.bonusId);
     const dispatch = useDispatch();
-    const onBonusSelected = e => dispatch(SELECTED_BONUS(findSelectedBonus(e, allbonuses)));
+    const onBonusSelected = e => dispatch(selectBonus(findSelectedBonus(e, allbonuses)));
 
     return (
         <select id="bonus" value={bonusId} onChange={onBonusSelected}>

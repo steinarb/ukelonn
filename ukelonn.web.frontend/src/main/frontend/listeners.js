@@ -4,11 +4,9 @@ import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
 import { clearTransactionType } from './reducers/transactionTypeSlice';
 import { selectUser, clearUser } from './reducers/userSlice';
 import { clearPassword } from './reducers/passwordSlice';
+import { clearBonus } from './reducers/bonusSlice';
 import { api } from './api';
-import {
-    MODIFY_USER_IS_ADMINISTRATOR,
-    CLEAR_BONUS,
-} from './actiontypes';
+import { MODIFY_USER_IS_ADMINISTRATOR } from './actiontypes';
 import { isUsersLoaded, isRejectedRequest } from './matchers';
 
 const listeners = createListenerMiddleware();
@@ -78,7 +76,7 @@ listeners.startListening({
         }
 
         if (pathname === '/admin/bonuses/create' || pathname === '/admin/bonuses/modify' || pathname === '/admin/bonuses/delete') {
-            listenerApi.dispatch(CLEAR_BONUS());
+            listenerApi.dispatch(clearBonus());
         }
     }
 });
