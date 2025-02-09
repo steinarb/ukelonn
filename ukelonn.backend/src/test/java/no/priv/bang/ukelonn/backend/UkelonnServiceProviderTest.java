@@ -1321,14 +1321,14 @@ class UkelonnServiceProviderTest {
         // Add an extra active bonus to verify that two
         // concurrent bonuses will give the expected result
         var julebonus2 = ukelonn.createBonus(Bonus.with()
-                                             .bonusId(0)
-                                             .enabled(true)
-                                             .title("Julebonuz")
-                                             .description("Dobbelt betaling for utførte jobber")
-                                             .bonusFactor(1.25)
-                                             .startDate(julestart)
-                                             .endDate(juleslutt)
-                                             .build()).stream().filter(b -> "Julebonuz".equals(b.title())).findFirst().get();
+            .bonusId(0)
+            .enabled(true)
+            .title("Julebonuz")
+            .description("Dobbelt betaling for utførte jobber")
+            .bonusFactor(1.25)
+            .startDate(julestart)
+            .endDate(juleslutt)
+            .build()).stream().filter(b -> "Julebonuz".equals(b.title())).findFirst().get();
         var expectAmount2 = julebonus.bonusFactor() * amount + julebonus2.bonusFactor() * amount - amount;
         assertEquals(expectAmount2, ukelonn.addBonus(amount), 0.0);
         ukelonn.deleteBonus(julebonus2);
