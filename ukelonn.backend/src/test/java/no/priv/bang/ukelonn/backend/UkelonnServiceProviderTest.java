@@ -39,7 +39,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
-import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
@@ -1074,7 +1073,7 @@ class UkelonnServiceProviderTest {
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
-        var useradmin = mock(UserManagementServiceProvider.class);
+        var useradmin = mock(UserManagementService.class);
         var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
