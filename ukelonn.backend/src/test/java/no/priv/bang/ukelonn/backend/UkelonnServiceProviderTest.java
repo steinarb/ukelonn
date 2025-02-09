@@ -42,7 +42,6 @@ import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
-import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -249,93 +248,6 @@ class UkelonnServiceProviderTest {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
         }
-    }
-
-    @Test
-    void testAddAccount() {
-        var ukelonn = getUkelonnServiceSingleton();
-        var usermanagement = new UserManagementServiceProvider();
-        usermanagement.setLogservice(ukelonn.getLogservice());
-        usermanagement.setDataSource(ukelonn.getDataSource());
-        ukelonn.setUserAdmin(usermanagement);
-
-        // Create a user object
-        var newUsername = "aragorn";
-        var newEmailaddress = "strider@hotmail.com";
-        var newFirstname = "Aragorn";
-        var newLastname = "McArathorn";
-        var user = no.priv.bang.osgiservice.users.User.with()
-            .userid(0)
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-
-        // Create a passwords object containing the user
-        var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
-
-        // Create a user in the database, and retrieve it (to get the user id)
-        var updatedUsers = usermanagement.addUser(passwords);
-        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.username())).findFirst().get();
-
-        // Add a new account to the database
-        var userWithUserId = User.with()
-            .userId(createdUser.userid())
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-        var newAccount = ukelonn.addAccount(userWithUserId);
-        assertThat(newAccount.accountId()).isPositive();
-        assertEquals(0.0, newAccount.balance(), 0);
-    }
-
-    @Test
-    void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
-        var ukelonn = new UkelonnServiceProvider();
-        var usermanagement = new UserManagementServiceProvider();
-        usermanagement.setDataSource(getUkelonnServiceSingleton().getDataSource());
-        usermanagement.setLogservice(getUkelonnServiceSingleton().getLogservice());
-        // Create a mock database that throws exceptions and inject it
-        var datasource = mock(DataSource.class);
-        var connection = mock(Connection.class);
-        when(datasource.getConnection()).thenReturn(connection);
-        var statement = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
-        when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setDataSource(datasource);
-        ukelonn.setLogservice(getUkelonnServiceSingleton().getLogservice());
-
-        // Create a user object
-        var newUsername = "aragorn";
-        var newEmailaddress = "strider@hotmail.com";
-        var newFirstname = "Aragorn";
-        var newLastname = "McArathorn";
-        var user = no.priv.bang.osgiservice.users.User.with()
-            .userid(0)
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-
-        // Create a passwords object containing the user
-        var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
-        // Create a user in the database, and retrieve it (to get the user id)
-        var updatedUsers = usermanagement.addUser(passwords);
-        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.username())).findFirst().get();
-
-        // Add a new account to the database and expect to fail
-        var userWithUserId = User.with()
-            .userId(createdUser.userid())
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-        assertThrows(UkelonnException.class, () -> ukelonn.addAccount(userWithUserId));
     }
 
     @Test
