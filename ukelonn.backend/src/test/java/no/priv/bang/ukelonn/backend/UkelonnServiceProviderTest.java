@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -207,9 +207,7 @@ class UkelonnServiceProviderTest {
     @Test
     void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
         var provider = getUkelonnServiceSingleton();
-        assertThrows(UkelonnException.class, () -> {
-                provider.getAccount("on");
-            });
+        assertThrows(UkelonnException.class, () -> provider.getAccount("on"));
     }
 
     /**
@@ -219,9 +217,7 @@ class UkelonnServiceProviderTest {
     @Test
     void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
         var ukelonn = getUkelonnServiceSingleton();
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.getAccount("unknownuser");
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.getAccount("unknownuser"));
     }
 
     /**
@@ -248,9 +244,7 @@ class UkelonnServiceProviderTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
-            assertThrows(UkelonnException.class, () -> {
-                    ukelonn.getAccount("jad");
-                });
+            assertThrows(UkelonnException.class, () -> ukelonn.getAccount("jad"));
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -434,9 +428,7 @@ class UkelonnServiceProviderTest {
                 .transactionAmount(45.0)
                 .transactionDate(new Date())
                 .build();
-            assertThrows(UkelonnException.class, () -> {
-                    ukelonn.registerPerformedJob(performedJob);
-                });
+            assertThrows(UkelonnException.class, () -> ukelonn.registerPerformedJob(performedJob));
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -650,9 +642,7 @@ class UkelonnServiceProviderTest {
         ukelonn.setDataSource(datasource);
 
         // trying to set the parameter here will throw an UkelonnException
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.addParametersToDeleteJobsStatement(1, statement);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.addParametersToDeleteJobsStatement(1, statement));
     }
 
     @Test
@@ -717,9 +707,7 @@ class UkelonnServiceProviderTest {
         ukelonn.setDataSource(datasource);
 
         var updatedTransaction = UpdatedTransaction.with().build();
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.updateJob(updatedTransaction);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.updateJob(updatedTransaction));
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
@@ -966,9 +954,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try update the jobtype in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.modifyJobtype(jobtype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.modifyJobtype(jobtype));
     }
 
     @Test
@@ -1017,9 +1003,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try update the jobtype in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.createJobtype(jobtype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.createJobtype(jobtype));
     }
 
     @Test
@@ -1066,9 +1050,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try update the payment type in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.modifyPaymenttype(paymenttype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.modifyPaymenttype(paymenttype));
     }
 
     @Test
@@ -1117,9 +1099,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try creating the payment type in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.createPaymenttype(paymenttype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.createPaymenttype(paymenttype));
     }
 
     @Test
