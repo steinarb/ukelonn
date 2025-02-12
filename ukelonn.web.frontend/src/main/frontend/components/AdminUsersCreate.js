@@ -127,7 +127,7 @@ export default function AdminUsersCreate() {
                             <div className="form-check">
                                 <input
                                     id="administrator"
-                                    className="form-control"
+                                    className="form-check-input"
                                     type="checkbox"
                                     checked={userIsAdministrator}
                                     onChange={e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked))} />
