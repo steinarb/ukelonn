@@ -6,9 +6,9 @@ import {
     usePostPaymentRegisterMutation,
     usePostNotificationToMutation,
 } from '../api';
+import { setAmount } from '../reducers/transactionSlice';
 import { Link } from 'react-router';
 import { stringify } from 'qs';
-import { MODIFY_PAYMENT_AMOUNT } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
@@ -20,11 +20,12 @@ export default function Admin() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const accountId = useSelector(state => state.accountId);
-    const username = useSelector(state => state.accountUsername);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
-    const transactionTypeName = useSelector(state => state.transactionTypeName);
-    const transactionAmount = useSelector(state => state.transactionAmount);
+    const account = useSelector(state => state.account);
+    const username = account.username;
+    const transaction = useSelector(state => state.transaction);
+    const transactionTypeId = transaction.transactionType.id;
+    const transactionTypeName = transaction.transactionType.transactionTypeName;
+    const transactionAmount = transaction.transactionAmount;
     const [ postPaymentRegister ] = usePostPaymentRegisterMutation();
     const [ postNotificationTo ] = usePostNotificationToMutation();
     const onRegisterPaymentClicked = async () => {
@@ -32,13 +33,11 @@ export default function Admin() {
         const notification = { title: 'Ukelønn', message: transactionAmount + ' kroner ' + transactionTypeName };
         await postNotificationTo({ username, notification });
     };
-    const account = { accountId, username };
-    const balance = useSelector(state => state.accountBalance);
     const dispatch = useDispatch();
     const parentTitle = 'Tilbake til ukelonn admin';
     const noUser = !username;
-    const performedjobs = noUser ? '#' : '/performedjobs?' + stringify({ parentTitle, accountId, username });
-    const performedpayments = noUser ? '#' : '/performedpayments?' + stringify({ parentTitle, accountId, username });
+    const performedjobs = noUser ? '#' : '/performedjobs?' + stringify({ parentTitle, accountId: account.accountId, username });
+    const performedpayments = noUser ? '#' : '/performedpayments?' + stringify({ parentTitle, accountId: account.accountId, username });
     const statistics = noUser ? '#' : '/statistics?' + stringify({ username });
 
     return (
@@ -65,7 +64,7 @@ export default function Admin() {
                     <div className="form-group row mb-2">
                         <label htmlFor="account-balance" className="col-form-label col-5">{text.owedAmount}:</label>
                         <div className="col-7">
-                            <input id="account-balance" className="form-control" type="text" value={balance} readOnly={true} />
+                            <input id="account-balance" className="form-control" type="text" value={account.balance} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -82,7 +81,7 @@ export default function Admin() {
                                 className="form-control"
                                 type="text"
                                 value={transactionAmount}
-                                onChange={e => dispatch(MODIFY_PAYMENT_AMOUNT(e.target.value))} />
+                                onChange={e => dispatch(setAmount(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">

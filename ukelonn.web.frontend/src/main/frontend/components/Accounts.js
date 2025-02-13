@@ -1,18 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetAccountsQuery } from '../api';
-import { SELECT_ACCOUNT } from '../actiontypes';
+import { selectAccount } from '../reducers/accountSlice';
 import { emptyAccount } from '../constants';
 
 function Accounts(props) {
     const { id, className } = props;
     const { data: accounts = [] }  = useGetAccountsQuery();
-    const accountId = useSelector(state => state.accountId);
+    const account = useSelector(state => state.account);
     const dispatch = useDispatch();
-    const onAccountSelected = e => dispatch(SELECT_ACCOUNT(findSelectedAccount(e, accounts)));
+    const onAccountSelected = e => dispatch(selectAccount(findSelectedAccount(e, accounts)));
 
     return (
-        <select id={id} className={className} onChange={onAccountSelected} value={accountId}>
+        <select id={id} className={className} onChange={onAccountSelected} value={account.accountId}>
             <option key="account_-1" value="-1" />
             {accounts.map((val) => <option key={'account_' + val.accountId} value={val.accountId}>{val.fullName}</option>)}
         </select>

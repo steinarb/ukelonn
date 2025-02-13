@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
@@ -171,6 +172,24 @@ class LoginTest extends ServletTestBase {
         } finally {
             unlockAccount("jad");
         }
+    }
+
+    @Test
+    void testLoginWithExcessiveAttemptsException() {
+        createSubjectThrowingExceptionAndBindItToThread(ExcessiveAttemptsException.class);
+        LoginCredentials credentials = LoginCredentials.with()
+            .username("jad")
+            .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
+            .build();
+        // Create mock OSGi services to inject
+        MockLogService logservice = new MockLogService();
+        // Create the servlet and do the login
+        Login resource = new Login();
+        resource.setLogservice(logservice);
+        LoginResult result = resource.doLogin(credentials);
+        // Check the response
+        assertThat(result.roles()).isEmpty();
+        assertEquals("Login error: Failed login attempts limit reached. Account will be locked. Please contact system administrator", result.errorMessage());
     }
 
     @Test

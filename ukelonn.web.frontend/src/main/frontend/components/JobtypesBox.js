@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectJobType } from '../reducers/transactionTypeSlice';
 import { useGetJobtypesQuery } from '../api';
-import { SELECTED_JOB_TYPE } from '../actiontypes';
 
 export default function JobtypesBox(props) {
     const { id, className } = props;
     const transactionTypeId = useSelector(state => state.transactionTypeId);
     const { data: jobtypes = [] } = useGetJobtypesQuery()
     const dispatch = useDispatch();
-    const onJobTypeSelected = (e) => { dispatch(SELECTED_JOB_TYPE(jobtypes.find(t => t.id === parseInt(e.target.value)) || { id: -1 })) }
+    const onJobTypeSelected = (e) => { dispatch(selectJobType(jobtypes.find(t => t.id === parseInt(e.target.value)) || { id: -1 })) }
 
     return (
         <select multiple="true" size="10" id={id} className={className} onChange={onJobTypeSelected} value={transactionTypeId}>

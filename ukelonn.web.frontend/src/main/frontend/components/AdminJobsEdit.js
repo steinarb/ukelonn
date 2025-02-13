@@ -17,17 +17,17 @@ export default function AdminJobsEdit() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const firstname = useSelector(state => state.accountFirstname);
-    const accountId = useSelector(state => state.accountId);
-    const id = useSelector(state => state.transactionId);
-    const transactionTypeId = useSelector(state => state.transactionTypeId);
-    const transactionAmount = useSelector(state => state.transactionAmount);
-    const transactionTime = useSelector(state => state.transactionDate);
+    const account = useSelector(state => state.account);
+    const transaction = useSelector(state => state.transaction);
+    const id = transaction.id;
+    const transactionTypeId = transaction.transactionType.id;
+    const transactionAmount = transaction.transactionAmount || '';
+    const transactionTime = transaction.transactionTime;
     const transactionDateJustDate = transactionTime.split('T')[0];
-    const { data: jobs = [] } = useGetJobsQuery(accountId);
+    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
     const dispatch = useDispatch();
     const [ postJobUpdate ] = usePostJobUpdateMutation();
-    const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId, id, transactionTypeId, transactionAmount, transactionTime });
+    const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId: account.accountId, id, transactionTypeId, transactionAmount, transactionTime });
 
     return (
         <div>
@@ -37,7 +37,7 @@ export default function AdminJobsEdit() {
                     &nbsp;
                     {text.administrateJobsAndJobTypes}
                 </Link>
-                <h1>{text.modifyJobsFor} {firstname}</h1>
+                <h1>{text.modifyJobsFor} {account.firstname}</h1>
                 <Locale />
             </nav>
 

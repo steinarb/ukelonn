@@ -14,11 +14,9 @@ export default function AdminBonusesDelete() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const bonusId = useSelector(state => state.bonusId);
-    const title = useSelector(state => state.title);
-    const description = useSelector(state => state.bonusDescription);
+    const bonus = useSelector(state => state.bonus);
     const [ postDeletebonus ] = usePostDeletebonusMutation();
-    const onDeleteBonusClicked = async () => await postDeletebonus({ bonusId, title, description });
+    const onDeleteBonusClicked = async () => await postDeletebonus(bonus);
 
     return (
         <div>
@@ -43,13 +41,13 @@ export default function AdminBonusesDelete() {
                     <div className="form-group row mb-2">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
-                            <input readOnly id="title" className="form-control" type="text" value={title} />
+                            <input readOnly id="title" className="form-control" type="text" value={bonus.title} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
-                            <input readOnly id="description" className="form-control" type="text" value={description} />
+                            <input readOnly id="description" className="form-control" type="text" value={bonus.description} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">

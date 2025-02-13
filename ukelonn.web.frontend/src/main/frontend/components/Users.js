@@ -1,18 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectUser } from '../reducers/userSlice';
 import { useGetUsersQuery } from '../api';
-import { SELECT_USER } from '../actiontypes';
 import { emptyUser } from '../constants';
 
 function Users(props) {
     const { id, className } = props;
     const { data: users = [] } = useGetUsersQuery();
-    const userid = useSelector(state => state.userid);
+    const user = useSelector(state => state.user);
     const dispatch = useDispatch();
-    const onUserSelected = e => dispatch(SELECT_USER(findSelectedUser(e, users)));
+    const onUserSelected = e => dispatch(selectUser(findSelectedUser(e, users)));
 
     return (
-        <select id={id} className={className} onChange={onUserSelected} value={userid}>
+        <select id={id} className={className} onChange={onUserSelected} value={user.userid}>
             <option key="user_-1" value="-1" />
             {users.map((val) => <option key={'user_' + val.userid} value={val.userid}>{val.firstname + ' ' + val.lastname}</option>)}
         </select>

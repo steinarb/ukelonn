@@ -2,37 +2,16 @@ import { combineReducers } from 'redux';
 import { createReducer } from '@reduxjs/toolkit';
 import { api } from '../api';
 import notificationAvailable from './notificationAvailableReducer';
-import accountId from './accountIdReducer';
-import accountUsername from './accountUsernameReducer';
-import accountFirstname from './accountFirstnameReducer';
-import accountLastname from './accountLastnameReducer';
-import accountBalance from './accountBalanceReducer';
-import accountFullname from './accountFullnameReducer';
+import account from './accountSlice';
 import haveReceivedResponseFromLogin from './haveReceivedResponseFromLoginReducer';
 import loginResponse from './loginResponseReducer';
-import transactionId from './transactionIdReducer';
-import transactionTypeId from './transactionTypeIdReducer';
-import transactionTypeName from './transactionTypeNameReducer';
-import transactionAmount from './transactionAmountReducer';
-import transactionDate from './transactionDateReducer';
+import transaction from './transactionSlice';
+import transactionType from './transactionTypeSlice';
 import usernames from './usernamesReducer';
-import password1 from './password1Reducer';
-import password2 from './password2Reducer';
-import passwordsNotIdentical from './passwordsNotIdenticalReducer';
-import userid from './useridReducer';
-import userUsername from './userUsernameReducer';
-import userEmail from './userEmailReducer';
-import userFirstname from './userFirstnameReducer';
-import userLastname from './userLastnameReducer';
+import user from './userSlice';
 import userIsAdministrator from './userIsAdministratorReducer';
-import bonusId from './bonusIdReducer';
-import bonusEnabled from './bonusEnabledReducer';
-import bonusIconurl from './bonusIconurlReducer';
-import bonusTitle from './bonusTitleReducer';
-import bonusDescription from './bonusDescriptionReducer';
-import bonusFactor from './bonusFactorReducer';
-import bonusStartDate from './bonusStartDateReducer';
-import bonusEndDate from './bonusEndDateReducer';
+import password from './passwordSlice';
+import bonus from './bonusSlice';
 import jobIdsSelectedForDelete from './jobIdsSelectedForDeleteReducer';
 import locale from './localeReducer';
 
@@ -41,37 +20,16 @@ export default (routerReducer, basename) => combineReducers({
     [api.reducerPath]: api.reducer,
     locale,
     notificationAvailable,
-    accountId,
-    accountUsername,
-    accountFirstname,
-    accountLastname,
-    accountBalance,
-    accountFullname,
+    account,
     haveReceivedResponseFromLogin,
     loginResponse,
-    transactionId,
-    transactionTypeId,
-    transactionTypeName,
-    transactionAmount,
-    transactionDate,
+    transaction,
+    transactionType,
     usernames,
-    password1,
-    password2,
-    passwordsNotIdentical,
-    userid,
-    userUsername,
-    userEmail,
-    userFirstname,
-    userLastname,
+    user,
     userIsAdministrator,
-    bonusId,
-    bonusEnabled,
-    bonusIconurl,
-    bonusTitle,
-    bonusDescription,
-    bonusFactor,
-    bonusStartDate,
-    bonusEndDate,
+    password,
+    bonus,
     jobIdsSelectedForDelete,
     basename: createReducer(basename, (builder) => builder),
 });

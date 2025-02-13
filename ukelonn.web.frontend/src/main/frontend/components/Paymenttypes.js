@@ -1,14 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetPaymenttypesQuery } from '../api';
-import { SELECTED_PAYMENT_TYPE } from '../actiontypes';
+import { selectPaymentType } from '../reducers/transactionSlice';
 
 export default function Paymenttypes(props) {
     const { id, className } = props;
-    const paymentTypeId = useSelector(state => state.transactionTypeId);
+    const transaction = useSelector(state => state.transaction);
+    const paymentTypeId = transaction.transactionType.id;
     const { data: paymenttypes = [] } = useGetPaymenttypesQuery();
     const dispatch = useDispatch();
-    const onPaymentTypeSelected = e => dispatch(SELECTED_PAYMENT_TYPE(paymenttypes.find(t => t.id === parseInt(e.target.value)) || { id: -1 }));
+    const onPaymentTypeSelected = e => dispatch(selectPaymentType(paymenttypes.find(t => t.id === parseInt(e.target.value)) || { id: -1 }));
 
     return (
         <select id={id} className={className} onChange={onPaymentTypeSelected} value={paymentTypeId}>
