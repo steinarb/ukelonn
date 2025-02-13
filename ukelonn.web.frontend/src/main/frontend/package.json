@@ -16,10 +16,10 @@
     },
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@nabla/vite-plugin-eslint": "^2.0.4",
-        "@vitejs/plugin-react": "^4.3.2",
+        "@nabla/vite-plugin-eslint": "^2.0.5",
+        "@vitejs/plugin-react": "^4.3.4",
         "eslint-config-react-app": "^7.0.1",
-        "vite": "^5.4.8",
-        "vite-plugin-simple-html": "^0.1.2"
+        "vite": "^5.4.14",
+        "vite-plugin-simple-html": "^0.2.0"
     }
 }

@@ -1,19 +1,13 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { LOCATION_CHANGE } from 'redux-first-history';
+import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
+import { clearTransactionType } from './reducers/transactionTypeSlice';
+import { selectUser, clearUser } from './reducers/userSlice';
+import { clearPassword } from './reducers/passwordSlice';
+import { clearBonus } from './reducers/bonusSlice';
 import { api } from './api';
-import {
-    SELECTED_PAYMENT_TYPE,
-    MODIFY_PAYMENT_AMOUNT,
-    SELECT_USER,
-    MODIFY_USER_IS_ADMINISTRATOR,
-    MODIFY_PASSWORDS_NOT_IDENTICAL,
-    CLEAR_USER_AND_PASSWORDS,
-    CLEAR_JOB_TYPE_FORM,
-    CLEAR_JOB_TYPE_CREATE_FORM,
-    CLEAR_PAYMENT_TYPE_FORM,
-    CLEAR_BONUS,
-} from './actiontypes';
-import { isUsersLoaded, isPasswordModified, isRejectedRequest } from './matchers';
+import { MODIFY_USER_IS_ADMINISTRATOR } from './actiontypes';
+import { isUsersLoaded, isRejectedRequest } from './matchers';
 
 const listeners = createListenerMiddleware();
 
@@ -26,51 +20,30 @@ listeners.startListening({
 })
 
 // Set payment amount based on selected payment type
-// must be in an RTK listener since it uses state.accountBalance
+// must be in an RTK listener since it uses state.account.balance
 // when payment type amount is empty
 listeners.startListening({
-    actionCreator: SELECTED_PAYMENT_TYPE,
+    actionCreator: selectPaymentType,
     effect: (action, listenerApi) => {
         const paymenttype = action.payload;
         if (paymenttype === -1) {
-            const balance = listenerApi.getState().accountBalance;
-            listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(balance));
+            const balance = listenerApi.getState().account.balance;
+            listenerApi.dispatch(setAmount(balance));
         }
         if (paymenttype && paymenttype.transactionAmount > 0) {
-            listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(paymenttype.transactionAmount));
+            listenerApi.dispatch(setAmount(paymenttype.transactionAmount));
         } else {
-            const balance = listenerApi.getState().accountBalance;
-            listenerApi.dispatch(MODIFY_PAYMENT_AMOUNT(balance));
+            const balance = listenerApi.getState().account.balance;
+            listenerApi.dispatch(setAmount(balance));
         }
     }
 })
 
 // reload admin status from backend when user is changed
 listeners.startListening({
-    actionCreator: SELECT_USER,
+    actionCreator: selectUser,
     effect: async (action, listenerApi) => {
         listenerApi.dispatch(api.endpoints.postUserAdminstatus.initiate(action.payload, { forceRefetch: true }));
-    }
-})
-
-listeners.startListening({
-    matcher: isUsersLoaded,
-    effect: (action, listenerApi) => {
-        listenerApi.dispatch(CLEAR_USER_AND_PASSWORDS());
-    }
-})
-
-listeners.startListening({
-    matcher: isPasswordModified,
-    effect: (action, listenerApi) => {
-        const password1 = listenerApi.getState().password1;
-        const password2 = listenerApi.getState().password2;
-        if (!password2) {
-            // if second password is empty we don't compare because it probably hasn't been typed into yet
-            listenerApi.dispatch(MODIFY_PASSWORDS_NOT_IDENTICAL(false));
-        } else {
-            listenerApi.dispatch(MODIFY_PASSWORDS_NOT_IDENTICAL(password1 !== password2));
-        }
     }
 })
 
@@ -82,19 +55,20 @@ listeners.startListening({
         const pathname = findPathname(location, listenerApi.getState().basename);
 
         if (pathname === '/admin/jobtypes/modify') {
-            listenerApi.dispatch(CLEAR_JOB_TYPE_FORM());
+            listenerApi.dispatch(clearTransactionType());
         }
 
         if (pathname === '/admin/jobtypes/create') {
-            listenerApi.dispatch(CLEAR_JOB_TYPE_CREATE_FORM());
+            listenerApi.dispatch(clearTransactionType());
         }
 
         if (pathname === '/admin/paymenttypes/modify' || pathname === '/admin/paymenttypes/create') {
-            listenerApi.dispatch((CLEAR_PAYMENT_TYPE_FORM()));
+            listenerApi.dispatch((clearTransactionType()));
         }
 
         if (pathname === '/admin/users/modify' || pathname === '/admin/users/password' || pathname === '/admin/users/create') {
-            listenerApi.dispatch(CLEAR_USER_AND_PASSWORDS());
+            listenerApi.dispatch(clearUser());
+            listenerApi.dispatch(clearPassword());
         }
 
         if (pathname === '/admin/users/create') {
@@ -102,7 +76,7 @@ listeners.startListening({
         }
 
         if (pathname === '/admin/bonuses/create' || pathname === '/admin/bonuses/modify' || pathname === '/admin/bonuses/delete') {
-            listenerApi.dispatch(CLEAR_BONUS());
+            listenerApi.dispatch(clearBonus());
         }
     }
 });

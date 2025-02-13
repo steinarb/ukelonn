@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
-import no.priv.bang.authservice.users.UserManagementServiceProvider;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
-import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -207,9 +205,7 @@ class UkelonnServiceProviderTest {
     @Test
     void testGetAccountInfoFromDatabaseAccountHasNoTransactions() {
         var provider = getUkelonnServiceSingleton();
-        assertThrows(UkelonnException.class, () -> {
-                provider.getAccount("on");
-            });
+        assertThrows(UkelonnException.class, () -> provider.getAccount("on"));
     }
 
     /**
@@ -219,9 +215,7 @@ class UkelonnServiceProviderTest {
     @Test
     void testGetAccountInfoFromDatabaseWhenAccountDoesNotExist() {
         var ukelonn = getUkelonnServiceSingleton();
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.getAccount("unknownuser");
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.getAccount("unknownuser"));
     }
 
     /**
@@ -248,100 +242,11 @@ class UkelonnServiceProviderTest {
             when(resultset.next()).thenThrow(SQLException.class);
             when(statement.executeQuery()).thenReturn(resultset);
             ukelonn.setDataSource(datasource);
-            assertThrows(UkelonnException.class, () -> {
-                    ukelonn.getAccount("jad");
-                });
+            assertThrows(UkelonnException.class, () -> ukelonn.getAccount("jad"));
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
         }
-    }
-
-    @Test
-    void testAddAccount() {
-        var ukelonn = getUkelonnServiceSingleton();
-        var usermanagement = new UserManagementServiceProvider();
-        usermanagement.setLogservice(ukelonn.getLogservice());
-        usermanagement.setDataSource(ukelonn.getDataSource());
-        ukelonn.setUserAdmin(usermanagement);
-
-        // Create a user object
-        var newUsername = "aragorn";
-        var newEmailaddress = "strider@hotmail.com";
-        var newFirstname = "Aragorn";
-        var newLastname = "McArathorn";
-        var user = no.priv.bang.osgiservice.users.User.with()
-            .userid(0)
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-
-        // Create a passwords object containing the user
-        var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
-
-        // Create a user in the database, and retrieve it (to get the user id)
-        var updatedUsers = usermanagement.addUser(passwords);
-        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.username())).findFirst().get();
-
-        // Add a new account to the database
-        var userWithUserId = User.with()
-            .userId(createdUser.userid())
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-        var newAccount = ukelonn.addAccount(userWithUserId);
-        assertThat(newAccount.accountId()).isPositive();
-        assertEquals(0.0, newAccount.balance(), 0);
-    }
-
-    @Test
-    void testAddAccountWhenSqlExceptionIsThrown() throws Exception {
-        var ukelonn = new UkelonnServiceProvider();
-        var usermanagement = new UserManagementServiceProvider();
-        usermanagement.setDataSource(getUkelonnServiceSingleton().getDataSource());
-        usermanagement.setLogservice(getUkelonnServiceSingleton().getLogservice());
-        // Create a mock database that throws exceptions and inject it
-        var datasource = mock(DataSource.class);
-        var connection = mock(Connection.class);
-        when(datasource.getConnection()).thenReturn(connection);
-        var statement = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
-        when(statement.executeUpdate()).thenThrow(SQLException.class);
-        ukelonn.setDataSource(datasource);
-        ukelonn.setLogservice(getUkelonnServiceSingleton().getLogservice());
-
-        // Create a user object
-        var newUsername = "aragorn";
-        var newEmailaddress = "strider@hotmail.com";
-        var newFirstname = "Aragorn";
-        var newLastname = "McArathorn";
-        var user = no.priv.bang.osgiservice.users.User.with()
-            .userid(0)
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-
-        // Create a passwords object containing the user
-        var passwords = UserAndPasswords.with().user(user).password1("zecret").password2("zecret").build();
-        // Create a user in the database, and retrieve it (to get the user id)
-        var updatedUsers = usermanagement.addUser(passwords);
-        var createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.username())).findFirst().get();
-
-        // Add a new account to the database and expect to fail
-        var userWithUserId = User.with()
-            .userId(createdUser.userid())
-            .username(newUsername)
-            .email(newEmailaddress)
-            .firstname(newFirstname)
-            .lastname(newLastname)
-            .build();
-        assertThrows(UkelonnException.class, () -> ukelonn.addAccount(userWithUserId));
     }
 
     @Test
@@ -434,9 +339,7 @@ class UkelonnServiceProviderTest {
                 .transactionAmount(45.0)
                 .transactionDate(new Date())
                 .build();
-            assertThrows(UkelonnException.class, () -> {
-                    ukelonn.registerPerformedJob(performedJob);
-                });
+            assertThrows(UkelonnException.class, () -> ukelonn.registerPerformedJob(performedJob));
         } finally {
             // Restore the real derby database
             ukelonn.setDataSource(originalDatasource);
@@ -650,9 +553,7 @@ class UkelonnServiceProviderTest {
         ukelonn.setDataSource(datasource);
 
         // trying to set the parameter here will throw an UkelonnException
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.addParametersToDeleteJobsStatement(1, statement);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.addParametersToDeleteJobsStatement(1, statement));
     }
 
     @Test
@@ -717,9 +618,7 @@ class UkelonnServiceProviderTest {
         ukelonn.setDataSource(datasource);
 
         var updatedTransaction = UpdatedTransaction.with().build();
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.updateJob(updatedTransaction);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.updateJob(updatedTransaction));
     }
 
     private TransactionType findJobTypeWithDifferentIdAndAmount(UkelonnService ukelonn, Integer transactionTypeId, double amount) {
@@ -966,9 +865,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try update the jobtype in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.modifyJobtype(jobtype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.modifyJobtype(jobtype));
     }
 
     @Test
@@ -1017,9 +914,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try update the jobtype in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.createJobtype(jobtype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.createJobtype(jobtype));
     }
 
     @Test
@@ -1066,9 +961,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try update the payment type in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.modifyPaymenttype(paymenttype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.modifyPaymenttype(paymenttype));
     }
 
     @Test
@@ -1117,9 +1010,7 @@ class UkelonnServiceProviderTest {
             .build();
 
         // Try creating the payment type in the database, which should cause an exception
-        assertThrows(UkelonnException.class, () -> {
-                ukelonn.createPaymenttype(paymenttype);
-            });
+        assertThrows(UkelonnException.class, () -> ukelonn.createPaymenttype(paymenttype));
     }
 
     @Test
@@ -1182,7 +1073,7 @@ class UkelonnServiceProviderTest {
         assertEquals("1", UkelonnServiceProvider.joinIds(Arrays.asList(1)).toString());
         assertEquals("1, 2", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2)).toString());
         assertEquals("1, 2, 3, 4", UkelonnServiceProvider.joinIds(Arrays.asList(1, 2, 3, 4)).toString());
-        var useradmin = mock(UserManagementServiceProvider.class);
+        var useradmin = mock(UserManagementService.class);
         var user = no.priv.bang.osgiservice.users.User.with()
             .userid(1)
             .username("jad")
@@ -1341,14 +1232,14 @@ class UkelonnServiceProviderTest {
         // Add an extra active bonus to verify that two
         // concurrent bonuses will give the expected result
         var julebonus2 = ukelonn.createBonus(Bonus.with()
-                                             .bonusId(0)
-                                             .enabled(true)
-                                             .title("Julebonuz")
-                                             .description("Dobbelt betaling for utførte jobber")
-                                             .bonusFactor(1.25)
-                                             .startDate(julestart)
-                                             .endDate(juleslutt)
-                                             .build()).stream().filter(b -> "Julebonuz".equals(b.title())).findFirst().get();
+            .bonusId(0)
+            .enabled(true)
+            .title("Julebonuz")
+            .description("Dobbelt betaling for utførte jobber")
+            .bonusFactor(1.25)
+            .startDate(julestart)
+            .endDate(juleslutt)
+            .build()).stream().filter(b -> "Julebonuz".equals(b.title())).findFirst().get();
         var expectAmount2 = julebonus.bonusFactor() * amount + julebonus2.bonusFactor() * amount - amount;
         assertEquals(expectAmount2, ukelonn.addBonus(amount), 0.0);
         ukelonn.deleteBonus(julebonus2);

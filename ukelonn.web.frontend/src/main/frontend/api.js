@@ -88,7 +88,7 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: jobsAfterJobUpdate } = await queryFulfilled;
-                    dispatch(api.util.updateQueryData('getJobs',  body.account.accountId, () => jobsAfterJobUpdate));
+                    dispatch(api.util.updateQueryData('getJobs',  body.accountId, () => jobsAfterJobUpdate));
                 } catch {}
             },
             invalidatesTags: ['JobEdit']

@@ -28,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -76,6 +77,11 @@ public class Login {
             logger.warn("Login error: wrong password", e);
             return LoginResult.with()
                 .errorMessage("Wrong password")
+                .build();
+        } catch (ExcessiveAttemptsException  e) {
+            logger.warn("Login error: Failed login attempts limit reached, account locked", e);
+            return LoginResult.with()
+                .errorMessage("Login error: Failed login attempts limit reached. Account will be locked. Please contact system administrator")
                 .build();
         } catch (LockedAccountException  e) {
             logger.warn("Login error: locked account", e);
