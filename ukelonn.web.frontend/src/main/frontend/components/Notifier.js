@@ -2,7 +2,7 @@ import { spawnNotification } from './spawnnotification.js';
 import { useDispatch } from 'react-redux';
 import { useGetLoginQuery, useGetNotificationQuery, api } from '../api';
 
-export default function Notification() {
+export default function Notifier() {
     const { data: loginResponse = {}, isSuccess: loginIsSuccess } = useGetLoginQuery();
     const { data: notifications, isSuccess: notificationIsSuccess } = useGetNotificationQuery(loginResponse.username, {
         skip: !loginIsSuccess,
