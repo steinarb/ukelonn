@@ -27,7 +27,7 @@ export default function User() {
     const { accountId, firstName: firstname, username, balance } = account;
     const transaction = useSelector(state => state.transaction);
     const transactionTypeId = transaction.transactionType.id;
-    const transactionAmount = transaction.transactionAmount;
+    const transactionAmount = transaction.transactionAmount || '';
     const transactionDate = transaction.transactionTime;
     const dispatch = useDispatch();
     const [ postJobRegister ] = usePostJobRegisterMutation();

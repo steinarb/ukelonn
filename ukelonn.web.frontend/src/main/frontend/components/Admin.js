@@ -25,7 +25,7 @@ export default function Admin() {
     const transaction = useSelector(state => state.transaction);
     const transactionTypeId = transaction.transactionType.id;
     const transactionTypeName = transaction.transactionType.transactionTypeName;
-    const transactionAmount = transaction.transactionAmount;
+    const transactionAmount = transaction.transactionAmount || '';
     const [ postPaymentRegister ] = usePostPaymentRegisterMutation();
     const [ postNotificationTo ] = usePostNotificationToMutation();
     const onRegisterPaymentClicked = async () => {
