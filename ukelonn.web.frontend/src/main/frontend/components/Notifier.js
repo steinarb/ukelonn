@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { spawnNotification } from './spawnnotification.js';
 import { useDispatch } from 'react-redux';
 import { useGetLoginQuery, useGetNotificationQuery, api } from '../api';
 
 export default function Notifier() {
+    const [ cachedNotifications, setCachedNotifications ] = useState(null);
     const { data: loginResponse = {}, isSuccess: loginIsSuccess } = useGetLoginQuery();
     const { data: notifications } = useGetNotificationQuery(loginResponse.username, {
         skip: !loginIsSuccess,
@@ -11,7 +13,8 @@ export default function Notifier() {
     });
     const dispatch = useDispatch();
 
-    if (notifications && notifications.length) {
+    if (notifications && notifications !== cachedNotifications && notifications.length) {
+        setCachedNotifications(notifications);
         const notification = notifications[0];
 
         if (notification.message) {
