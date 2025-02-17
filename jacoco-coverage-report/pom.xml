@@ -46,11 +46,6 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
-            <artifactId>ukelonn.db.as.authservicedb</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.backend</artifactId>
             <version>${project.version}</version>
         </dependency>
