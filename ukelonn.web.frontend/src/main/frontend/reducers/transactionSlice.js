@@ -37,6 +37,7 @@ export const transactionSlice = createSlice({
             .addMatcher(isClearTransactionTypeForm, () => initialStateWithCurrentTime())
             .addMatcher(isJobsLoaded, () => initialStateWithCurrentTime())
             .addMatcher(api.endpoints.postJobRegister.matchFulfilled, () => initialStateWithCurrentTime())
+            .addMatcher(api.endpoints.postPaymentRegister.matchFulfilled, () => initialStateWithCurrentTime())
     },
 });
 

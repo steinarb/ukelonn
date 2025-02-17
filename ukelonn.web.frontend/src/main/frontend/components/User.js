@@ -14,7 +14,7 @@ import { MODIFY_JOB_DATE } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Jobtypes from './Jobtypes';
-import Notification from './Notification';
+import Notifier from './Notifier';
 import EarningsMessage from './EarningsMessage';
 import Logout from './Logout';
 
@@ -27,7 +27,7 @@ export default function User() {
     const { accountId, firstName: firstname, username, balance } = account;
     const transaction = useSelector(state => state.transaction);
     const transactionTypeId = transaction.transactionType.id;
-    const transactionAmount = transaction.transactionAmount;
+    const transactionAmount = transaction.transactionAmount || '';
     const transactionDate = transaction.transactionTime;
     const dispatch = useDispatch();
     const [ postJobRegister ] = usePostJobRegisterMutation();
@@ -40,7 +40,7 @@ export default function User() {
 
     return (
         <div>
-            <Notification />
+            <Notifier />
             <nav className="navbar navbar-light bg-light">
                 <a className="btn btn-primary" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;{text.returnToTop}</a>
                 <h1 id="logo">{title}</h1>

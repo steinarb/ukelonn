@@ -36,7 +36,6 @@
         <module>ukelonn.testutils</module>
         <module>ukelonn.db.liquibase</module>
         <module>ukelonn.db.liquibase.test</module>
-        <module>ukelonn.db.as.authservicedb</module>
         <module>ukelonn.db.liquibase.production</module>
         <module>karaf</module>
         <module>ukelonn.tests</module>
