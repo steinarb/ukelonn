@@ -16,7 +16,6 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.services/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.test/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.as.authservicedb/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.production/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.authservice/karaf/${authservice.version}/xml/features</repository>
