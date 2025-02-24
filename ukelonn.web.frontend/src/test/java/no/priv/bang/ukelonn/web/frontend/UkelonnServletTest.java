@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2024 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.ukelonn.UkelonnException;
 
 import static org.mockito.Mockito.*;
 
@@ -131,6 +132,28 @@ class UkelonnServletTest {
         servlet.service(request, response);
 
         assertEquals(404, response.getErrorCode());
+    }
+
+    @Test
+    void readLinesFromClasspath() {
+        var logservice = new MockLogService();
+
+        var servlet = new UkelonnServlet();
+        servlet.setLogService(logservice);
+
+        var routes = servlet.readLinesFromClasspath("testroutes.txt");
+
+        assertThat(routes).isNotEmpty().hasSize(4);
+    }
+
+    @Test
+    void readLinesFromClasspathWithFileNotFound() {
+        var logservice = new MockLogService();
+
+        var servlet = new UkelonnServlet();
+        servlet.setLogService(logservice);
+
+        assertThrows(UkelonnException.class, () -> servlet.readLinesFromClasspath("notfound.txt"));
     }
 
 }
