@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.servlet.frontend.FrontendServlet;
@@ -36,35 +37,7 @@ public class UkelonnServlet extends FrontendServlet {
     private static final long serialVersionUID = -3496606785818930881L;
 
     public UkelonnServlet() {
-        super();
-        // The paths used by the react router
-        setRoutes(
-            "/",
-            "/login",
-            "/unauthorized",
-            "/user",
-            "/performedjobs",
-            "/performedpayments",
-            "/statistics",
-            "/statistics/earnings/sumoveryear",
-            "/statistics/earnings/sumovermonth",
-            "/admin/jobtypes/create",
-            "/admin/jobtypes/modify",
-            "/admin/jobs/delete",
-            "/admin/jobs/edit",
-            "/admin/jobtypes",
-            "/admin/paymenttypes/create",
-            "/admin/paymenttypes/modify",
-            "/admin/paymenttypes",
-            "/admin/users/create",
-            "/admin/users/modify",
-            "/admin/users/password",
-            "/admin/users",
-            "/admin/bonuses/modify",
-            "/admin/bonuses/create",
-            "/admin/bonuses/delete",
-            "/admin/bonuses",
-            "/admin");
+        super(UkelonnServlet.class);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2024 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
