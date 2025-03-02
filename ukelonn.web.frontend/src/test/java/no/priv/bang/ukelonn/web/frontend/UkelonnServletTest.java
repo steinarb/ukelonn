@@ -22,8 +22,6 @@ import org.junit.jupiter.api.Test;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-import no.priv.bang.ukelonn.UkelonnException;
-
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -132,28 +130,6 @@ class UkelonnServletTest {
         servlet.service(request, response);
 
         assertEquals(404, response.getErrorCode());
-    }
-
-    @Test
-    void readLinesFromClasspath() {
-        var logservice = new MockLogService();
-
-        var servlet = new UkelonnServlet();
-        servlet.setLogService(logservice);
-
-        var routes = servlet.readLinesFromClasspath("testroutes.txt");
-
-        assertThat(routes).isNotEmpty().hasSize(4);
-    }
-
-    @Test
-    void readLinesFromClasspathWithFileNotFound() {
-        var logservice = new MockLogService();
-
-        var servlet = new UkelonnServlet();
-        servlet.setLogService(logservice);
-
-        assertThrows(UkelonnException.class, () -> servlet.readLinesFromClasspath("notfound.txt"));
     }
 
 }
