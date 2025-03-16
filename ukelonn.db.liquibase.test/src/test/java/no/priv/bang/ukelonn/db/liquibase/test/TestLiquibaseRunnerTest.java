@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2024 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.test;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.db.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.lang.util.ByteSource.Util;
-import org.assertj.core.api.SoftAssertions;
+import org.assertj.db.type.AssertDbConnectionFactory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
@@ -58,32 +59,19 @@ class TestLiquibaseRunnerTest {
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
 
-        // Test the database by making a query using a view
-        try(var connection = datasource.getConnection()) {
-            try (var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
-                statement.setString(1, "jad");
-                try(var onAccount = statement.executeQuery()) {
-                    assertNotNull(onAccount);
-                    assertTrue(onAccount.next());
-                    var accountId = onAccount.getInt("account_id");
-                    var username = onAccount.getString("username");
-                    var balance = onAccount.getFloat("balance");
-                    assertEquals(4, accountId);
-                    assertEquals("jad", username);
-                    assertThat(balance).isPositive();
-                }
-            }
-            // Verify that the texts in the database are in the default language  (i.e. Norwegian)
-            try (var statement = connection.createStatement()) {
-                try (var transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
-                    assertNotNull(transactionTypes);
-                    assertTrue(transactionTypes.next());
-                    var transactionTypeName = transactionTypes.getString("transaction_type_name");
-                    assertEquals("Støvsuging 1. etasje", transactionTypeName);
-                }
-            }
-        }
+        var accounts = assertjConnection.request("select * from accounts_view where username=?").parameters("jad").build();
+        assertThat(accounts).hasNumberOfRows(1)
+            .row(0)
+            .value("account_id").isEqualTo(4)
+            .value("username").isEqualTo("jad")
+            .value("balance").isGreaterThan(0);
+
+        var transactiontypes = assertjConnection.request("select * from transaction_types where transaction_type_id=?").parameters(1).build();
+        assertThat(transactiontypes).hasNumberOfRows(1)
+            .row(0)
+            .value("transaction_type_name").isEqualTo("Støvsuging 1. etasje");
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(49);
@@ -98,32 +86,19 @@ class TestLiquibaseRunnerTest {
         runner.setLogService(new MockLogService());
         runner.activate(Collections.singletonMap("databaselanguage", "en_GB")); // Create the database
         runner.prepare(datasource); // Create the database
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
 
-        // Test the database by making a query using a view
-        try(var connection = datasource.getConnection()) {
-            try (var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
-                statement.setString(1, "jad");
-                try(var onAccount = statement.executeQuery()) {
-                    assertNotNull(onAccount);
-                    assertTrue(onAccount.next());
-                    var accountId = onAccount.getInt("account_id");
-                    var username = onAccount.getString("username");
-                    var balance = onAccount.getFloat("balance");
-                    assertEquals(4, accountId);
-                    assertEquals("jad", username);
-                    assertThat(balance).isPositive();
-                }
-            }
-            // Verify that the texts in the database are in the default language  (i.e. Norwegian)
-            try (var statement = connection.createStatement()) {
-                try (var transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
-                    assertNotNull(transactionTypes);
-                    assertTrue(transactionTypes.next());
-                    var transactionTypeName = transactionTypes.getString("transaction_type_name");
-                    assertEquals("Vacuuming 1st floor", transactionTypeName);
-                }
-            }
-        }
+        var accounts = assertjConnection.request("select * from accounts_view where username=?").parameters("jad").build();
+        assertThat(accounts).hasNumberOfRows(1)
+            .row(0)
+            .value("account_id").isEqualTo(4)
+            .value("username").isEqualTo("jad")
+            .value("balance").isGreaterThan(0);
+
+        var transactiontypes = assertjConnection.request("select * from transaction_types where transaction_type_id=?").parameters(1).build();
+        assertThat(transactiontypes).hasNumberOfRows(1)
+            .row(0)
+            .value("transaction_type_name").isEqualTo("Vacuuming 1st floor");
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         var ranChangeSets = runner.getChangeLogHistory(datasource);
@@ -139,32 +114,19 @@ class TestLiquibaseRunnerTest {
         runner.setLogService(new MockLogService());
         runner.activate(Collections.singletonMap("databaselanguage", "en_UK")); // Create the database
         runner.prepare(datasource); // Create the database
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
 
-        // Test the database by making a query using a view
-        try(var connection = datasource.getConnection()) {
-            try (var statement = connection.prepareStatement("select * from accounts_view where username=?")) {
-                statement.setString(1, "jad");
-                try(var onAccount = statement.executeQuery()) {
-                    assertNotNull(onAccount);
-                    assertTrue(onAccount.next());
-                    var accountId = onAccount.getInt("account_id");
-                    var username = onAccount.getString("username");
-                    var balance = onAccount.getFloat("balance");
-                    assertEquals(4, accountId);
-                    assertEquals("jad", username);
-                    assertThat(balance).isPositive();
-                }
-            }
-            // Verify that the texts in the database are in the default language  (i.e. Norwegian)
-            try (var statement = connection.createStatement()) {
-                try (var transactionTypes = statement.executeQuery("select * from transaction_types where transaction_type_id=1")) {
-                    assertNotNull(transactionTypes);
-                    assertTrue(transactionTypes.next());
-                    var transactionTypeName = transactionTypes.getString("transaction_type_name");
-                    assertEquals("Støvsuging 1. etasje", transactionTypeName);
-                }
-            }
-        }
+        var accounts = assertjConnection.request("select * from accounts_view where username=?").parameters("jad").build();
+        assertThat(accounts).hasNumberOfRows(1)
+            .row(0)
+            .value("account_id").isEqualTo(4)
+            .value("username").isEqualTo("jad")
+            .value("balance").isGreaterThan(0);
+
+        var transactiontypes = assertjConnection.request("select * from transaction_types where transaction_type_id=?").parameters(1).build();
+        assertThat(transactiontypes).hasNumberOfRows(1)
+            .row(0)
+            .value("transaction_type_name").isEqualTo("Støvsuging 1. etasje");
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         var ranChangeSets = runner.getChangeLogHistory(datasource);
@@ -191,16 +153,13 @@ class TestLiquibaseRunnerTest {
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
+
+        var users1 = assertjConnection.request("select * from users where username=?").parameters("jjd").build();
+        assertThat(users1).isEmpty();
 
         // Verify that the user isn't present
         try(var connection = datasource.getConnection()) {
-            var statement = connection.prepareStatement("select * from users where username=?");
-            statement.setString(1, "jjd");
-            var userJjdBeforeInsert = statement.executeQuery();
-            var numberOfUserJjdBeforeInsert = 0;
-            while (userJjdBeforeInsert.next()) { ++numberOfUserJjdBeforeInsert; }
-            assertEquals(0, numberOfUserJjdBeforeInsert);
-
             var updateStatement = connection.prepareStatement("insert into users (username,password,password_salt,email,firstname,lastname) values (?, ?, ?, ?, ?, ?)");
             updateStatement.setString(1, "jjd");
             updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
@@ -210,15 +169,10 @@ class TestLiquibaseRunnerTest {
             updateStatement.setString(6, "Davies");
             int count = updateStatement.executeUpdate();
             assertEquals(1, count);
-
-            // Verify that the user is now present
-            var statement2 = connection.prepareStatement("select * from users where username=?");
-            statement2.setString(1, "jjd");
-            ResultSet userJjd = statement2.executeQuery();
-            int numberOfUserJjd = 0;
-            while (userJjd.next()) { ++numberOfUserJjd; }
-            assertEquals(1, numberOfUserJjd);
         }
+
+        var users2 = assertjConnection.request("select * from users where username=?").parameters("jjd").build();
+        assertThat(users2).hasNumberOfRows(1);
     }
 
     @Test
@@ -242,18 +196,17 @@ class TestLiquibaseRunnerTest {
         runner.setLogService(new MockLogService());
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource); // Create the database
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
 
         // Check that database has the mock data in place
-        var expectedStatusBeforeRollback = new SoftAssertions();
-        var numberOfTransactionTypesBeforeRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionTypesBeforeRollback).isPositive();
-        var numberOfUsersBeforeRollback = findTheNumberOfRowsInTable(datasource, "users");
-        expectedStatusBeforeRollback.assertThat(numberOfUsersBeforeRollback).isPositive();
-        var numberOfAccountsBeforeRollback = findTheNumberOfRowsInTable(datasource, "accounts");
-        expectedStatusBeforeRollback.assertThat(numberOfAccountsBeforeRollback).isPositive();
-        var numberOfTransactionsBeforeRollback = findTheNumberOfRowsInTable(datasource, "transactions");
-        expectedStatusBeforeRollback.assertThat(numberOfTransactionsBeforeRollback).isPositive();
-        expectedStatusBeforeRollback.assertAll();
+        var transactionTypesBeforeRollback = assertjConnection.table("transaction_types").build();
+        assertThat(transactionTypesBeforeRollback).hasNumberOfRowsGreaterThan(0);
+        var usersBeforeRollback = assertjConnection.table("users").build();
+        assertThat(usersBeforeRollback).hasNumberOfRowsGreaterThan(0);
+        var accountsBeforeRollback = assertjConnection.table("accounts").build();
+        assertThat(accountsBeforeRollback).hasNumberOfRowsGreaterThan(0);
+        var transactionsBeforeRollback = assertjConnection.table("transactions").build();
+        assertThat(transactionsBeforeRollback).hasNumberOfRowsGreaterThan(0);
 
         var sizeOfDbchangelogBeforeRollback = findTheNumberOfRowsInTable(datasource, "databasechangelog");
 
@@ -265,16 +218,14 @@ class TestLiquibaseRunnerTest {
         assertThat(sizeOfDbchangelogAfterRollback).isLessThan(sizeOfDbchangelogBeforeRollback);
 
         // Verify that the database tables are empty
-        var expectedStatusAfterRollback = new SoftAssertions();
-        var numberOfTransactionTypesAfterRollback = findTheNumberOfRowsInTable(datasource, "transaction_types");
-        expectedStatusAfterRollback.assertThat(numberOfTransactionTypesAfterRollback).isEqualTo(0);
-        var numberOfUsersAfterRollback = findTheNumberOfRowsInTable(datasource, "users");
-        expectedStatusAfterRollback.assertThat(numberOfUsersAfterRollback).isEqualTo(0);
-        var numberOfAccountsAfterRollback = findTheNumberOfRowsInTable(datasource, "accounts");
-        expectedStatusAfterRollback.assertThat(numberOfAccountsAfterRollback).isEqualTo(0);
-        var numberOfTransactionsAfterRollback = findTheNumberOfRowsInTable(datasource, "transactions");
-        expectedStatusAfterRollback.assertThat(numberOfTransactionsAfterRollback).isEqualTo(0);
-        expectedStatusAfterRollback.assertAll();
+        var transactionTypesAfterRollback = assertjConnection.table("transaction_types").build();
+        assertThat(transactionTypesAfterRollback).isEmpty();
+        var usersAfterRollback = assertjConnection.table("users").build();
+        assertThat(usersAfterRollback).isEmpty();
+        var accountsAfterRollback = assertjConnection.table("accounts").build();
+        assertThat(accountsAfterRollback).isEmpty();
+        var transactionsAfterRollback = assertjConnection.table("transactions").build();
+        assertThat(transactionsAfterRollback).isEmpty();
     }
 
     @Test

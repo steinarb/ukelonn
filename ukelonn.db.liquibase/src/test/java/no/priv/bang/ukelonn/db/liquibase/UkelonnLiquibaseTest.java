@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2024 Steinar Bang
+ * Copyright 2019-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 package no.priv.bang.ukelonn.db.liquibase;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.db.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
 import javax.sql.DataSource;
 
+import org.assertj.db.type.AssertDbConnectionFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
@@ -50,23 +51,30 @@ class UkelonnLiquibaseTest {
         var ukelonnLiquibase = new UkelonnLiquibase();
         ukelonnLiquibase.createInitialSchema(dataSource);
         ukelonnLiquibase.updateSchema(dataSource);
+        var assertjConnection = AssertDbConnectionFactory.of(dataSource).create();
 
+        var transactions = assertjConnection.table("transactions").build();
+        assertThat(transactions).exists().isEmpty();
+
+        var bonuses1 = assertjConnection.table("bonuses").build();
+        assertThat(bonuses1).exists().isEmpty();
+
+        var fromDate = new Date();
+        var toDate = new Date();
         try(Connection connection = createConnection()) {
-            try(var statement = connection.prepareStatement("select * from transactions")) {
-                var results = statement.executeQuery();
-                int count = 0;
-                while(results.next()) {
-                    ++count;
-                }
-
-                assertEquals(0, count);
-            }
-
-            var fromDate = new Date();
-            var toDate = new Date();
             createBonuses(connection, fromDate, toDate);
-            assertBonuses(connection, fromDate, toDate);
         }
+
+        var bonuses2 = assertjConnection.table("bonuses").build();
+        assertThat(bonuses2).exists().hasNumberOfRows(1)
+            .row(0)
+            .value("enabled").isTrue()
+            .value("iconurl").isNull()
+            .value("title").isEqualTo("Christmas bonus")
+            .value("description").isEqualTo("To finance presents")
+            .value("bonus_factor").isEqualTo(2.0)
+            .value("start_date").isEqualTo(Timestamp.from(fromDate.toInstant()))
+            .value("end_date").isEqualTo(Timestamp.from(toDate.toInstant()));
     }
 
     @Test
@@ -182,25 +190,6 @@ class UkelonnLiquibaseTest {
             statement.setTimestamp(6, new Timestamp(endDate.toInstant().toEpochMilli()));
             statement.executeUpdate();
         }
-    }
-
-    private void assertBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
-        try (var statement = connection.prepareStatement("select * from bonuses")) {
-            try(var results = statement.executeQuery()) {
-                assertBonus(results, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
-            }
-        }
-    }
-
-    private void assertBonus(ResultSet results, boolean enabled, String title, String description, double bonusFactor, Date startDate, Date endDate) throws Exception {
-        assertTrue(results.next());
-        assertEquals(enabled, results.getBoolean("enabled"));
-        assertNull(results.getString("iconurl"));
-        assertEquals(title, results.getString("title"));
-        assertEquals(description, results.getString("description"));
-        assertEquals(bonusFactor, results.getDouble("bonus_factor"), 0.0);
-        assertEquals(startDate, new Date(results.getTimestamp("start_date").getTime()));
-        assertEquals(endDate, new Date(results.getTimestamp("end_date").getTime()));
     }
 
     private static Connection createConnection() throws Exception {
