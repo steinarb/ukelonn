@@ -61,9 +61,7 @@ class UkelonnLiquibaseTest {
 
         var fromDate = new Date();
         var toDate = new Date();
-        try(Connection connection = createConnection()) {
-            createBonuses(connection, fromDate, toDate);
-        }
+        createBonuses(dataSource, fromDate, toDate);
 
         var bonuses2 = assertjConnection.table("bonuses").build();
         assertThat(bonuses2).exists().hasNumberOfRows(1)
@@ -176,8 +174,10 @@ class UkelonnLiquibaseTest {
         assertThat(e.getMessage()).contains("liquibase.exception.MigrationFailedException: Migration failed for changeset");
     }
 
-    private void createBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
-        createBonus(connection, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
+    private void createBonuses(DataSource datasource, Date startDate, Date endDate) throws Exception {
+        try(Connection connection = createConnection()) {
+            createBonus(connection, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
+        }
     }
 
     private void createBonus(Connection connection, boolean enabled, String title, String description, double bonusFactor, Date startDate, Date endDate) throws Exception {
