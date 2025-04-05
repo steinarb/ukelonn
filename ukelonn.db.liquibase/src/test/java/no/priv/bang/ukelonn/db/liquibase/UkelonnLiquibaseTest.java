@@ -130,7 +130,6 @@ class UkelonnLiquibaseTest {
         var datasource = spy(dataSource);
         when(datasource.getConnection())
             .thenCallRealMethod()
-            .thenCallRealMethod()
             .thenThrow(SQLException.class);
         var ukelonnLiquibase = new UkelonnLiquibase();
 
@@ -162,7 +161,6 @@ class UkelonnLiquibaseTest {
         var datasource = spy(dataSource);
         var connection = createConnection("ukelonn4");
         when(datasource.getConnection())
-            .thenCallRealMethod()
             .thenCallRealMethod()
             .thenReturn(connection);
         var ukelonnLiquibase = new UkelonnLiquibase();

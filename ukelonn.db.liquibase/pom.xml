@@ -77,17 +77,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.authservice</groupId>
-            <artifactId>authservice.db.liquibase</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.authservice</groupId>
-            <artifactId>authservice.db.liquibase</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>

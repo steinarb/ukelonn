@@ -74,7 +74,7 @@ class TestLiquibaseRunnerTest {
             .value("transaction_type_name").isEqualTo("Støvsuging 1. etasje");
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(49);
+        assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(37);
     }
 
     @Test
@@ -102,7 +102,7 @@ class TestLiquibaseRunnerTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         var ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(49, ranChangeSets.size());
+        assertEquals(37, ranChangeSets.size());
     }
 
     @Test
@@ -130,7 +130,7 @@ class TestLiquibaseRunnerTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         var ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(49, ranChangeSets.size());
+        assertEquals(37, ranChangeSets.size());
     }
 
     @Test
@@ -142,37 +142,6 @@ class TestLiquibaseRunnerTest {
         assertThat(logservice.getLogmessages()).isEmpty();
         runner.prepare(datasource); // Create the database
         assertThat(logservice.getLogmessages()).hasSize(1);
-    }
-
-    @Test
-    void testInsert() throws SQLException {
-        var dataSourceFactory = new DerbyDataSourceFactory();
-        var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
-        var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
-        var runner = new TestLiquibaseRunner();
-        runner.setLogService(new MockLogService());
-        runner.activate(Collections.emptyMap());
-        runner.prepare(datasource); // Create the database
-        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
-
-        var users1 = assertjConnection.request("select * from users where username=?").parameters("jjd").build();
-        assertThat(users1).isEmpty();
-
-        // Verify that the user isn't present
-        try(var connection = datasource.getConnection()) {
-            var updateStatement = connection.prepareStatement("insert into users (username,password,password_salt,email,firstname,lastname) values (?, ?, ?, ?, ?, ?)");
-            updateStatement.setString(1, "jjd");
-            updateStatement.setString(2, "sU4vKCNpoS6AuWAzZhkNk7BdXSNkW2tmOP53nfotDjE=");
-            updateStatement.setString(3, "9SFDvohxZkZ9eWHiSEoMDw==");
-            updateStatement.setString(4, "jjd@gmail.com");
-            updateStatement.setString(5, "James");
-            updateStatement.setString(6, "Davies");
-            int count = updateStatement.executeUpdate();
-            assertEquals(1, count);
-        }
-
-        var users2 = assertjConnection.request("select * from users where username=?").parameters("jjd").build();
-        assertThat(users2).hasNumberOfRows(1);
     }
 
     @Test
@@ -201,8 +170,6 @@ class TestLiquibaseRunnerTest {
         // Check that database has the mock data in place
         var transactionTypesBeforeRollback = assertjConnection.table("transaction_types").build();
         assertThat(transactionTypesBeforeRollback).hasNumberOfRowsGreaterThan(0);
-        var usersBeforeRollback = assertjConnection.table("users").build();
-        assertThat(usersBeforeRollback).hasNumberOfRowsGreaterThan(0);
         var accountsBeforeRollback = assertjConnection.table("accounts").build();
         assertThat(accountsBeforeRollback).hasNumberOfRowsGreaterThan(0);
         var transactionsBeforeRollback = assertjConnection.table("transactions").build();
@@ -220,8 +187,6 @@ class TestLiquibaseRunnerTest {
         // Verify that the database tables are empty
         var transactionTypesAfterRollback = assertjConnection.table("transaction_types").build();
         assertThat(transactionTypesAfterRollback).isEmpty();
-        var usersAfterRollback = assertjConnection.table("users").build();
-        assertThat(usersAfterRollback).isEmpty();
         var accountsAfterRollback = assertjConnection.table("accounts").build();
         assertThat(accountsAfterRollback).isEmpty();
         var transactionsAfterRollback = assertjConnection.table("transactions").build();

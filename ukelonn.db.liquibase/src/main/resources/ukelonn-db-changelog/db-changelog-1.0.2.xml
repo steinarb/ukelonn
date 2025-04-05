@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <!-- Copyright 2019-2020 Steinar Bang                                                -->
+    <!-- Copyright 2019-2025 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -12,35 +12,6 @@
     <!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.        -->
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
-
-    <!-- Executed after authservice liquibase has been inserted -->
-    <changeSet author="sb" id="update-authservice-users-from-ukelonn-users">
-        <sql>
-            insert into users (username, password, password_salt, email, firstname, lastname)
-            select ukelonn_users.username, ukelonn_users.password, ukelonn_users.salt, ukelonn_users.email, ukelonn_users.first_name, ukelonn_users.last_name from ukelonn_users
-            where ukelonn_users.username not in (select username from users)
-            order by ukelonn_users.user_id
-        </sql>
-    </changeSet>
-
-    <changeSet author="sb" id="insert-ukelonn-shiro-roles">
-        <sql>
-            insert into roles (role_name, description) values ('ukelonnuser', 'A user in the ukelonn application');
-            insert into roles (role_name, description) values ('ukelonnadmin', 'An administrator of the ukelonn application');
-        </sql>
-    </changeSet>
-
-    <changeSet author="sb" id="insert-ukelonnuser-role-for-all-users">
-        <sql>
-            insert into user_roles (role_name,username) select 'ukelonnuser', users.username from users order by users.user_id
-        </sql>
-    </changeSet>
-
-    <changeSet author="sb" id="insert-ukelonnadmin-role-for-administrators">
-        <sql>
-            insert into user_roles (role_name,username) select 'ukelonnadmin', u.username from users u join administrators a on a.username=u.username order by u.user_id
-        </sql>
-    </changeSet>
 
     <changeSet author="sb" id="drop-administrators-table">
         <dropTable tableName="administrators" />
