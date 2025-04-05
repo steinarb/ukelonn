@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2024 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package no.priv.bang.ukelonn.db.liquibase.production;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.db.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -24,6 +25,8 @@ import java.util.Collections;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.assertj.db.type.AssertDbConnectionFactory;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -46,8 +49,17 @@ class ProductionLiquibaseRunnerTest {
         runner.setLogService(logservice);
         runner.activate(Collections.emptyMap());
 
+        // Verify tables doesn't exist before schemas have been run
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
+        var accounts1 = assertjConnection.table("accounts").build();
+        assertThat(accounts1).doesNotExist();
+
         // Execute the method under test
         runner.prepare(datasource);
+
+        // Verify tables exist after schemas have been run
+        var accounts2 = assertjConnection.table("accounts").build();
+        assertThat(accounts2).exists();
 
         // Verify that no errors have been logged
         assertThat(logservice.getLogmessages()).isEmpty();
