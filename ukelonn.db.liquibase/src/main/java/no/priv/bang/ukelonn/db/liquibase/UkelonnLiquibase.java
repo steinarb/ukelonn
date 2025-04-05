@@ -21,8 +21,6 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import liquibase.exception.LiquibaseException;
-import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
-import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.karaf.liquibase.runner.LiquibaseClassPathChangeLogRunner;
 import no.priv.bang.ukelonn.UkelonnException;
 
@@ -44,15 +42,6 @@ public class UkelonnLiquibase extends LiquibaseClassPathChangeLogRunner {
         try (var connect = datasource.getConnection()) {
             applyLiquibaseChangelist(connect, "ukelonn-db-changelog/db-changelog-1.0.1.xml");
         } catch (LiquibaseException e) {
-            throw e;
-        } catch (SQLException e1) {
-            throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
-        }
-
-        try (var connect = datasource.getConnection()) {
-            var authserviceLiquibase = new AuthserviceLiquibase();
-            authserviceLiquibase.createInitialSchema(connect);
-        } catch (LiquibaseException | AuthserviceException e) {
             throw e;
         } catch (SQLException e1) {
             throw new UkelonnException(ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA, e1);
