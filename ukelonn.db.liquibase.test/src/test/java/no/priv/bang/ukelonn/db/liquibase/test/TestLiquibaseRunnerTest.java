@@ -74,7 +74,7 @@ class TestLiquibaseRunnerTest {
             .value("transaction_type_name").isEqualTo("Støvsuging 1. etasje");
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
-        assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(37);
+        assertThat(runner.getChangeLogHistory(datasource)).as("changelog history").hasSize(36);
     }
 
     @Test
@@ -102,7 +102,7 @@ class TestLiquibaseRunnerTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         var ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(37, ranChangeSets.size());
+        assertEquals(36, ranChangeSets.size());
     }
 
     @Test
@@ -130,7 +130,7 @@ class TestLiquibaseRunnerTest {
 
         // Verify that the schema changeset as well as all of the test data change sets has been run
         var ranChangeSets = runner.getChangeLogHistory(datasource);
-        assertEquals(37, ranChangeSets.size());
+        assertEquals(36, ranChangeSets.size());
     }
 
     @Test
