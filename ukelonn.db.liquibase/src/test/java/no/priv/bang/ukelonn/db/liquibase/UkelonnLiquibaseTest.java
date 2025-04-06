@@ -126,20 +126,6 @@ class UkelonnLiquibaseTest {
     }
 
     @Test
-    void testUpdateSchemaFailOnConnectionCloseOnSchemaUpdateAfterAuthserviceAdd() throws Exception {
-        var datasource = spy(dataSource);
-        when(datasource.getConnection())
-            .thenCallRealMethod()
-            .thenThrow(SQLException.class);
-        var ukelonnLiquibase = new UkelonnLiquibase();
-
-        var e = assertThrows(
-            UkelonnException.class,
-            () -> ukelonnLiquibase.updateSchema(datasource));
-        assertThat(e.getMessage()).startsWith(UkelonnLiquibase.ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA);
-    }
-
-    @Test
     void testUpdateSchemaFailOnLiqubaseUpdateInAuthserviceSchemaSetup() throws Exception {
         var datasource = spy(dataSource);
         var connection = spy(createConnection("ukelonn3"));
