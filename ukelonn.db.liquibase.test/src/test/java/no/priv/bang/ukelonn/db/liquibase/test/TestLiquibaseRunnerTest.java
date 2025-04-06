@@ -316,7 +316,7 @@ class TestLiquibaseRunnerTest {
         liquibase.createInitialSchema(dataSource);
 
         try(var connect = dataSource.getConnection()) {
-            liquibase.applyLiquibaseChangelist(connect, "sql/data/db-changelog.xml", getClass().getClassLoader());
+            liquibase.applyLiquibaseChangelist(connect, "sql/data/db-initial-changelog.xml", getClass().getClassLoader());
         }
 
         liquibase.updateSchema(dataSource);
