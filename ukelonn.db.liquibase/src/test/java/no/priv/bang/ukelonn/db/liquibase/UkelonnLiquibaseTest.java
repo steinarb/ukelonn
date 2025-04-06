@@ -173,7 +173,7 @@ class UkelonnLiquibaseTest {
     }
 
     private void createBonuses(DataSource datasource, Date startDate, Date endDate) throws Exception {
-        try(Connection connection = createConnection()) {
+        try(Connection connection = datasource.getConnection()) {
             createBonus(connection, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
         }
     }
@@ -188,10 +188,6 @@ class UkelonnLiquibaseTest {
             statement.setTimestamp(6, new Timestamp(endDate.toInstant().toEpochMilli()));
             statement.executeUpdate();
         }
-    }
-
-    private static Connection createConnection() throws Exception {
-        return dataSource.getConnection();
     }
 
     private static Connection createConnection(String dbname) throws Exception {
