@@ -41,6 +41,17 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.web.security.shirofilter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.authservice</groupId>
+            <artifactId>authservice.web.security.shirofilter</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component.annotations</artifactId>
             <scope>provided</scope>
