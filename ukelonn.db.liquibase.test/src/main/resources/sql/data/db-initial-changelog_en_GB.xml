@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <!-- Copyright 2020-2022 Steinar Bang                                                -->
+    <!-- Copyright 2020-2025 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -15,7 +15,6 @@
     <!-- under the License.                                                              -->
 
     <include file="sql/data/example_initial_users.sql"/>
-    <include file="sql/data/example_administrators.sql"/>
     <include file="sql/data/example_accounts.sql"/>
     <include file="sql/data/example_transaction_types_en_GB.sql"/>
     <include file="sql/data/example_transactions.sql"/>
