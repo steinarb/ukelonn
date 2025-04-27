@@ -32,17 +32,14 @@
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.services</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.db.liquibase.test</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.backend</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.authservice</groupId>
@@ -55,7 +52,6 @@
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.web.security</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
