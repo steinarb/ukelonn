@@ -17,14 +17,17 @@ import no.priv.bang.authservice.db.liquibase.test.TestLiquibaseRunner;
 import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.authservice.web.security.dbrealm.AuthserviceDbRealm;
 import no.priv.bang.authservice.web.security.memorysession.MemorySession;
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class UkelonnShiroFilterTest {
 
     @Test
     void testAuthenticate() throws Exception {
+        var logservice = new MockLogService();
         var shirofilter = new UkelonnShiroFilter();
         var realm = new AuthserviceDbRealm();
         var session = new MemorySession();
+        session.setLogService(logservice);
         session.activate();
         var cipherKeyService = mock(CipherKeyService.class);
         var datasource = createDataSource("authservice1");

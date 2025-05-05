@@ -135,6 +135,7 @@
                     <exclude>**/*.rnc</exclude>
                     <exclude>**/schemas.xml</exclude>
                 </excludes>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
@@ -183,7 +184,7 @@
                                     <artifactId>liquibase-core</artifactId>
                                 </artifactItem>
                             </artifactItems>
-                            <includes>**/dbchangelog-3.5.xsd</includes>
+                            <includes>**/dbchangelog-${liquibase.xsd-version}.xsd</includes>
                         </configuration>
                     </execution>
                 </executions>

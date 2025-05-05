@@ -1,0 +1,1384 @@
+namespace local = ""
+default namespace ns1 = "http://www.liquibase.org/xml/ns/dbchangelog"
+
+start =
+  addUniqueConstraint
+  | alterSequence
+  | dropNotNullConstraint
+  | addDefaultValue
+  | renameTable
+  | dbms
+  | dropAllForeignKeyConstraints
+  | dropUniqueConstraint
+  | dropView
+  | dropColumn
+  | constraints
+  | \empty
+  | dropIndex
+  | dropDefaultValue
+  | output
+  | renameColumn
+  | customPrecondition
+  | dropProcedure
+  | whereParams
+  | expectedQuotingStrategy
+  | renameSequence
+  | dropForeignKeyConstraint
+  | dropSequence
+  | customChange
+  | addColumn
+  | columnExists
+  | dropPrimaryKey
+  | sqlCheck
+  | indexExists
+  | executeCommand
+  | createSequence
+  | changeSetExecuted
+  | viewExists
+  | loadUpdateData
+  | stop
+  | tagDatabase
+  | sqlFile
+  | setTableRemarks
+  | addForeignKeyConstraint
+  | mergeColumns
+  | createTable
+  | tableIsEmpty
+  | insert
+  | update
+  | includeAll
+  | addPrimaryKey
+  | loadData
+  | (notAllowed
+     | element databaseChangeLog {
+         attribute objectQuotingStrategy {
+           xsd:string "LEGACY"
+           | xsd:string "QUOTE_ALL_OBJECTS"
+           | xsd:string "QUOTE_ONLY_RESERVED_WORDS"
+         }?,
+         attribute changeLogId { xsd:string }?,
+         attribute contextFilter { xsd:string }?,
+         attribute context { xsd:string }?,
+         attribute logicalFilePath { xsd:string }?,
+         element removeChangeSetProperty {
+           attribute remove { xsd:string }?,
+           attribute dbms { xsd:string }?,
+           attribute change { xsd:string }?
+         }*,
+         element property {
+           attribute target { xsd:string }?,
+           attribute global { xsd:boolean }?,
+           attribute labels { xsd:string }?,
+           attribute contextFilter { xsd:string }?,
+           attribute context { xsd:string }?,
+           attribute dbms { xsd:string }?,
+           attribute value { xsd:string }?,
+           attribute name { xsd:string }?,
+           attribute errorIfMissing {
+             xsd:boolean
+             | xsd:string { pattern = "$\{[\w\.]+\}" }
+           }?,
+           attribute relativeToChangelogFile {
+             xsd:boolean
+             | xsd:string { pattern = "$\{[\w\.]+\}" }
+           }?,
+           attribute file { xsd:string }?,
+           attribute * - (ns1:* | local:*) { text }*
+         }*,
+         element preConditions {
+           attribute onSqlOutput {
+             xsd:string "TEST" | xsd:string "IGNORE" | xsd:string "FAIL"
+           }?,
+           attribute onError { xsd:string "HALT" | xsd:string "WARN" }?,
+           attribute onFail { xsd:string "HALT" | xsd:string "WARN" }?,
+           attribute onErrorMessage { xsd:string }?,
+           attribute onFailMessage { xsd:string }?,
+           PreConditionChildren+
+         }?,
+         (element changeSet {
+            attribute runWithSpoolFile { xsd:string }?,
+            attribute runWith { xsd:string }?,
+            attribute ignore {
+              xsd:boolean
+              | xsd:string { pattern = "$\{[\w\.]+\}" }
+            }?,
+            attribute runOrder { xsd:string }?,
+            attribute created { xsd:string }?,
+            attribute objectQuotingStrategy {
+              xsd:string "LEGACY"
+              | xsd:string "QUOTE_ALL_OBJECTS"
+              | xsd:string "QUOTE_ONLY_RESERVED_WORDS"
+            }?,
+            attribute logicalFilePath { xsd:string }?,
+            attribute runInTransaction {
+              xsd:boolean
+              | xsd:string { pattern = "$\{[\w\.]+\}" }
+            }?,
+            attribute onValidationFail {
+              xsd:string "HALT" | xsd:string "MARK_RAN"
+            }?,
+            attribute failOnError {
+              xsd:boolean
+              | xsd:string { pattern = "$\{[\w\.]+\}" }
+            }?,
+            attribute runAlways {
+              xsd:boolean
+              | xsd:string { pattern = "$\{[\w\.]+\}" }
+            }?,
+            attribute runOnChange {
+              xsd:boolean
+              | xsd:string { pattern = "$\{[\w\.]+\}" }
+            }?,
+            attribute dbms { xsd:string }?,
+            attribute labels { xsd:string }?,
+            attribute contextFilter { xsd:string }?,
+            attribute context { xsd:string }?,
+            attribute author { xsd:string },
+            attribute id { xsd:string },
+            element validCheckSum {
+              mixed { comment? }
+            }*,
+            element preConditions {
+              attribute onSqlOutput {
+                xsd:string "TEST"
+                | xsd:string "IGNORE"
+                | xsd:string "FAIL"
+              }?,
+              attribute onError {
+                xsd:string "HALT"
+                | xsd:string "CONTINUE"
+                | xsd:string "MARK_RAN"
+                | xsd:string "WARN"
+              }?,
+              attribute onFail {
+                xsd:string "HALT"
+                | xsd:string "CONTINUE"
+                | xsd:string "MARK_RAN"
+                | xsd:string "WARN"
+              }?,
+              attribute onErrorMessage { xsd:string }?,
+              attribute onFailMessage { xsd:string }?,
+              PreConditionChildren+
+            }?,
+            (tagDatabase | changeSetChildren+)?,
+            element modifySql {
+              attribute applyToRollback {
+                xsd:boolean
+                | xsd:string { pattern = "$\{[\w\.]+\}" }
+              }?,
+              attribute labels { xsd:string }?,
+              attribute contextFilter { xsd:string }?,
+              attribute context { xsd:string }?,
+              attribute dbms { xsd:string }?,
+              (element replace {
+                 attribute with { xsd:string },
+                 attribute replace { xsd:string }
+               }+
+               | empty
+               | element regExpReplace {
+                   attribute with { xsd:string },
+                   attribute replace { xsd:string }
+                 }+
+               | element prepend {
+                   attribute value { xsd:string }
+                 }+
+               | element append {
+                   attribute value { xsd:string }
+                 }+)+
+            }*,
+            attribute * - (ns1:* | local:*) { text }*
+          }+
+          | empty
+          | \include+
+          | includeAll+
+          | element modifyChangeSets {
+              attribute stripComments { xsd:boolean }?,
+              attribute endDelimiter { xsd:string }?,
+              attribute runWithSpoolFile { xsd:string }?,
+              attribute runWith { xsd:string }?,
+              (\include | includeAll)*
+            }+)+,
+         attribute * - (ns1:* | local:*) { text }*
+       })
+  | tableExists
+  | delete
+  | changeLogPropertyDefined
+  | sql
+  | runningAs
+  | not
+  | createProcedure
+  | param
+  | and
+  | modifyDataType
+  | addLookupTable
+  | rowCount
+  | primaryKeyExists
+  | createView
+  | dropTable
+  | rollback
+  | \include
+  | or
+  | setColumnRemarks
+  | sequenceExists
+  | column2
+  | renameView
+  | createIndex
+  | addNotNullConstraint
+  | foreignKeyConstraintExists
+  | uniqueConstraintExists
+  | comment
+  | addAutoIncrement
+update =
+  notAllowed
+  | element update {
+      mixed {
+        tableNameAttribute,
+        changeAttributes,
+        column2+,
+        element where { \string }?,
+        whereParams?
+      },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+stop =
+  notAllowed
+  | element stop {
+      mixed { changeAttributes },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+dbms =
+  notAllowed
+  | element dbms {
+      attribute type { xsd:string }
+    }
+addLookupTable =
+  notAllowed
+  | element addLookupTable {
+      attribute constraintName { xsd:string }?,
+      attribute newColumnDataType { xsd:string }?,
+      attribute newColumnName { xsd:string },
+      attribute newTableName { xsd:string },
+      attribute newTableSchemaName { xsd:string }?,
+      attribute newTableCatalogName { xsd:string }?,
+      attribute existingColumnName { xsd:string },
+      attribute existingTableName { xsd:string },
+      attribute existingTableSchemaName { xsd:string }?,
+      attribute existingTableCatalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+renameTable =
+  notAllowed
+  | element renameTable {
+      attribute newTableName { xsd:string },
+      attribute oldTableName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+createView =
+  notAllowed
+  | element createView {
+      changeAttributes,
+      attribute catalogName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute viewName { xsd:string },
+      attribute remarks { xsd:string }?,
+      attribute replaceIfExists {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute fullDefinition {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute path { xsd:string }?,
+      attribute encoding { xsd:string }?,
+      attribute relativeToChangelogFile {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      xsd:string,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+expectedQuotingStrategy =
+  notAllowed
+  | element expectedQuotingStrategy {
+      attribute strategy { xsd:string }
+    }
+any_lax___other_ =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_)*
+    }
+  }
+comment =
+  notAllowed
+  | element comment { \string }
+indexName = attribute indexName { xsd:string }
+any_lax___other_2 =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_2)*
+    }
+  }
+includeAll =
+  notAllowed
+  | element includeAll {
+      attribute logicalFilePath { xsd:string }?,
+      attribute ignore { xsd:string }?,
+      attribute endsWithFilter { xsd:string }?,
+      attribute maxDepth {
+        xsd:integer
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute minDepth {
+        xsd:integer
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute contextFilter { xsd:string }?,
+      attribute labels { xsd:string }?,
+      attribute context { xsd:string }?,
+      attribute filter { xsd:string }?,
+      attribute resourceComparator { xsd:string }?,
+      attribute relativeToChangelogFile {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute errorIfMissingOrEmpty {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute path { xsd:string },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+param =
+  notAllowed
+  | element param {
+      attribute valueSequenceCurrent { xsd:string }?,
+      attribute valueSequenceNext { xsd:string }?,
+      attribute valueComputed { xsd:string }?,
+      attribute valueDate { xsd:string }?,
+      attribute valueBoolean { xsd:string }?,
+      attribute valueNumeric { xsd:string }?,
+      attribute value { xsd:string }?,
+      attribute name { xsd:string }?
+    }
+or =
+  notAllowed
+  | element or { PreConditionChildren+ }
+addDefaultValue =
+  notAllowed
+  | element addDefaultValue {
+      attribute defaultValueConstraintName { xsd:string }?,
+      attribute defaultValueSequenceNext { xsd:string }?,
+      defaultValueAttributes,
+      attribute columnDataType {
+        xsd:string { pattern = "[\S\t].*" }
+      }?,
+      attribute columnName { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+alterSequence =
+  notAllowed
+  | element alterSequence {
+      sequenceAttributes,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+runningAs =
+  notAllowed
+  | element runningAs {
+      attribute username { xsd:string }
+    }
+dropDefaultValue =
+  notAllowed
+  | element dropDefaultValue {
+      attribute columnDataType { xsd:string }?,
+      attribute columnName { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+anonymous0 = mixed { column, constraints?, any_lax___other_2* }
+customPrecondition =
+  notAllowed
+  | element customPrecondition {
+      attribute className { xsd:string },
+      element param {
+        attribute value { xsd:string },
+        attribute name { xsd:string }
+      }*
+    }
+\string = xsd:string
+sql =
+  notAllowed
+  | element sql {
+      mixed {
+        attribute dbms { xsd:string }?,
+        attribute endDelimiter { xsd:string }?,
+        attribute splitStatements {
+          xsd:boolean
+          | xsd:string { pattern = "$\{[\w\.]+\}" }
+        }?,
+        attribute stripComments {
+          xsd:boolean
+          | xsd:string { pattern = "$\{[\w\.]+\}" }
+        }?,
+        changeAttributes,
+        comment?
+      },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+dropAllForeignKeyConstraints =
+  notAllowed
+  | element dropAllForeignKeyConstraints {
+      attribute baseTableName { xsd:string },
+      attribute baseTableSchemaName { xsd:string }?,
+      attribute baseTableCatalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+createTable =
+  notAllowed
+  | element createTable {
+      attribute rowDependencies { xsd:boolean }?,
+      attribute ifNotExists { xsd:boolean }?,
+      attribute remarks { xsd:string }?,
+      attribute tableType { xsd:string }?,
+      attribute tablespace { xsd:string }?,
+      tableNameAttribute,
+      changeAttributes,
+      ((column2+ | any_lax___other_4+)?)+,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+tableIsEmpty =
+  notAllowed
+  | element tableIsEmpty {
+      attribute tableName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+loadData =
+  notAllowed
+  | element loadData {
+      mixed {
+        loadDataAttributes,
+        tableNameAttribute,
+        changeAttributes,
+        element column {
+          defaultValueAttributes,
+          attribute nullPlaceholder { xsd:string }?,
+          attribute type { xsd:string }?,
+          attribute name { xsd:string }?,
+          attribute header { xsd:string }?,
+          attribute index {
+            xsd:integer
+            | xsd:string { pattern = "$\{[\w\.]+\}" }
+          }?
+        }*
+      },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+addPrimaryKey =
+  notAllowed
+  | element addPrimaryKey {
+      attribute validate {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute forIndexName { xsd:string }?,
+      attribute forIndexSchemaName { xsd:string }?,
+      attribute forIndexCatalogName { xsd:string }?,
+      attribute clustered {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute tablespace { xsd:string }?,
+      attribute constraintName { xsd:string }?,
+      attribute columnNames { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      (any_lax___other_*)+,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+uniqueConstraintExists =
+  notAllowed
+  | element uniqueConstraintExists {
+      attribute columnNames { xsd:string }?,
+      attribute tableName { xsd:string },
+      attribute constraintName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+renameColumn =
+  notAllowed
+  | element renameColumn {
+      attribute remarks { xsd:string }?,
+      attribute columnDataType { xsd:string }?,
+      attribute newColumnName { xsd:string },
+      attribute oldColumnName { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+any_lax___other_3 =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_3)*
+    }
+  }
+dropTable =
+  notAllowed
+  | element dropTable {
+      attribute cascadeConstraints {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+viewExists =
+  notAllowed
+  | element viewExists {
+      attribute viewName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+any_lax___other_4 =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_4)*
+    }
+  }
+\include =
+  notAllowed
+  | element include {
+      attribute logicalFilePath { xsd:string }?,
+      attribute created { xsd:string }?,
+      attribute ignore { xsd:string }?,
+      attribute labels { xsd:string }?,
+      attribute contextFilter { xsd:string }?,
+      attribute context { xsd:string }?,
+      attribute errorIfMissing {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute relativeToChangelogFile {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute file { xsd:string },
+      attribute author { xsd:string }?,
+      attribute id { xsd:string }?,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+sequenceAttributes =
+  attribute cycle {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute dataType { xsd:string }?,
+  attribute cacheSize { xsd:string }?,
+  attribute ordered {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute minValue { xsd:string }?,
+  attribute maxValue { xsd:string }?,
+  attribute incrementBy { xsd:string }?,
+  attribute startValue { xsd:string }?,
+  attribute sequenceName { xsd:string },
+  attribute schemaName { xsd:string }?,
+  attribute catalogName { xsd:string }?
+addForeignKeyConstraint =
+  notAllowed
+  | element addForeignKeyConstraint {
+      attribute validate {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute referencesUniqueColumn {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute onUpdate {
+        xsd:token "NO ACTION"
+        | xsd:token "CASCADE"
+        | xsd:token "SET DEFAULT"
+        | xsd:token "RESTRICT"
+        | xsd:token "SET NULL"
+      }?,
+      attribute onDelete {
+        xsd:token "NO ACTION"
+        | xsd:token "CASCADE"
+        | xsd:token "SET DEFAULT"
+        | xsd:token "RESTRICT"
+        | xsd:token "SET NULL"
+      }?,
+      attribute deleteCascade {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute initiallyDeferred {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute deferrable {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute referencedColumnNames { xsd:string },
+      attribute referencedTableName { xsd:string },
+      attribute referencedTableSchemaName { xsd:string }?,
+      attribute referencedTableCatalogName { xsd:string }?,
+      attribute constraintName { xsd:string },
+      attribute baseColumnNames { xsd:string },
+      attribute baseTableName { xsd:string },
+      attribute baseTableSchemaName { xsd:string }?,
+      attribute baseTableCatalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+sqlCheck =
+  notAllowed
+  | element sqlCheck {
+      mixed {
+        attribute expectedResult { xsd:string }
+      }
+    }
+addUniqueConstraint =
+  notAllowed
+  | element addUniqueConstraint {
+      attribute validate {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute clustered {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute forIndexName { xsd:string }?,
+      attribute forIndexSchemaName { xsd:string }?,
+      attribute forIndexCatalogName { xsd:string }?,
+      attribute initiallyDeferred {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute deferrable {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute disabled {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute tablespace { xsd:string }?,
+      attribute constraintName { xsd:string }?,
+      attribute columnNames { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      (any_lax___other_3*)+,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+changeLogPropertyDefined =
+  notAllowed
+  | element changeLogPropertyDefined {
+      attribute value { xsd:string }?,
+      attribute property { xsd:string }
+    }
+tableNameAttribute =
+  attribute tableName { xsd:string },
+  attribute schemaName { xsd:string }?,
+  attribute catalogName { xsd:string }?
+loadUpdateData =
+  notAllowed
+  | element loadUpdateData {
+      mixed {
+        attribute onlyUpdate { xsd:boolean }?,
+        attribute primaryKey { xsd:string },
+        loadDataAttributes,
+        tableNameAttribute,
+        element column {
+          defaultValueAttributes,
+          attribute allowUpdate {
+            xsd:boolean
+            | xsd:string { pattern = "$\{[\w\.]+\}" }
+          }?,
+          attribute type { xsd:string }?,
+          attribute name { xsd:string }?,
+          attribute header { xsd:string }?,
+          attribute index {
+            xsd:integer
+            | xsd:string { pattern = "$\{[\w\.]+\}" }
+          }?
+        }*
+      }
+    }
+addAutoIncrement =
+  notAllowed
+  | element addAutoIncrement {
+      attribute generationType { xsd:string }?,
+      attribute defaultOnNull {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute incrementBy { xsd:long }?,
+      attribute startWith { xsd:long }?,
+      attribute columnDataType { xsd:string }?,
+      attribute columnName { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+indexExists =
+  notAllowed
+  | element indexExists {
+      attribute columnNames { xsd:string }?,
+      attribute tableName { xsd:string }?,
+      attribute indexName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+foreignKeyConstraintExists =
+  notAllowed
+  | element foreignKeyConstraintExists {
+      attribute foreignKeyName { xsd:string },
+      attribute foreignKeyTableName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+any_lax___other_5 =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_5)*
+    }
+  }
+insert =
+  notAllowed
+  | element insert {
+      attribute dbms { xsd:string }?,
+      tableNameAttribute,
+      changeAttributes,
+      column2+,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+dropUniqueConstraint =
+  notAllowed
+  | element dropUniqueConstraint {
+      attribute uniqueColumns { xsd:string }?,
+      attribute constraintName { xsd:string }?,
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+dropForeignKeyConstraint =
+  notAllowed
+  | element dropForeignKeyConstraint {
+      attribute constraintName { xsd:string }?,
+      attribute baseTableName { xsd:string },
+      attribute baseTableSchemaName { xsd:string }?,
+      attribute baseTableCatalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+column =
+  attribute encoding { xsd:string }?,
+  attribute remarks { xsd:string }?,
+  attribute defaultOnNull {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute generationType { xsd:string }?,
+  attribute incrementBy { xsd:long }?,
+  attribute startWith { xsd:long }?,
+  attribute autoIncrement {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute defaultValueConstraintName { xsd:string }?,
+  attribute defaultValueSequenceNext { xsd:string }?,
+  attribute defaultValueSequenceCurrent { xsd:string }?,
+  attribute defaultValueComputed { xsd:string }?,
+  attribute defaultValueBoolean {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute defaultValueDate { xsd:string }?,
+  attribute defaultValueNumeric { xsd:string }?,
+  attribute defaultValue { xsd:string }?,
+  attribute valueClobFile { xsd:string }?,
+  attribute valueBlobFile { xsd:string }?,
+  attribute valueSequenceNext { xsd:string }?,
+  attribute valueSequenceCurrent { xsd:string }?,
+  attribute valueComputed { xsd:string }?,
+  attribute valueDate { xsd:string }?,
+  attribute valueBoolean { xsd:string }?,
+  attribute valueNumeric { xsd:string }?,
+  attribute value { xsd:string }?,
+  attribute type { xsd:string }?,
+  attribute descending {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute computed {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute included {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute name { xsd:string }
+dropPrimaryKey =
+  notAllowed
+  | element dropPrimaryKey {
+      attribute dropIndex {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute constraintName { xsd:string }?,
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+sequenceExists =
+  notAllowed
+  | element sequenceExists {
+      attribute sequenceName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+sqlFile =
+  notAllowed
+  | element sqlFile {
+      attribute dbms { xsd:string }?,
+      attribute relativeToChangelogFile {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute endDelimiter { xsd:string }?,
+      attribute encoding { xsd:string }?,
+      attribute splitStatements {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute stripComments {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute path { xsd:string },
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+addNotNullConstraint =
+  notAllowed
+  | element addNotNullConstraint {
+      attribute validate {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute constraintName { xsd:string }?,
+      attribute columnDataType { xsd:string }?,
+      attribute defaultNullValue { xsd:string }?,
+      attribute columnName { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+rollback =
+  notAllowed
+  | element rollback {
+      mixed {
+        attribute changeSetId { xsd:string }?,
+        attribute changeSetAuthor { xsd:string }?,
+        attribute changeSetPath { xsd:string }?,
+        changeSetChildren*
+      }
+    }
+setColumnRemarks =
+  notAllowed
+  | element setColumnRemarks {
+      attribute columnParentType {
+        xsd:string "TABLE" | xsd:string "VIEW"
+      }?,
+      attribute remarks { xsd:string }?,
+      attribute columnDataType { xsd:string }?,
+      attribute columnName { xsd:string },
+      attribute tableName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+dropColumn =
+  notAllowed
+  | element dropColumn {
+      attribute columnName { xsd:string }?,
+      tableNameAttribute,
+      changeAttributes,
+      element column {
+        anonymous0,
+        attribute * - (ns1:* | local:*) { text }*
+      }*,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+whereParams =
+  notAllowed
+  | element whereParams {
+      mixed { param+ }
+    }
+renameSequence =
+  notAllowed
+  | element renameSequence {
+      attribute newSequenceName { xsd:string },
+      attribute oldSequenceName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+defaultValueAttributes =
+  attribute defaultValueComputed { xsd:string }?,
+  attribute defaultValueBoolean { xsd:string }?,
+  attribute defaultValueDate { xsd:string }?,
+  attribute defaultValueNumeric { xsd:string }?,
+  attribute defaultValue { xsd:string }?
+\empty =
+  notAllowed
+  | element empty {
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+primaryKeyExists =
+  notAllowed
+  | element primaryKeyExists {
+      attribute tableName { xsd:string }?,
+      attribute primaryKeyName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+any_lax___other_6 =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_6)*
+    }
+  }
+setTableRemarks =
+  notAllowed
+  | element setTableRemarks {
+      attribute remarks { xsd:string }?,
+      attribute tableName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+createIndex =
+  notAllowed
+  | element createIndex {
+      attribute tablespace { xsd:string }?,
+      attribute clustered {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute unique {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute associatedWith { xsd:string }?,
+      indexName,
+      tableNameAttribute,
+      changeAttributes,
+      ((column2+ | any_lax___other_5+)?)+,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+dropSequence =
+  notAllowed
+  | element dropSequence {
+      sequenceAttributes,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+PreConditionChildren =
+  (and+
+   | or+
+   | not+
+   | dbms+
+   | runningAs+
+   | changeSetExecuted+
+   | tableExists+
+   | columnExists+
+   | sequenceExists+
+   | foreignKeyConstraintExists+
+   | indexExists+
+   | uniqueConstraintExists+
+   | primaryKeyExists+
+   | viewExists+
+   | tableIsEmpty+
+   | rowCount+
+   | sqlCheck+
+   | changeLogPropertyDefined+
+   | expectedQuotingStrategy+
+   | customPrecondition+
+   | any_lax___other_6+)?
+renameView =
+  notAllowed
+  | element renameView {
+      attribute newViewName { xsd:string },
+      attribute oldViewName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+changeAttributes = empty
+customChange =
+  notAllowed
+  | element customChange {
+      attribute class { xsd:string },
+      changeAttributes,
+      element param {
+        mixed {
+          attribute value { xsd:string }?,
+          attribute name { xsd:string }
+        }
+      }*,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+mergeColumns =
+  notAllowed
+  | element mergeColumns {
+      attribute finalColumnType { xsd:string },
+      attribute finalColumnName { xsd:string },
+      attribute column2Name { xsd:string },
+      attribute joinString { xsd:string },
+      attribute column1Name { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+loadDataAttributes =
+  attribute usePreparedStatements {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?,
+  attribute commentLineStartsWith {
+    xsd:string { pattern = "[\S\t].*" }
+  }?,
+  attribute quotchar {
+    xsd:string { pattern = "[\S\t].*" }
+  }?,
+  attribute separator {
+    xsd:string { pattern = "[\S\t].*" }
+  }?,
+  attribute encoding { xsd:NMTOKEN }?,
+  attribute file {
+    xsd:string { pattern = "[\S\t].*" }
+  },
+  attribute relativeToChangelogFile {
+    xsd:boolean
+    | xsd:string { pattern = "$\{[\w\.]+\}" }
+  }?
+changeSetExecuted =
+  notAllowed
+  | element changeSetExecuted {
+      attribute changeLogFile { xsd:string }?,
+      attribute author { xsd:string },
+      attribute id { xsd:string }
+    }
+createProcedure =
+  notAllowed
+  | element createProcedure {
+      mixed {
+        attribute replaceIfExists { xsd:boolean }?,
+        attribute dbms { xsd:string }?,
+        attribute relativeToChangelogFile {
+          xsd:boolean
+          | xsd:string { pattern = "$\{[\w\.]+\}" }
+        }?,
+        attribute encoding { xsd:string }?,
+        attribute path { xsd:string }?,
+        attribute procedureName { xsd:string }?,
+        attribute schemaName { xsd:string }?,
+        attribute catalogName { xsd:string }?,
+        changeAttributes,
+        comment?
+      },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+delete =
+  notAllowed
+  | element delete {
+      mixed {
+        tableNameAttribute,
+        element where {
+          mixed {
+            (attribute * { text }
+             | element0)*
+          }
+        }?,
+        whereParams?
+      }
+    }
+constraints =
+  notAllowed
+  | element constraints {
+      attribute validateForeignKey {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute validatePrimaryKey {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute validateUnique {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute validateNullable {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute checkConstraint { xsd:string }?,
+      attribute initiallyDeferred {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute deferrable {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute deleteCascade {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute foreignKeyName { xsd:string }?,
+      attribute referencedColumnNames { xsd:string }?,
+      attribute referencedTableName { xsd:string }?,
+      attribute referencedTableSchemaName { xsd:string }?,
+      attribute referencedTableCatalogName { xsd:string }?,
+      attribute references { xsd:string }?,
+      attribute uniqueConstraintName { xsd:string }?,
+      attribute unique {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute primaryKeyTablespace { xsd:string }?,
+      attribute primaryKeyName { xsd:string }?,
+      attribute primaryKey {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute notNullConstraintName { xsd:string }?,
+      attribute nullable {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?
+    }
+dropView =
+  notAllowed
+  | element dropView {
+      attribute ifExists {
+        xsd:boolean
+        | xsd:string { pattern = "$\{[\w\.]+\}" }
+      }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?,
+      attribute viewName { xsd:string },
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+any_lax___other_7 =
+  element * - (ns1:* | local:*) {
+    mixed {
+      (attribute * { text }
+       | any_lax___other_7)*
+    }
+  }
+tableExists =
+  notAllowed
+  | element tableExists {
+      attribute tableName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+dropProcedure =
+  notAllowed
+  | element dropProcedure {
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?,
+      attribute procedureName { xsd:string },
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+changeSetChildren =
+  (comment
+   | createTable+
+   | dropTable+
+   | createView+
+   | renameView+
+   | dropView+
+   | insert+
+   | addColumn+
+   | sql+
+   | createProcedure+
+   | dropProcedure+
+   | sqlFile+
+   | renameTable+
+   | renameColumn+
+   | dropColumn+
+   | mergeColumns+
+   | modifyDataType+
+   | createSequence+
+   | alterSequence+
+   | dropSequence+
+   | renameSequence+
+   | createIndex+
+   | dropIndex+
+   | addNotNullConstraint+
+   | dropNotNullConstraint+
+   | addForeignKeyConstraint+
+   | dropForeignKeyConstraint+
+   | dropAllForeignKeyConstraints+
+   | addPrimaryKey+
+   | dropPrimaryKey+
+   | addLookupTable+
+   | addAutoIncrement+
+   | addDefaultValue+
+   | dropDefaultValue+
+   | addUniqueConstraint+
+   | dropUniqueConstraint+
+   | setTableRemarks+
+   | setColumnRemarks+
+   | customChange+
+   | update+
+   | delete+
+   | loadData+
+   | loadUpdateData+
+   | executeCommand+
+   | stop+
+   | output+
+   | \empty+
+   | rollback
+   | any_lax___other_7+)?
+modifyDataType =
+  notAllowed
+  | element modifyDataType {
+      attribute newDataType { xsd:string },
+      attribute columnName { xsd:string },
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+rowCount =
+  notAllowed
+  | element rowCount {
+      attribute expectedRows { xsd:long }?,
+      attribute tableName { xsd:string }?,
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+not =
+  notAllowed
+  | element not { PreConditionChildren+ }
+output =
+  notAllowed
+  | element output {
+      mixed {
+        attribute target { xsd:string }?
+      }
+    }
+tagDatabase =
+  notAllowed
+  | element tagDatabase {
+      attribute tag { xsd:string },
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+and =
+  notAllowed
+  | element and { PreConditionChildren+ }
+createSequence =
+  notAllowed
+  | element createSequence {
+      sequenceAttributes,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+element0 =
+  element * {
+    mixed {
+      (attribute * { text }
+       | element0)*
+    }
+  }
+dropNotNullConstraint =
+  notAllowed
+  | element dropNotNullConstraint {
+      attribute constraintName { xsd:string }?,
+      attribute columnDataType { xsd:string }?,
+      attribute columnName { xsd:string }?,
+      attribute tableName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+columnExists =
+  notAllowed
+  | element columnExists {
+      attribute columnName { xsd:string },
+      attribute tableName { xsd:string },
+      attribute schemaName { xsd:string }?,
+      attribute catalogName { xsd:string }?
+    }
+executeCommand =
+  notAllowed
+  | element executeCommand {
+      attribute timeout { xsd:string }?,
+      attribute os { xsd:string }?,
+      attribute executable { xsd:string },
+      changeAttributes,
+      element arg {
+        attribute value { xsd:string }
+      }*,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+addColumn =
+  notAllowed
+  | element addColumn {
+      tableNameAttribute,
+      changeAttributes,
+      element column {
+        mixed {
+          anonymous0,
+          attribute beforeColumn { xsd:string }?,
+          attribute afterColumn { xsd:string }?,
+          attribute position { xsd:integer }?
+        },
+        attribute * - (ns1:* | local:*) { text }*
+      }+,
+      attribute * - (ns1:* | local:*) { text }*
+    }
+column2 =
+  notAllowed
+  | element column {
+      mixed { column, constraints? },
+      attribute * - (ns1:* | local:*) { text }*
+    }
+dropIndex =
+  notAllowed
+  | element dropIndex {
+      attribute associatedWith { xsd:string }?,
+      indexName,
+      tableNameAttribute,
+      changeAttributes,
+      attribute * - (ns1:* | local:*) { text }*
+    }
