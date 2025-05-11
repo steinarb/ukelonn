@@ -91,9 +91,8 @@ listeners.startListening({
             const notification = notifications[0];
 
             if (notification.message) {
-                // Update the balance after payment
-                const loginResponse = listenerApi.getState().loginResponse;
-                listenerApi.dispatch(api.endpoints.getAccount.initiate(loginResponse.username));
+                // Trigger reload of displayed balance after payment
+                listenerApi.dispatch(api.util.invalidateTags(['PaymentMade']));
                 if (Notification) {
                     spawnNotification(notification);
                 } else {
