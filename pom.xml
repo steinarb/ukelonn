@@ -30,6 +30,7 @@
     <modules>
         <module>ukelonn.services</module>
         <module>ukelonn.backend</module>
+        <module>ukelonn.backend.testdata</module>
         <module>ukelonn.web.security</module>
         <module>ukelonn.web.services</module>
         <module>ukelonn.web.frontend</module>
