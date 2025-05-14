@@ -26,7 +26,7 @@ export const transactionSlice = createSlice({
         selectJobType: (state, action) => setJobTypeOnTransaction(state, action),
         selectPaymentType: (state, action) => setPaymentTypeOnTransaction(state, action),
         selectJob: (_, action) => action.payload,
-        setAmount: (state, action) => ({ ...state, transactionAmount: action.payload }),
+        setAmount: updateTransactionAmountOnKeyPress,
         clearTransaction: () => initialStateWithCurrentTime(),
     },
     extraReducers: builder => {
@@ -62,4 +62,15 @@ function setPaymentTypeOnTransaction(state, action) {
 function initialStateWithCurrentTime() {
     const transactionTime = new Date().toISOString();
     return { ...initialState, transactionTime };
+}
+
+function updateTransactionAmountOnKeyPress(state, action) {
+    const existingAmount = state.transactionAmount;
+    if (existingAmount === 0 && action.payload.endsWith('0')) {
+        const transactionAmount = parseFloat(action.payload[0]);
+        return { ...state, transactionAmount };
+    }
+
+    const transactionAmount = (!action.payload || isNaN(action.payload)) ? 0 : parseFloat(action.payload);
+    return { ...state, transactionAmount };
 }
