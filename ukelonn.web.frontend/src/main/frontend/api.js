@@ -12,7 +12,7 @@ export const api = createApi({
         getDefaultlocale: builder.query({ query: () => '/defaultlocale' }),
         getAvailablelocales: builder.query({ query: () => '/availablelocales' }),
         getDisplaytexts: builder.query({ query: locale => '/displaytexts?locale=' + locale }),
-        getAccount: builder.query({ query: username => '/account/' + username, providesTags: ['JobEdit'] }),
+        getAccount: builder.query({ query: username => '/account/' + username, providesTags: ['PaymentMade', 'JobEdit'] }),
         getJobtypes: builder.query({ query: () => '/jobtypes' }),
         getActivebonuses: builder.query({ query: () => '/activebonuses' }),
         getJobs: builder.query({ query: (accountId) => '/jobs/' + accountId.toString(), providesTags: ['JobRegistered', 'PaymentRegistered'] }),

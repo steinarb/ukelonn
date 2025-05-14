@@ -18,6 +18,7 @@
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.test/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.db.liquibase.production/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.ukelonn/ukelonn.backend.testdata/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.authservice/karaf/${authservice.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.ukelonn/ukelonn.web.services/${project.version}/xml/features</repository>
@@ -27,6 +28,7 @@
     </feature>
     <feature name="ukelonn-with-derby" description="Ukelonn webapp" version="${project.version}">
         <feature>ukelonn-backend</feature>
+        <feature>ukelonn-backend-testdata</feature>
         <feature>user-admin-with-testdb</feature>
         <feature prerequisite="true">ukelonn-db-test</feature>
         <feature>ukelonn</feature>

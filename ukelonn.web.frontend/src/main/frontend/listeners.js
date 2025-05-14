@@ -8,6 +8,7 @@ import { clearBonus } from './reducers/bonusSlice';
 import { api } from './api';
 import { MODIFY_USER_IS_ADMINISTRATOR } from './actiontypes';
 import { isUsersLoaded, isRejectedRequest } from './matchers';
+import { spawnNotification } from './components/spawnnotification';
 
 const listeners = createListenerMiddleware();
 
@@ -77,6 +78,27 @@ listeners.startListening({
 
         if (pathname === '/admin/bonuses/create' || pathname === '/admin/bonuses/modify' || pathname === '/admin/bonuses/delete') {
             listenerApi.dispatch(clearBonus());
+        }
+    }
+});
+
+// Display notification when receiving non-empty notification
+listeners.startListening({
+    matcher: api.endpoints.getNotification.matchFulfilled,
+    effect: (action, listenerApi) => {
+        const notifications = action.payload;
+        if (notifications.length) {
+            const notification = notifications[0];
+
+            if (notification.message) {
+                // Trigger reload of displayed balance after payment
+                listenerApi.dispatch(api.util.invalidateTags(['PaymentMade']));
+                if (Notification) {
+                    spawnNotification(notification);
+                } else {
+                    console.log('Notification not supported by browser');
+                }
+            }
         }
     }
 });
