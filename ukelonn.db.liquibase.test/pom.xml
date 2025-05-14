@@ -46,11 +46,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.authservice</groupId>
-            <artifactId>authservice.db.liquibase</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.services</artifactId>
             <type>xml</type>
@@ -96,11 +91,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.authservice</groupId>
-            <artifactId>authservice.definitions</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
