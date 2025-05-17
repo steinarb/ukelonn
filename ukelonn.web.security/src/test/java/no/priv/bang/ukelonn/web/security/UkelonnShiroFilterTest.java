@@ -14,6 +14,7 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.authservice.db.liquibase.test.TestLiquibaseRunner;
+import no.priv.bang.authservice.definitions.AuthserviceShiroConfigService;
 import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.authservice.web.security.dbrealm.AuthserviceDbRealm;
 import no.priv.bang.authservice.web.security.memorysession.MemorySession;
@@ -30,6 +31,7 @@ class UkelonnShiroFilterTest {
         session.setLogService(logservice);
         session.activate();
         var cipherKeyService = mock(CipherKeyService.class);
+        var shiroConfigService = mock(AuthserviceShiroConfigService.class);
         var datasource = createDataSource("authservice1");
         addUserDatabaseSchemaAndPopulateWithTestUsersAndGroups(datasource);
         realm.setDataSource(datasource);
@@ -37,6 +39,7 @@ class UkelonnShiroFilterTest {
         shirofilter.setSession(session);
         shirofilter.setRealm(realm);
         shirofilter.setCipherKeyService(cipherKeyService);
+        shirofilter.setShiroConfigService(shiroConfigService);
         shirofilter.activate();
         var securitymanager = shirofilter.getSecurityManager();
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray());
