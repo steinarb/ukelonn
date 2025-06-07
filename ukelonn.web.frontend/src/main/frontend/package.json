@@ -10,7 +10,7 @@
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-redux": "^9.2.0",
-        "react-router": "^7.5.2",
+        "react-router": "^7.6.2",
         "redux-first-history": "^5.2.0",
         "validator": "^13.12.0"
     },
