@@ -45,7 +45,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>filter-resources</id>
@@ -67,7 +67,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.6.0</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
