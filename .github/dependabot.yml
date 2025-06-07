@@ -5,6 +5,11 @@
 
 version: 2
 updates:
+- package-ecosystem: "npm"
+  directory: "/ukelonn.web.frontend/src/main/frontend/"
+  schedule:
+    interval: "daily"
+  target-branch: "using-react"
 - package-ecosystem: maven
   directory: "/"
   schedule:
