@@ -122,13 +122,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.jupiter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.webjars.bower</groupId>
                 <artifactId>open-iconic</artifactId>
                 <version>${open-iconic.version}</version>
