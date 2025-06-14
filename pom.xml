@@ -73,13 +73,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>no.priv.bang.beans</groupId>
-                <artifactId>beans-bom</artifactId>
-                <version>${beans.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>no.priv.bang.servlet</groupId>
                 <artifactId>servlet-bom</artifactId>
                 <version>${bang-servlet.version}</version>
