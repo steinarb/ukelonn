@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-authservice-client-pom</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.10</version>
     </parent>
     <groupId>no.priv.bang.ukelonn</groupId>
     <artifactId>ukelonn</artifactId>
@@ -73,13 +73,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>no.priv.bang.beans</groupId>
-                <artifactId>beans-bom</artifactId>
-                <version>${beans.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>no.priv.bang.servlet</groupId>
                 <artifactId>servlet-bom</artifactId>
                 <version>${bang-servlet.version}</version>
@@ -125,13 +118,6 @@
                 <groupId>no.priv.bang.jdbc</groupId>
                 <artifactId>jdbc-bom</artifactId>
                 <version>${datasourceproxy.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.jupiter.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
