@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2024 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -201,23 +201,26 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     }
 
     @Override
-    public List<Transaction> getJobs(int accountId) {
-        return getTransactionsFromAccount(accountId, "/sql/query/jobs_last_n.sql", "job");
+    public List<Transaction> getJobs(int accountId, int pageNumber, int pageSize) {
+        return getTransactionsFromAccount(accountId, "/sql/query/jobs_last_n.sql", "job", pageNumber, pageSize);
     }
 
     @Override
-    public List<Transaction> getPayments(int accountId) {
-        var payments = getTransactionsFromAccount(accountId, "/sql/query/payments_last_n.sql", "payments");
+    public List<Transaction> getPayments(int accountId, int pageNumber, int pageSize) {
+        var payments = getTransactionsFromAccount(accountId, "/sql/query/payments_last_n.sql", "payments", pageNumber, pageSize);
         payments = UkelonnServiceProvider.makePaymentAmountsPositive(payments); // Payments are negative numbers in the DB, presented as positive numbers in the GUI
         return payments;
     }
 
-    List<Transaction> getTransactionsFromAccount(int accountId,
-                                                 String sqlTemplate,
-                                                 String transactionType)
+    List<Transaction> getTransactionsFromAccount(
+        int accountId,
+        String sqlTemplate,
+        String transactionType,
+        int pageNumber,
+        int pageSize)
     {
         var transactions = new ArrayList<Transaction>();
-        var sql = String.format(getResourceAsString(sqlTemplate), UkelonnServiceProvider.NUMBER_OF_TRANSACTIONS_TO_DISPLAY);
+        var sql = String.format(getResourceAsString(sqlTemplate), pageNumber * pageSize, pageSize);
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, accountId);
@@ -250,7 +253,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             }
         }
 
-        return getJobs(accountId);
+        return getJobs(accountId, 0, 10);
     }
 
     void addParametersToDeleteJobsStatement(int accountId, PreparedStatement statement) {
@@ -279,7 +282,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
             throw new UkelonnException(String.format("Failed to update job with id %d", editedJob.id()) , e);
         }
 
-        return getJobs(editedJob.accountId());
+        return getJobs(editedJob.accountId(), 0, 10);
     }
 
     @Override
