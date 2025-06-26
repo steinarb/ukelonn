@@ -42,6 +42,11 @@ export default function AdminJobsDelete() {
 
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
                 <Accounts id="account-selector" />
+                <br/>
+                <button
+                    onClick={onDeleteSelectedClicked}>
+                    {text.deleteMarkedJobs}
+                </button>
 
                 <table className="table table-bordered">
                     <thead>
@@ -66,10 +71,6 @@ export default function AdminJobsDelete() {
                                  )}
                     </tbody>
                 </table>
-                <button
-                    onClick={onDeleteSelectedClicked}>
-                    {text.deleteMarkedJobs}
-                </button>
             </div>
         </div>
     );
