@@ -43,26 +43,6 @@ export default function AdminJobsEdit() {
             <div>
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
                 <Accounts id="account-selector" />
-                <br/>
-
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>{text.date}</td>
-                            <td>{text.jobs}</td>
-                            <td>{text.amount}</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
-                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
                 <h2>{text.modifyJob}</h2>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div>
@@ -100,6 +80,26 @@ export default function AdminJobsEdit() {
                         </div>
                     </div>
                 </form>
+                <br/>
+
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.date}</td>
+                            <td>{text.jobs}</td>
+                            <td>{text.amount}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {jobs.map((job) =>
+                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
