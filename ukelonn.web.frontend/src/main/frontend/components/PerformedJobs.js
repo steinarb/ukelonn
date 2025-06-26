@@ -55,11 +55,6 @@ export default function PerformedJobs() {
                     </tbody>
                 </table>
             </div>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }

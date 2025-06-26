@@ -53,11 +53,6 @@ export default function PerformedPayments() {
                     </tbody>
                 </table>
             </div>
-            <br/>
-            <br/>
-            <Logout/>
-            <br/>
-            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }

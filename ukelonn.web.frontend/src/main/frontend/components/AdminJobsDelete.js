@@ -71,11 +71,6 @@ export default function AdminJobsDelete() {
                     {text.deleteMarkedJobs}
                 </button>
             </div>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }

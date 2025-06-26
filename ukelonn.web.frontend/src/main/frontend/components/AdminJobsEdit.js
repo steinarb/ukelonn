@@ -101,11 +101,6 @@ export default function AdminJobsEdit() {
                     </div>
                 </form>
             </div>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
