@@ -15,8 +15,20 @@ export const api = createApi({
         getAccount: builder.query({ query: username => '/account/' + username, providesTags: ['PaymentMade', 'JobEdit'] }),
         getJobtypes: builder.query({ query: () => '/jobtypes' }),
         getActivebonuses: builder.query({ query: () => '/activebonuses' }),
-        getJobs: builder.query({ query: (accountId) => '/jobs/' + accountId.toString(), providesTags: ['JobRegistered', 'PaymentRegistered'] }),
-        getPayments: builder.query({ query: accountId => '/payments/' + accountId.toString(), providesTags: ['JobRegistered'] }),
+        getJobs: builder.infiniteQuery({
+            infiniteQueryOptions: {
+                initialPageParam: 0,
+                getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
+            },
+            query: ({ queryArg, pageParam }) => '/jobs/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['JobRegistered', 'PaymentRegistered']
+        }),
+        getPayments: builder.infiniteQuery({
+            infiniteQueryOptions: {
+                initialPageParam: 0,
+                getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
+            },
+            query: ({ queryArg, pageParam }) => '/payments/' + queryArg.toString(), providesTags: ['JobRegistered']
+        }),
         getSumoveryear: builder.query({ query: username => '/statistics/earnings/sumoveryear/' + username, providesTags: ['JobRegistered', 'JobEdit'] }),
         getSumovermonth: builder.query({ query: username => '/statistics/earnings/sumovermonth/' + username, providesTags: ['JobRegistered', 'JobEdit'] }),
         getAccounts: builder.query({ query: () => '/accounts' }),
@@ -178,8 +190,8 @@ export const {
     useGetAccountQuery,
     useGetJobtypesQuery,
     useGetActivebonusesQuery,
-    useGetJobsQuery,
-    useGetPaymentsQuery,
+    useGetJobsInfiniteQuery,
+    useGetPaymentsInfiniteQuery,
     useGetSumoveryearQuery,
     useGetSumovermonthQuery,
     useGetAccountsQuery,

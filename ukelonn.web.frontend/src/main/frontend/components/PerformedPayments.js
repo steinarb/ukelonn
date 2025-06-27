@@ -4,7 +4,7 @@ import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     useGetAccountQuery,
-    useGetPaymentsQuery,
+    useGetPaymentsInfiniteQuery,
 } from '../api';
 import { Link, useSearchParams } from 'react-router';
 import Locale from './Locale';
@@ -19,7 +19,7 @@ export default function PerformedPayments() {
     const { data: account = {} } = useGetAccountQuery(username);
     const { firstName: accountFirstname } = account;
     const accountId = queryParams.get('accountId');
-    const { data: payments = [] } = useGetPaymentsQuery(accountId);
+    const { data: payments, isSuccess: paymentsIsSuccess } = useGetPaymentsInfiniteQuery(accountId);
     const parentTitle = queryParams.get('parentTitle');
 
     return (
@@ -43,13 +43,13 @@ export default function PerformedPayments() {
                         </tr>
                     </thead>
                     <tbody>
-                        {payments.map((payment) =>
+                        {paymentsIsSuccess && payments.pages.map((page) => page.map((payment) =>
                                       <tr key={payment.id}>
                                           <td>{new Date(payment.transactionTime).toISOString().split('T')[0]}</td>
                                           <td>{payment.name}</td>
                                           <td>{payment.transactionAmount}</td>
                                       </tr>
-                                     )}
+                        ))}
                     </tbody>
                 </table>
             </div>

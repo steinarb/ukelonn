@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
-    useGetJobsQuery,
+    useGetJobsInfiniteQuery,
     usePostJobsDeleteMutation,
 } from '../api';
 import { Link } from 'react-router';
@@ -17,7 +17,7 @@ export default function AdminJobsDelete() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const account = useSelector(state => state.account);
-    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess } = useGetJobsInfiniteQuery(account.accountId);
     const jobIds = useSelector(state => state.jobIdsSelectedForDelete);
     const dispatch = useDispatch();
     const [ postJobsDelete ] = usePostJobsDeleteMutation();
@@ -58,7 +58,7 @@ export default function AdminJobsDelete() {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobs.map((job) =>
+                        {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
                                   <tr key={job.id}>
                                       <td><input
                                               type="checkbox"
@@ -68,7 +68,7 @@ export default function AdminJobsDelete() {
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
                                   </tr>
-                                 )}
+                        ))}
                     </tbody>
                 </table>
             </div>

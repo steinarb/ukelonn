@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
-    useGetJobsQuery,
+    useGetJobsInfiniteQuery,
     usePostJobUpdateMutation,
 } from '../api';
 import { Link } from 'react-router';
@@ -24,7 +24,7 @@ export default function AdminJobsEdit() {
     const transactionAmount = transaction.transactionAmount || '';
     const transactionTime = transaction.transactionTime;
     const transactionDateJustDate = transactionTime.split('T')[0];
-    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess } = useGetJobsInfiniteQuery(account.accountId);
     const dispatch = useDispatch();
     const [ postJobUpdate ] = usePostJobUpdateMutation();
     const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId: account.accountId, id, transactionTypeId, transactionAmount, transactionTime });
@@ -91,13 +91,13 @@ export default function AdminJobsEdit() {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobs.map((job) =>
+                        {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
                             <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
                                 <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                 <td>{job.name}</td>
                                 <td>{job.transactionAmount}</td>
                             </tr>
-                        )}
+                        ))}
                     </tbody>
                 </table>
             </div>
