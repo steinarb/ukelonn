@@ -17,11 +17,12 @@ export default function AdminJobsDelete() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const account = useSelector(state => state.account);
-    const { data: jobs, isSuccess: jobsIsSuccess } = useGetJobsInfiniteQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(account.accountId);
     const jobIds = useSelector(state => state.jobIdsSelectedForDelete);
     const dispatch = useDispatch();
     const [ postJobsDelete ] = usePostJobsDeleteMutation();
     const onDeleteSelectedClicked = async () => await postJobsDelete({account, jobIds });
+    const onNextPageClicked = async () => fetchNextPage();
 
     return (
         <div>
@@ -71,6 +72,9 @@ export default function AdminJobsDelete() {
                         ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
         </div>
     );

@@ -19,8 +19,9 @@ export default function PerformedPayments() {
     const { data: account = {} } = useGetAccountQuery(username);
     const { firstName: accountFirstname } = account;
     const accountId = queryParams.get('accountId');
-    const { data: payments, isSuccess: paymentsIsSuccess } = useGetPaymentsInfiniteQuery(accountId);
+    const { data: payments, isSuccess: paymentsIsSuccess, fetchNextPage } = useGetPaymentsInfiniteQuery(accountId);
     const parentTitle = queryParams.get('parentTitle');
+    const onNextPageClicked = async () => fetchNextPage();
 
     return (
         <div>
@@ -52,6 +53,9 @@ export default function PerformedPayments() {
                         ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
         </div>
     );

@@ -24,10 +24,11 @@ export default function AdminJobsEdit() {
     const transactionAmount = transaction.transactionAmount || '';
     const transactionTime = transaction.transactionTime;
     const transactionDateJustDate = transactionTime.split('T')[0];
-    const { data: jobs, isSuccess: jobsIsSuccess } = useGetJobsInfiniteQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(account.accountId);
     const dispatch = useDispatch();
     const [ postJobUpdate ] = usePostJobUpdateMutation();
     const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId: account.accountId, id, transactionTypeId, transactionAmount, transactionTime });
+    const onNextPageClicked = async () => fetchNextPage();
 
     return (
         <div>
@@ -100,6 +101,9 @@ export default function AdminJobsEdit() {
                         ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
         </div>
     );

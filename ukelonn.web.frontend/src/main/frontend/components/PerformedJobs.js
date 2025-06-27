@@ -19,8 +19,9 @@ export default function PerformedJobs() {
     const { data: account = {} } = useGetAccountQuery(username);
     const { firstname: accountFirstname } = account;
     const accountId = queryParams.get('accountId');
-    const { data: jobs, isSuccess: jobsIsSuccess } = useGetJobsInfiniteQuery(accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(accountId);
     const parentTitle = queryParams.get('parentTitle');
+    const onNextPageClicked = async () => fetchNextPage();
 
     return (
         <div>
@@ -54,6 +55,9 @@ export default function PerformedJobs() {
                         ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
         </div>
     );
