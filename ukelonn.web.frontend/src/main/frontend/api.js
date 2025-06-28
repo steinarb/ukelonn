@@ -27,7 +27,7 @@ export const api = createApi({
                 initialPageParam: 0,
                 getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
             },
-            query: ({ queryArg, pageParam }) => '/payments/' + queryArg.toString(), providesTags: ['JobRegistered']
+            query: ({ queryArg, pageParam }) => '/payments/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['PaymentRegistered']
         }),
         getSumoveryear: builder.query({ query: username => '/statistics/earnings/sumoveryear/' + username, providesTags: ['JobRegistered', 'JobEdit'] }),
         getSumovermonth: builder.query({ query: username => '/statistics/earnings/sumovermonth/' + username, providesTags: ['JobRegistered', 'JobEdit'] }),
