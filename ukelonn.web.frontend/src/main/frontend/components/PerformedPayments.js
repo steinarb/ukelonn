@@ -49,11 +49,11 @@ export default function PerformedPayments() {
                     </thead>
                     <tbody>
                         {paymentsIsSuccess && payments.pages.map((page) => page.map((payment) =>
-                                      <tr key={payment.id}>
-                                          <td>{new Date(payment.transactionTime).toISOString().split('T')[0]}</td>
-                                          <td>{payment.name}</td>
-                                          <td>{payment.transactionAmount}</td>
-                                      </tr>
+                            <tr key={payment.id}>
+                                <td>{new Date(payment.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{payment.name}</td>
+                                <td>{payment.transactionAmount}</td>
+                            </tr>
                         ))}
                     </tbody>
                 </table>

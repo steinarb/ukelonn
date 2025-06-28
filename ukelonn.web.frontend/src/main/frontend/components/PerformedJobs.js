@@ -50,12 +50,12 @@ export default function PerformedJobs() {
                     </thead>
                     <tbody>
                         {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
-                                  <tr key={job.id}>
-                                      <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                      <td>{job.name}</td>
-                                      <td>{job.transactionAmount}</td>
-                                      <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
-                                  </tr>
+                            <tr key={job.id}>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                                <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
+                            </tr>
                         ))}
                     </tbody>
                 </table>

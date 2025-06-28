@@ -43,7 +43,7 @@ export default function AdminJobsDelete() {
             <div>
                 <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
                     <br/>
-                    <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
+                <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
 
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
                 <Accounts id="account-selector" />
@@ -64,15 +64,15 @@ export default function AdminJobsDelete() {
                     </thead>
                     <tbody>
                         {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
-                                  <tr key={job.id}>
-                                      <td><input
-                                              type="checkbox"
-                                              checked={jobIds.includes(job.id)}
-                                              onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ id: job.id, delete: e.target.checked }))}/></td>
-                                      <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                      <td>{job.name}</td>
-                                      <td>{job.transactionAmount}</td>
-                                  </tr>
+                            <tr key={job.id}>
+                                <td><input
+                                        type="checkbox"
+                                        checked={jobIds.includes(job.id)}
+                                        onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ id: job.id, delete: e.target.checked }))}/></td>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                            </tr>
                         ))}
                     </tbody>
                 </table>
