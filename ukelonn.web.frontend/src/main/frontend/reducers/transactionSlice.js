@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { isClearTransactionTypeForm, isJobsLoaded } from '../matchers';
 import { selectAccount } from './accountSlice';
 import { api } from '../api';
-import { JOB_TABLE_ROW_CLICK } from '../actiontypes';
+import { JOB_TABLE_ROW_CLICK, MODIFY_JOB_DATE } from '../actiontypes';
 import { isUnselected } from '../common/reducers';
 
 const initialState = {
@@ -33,6 +33,7 @@ export const transactionSlice = createSlice({
         builder
             .addMatcher(api.endpoints.getPaymenttypes.matchFulfilled, (state, action) => ({ ...state, transactionType: ((action.payload.length && action.payload[0]) || { id: -1 }) }))
             .addCase(JOB_TABLE_ROW_CLICK, (_, action) => ({ ...action.payload, transactionTime: new Date(action.payload.transactionTime).toISOString() }))
+            .addCase(MODIFY_JOB_DATE, (state, action) => ({ ...state, transactionTime: action.payload + 'T' + state.transactionTime.split('T')[1] }))
             .addCase(selectAccount, (state, action) => ({ ...state, transactionAmount: action.payload.balance }))
             .addMatcher(isClearTransactionTypeForm, () => initialStateWithCurrentTime())
             .addMatcher(isJobsLoaded, () => initialStateWithCurrentTime())

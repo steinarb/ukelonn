@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ class JobsTest {
         var account = getJadAccount();
         var resource = new Jobs();
         var ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
+        when(ukelonn.getJobs(anyInt(), anyInt(), anyInt())).thenReturn(getJadJobs());
         resource.ukelonn = ukelonn;
-        var jobs = resource.jobs(account.accountId());
+        var jobs = resource.jobs(account.accountId(), 0, 10);
         assertEquals(10, jobs.size());
     }
 

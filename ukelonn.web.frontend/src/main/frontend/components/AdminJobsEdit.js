@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
-    useGetJobsQuery,
+    useGetJobsInfiniteQuery,
     usePostJobUpdateMutation,
 } from '../api';
 import { Link } from 'react-router';
@@ -24,13 +25,17 @@ export default function AdminJobsEdit() {
     const transactionAmount = transaction.transactionAmount || '';
     const transactionTime = transaction.transactionTime;
     const transactionDateJustDate = transactionTime.split('T')[0];
-    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(account.accountId);
     const dispatch = useDispatch();
     const [ postJobUpdate ] = usePostJobUpdateMutation();
     const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId: account.accountId, id, transactionTypeId, transactionAmount, transactionTime });
+    const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav className="navbar navbar-light bg-light">
                 <Link className="btn btn-primary" to="/admin/jobtypes">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
@@ -40,8 +45,6 @@ export default function AdminJobsEdit() {
                 <h1>{text.modifyJobsFor} {account.firstname}</h1>
                 <Locale />
             </nav>
-
-
             <div className="container">
                 <div className="form-group row mb-2">
                     <label htmlFor="account-selector" className="col-form-label col-5">{text.chooseAccount}:</label>
@@ -50,28 +53,6 @@ export default function AdminJobsEdit() {
                     </div>
                 </div>
             </div>
-
-            <div className="table-responsive table-sm table-striped">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th className="transaction-table-col1">{text.date}Dato</th>
-                            <th className="transaction-table-col-hide-overflow transaction-table-col2">{text.jobs}</th>
-                            <th className="transaction-table-col3">{text.amount}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
-                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-            <h2>Endre jobb</h2>
             <div className="container">
                 <div className="form-group row mb-2">
                     <label htmlFor="jobtype" className="col-form-label col-5">{text.jobType}</label>
@@ -103,11 +84,30 @@ export default function AdminJobsEdit() {
                 onClick={onSaveEditToJobClicked}>
                 {text.saveChangesToJob}
             </button>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../../../..">{text.returnToTop}</a>
+
+            <div className="table-responsive table-sm table-striped">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th className="transaction-table-col1">{text.date}Dato</th>
+                            <th className="transaction-table-col-hide-overflow transaction-table-col2">{text.jobs}</th>
+                            <th className="transaction-table-col3">{text.amount}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
+                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
+            </div>
         </div>
     );
 }

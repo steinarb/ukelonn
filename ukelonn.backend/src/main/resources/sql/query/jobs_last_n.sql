@@ -10,6 +10,6 @@ select t1.transaction_id, t1.account_id, t1.transaction_type_id, tt.transaction_
  where t1.transaction_id in
  (select transaction_id from transactions
   join transaction_types on transaction_types.transaction_type_id=transactions.transaction_type_id
-  where account_id=? and transaction_types.transaction_is_work order by transaction_id desc fetch next %d rows only)
+  where account_id=? and transaction_types.transaction_is_work order by transaction_id desc offset %d rows fetch next %d rows only)
  group by t1.transaction_id, t1.account_id, t1.transaction_amount, t1.transaction_type_id, t1.transaction_time, tt.transaction_type_name, tt.transaction_is_work, tt.transaction_is_wage_payment, t2.transaction_time
- order by t1.transaction_time
+ order by t1.transaction_time desc
