@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package no.priv.bang.ukelonn.api.resources;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authz.annotation.RequiresUser;
@@ -39,8 +41,12 @@ public class Jobs extends ResourceBase {
 
     @GET
     @Path("{accountId}")
-    public List<Transaction> jobs(@PathParam("accountId") int accountId) {
-        return ukelonn.getJobs(accountId);
+    public List<Transaction> jobs(
+        @PathParam("accountId") int accountId,
+        @DefaultValue("0") @QueryParam("pagenumber") int pageNumber,
+        @DefaultValue("10") @QueryParam("pagesize") int pageSize)
+    {
+        return ukelonn.getJobs(accountId, pageNumber, pageSize);
     }
 
 }

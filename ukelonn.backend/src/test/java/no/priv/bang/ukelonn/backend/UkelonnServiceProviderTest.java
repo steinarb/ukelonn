@@ -192,9 +192,9 @@ class UkelonnServiceProviderTest {
         assertEquals("jad", account.username());
         assertEquals("Jane", account.firstName());
         assertEquals("Doe", account.lastName());
-        var jobs = provider.getJobs(account.accountId());
+        var jobs = provider.getJobs(account.accountId(), 0, 10);
         assertEquals(10, jobs.size());
-        var payments = provider.getPayments(account.accountId());
+        var payments = provider.getPayments(account.accountId(), 0, 10);
         assertEquals(10, payments.size());
     }
 
@@ -258,14 +258,16 @@ class UkelonnServiceProviderTest {
             .userid(1)
             .username(username)
             .email("jad@gmail.com")
-            .firstname("Jane")
+            .firstname("Janet")
             .lastname("Doe")
             .build();
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
         var account = ukelonn.getAccount(username);
-        var jobs = ukelonn.getJobs(account.accountId());
-        assertEquals(10, jobs.size());
+        var jobs = ukelonn.getJobs(account.accountId(), 0, 10);
+        assertThat(jobs).hasSize(10);
+        var nextJobs = ukelonn.getJobs(account.accountId(), 1, 10);
+        assertThat(nextJobs).isNotEqualTo(jobs);
     }
 
     @Test
@@ -363,7 +365,7 @@ class UkelonnServiceProviderTest {
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             var account = ukelonn.getAccount(username);
-            var jobs = ukelonn.getJobs(account.accountId());
+            var jobs = ukelonn.getJobs(account.accountId(), 0, 10);
             assertEquals(2, jobs.size());
             var idsOfJobsToDelete = Arrays.asList(jobs.get(0).id(), jobs.get(1).id());
 
@@ -394,7 +396,7 @@ class UkelonnServiceProviderTest {
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             var account = ukelonn.getAccount(username);
-            var jobs = ukelonn.getJobs(account.accountId());
+            var jobs = ukelonn.getJobs(account.accountId(), 0, 10);
             assertEquals(2, jobs.size());
             var idsOfJobsToDelete = Arrays.asList(jobs.get(0).id());
 
@@ -449,7 +451,7 @@ class UkelonnServiceProviderTest {
             var account = ukelonn.getAccount(username);
 
             // Check preconditions
-            var jobs = ukelonn.getJobs(account.accountId());
+            var jobs = ukelonn.getJobs(account.accountId(), 0, 10);
             assertEquals(2, jobs.size());
 
             // Delete with an empty argument
@@ -481,9 +483,9 @@ class UkelonnServiceProviderTest {
             var account = ukelonn.getAccount(username);
 
             // Check the preconditions
-            var jobs = ukelonn.getJobs(account.accountId());
+            var jobs = ukelonn.getJobs(account.accountId(), 0, 10);
             assertEquals(2, jobs.size());
-            var payments = ukelonn.getPayments(account.accountId());
+            var payments = ukelonn.getPayments(account.accountId(), 0, 10);
             assertEquals(1, payments.size());
 
             // Try deleting the payment as a job
@@ -492,7 +494,7 @@ class UkelonnServiceProviderTest {
 
             // Verify that both the jobs and payments are unaffected
             assertEquals(2, jobsAfterAttemptedDelete.size());
-            var paymentsAfterAttemptedDelete = ukelonn.getPayments(account.accountId());
+            var paymentsAfterAttemptedDelete = ukelonn.getPayments(account.accountId(), 0, 10);
             assertEquals(1, paymentsAfterAttemptedDelete.size());
         } finally {
             restoreTestDatabase();
@@ -519,9 +521,9 @@ class UkelonnServiceProviderTest {
             var otherAccount = ukelonn.getAccount(otherUsername);
 
             // Check the preconditions
-            var jobs = ukelonn.getJobs(account.accountId());
+            var jobs = ukelonn.getJobs(account.accountId(), 0, 10);
             assertEquals(2, jobs.size());
-            var otherAccountJobs = ukelonn.getJobs(otherAccount.accountId());
+            var otherAccountJobs = ukelonn.getJobs(otherAccount.accountId(), 0, 10);
             assertEquals(10, otherAccountJobs.size());
 
             // Try deleting the payment as a job
@@ -530,7 +532,7 @@ class UkelonnServiceProviderTest {
 
             // Verify that both the account's jobs and and the other account's jobs are unaffected
             assertEquals(2, jobsAfterAttemptedDelete.size());
-            var otherAccountsJobsAfterAttemptedDelete = ukelonn.getJobs(otherAccount.accountId());
+            var otherAccountsJobsAfterAttemptedDelete = ukelonn.getJobs(otherAccount.accountId(), 0, 10);
             assertThat(otherAccountsJobsAfterAttemptedDelete).containsAll(otherAccountJobs);
         } finally {
             restoreTestDatabase();
@@ -572,7 +574,7 @@ class UkelonnServiceProviderTest {
             when(useradmin.getUser(anyString())).thenReturn(user);
             ukelonn.setUserAdmin(useradmin);
             var account = ukelonn.getAccount(username);
-            var job = ukelonn.getJobs(account.accountId()).get(0);
+            var job = ukelonn.getJobs(account.accountId(), 0, 10).get(0);
             int jobId = job.id();
 
             // Save initial values of the job for comparison later
@@ -640,8 +642,10 @@ class UkelonnServiceProviderTest {
         when(useradmin.getUser(anyString())).thenReturn(user);
         ukelonn.setUserAdmin(useradmin);
         var account = ukelonn.getAccount(username);
-        var payments = ukelonn.getPayments(account.accountId());
-        assertEquals(10, payments.size());
+        var payments = ukelonn.getPayments(account.accountId(), 0, 10);
+        assertThat(payments).hasSize(10);
+        var nextPayments = ukelonn.getPayments(account.accountId(), 1, 10);
+        assertThat(nextPayments).isNotEqualTo(payments);
     }
 
     @Test
@@ -1085,8 +1089,8 @@ class UkelonnServiceProviderTest {
         var ukelonn = getUkelonnServiceSingleton();
         ukelonn.setUserAdmin(useradmin);
         var account = ukelonn.getAccount("jad");
-        var jobs = ukelonn.getJobs(account.accountId()).stream().map(Transaction::id).toList();
-        assertEquals("31, 33, 34, 35, 37, 38, 39, 41, 42, 43", UkelonnServiceProvider.joinIds(jobs).toString());
+        var jobs = ukelonn.getJobs(account.accountId(), 0, 10).stream().map(Transaction::id).toList();
+        assertThat(jobs).contains(43, 42, 41, 39, 38, 37, 35, 34, 33, 31);
     }
 
     /**

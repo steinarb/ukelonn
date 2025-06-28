@@ -40,7 +40,7 @@ public class Payments extends ResourceBase {
     @GET
     @Path("{accountId}")
     public List<Transaction> payments(@PathParam("accountId") int accountId) {
-        return ukelonn.getPayments(accountId);
+        return ukelonn.getPayments(accountId, 0, 10);
     }
 
 }

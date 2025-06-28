@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     useGetAccountQuery,
-    useGetJobsQuery,
+    useGetJobsInfiniteQuery,
 } from '../api';
 import { Link, useSearchParams } from 'react-router';
 import Locale from './Locale';
@@ -19,11 +20,15 @@ export default function PerformedJobs() {
     const { data: account = {} } = useGetAccountQuery(username);
     const { firstname: accountFirstname } = account;
     const accountId = queryParams.get('accountId');
-    const { data: jobs = [] } = useGetJobsQuery(accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(accountId);
     const parentTitle = queryParams.get('parentTitle');
+    const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav>
                 <Link to="/">
                     &lt;-
@@ -44,22 +49,20 @@ export default function PerformedJobs() {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobs.map((job) =>
+                        {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
                                   <tr key={job.id}>
                                       <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
                                       <td>{job.name}</td>
                                       <td>{job.transactionAmount}</td>
                                       <td><input type="checkbox" checked={job.paidOut} readOnly={true}/></td>
                                   </tr>
-                                 )}
+                        ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }

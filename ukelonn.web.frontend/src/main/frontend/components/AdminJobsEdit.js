@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
-    useGetJobsQuery,
+    useGetJobsInfiniteQuery,
     usePostJobUpdateMutation,
 } from '../api';
 import { Link } from 'react-router';
@@ -24,13 +25,17 @@ export default function AdminJobsEdit() {
     const transactionAmount = transaction.transactionAmount || '';
     const transactionTime = transaction.transactionTime;
     const transactionDateJustDate = transactionTime.split('T')[0];
-    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(account.accountId);
     const dispatch = useDispatch();
     const [ postJobUpdate ] = usePostJobUpdateMutation();
     const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId: account.accountId, id, transactionTypeId, transactionAmount, transactionTime });
+    const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav>
                 <Link to="/admin/jobtypes">
                     &lt;-
@@ -43,26 +48,6 @@ export default function AdminJobsEdit() {
             <div>
                 <label htmlFor="account-selector">{text.chooseAccount}:</label>
                 <Accounts id="account-selector" />
-                <br/>
-
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <td>{text.date}</td>
-                            <td>{text.jobs}</td>
-                            <td>{text.amount}</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.map((job) =>
-                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
-                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                <td>{job.name}</td>
-                                <td>{job.transactionAmount}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
                 <h2>{text.modifyJob}</h2>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div>
@@ -100,12 +85,30 @@ export default function AdminJobsEdit() {
                         </div>
                     </div>
                 </form>
+                <br/>
+
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>{text.date}</td>
+                            <td>{text.jobs}</td>
+                            <td>{text.amount}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
+                            <tr onClick={ ()=>dispatch(JOB_TABLE_ROW_CLICK({ ...job })) } key={job.id}>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }
