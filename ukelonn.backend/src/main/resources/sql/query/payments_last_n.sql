@@ -4,4 +4,4 @@ select t.*, tt.*, false as paid_out from transactions t
  (select transaction_id from transactions
   join transaction_types on transaction_types.transaction_type_id=transactions.transaction_type_id
   where account_id=? and transaction_types.transaction_is_wage_payment order by transaction_id desc offset %d rows fetch next %d rows only)
- order by t.transaction_id
+ order by t.transaction_time desc
