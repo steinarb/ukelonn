@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -823,7 +823,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getJobs(anyInt())).thenReturn(getJadJobs());
+        when(ukelonn.getJobs(anyInt(), anyInt(), anyInt())).thenReturn(getJadJobs());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 
@@ -943,7 +943,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
+        when(ukelonn.getPayments(anyInt(), anyInt(), anyInt())).thenReturn(getJadPayments());
 
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
 

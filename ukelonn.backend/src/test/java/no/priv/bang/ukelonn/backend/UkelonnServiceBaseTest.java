@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,12 +68,12 @@ class UkelonnServiceBaseTest {
                 }
 
                 @Override
-                public List<Transaction> getPayments(int accountId) {
+                public List<Transaction> getPayments(int accountId, int pageNumber, int pageSize) {
                     return null;
                 }
 
                 @Override
-                public List<Transaction> getJobs(int accountId) {
+                public List<Transaction> getJobs(int accountId, int pageNumber, int pageSize) {
                     return null;
                 }
 

@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     useGetAccountQuery,
-    useGetPaymentsQuery,
+    useGetPaymentsInfiniteQuery,
 } from '../api';
 import { Link, useSearchParams } from 'react-router';
 import Locale from './Locale';
@@ -19,11 +20,15 @@ export default function PerformedPayments() {
     const { data: account = {} } = useGetAccountQuery(username);
     const { firstName: accountFirstname } = account;
     const accountId = queryParams.get('accountId');
-    const { data: payments = [] } = useGetPaymentsQuery(accountId);
+    const { data: payments, isSuccess: paymentsIsSuccess, fetchNextPage } = useGetPaymentsInfiniteQuery(accountId);
     const parentTitle = queryParams.get('parentTitle');
+    const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav className="navbar navbar-light bg-light">
                 <Link className="btn btn-primary" to="/">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
@@ -43,19 +48,19 @@ export default function PerformedPayments() {
                         </tr>
                     </thead>
                     <tbody>
-                        {payments.map((payment) =>
+                        {paymentsIsSuccess && payments.pages.map((page) => page.map((payment) =>
                             <tr key={payment.id}>
                                 <td>{new Date(payment.transactionTime).toISOString().split('T')[0]}</td>
                                 <td>{payment.name}</td>
                                 <td>{payment.transactionAmount}</td>
                             </tr>
-                        )}
+                        ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
-            <Logout/>
-            <br/>
-            <a href="../..">{text.returnToTop}</a>
         </div>
     );
 }

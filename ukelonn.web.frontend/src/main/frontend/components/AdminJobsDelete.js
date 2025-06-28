@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
-    useGetJobsQuery,
+    useGetJobsInfiniteQuery,
     usePostJobsDeleteMutation,
 } from '../api';
 import { Link } from 'react-router';
@@ -17,14 +18,18 @@ export default function AdminJobsDelete() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const account = useSelector(state => state.account);
-    const { data: jobs = [] } = useGetJobsQuery(account.accountId);
+    const { data: jobs, isSuccess: jobsIsSuccess, fetchNextPage } = useGetJobsInfiniteQuery(account.accountId);
     const jobIds = useSelector(state => state.jobIdsSelectedForDelete);
     const dispatch = useDispatch();
     const [ postJobsDelete ] = usePostJobsDeleteMutation();
     const onDeleteSelectedClicked = async () => await postJobsDelete({account, jobIds });
+    const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav className="navbar navbar-light bg-light">
                 <Link className="btn btn-primary" to="/admin/jobtypes">
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>
@@ -37,7 +42,7 @@ export default function AdminJobsDelete() {
 
             <p><em>{text.note}</em> {text.onlyMisregistrationsShouldBeDeleted}
                 <br/>
-                <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
+            <em>{text.doNot}</em> {text.deleteJobsThatAreToBePaidFor}</p>
 
             <div className="container">
                 <div className="form-group row mb-2">
@@ -47,6 +52,11 @@ export default function AdminJobsDelete() {
                     </div>
                 </div>
             </div>
+
+            <button
+                onClick={onDeleteSelectedClicked}>
+                {text.deleteMarkedJobs}
+            </button>
 
             <div className="table-responsive table-sm table-striped">
                 <table className="table table-bordered">
@@ -59,29 +69,23 @@ export default function AdminJobsDelete() {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobs.map((job) =>
-                                  <tr key={job.id}>
-                                      <td><input
-                                              type="checkbox"
-                                              checked={jobIds.includes(job.id)}
-                                              onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ id: job.id, delete: e.target.checked }))}/></td>
-                                      <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
-                                      <td>{job.name}</td>
-                                      <td>{job.transactionAmount}</td>
-                                  </tr>
-                                 )}
+                        {jobsIsSuccess && jobs.pages.map((page) => page.map((job) =>
+                            <tr key={job.id}>
+                                <td><input
+                                        type="checkbox"
+                                        checked={jobIds.includes(job.id)}
+                                        onChange={e => dispatch(MODIFY_MARK_JOB_FOR_DELETE({ id: job.id, delete: e.target.checked }))}/></td>
+                                <td>{new Date(job.transactionTime).toISOString().split('T')[0]}</td>
+                                <td>{job.name}</td>
+                                <td>{job.transactionAmount}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNextPageClicked}>{text.next}</button>
+                </div>
             </div>
-            <button
-                onClick={onDeleteSelectedClicked}>
-                {text.deleteMarkedJobs}
-            </button>
-            <br/>
-            <br/>
-            <Logout />
-            <br/>
-            <a href="../../../..">{text.returnToTop}</a>
         </div>
     );
 }

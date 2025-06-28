@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ class PaymentsTest {
         var account = getJadAccount();
         var resource = new Payments();
         var ukelonn = mock(UkelonnService.class);
-        when(ukelonn.getPayments(anyInt())).thenReturn(getJadPayments());
+        when(ukelonn.getPayments(anyInt(), anyInt(), anyInt())).thenReturn(getJadPayments());
         resource.ukelonn = ukelonn;
         var jobs = resource.payments(account.accountId());
         assertEquals(10, jobs.size());
