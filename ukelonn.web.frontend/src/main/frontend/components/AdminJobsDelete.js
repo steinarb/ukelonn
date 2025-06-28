@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
@@ -23,9 +24,12 @@ export default function AdminJobsDelete() {
     const [ postJobsDelete ] = usePostJobsDeleteMutation();
     const onDeleteSelectedClicked = async () => await postJobsDelete({account, jobIds });
     const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav>
                 <Link to="/admin/jobtypes">
                     &lt;-

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
@@ -22,9 +23,12 @@ export default function PerformedPayments() {
     const { data: payments, isSuccess: paymentsIsSuccess, fetchNextPage } = useGetPaymentsInfiniteQuery(accountId);
     const parentTitle = queryParams.get('parentTitle');
     const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav>
                 <Link to="/">
                     &lut;-

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useSwipeable } from 'react-swipeable';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
@@ -29,9 +30,12 @@ export default function AdminJobsEdit() {
     const [ postJobUpdate ] = usePostJobUpdateMutation();
     const onSaveEditToJobClicked = async () => await postJobUpdate({ accountId: account.accountId, id, transactionTypeId, transactionAmount, transactionTime });
     const onNextPageClicked = async () => fetchNextPage();
+    const swipeHandlers = useSwipeable({
+        onSwipedUp: async () => fetchNextPage(),
+    });
 
     return (
-        <div>
+        <div {...swipeHandlers}>
             <nav>
                 <Link to="/admin/jobtypes">
                     &lt;-
