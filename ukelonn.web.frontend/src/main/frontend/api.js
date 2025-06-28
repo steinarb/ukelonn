@@ -20,7 +20,7 @@ export const api = createApi({
                 initialPageParam: 0,
                 getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
             },
-            query: ({ queryArg, pageParam }) => '/jobs/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['JobRegistered', 'PaymentRegistered']
+            query: ({ queryArg, pageParam }) => '/jobs/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['JobRegistered', 'PaymentRegistered', 'JobEdit', 'JobsDelete']
         }),
         getPayments: builder.infiniteQuery({
             infiniteQueryOptions: {
@@ -87,22 +87,10 @@ export const api = createApi({
         }),
         postJobsDelete: builder.mutation({
             query: body => ({ url: '/admin/jobs/delete', method: 'POST', body }),
-            async onQueryStarted(body, { dispatch, queryFulfilled }) {
-                try {
-                    const { data: jobsAfterJobsDelete } = await queryFulfilled;
-                    dispatch(api.util.updateQueryData('getJobs',  body.account.accountId, () => jobsAfterJobsDelete));
-                } catch {}
-            },
-            invalidatesTags: ['JobEdit']
+            invalidatesTags: ['JobsDelete']
         }),
         postJobUpdate: builder.mutation({
             query: body => ({ url: '/job/update', method: 'POST', body }),
-            async onQueryStarted(body, { dispatch, queryFulfilled }) {
-                try {
-                    const { data: jobsAfterJobUpdate } = await queryFulfilled;
-                    dispatch(api.util.updateQueryData('getJobs',  body.accountId, () => jobsAfterJobUpdate));
-                } catch {}
-            },
             invalidatesTags: ['JobEdit']
         }),
         postPaymenttypeModify: builder.mutation({
