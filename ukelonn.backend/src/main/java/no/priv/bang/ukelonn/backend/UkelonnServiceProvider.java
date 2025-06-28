@@ -80,7 +80,6 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     static final String LAST_NAME = "last_name";
     static final String FIRST_NAME = "first_name";
     static final String USERNAME = "username";
-    static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
     static final String USER_ID = "user_id";
 
     @Activate
