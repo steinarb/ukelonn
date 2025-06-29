@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
@@ -644,6 +645,8 @@ class UkelonnServiceProviderTest {
         var account = ukelonn.getAccount(username);
         var payments = ukelonn.getPayments(account.accountId(), 0, 10);
         assertThat(payments).hasSize(10);
+        var firstPayment = payments.get(0);
+        assertThat(firstPayment.transactionTime()).hasYear(Year.now().getValue()); // Verify descending sort order
         var nextPayments = ukelonn.getPayments(account.accountId(), 1, 10);
         assertThat(nextPayments).isNotEqualTo(payments);
     }

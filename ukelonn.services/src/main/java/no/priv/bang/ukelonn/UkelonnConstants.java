@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ public class UkelonnConstants {
 
     public static final String UKELONNADMIN_ROLE = "ukelonnadmin";
     public static final String UKELONNUSER_ROLE = "ukelonnuser";
+    public static final String INFINITE_SCROLL_PAGE_SIZE = "10";
 
     private UkelonnConstants() {
         // Private constructor to avoid instantiation
