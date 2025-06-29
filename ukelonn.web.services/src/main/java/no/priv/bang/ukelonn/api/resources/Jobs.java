@@ -28,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authz.annotation.RequiresUser;
 
+import static no.priv.bang.ukelonn.UkelonnConstants.INFINITE_SCROLL_PAGE_SIZE;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.Transaction;
 
@@ -44,7 +45,7 @@ public class Jobs extends ResourceBase {
     public List<Transaction> jobs(
         @PathParam("accountId") int accountId,
         @DefaultValue("0") @QueryParam("pagenumber") int pageNumber,
-        @DefaultValue("10") @QueryParam("pagesize") int pageSize)
+        @DefaultValue(INFINITE_SCROLL_PAGE_SIZE) @QueryParam("pagesize") int pageSize)
     {
         return ukelonn.getJobs(accountId, pageNumber, pageSize);
     }

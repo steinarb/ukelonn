@@ -27,7 +27,7 @@ export const api = createApi({
                 initialPageParam: 0,
                 getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
             },
-            query: ({ queryArg, pageParam }) => '/payments/' + queryArg.toString(), providesTags: ['JobRegistered']
+            query: ({ queryArg, pageParam }) => '/payments/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['PaymentRegistered']
         }),
         getSumoveryear: builder.query({ query: username => '/statistics/earnings/sumoveryear/' + username, providesTags: ['JobRegistered', 'JobEdit'] }),
         getSumovermonth: builder.query({ query: username => '/statistics/earnings/sumovermonth/' + username, providesTags: ['JobRegistered', 'JobEdit'] }),
@@ -87,11 +87,21 @@ export const api = createApi({
         }),
         postJobsDelete: builder.mutation({
             query: body => ({ url: '/admin/jobs/delete', method: 'POST', body }),
-            invalidatesTags: ['JobsDelete']
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: jobsAfterJobsDelete } = await queryFulfilled;
+                    dispatch(api.util.updateQueryData('getJobs',  body.account.accountId, () => ({ pages: [jobsAfterJobsDelete], pageParams: [0] })));
+                } catch {}
+            },
         }),
         postJobUpdate: builder.mutation({
             query: body => ({ url: '/job/update', method: 'POST', body }),
-            invalidatesTags: ['JobEdit']
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: jobsAfterJobsUpdate } = await queryFulfilled;
+                    dispatch(api.util.updateQueryData('getJobs',  body.accountId, () => ({ pages: [jobsAfterJobsUpdate], pageParams: [0] })));
+                } catch {}
+            },
         }),
         postPaymenttypeModify: builder.mutation({
             query: body => ({ url: '/admin/paymenttype/modify', method: 'POST', body }),
