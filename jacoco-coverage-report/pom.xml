@@ -46,6 +46,10 @@
         </dependency>
         <dependency>
             <groupId>no.priv.bang.ukelonn</groupId>
+            <artifactId>ukelonn.backend.testdata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.ukelonn</groupId>
             <artifactId>ukelonn.web.security</artifactId>
         </dependency>
         <dependency>

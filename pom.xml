@@ -172,6 +172,11 @@
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.ukelonn</groupId>
+                <artifactId>ukelonn.backend.testdata</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.ukelonn</groupId>
                 <artifactId>ukelonn.web.security</artifactId>
                 <version>${project.version}</version>
             </dependency>
