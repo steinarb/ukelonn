@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import eslintPlugin from "@nabla/vite-plugin-eslint";
 import path from 'path';
 import fs from 'fs';
 import { parse } from '@babel/parser';
@@ -7,7 +6,7 @@ import traverse from '@babel/traverse';
 import * as t from "@babel/types";
 
 export default defineConfig({
-    plugins: [eslintPlugin(), exportRoutesPlugin()],
+    plugins: [exportRoutesPlugin()],
     build: {
         minify: false,
         sourcemap: true,
