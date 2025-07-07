@@ -1,6 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router';
-import { HistoryRouter as Router } from "redux-first-history/rr6";
+import { Routes, Route, BrowserRouter as Router } from 'react-router';
 import Home from './Home';
 import Login from './Login';
 import Unauthorized from './Unauthorized';
@@ -32,7 +31,7 @@ import AdminUsersChangePassword from './AdminUsersChangePassword';
 function App(props) {
     const { history, basename } = props;
     return(
-        <Router history={history} basename={basename}>
+        <Router basename={basename}>
             <Routes>
                 <Route exact path="/" element={<Home/>} />
                 <Route path="/login" element={<Login/>} />
