@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { api } from '../api';
-import { isAllbonusesLoaded } from '../matchers';
+import { isClearBonusForm } from '../matchers';
 import { isUnselected } from '../common/reducers';
 
 const initialState = {
@@ -30,7 +30,7 @@ export const bonusSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addMatcher(isAllbonusesLoaded, (state, action) => initialStateWithCurrentDate())
+            .addMatcher(isClearBonusForm, (state, action) => initialStateWithCurrentDate())
     },
 });
 

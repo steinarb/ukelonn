@@ -1,29 +1,19 @@
-import 'regenerator-runtime';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { UPDATE_NOTIFICATIONAVAILABLE } from './actiontypes';
-import { push } from 'redux-first-history';
-import createUkelonnReducer from './reducers';
+import rootReducer from './reducers';
 const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('assets/'))[0].replace(/\/assets\/.*/, '');
 const basename = new URL(baseUrl).pathname;
-import { createBrowserHistory } from 'history';
-import { createReduxHistoryContext } from "redux-first-history";
 import { api } from './api';
 import listeners from './listeners';
 
-const {
-  createReduxHistory,
-  routerMiddleware,
-  routerReducer
-} = createReduxHistoryContext({ history: createBrowserHistory(), basename });
 const store = configureStore({
-    reducer: createUkelonnReducer(routerReducer, basename),
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(routerMiddleware).concat(api.middleware).prepend(listeners.middleware),
+    reducer: rootReducer(basename),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware).prepend(listeners.middleware),
 });
-const history = createReduxHistory(store);
 
 if (typeof Notification !== 'undefined') {
     Notification.requestPermission().then(function(result) {

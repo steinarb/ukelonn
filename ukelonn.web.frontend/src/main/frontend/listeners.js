@@ -1,10 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
-import { LOCATION_CHANGE } from 'redux-first-history';
 import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
-import { clearTransactionType } from './reducers/transactionTypeSlice';
-import { selectUser, clearUser } from './reducers/userSlice';
-import { clearPassword } from './reducers/passwordSlice';
-import { clearBonus } from './reducers/bonusSlice';
+import { selectUser } from './reducers/userSlice';
 import { api } from './api';
 import { MODIFY_USER_IS_ADMINISTRATOR } from './actiontypes';
 import { isUsersLoaded, isRejectedRequest } from './matchers';
@@ -47,40 +43,6 @@ listeners.startListening({
         listenerApi.dispatch(api.endpoints.postUserAdminstatus.initiate(action.payload, { forceRefetch: true }));
     }
 })
-
-// Blank forms when navigating
-listeners.startListening({
-    type: LOCATION_CHANGE,
-    effect: async (action, listenerApi) => {
-        const { location = {} } = action.payload || {};
-        const pathname = findPathname(location, listenerApi.getState().basename);
-
-        if (pathname === '/admin/jobtypes/modify') {
-            listenerApi.dispatch(clearTransactionType());
-        }
-
-        if (pathname === '/admin/jobtypes/create') {
-            listenerApi.dispatch(clearTransactionType());
-        }
-
-        if (pathname === '/admin/paymenttypes/modify' || pathname === '/admin/paymenttypes/create') {
-            listenerApi.dispatch((clearTransactionType()));
-        }
-
-        if (pathname === '/admin/users/modify' || pathname === '/admin/users/password' || pathname === '/admin/users/create') {
-            listenerApi.dispatch(clearUser());
-            listenerApi.dispatch(clearPassword());
-        }
-
-        if (pathname === '/admin/users/create') {
-            listenerApi.dispatch(api.endpoints.getUsers.initiate(undefined));
-        }
-
-        if (pathname === '/admin/bonuses/create' || pathname === '/admin/bonuses/modify' || pathname === '/admin/bonuses/delete') {
-            listenerApi.dispatch(clearBonus());
-        }
-    }
-});
 
 // Display notification when receiving non-empty notification
 listeners.startListening({

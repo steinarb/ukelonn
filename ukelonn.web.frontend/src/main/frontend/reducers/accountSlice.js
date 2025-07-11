@@ -10,6 +10,10 @@ const initialState = {
     balance: 0.
 };
 
+function payloadOrInitialState(state, action) {
+    return action.payload || { ...initialState };
+}
+
 export const accountSlice = createSlice({
     name: 'account',
     initialState,
@@ -18,9 +22,9 @@ export const accountSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addMatcher(api.endpoints.getAccount.matchFulfilled, (state, action) => action.payload)
-            .addMatcher(api.endpoints.postJobRegister.matchFulfilled, (state, action) => action.payload)
-            .addMatcher(api.endpoints.postPaymentRegister.matchFulfilled, (state, action) => action.payload)
+            .addMatcher(api.endpoints.getAccount.matchFulfilled, payloadOrInitialState)
+            .addMatcher(api.endpoints.postJobRegister.matchFulfilled, payloadOrInitialState)
+            .addMatcher(api.endpoints.postPaymentRegister.matchFulfilled, payloadOrInitialState)
     },
 });
 

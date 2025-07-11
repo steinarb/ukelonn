@@ -15,8 +15,7 @@ import bonus from './bonusSlice';
 import jobIdsSelectedForDelete from './jobIdsSelectedForDeleteReducer';
 import locale from './localeReducer';
 
-export default (routerReducer, basename) => combineReducers({
-    router: routerReducer,
+export default (basename) => combineReducers({
     [api.reducerPath]: api.reducer,
     locale,
     notificationAvailable,
