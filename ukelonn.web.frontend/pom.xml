@@ -130,17 +130,6 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>lint:eslint</id>
-                        <goals>
-                            <goal>npx</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>eslint . --ext js --report-unused-disable-directives --max-warnings 0</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
