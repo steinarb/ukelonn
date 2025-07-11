@@ -32,7 +32,6 @@ import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
 import no.priv.bang.ukelonn.UkelonnService;
-import no.priv.bang.ukelonn.bac1kend.testdata.UkelonnTestdata;
 
 import static no.priv.bang.ukelonn.UkelonnConstants.*;
 

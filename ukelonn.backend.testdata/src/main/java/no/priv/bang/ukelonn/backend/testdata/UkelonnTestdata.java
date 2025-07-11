@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.bac1kend.testdata;
+package no.priv.bang.ukelonn.backend.testdata;
 
 import static no.priv.bang.ukelonn.UkelonnConstants.*;
 

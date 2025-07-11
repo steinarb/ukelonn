@@ -4,15 +4,17 @@ import {
 } from './actiontypes';
 
 export const isClearTransactionTypeForm = isAnyOf(
+    api.endpoints.getJobtypes.matchFulfilled,
+    api.endpoints.getPaymenttypes.matchFulfilled,
     api.endpoints.postJobtypeModify.matchFulfilled,
     api.endpoints.postJobtypeCreate.matchFulfilled,
-    api.endpoints.postJobUpdate.matchFulfilled,
     api.endpoints.postPaymenttypeModify.matchFulfilled,
     api.endpoints.postPaymenttypeCreate.matchFulfilled,
 );
 
 export const isJobsLoaded = isAnyOf(
     api.endpoints.getJobs.matchFulfilled,
+    api.endpoints.postJobUpdate.matchFulfilled,
     api.endpoints.postJobsDelete.matchFulfilled,
     api.endpoints.postJobUpdate.matchFulfilled,
 );
@@ -24,7 +26,7 @@ export const isUsersLoaded = isAnyOf(
     api.endpoints.postUserCreate.matchFulfilled,
 );
 
-export const isAllbonusesLoaded = isAnyOf(
+export const isClearBonusForm = isAnyOf(
     api.endpoints.getAllbonuses.matchFulfilled,
     api.endpoints.postModifybonus.matchFulfilled,
     api.endpoints.postCreatebonus.matchFulfilled,
