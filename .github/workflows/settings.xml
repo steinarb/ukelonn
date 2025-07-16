@@ -1,0 +1,14 @@
+<settings>
+    <servers>
+        <server>
+            <id>ssh-maven-travis</id>
+            <username>${env.REPO_USER}</username>
+            <privateKey>/home/runner/.ssh/github_actions</privateKey>
+            <configuration>
+                <strictHostKeyChecking>no</strictHostKeyChecking>
+                <preferredAuthentications>publickey,password</preferredAuthentications>
+                <interactive>false</interactive>
+            </configuration>
+        </server>
+    </servers>
+</settings>
