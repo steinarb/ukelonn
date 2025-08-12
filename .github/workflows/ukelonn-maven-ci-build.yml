@@ -1,8 +1,6 @@
 name: ukelonn CI build
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -32,7 +30,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - name: Deploy snapshot to maven repo
-      run: mvn -B deploy -DskipTests=true
-      env:
-        REPO_USER: ${{ secrets.REPO_USER }}
