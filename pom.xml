@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-authservice-client-pom</artifactId>
-        <version>2.1.14</version>
+        <version>2.1.17</version>
     </parent>
     <groupId>no.priv.bang.ukelonn</groupId>
     <artifactId>ukelonn</artifactId>
@@ -45,6 +45,7 @@
     </modules>
 
     <properties>
+        <junit.jupiter.version>5.13.4</junit.jupiter.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/ProductionLiquibaseRunner.java,
@@ -62,6 +63,13 @@
                 <groupId>no.priv.bang.pom</groupId>
                 <artifactId>bang-bom</artifactId>
                 <version>${bang-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.jupiter.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -239,24 +247,11 @@
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.3.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>jakarta.xml.bind</groupId>
-                        <artifactId>jakarta.xml.bind-api</artifactId>
-                        <version>2.3.3</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <jacocoReports>
-                        <jacocoReport>${project.basedir}/jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
-                    </jacocoReports>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>enforce-no-duplicate-versions</id>
