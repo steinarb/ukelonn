@@ -26,7 +26,8 @@ jobs:
           echo "${{ secrets.MAVEN_SSH_KEY }}" > /home/runner/.ssh/github_actions
           chmod 600 /home/runner/.ssh/github_actions
     - name: Build with Maven
-      run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent install coveralls:report sonar:sonar --file pom.xml --define repoToken=${{ secrets.COVERALLS_REPO_SECRET }} -Dsonar.projectKey=steinarb_ukelonn -Dsonar.organization=steinarb -Dsonar.host.url=https://sonarcloud.io
+      run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent install coveralls:report sonar:sonar --file pom.xml --define repoToken="$COVERALLS_REPO_TOKEN" -Dsonar.projectKey=steinarb_ukelonn -Dsonar.organization=steinarb -Dsonar.host.url=https://sonarcloud.io
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_SECRET }}
