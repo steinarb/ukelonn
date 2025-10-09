@@ -49,14 +49,12 @@ export default function User() {
             <div className="container-fluid">
                 <BonusBanner/>
                 <div>
-                    <div>
-                        <div>
-                            <label>{text.owedAmount}</label>
-                        </div>
-                        <div>
-                            {balance}
-                        </div>
-                    </div>
+                    <table>
+                        <tr>
+                            <td>{text.owedAmount}</td>
+                            <td>{balance}</td>
+                        </tr>
+                    </table>
                     <div>
                         <EarningsMessage />
                     </div>
