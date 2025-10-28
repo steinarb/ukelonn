@@ -50,7 +50,7 @@ export default function User() {
                 <BonusBanner/>
                 <div className="container">
                     <div className="row border rounded mb-3">
-                        <table>
+                        <table className="table">
                             <tr>
                                 <td>{text.owedAmount}</td>
                                 <td>{balance}</td>
