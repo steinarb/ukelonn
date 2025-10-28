@@ -50,12 +50,12 @@ export default function User() {
                 <BonusBanner/>
                 <div className="container">
                     <div className="row border rounded mb-3">
-                        <div className="col">
-                            <label>{text.owedAmount}:</label>
-                        </div>
-                        <div className="col">
-                            {balance}
-                        </div>
+                        <table className="table">
+                            <tr>
+                                <td>{text.owedAmount}</td>
+                                <td>{balance}</td>
+                            </tr>
+                        </table>
                     </div>
                     <div className="row">
                         <EarningsMessage />
