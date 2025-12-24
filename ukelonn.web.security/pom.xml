@@ -72,6 +72,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-runtime</artifactId>
             <scope>provided</scope>

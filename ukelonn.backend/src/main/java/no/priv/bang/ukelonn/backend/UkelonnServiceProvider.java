@@ -219,9 +219,10 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         int pageSize)
     {
         var transactions = new ArrayList<Transaction>();
+        // formatting of SQL necessary because prepared statement parameters can't be used for the offset and fetch next values
         var sql = String.format(getResourceAsString(sqlTemplate), pageNumber * pageSize, pageSize);
         try(var connection = datasource.getConnection()) {
-            try(var statement = connection.prepareStatement(sql)) {
+            try(var statement = connection.prepareStatement(sql)) { // NOSONAR These particular complicated sql statements are 8 years old and well tested
                 statement.setInt(1, accountId);
                 trySettingPreparedStatementParameterThatMayNotBePresent(statement, 2, accountId);
                 try(var resultSet = statement.executeQuery()) {

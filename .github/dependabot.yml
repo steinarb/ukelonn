@@ -10,6 +10,12 @@ updates:
   schedule:
     interval: "daily"
   target-branch: "using-react"
+  groups:
+    react-updates:
+      applies-to: version-updates
+      patterns:
+        - "react"
+        - "react-dom"
 - package-ecosystem: maven
   directory: "/"
   schedule:
