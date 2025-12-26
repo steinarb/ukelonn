@@ -17,14 +17,6 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Add ssh key
-      run: |
-          mkdir -p /home/runner/.m2
-          cp .github/workflows/settings.xml /home/runner/.m2
-          mkdir -p /home/runner/.ssh
-          ssh-keyscan maven.bang.priv.no >> /home/runner/.ssh/known_hosts
-          echo "${{ secrets.MAVEN_SSH_KEY }}" > /home/runner/.ssh/github_actions
-          chmod 600 /home/runner/.ssh/github_actions
     - name: Build with Maven
       run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent install coveralls:report sonar:sonar --file pom.xml --define repoToken="$COVERALLS_REPO_TOKEN" -Dsonar.projectKey=steinarb_ukelonn -Dsonar.organization=steinarb -Dsonar.host.url=https://sonarcloud.io
       env:
