@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5.0.1
+    - uses: actions/checkout@v6.0.2
+      with:
+        persist-credentials: false
     - name: Set up maven and Java version
       uses: s4u/setup-maven-action@v1.19.0
       with:
