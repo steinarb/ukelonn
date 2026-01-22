@@ -1,4 +1,4 @@
-name: ukelonn CI build
+name: ukelonn PR CI build
 
 on:
   pull_request:

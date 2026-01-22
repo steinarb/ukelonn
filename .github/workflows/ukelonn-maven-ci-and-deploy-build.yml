@@ -1,4 +1,4 @@
-name: ukelonn CI build
+name: ukelonn CI and deploy build
 
 on:
   push:
