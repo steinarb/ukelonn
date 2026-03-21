@@ -32,7 +32,7 @@ function exportRoutesPlugin() {
         name: 'export-routes',
 
         async transform(src, id) {
-            if (!id.includes('node_modules') && !id.includes('commonjsHelpers') && id.includes('.js')) {
+            if (!id.includes('node_modules') && !id.includes('commonjsHelpers') && id.includes('.jsx')) {
                 // This is a rollup plugin that runs after esbuild, so code in src has already been processed
                 // from JSX to plain JS (i.e. the JSX stuff is gone...).
                 // Have to read the raw file from disk to find the JSX tags.
