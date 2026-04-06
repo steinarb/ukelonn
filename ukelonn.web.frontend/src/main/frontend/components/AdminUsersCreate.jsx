@@ -27,7 +27,7 @@ export default function AdminUsersCreate() {
     const [ postUserChangeadminstatus ] = usePostUserChangeadminstatusMutation();
     const onCreateUserClicked = async () => {
         const { data: updatedUsers } = await postUserCreate(userAndPasswords);
-        const createdUser = updatedUsers.find(u => u.username = username) || {};
+        const createdUser = updatedUsers.find(u => u.username = user.username) || {};
         await postUserChangeadminstatus({ administrator: userIsAdministrator, user: createdUser });
     };
 
