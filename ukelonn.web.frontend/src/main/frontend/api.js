@@ -43,7 +43,9 @@ export const api = createApi({
                 try {
                     const { data: loginstateAfterLogin } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getLogin',  undefined, () => loginstateAfterLogin));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postLogout: builder.mutation({
@@ -52,7 +54,9 @@ export const api = createApi({
                 try {
                     const { data: loginstateAfterLogout } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getLogin',  undefined, () => loginstateAfterLogout));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postJobRegister: builder.mutation({
@@ -61,7 +65,9 @@ export const api = createApi({
                 try {
                     const { data: accountAfterJobRegister } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAccount',  body.account.username, () => accountAfterJobRegister));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
             invalidatesTags: ['JobRegistered'],
         }),
@@ -73,7 +79,9 @@ export const api = createApi({
                 try {
                     const { data: jobtypesAfterJobtypeModify } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getJobtypes',  undefined, () => jobtypesAfterJobtypeModify));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postJobtypeCreate: builder.mutation({
@@ -82,7 +90,9 @@ export const api = createApi({
                 try {
                     const { data: jobtypesAfterJobtypeCreate } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getJobtypes',  undefined, () => jobtypesAfterJobtypeCreate));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postJobsDelete: builder.mutation({
@@ -91,7 +101,9 @@ export const api = createApi({
                 try {
                     const { data: jobsAfterJobsDelete } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getJobs',  body.account.accountId, () => ({ pages: [jobsAfterJobsDelete], pageParams: [0] })));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postJobUpdate: builder.mutation({
@@ -100,7 +112,9 @@ export const api = createApi({
                 try {
                     const { data: jobsAfterJobsUpdate } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getJobs',  body.accountId, () => ({ pages: [jobsAfterJobsUpdate], pageParams: [0] })));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postPaymenttypeModify: builder.mutation({
@@ -109,7 +123,9 @@ export const api = createApi({
                 try {
                     const { data: paymenttypesAfterPaymenttypeModify } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getPaymenttypes',  undefined, () => paymenttypesAfterPaymenttypeModify));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postPaymenttypeCreate: builder.mutation({
@@ -118,7 +134,9 @@ export const api = createApi({
                 try {
                     const { data: paymenttypesAfterPaymenttypeCreate } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getPaymenttypes',  undefined, () => paymenttypesAfterPaymenttypeCreate));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postUserModify: builder.mutation({
@@ -127,7 +145,9 @@ export const api = createApi({
                 try {
                     const { data: usersAfterUserModify } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getUsers', undefined, () => usersAfterUserModify));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postUserChangeadminstatus: builder.mutation({ query: body => ({ url: '/admin/user/changeadminstatus', method: 'POST', body }) }),
@@ -137,7 +157,9 @@ export const api = createApi({
                 try {
                     const { data: usersAfterUserPassword } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getUsers', undefined, () => usersAfterUserPassword));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postUserCreate: builder.mutation({
@@ -146,7 +168,9 @@ export const api = createApi({
                 try {
                     const { data: usersAfterUserCreate } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getUsers', undefined, () => usersAfterUserCreate));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postModifybonus: builder.mutation({
@@ -155,7 +179,9 @@ export const api = createApi({
                 try {
                     const { data: bonusesAfterModifybonus } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllbonuses', undefined, () => bonusesAfterModifybonus));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postCreatebonus: builder.mutation({
@@ -164,7 +190,9 @@ export const api = createApi({
                 try {
                     const { data: bonusesAfterCreatebonus } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllbonuses', undefined, () => bonusesAfterCreatebonus));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postDeletebonus: builder.mutation({
@@ -173,7 +201,9 @@ export const api = createApi({
                 try {
                     const { data: bonusesAfterDeletebonus } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllbonuses', undefined, () => bonusesAfterDeletebonus));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
    }),
