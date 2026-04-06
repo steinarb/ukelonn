@@ -1,5 +1,3 @@
-import React from 'react';
-
 function LoginErrorMessage(props) {
     const { loginResponse } = props;
     if (loginResponse.roles.length === 0) {

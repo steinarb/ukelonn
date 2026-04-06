@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetAllbonusesQuery } from '../api';
 import { selectBonus } from '../reducers/bonusSlice';

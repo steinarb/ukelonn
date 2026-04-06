@@ -1,6 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { MODIFY_MARK_JOB_FOR_DELETE } from '../actiontypes';
-import { api } from '../api';
 import { isJobsLoaded } from '../matchers';
 const defaultValue = [];
 

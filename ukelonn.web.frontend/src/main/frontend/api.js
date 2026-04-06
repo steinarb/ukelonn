@@ -18,14 +18,14 @@ export const api = createApi({
         getJobs: builder.infiniteQuery({
             infiniteQueryOptions: {
                 initialPageParam: 0,
-                getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
+                getNextPageParam: (lastPage, allPages, lastPageParam) => lastPageParam + 1,
             },
             query: ({ queryArg, pageParam }) => '/jobs/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['JobRegistered', 'PaymentRegistered', 'JobEdit', 'JobsDelete']
         }),
         getPayments: builder.infiniteQuery({
             infiniteQueryOptions: {
                 initialPageParam: 0,
-                getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPageParam + 1,
+                getNextPageParam: (lastPage, allPages, lastPageParam) => lastPageParam + 1,
             },
             query: ({ queryArg, pageParam }) => '/payments/' + queryArg.toString() + '?pagenumber=' + pageParam, providesTags: ['PaymentRegistered']
         }),

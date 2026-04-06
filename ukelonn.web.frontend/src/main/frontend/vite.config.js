@@ -60,7 +60,7 @@ function exportRoutesPlugin() {
             }
         },
 
-        generateBundle(options, bundle) {
+        generateBundle(options) {
             const outputDirectory = options.dir || 'dist';
             const assetsDirectory = path.join(outputDirectory, 'assets');
             fs.mkdirSync(assetsDirectory, { recursive: true });

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { useSwipeable } from 'react-swipeable';
 import {
@@ -9,7 +8,6 @@ import {
 } from '../api';
 import { Link, useSearchParams } from 'react-router';
 import Locale from './Locale';
-import Logout from './Logout';
 
 export default function PerformedJobs() {
     const [ queryParams ] = useSearchParams();

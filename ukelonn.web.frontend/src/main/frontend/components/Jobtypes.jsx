@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetJobtypesQuery } from '../api';
 import { selectJobType } from '../reducers/transactionSlice';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useSwipeable } from 'react-swipeable';
 import {
@@ -11,7 +10,6 @@ import { Link } from 'react-router';
 import { MODIFY_MARK_JOB_FOR_DELETE } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
-import Logout from './Logout';
 
 export default function AdminJobsDelete() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();

@@ -1,4 +1,3 @@
-import React from 'react';
 import { setName, setAmount } from '../reducers/transactionTypeSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import {

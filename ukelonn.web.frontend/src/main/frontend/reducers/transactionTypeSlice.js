@@ -1,8 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { isClearTransactionTypeForm } from '../matchers';
-import { selectAccount } from './accountSlice';
-import { api } from '../api';
-import { isUnselected } from '../common/reducers';
 
 const initialState = {
     id: -1,
