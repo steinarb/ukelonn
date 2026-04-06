@@ -6,7 +6,7 @@ import { selectPaymentType } from '../reducers/transactionSlice';
 export default function Paymenttypes(props) {
     const { data: paymenttypes, isSuccess: paymenttypesIsSuccess } = useGetPaymenttypesQuery();
     const dispatch = useDispatch();
-    useEffect(() => { paymenttypesIsSuccess && dispatch(selectPaymentType(paymenttypes[0])) }, [paymenttypes]);
+    useEffect(() => { paymenttypesIsSuccess && dispatch(selectPaymentType(paymenttypes[0])) }, [paymenttypes, paymenttypesIsSuccess, dispatch]);
     const { id, className } = props;
     const transaction = useSelector(state => state.transaction);
     const paymentTypeId = transaction.transactionType.id;
