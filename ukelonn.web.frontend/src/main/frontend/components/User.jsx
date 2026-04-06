@@ -1,11 +1,9 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetLoginQuery,
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     useGetAccountQuery,
-    useGetJobtypesQuery,
     usePostJobRegisterMutation,
 } from '../api';
 import { Link } from 'react-router';

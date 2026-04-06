@@ -2,8 +2,7 @@ import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { selectPaymentType, setAmount  } from './reducers/transactionSlice';
 import { selectUser } from './reducers/userSlice';
 import { api } from './api';
-import { MODIFY_USER_IS_ADMINISTRATOR } from './actiontypes';
-import { isUsersLoaded, isRejectedRequest } from './matchers';
+import { isRejectedRequest } from './matchers';
 import { spawnNotification } from './components/spawnnotification';
 
 const listeners = createListenerMiddleware();
@@ -85,13 +84,5 @@ listeners.startListening({
         }
     }
 })
-
-function findPathname(location, basename) {
-    if (basename === '/') {
-        return location.pathname;
-    }
-
-    return location.pathname.replace(new RegExp('^' + basename + '(.*)'), '$1');
-}
 
 export default listeners;

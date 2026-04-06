@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useSwipeable } from 'react-swipeable';
 import {
@@ -12,7 +11,6 @@ import { JOB_TABLE_ROW_CLICK, MODIFY_JOB_DATE } from '../actiontypes';
 import Locale from './Locale';
 import Accounts from './Accounts';
 import Jobtypes from './Jobtypes';
-import Logout from './Logout';
 
 export default function AdminJobsEdit() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();

@@ -1,4 +1,4 @@
-import { useGetLoginQuery, useGetNotificationQuery, api } from '../api';
+import { useGetLoginQuery, useGetNotificationQuery } from '../api';
 
 export default function Notifier() {
     const { data: loginResponse = {}, isSuccess: loginIsSuccess } = useGetLoginQuery();

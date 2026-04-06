@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route, BrowserRouter as Router } from 'react-router';
 import Home from './Home';
 import Login from './Login';
@@ -30,7 +29,7 @@ import '../ukelonn.css';
 
 
 function App(props) {
-    const { history, basename } = props;
+    const { basename } = props;
     return(
         <Router basename={basename}>
             <Routes>
