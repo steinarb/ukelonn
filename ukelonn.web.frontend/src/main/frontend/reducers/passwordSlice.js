@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { api } from '../api';
 import { isUsersLoaded } from '../matchers';
 
 const initialState = {
@@ -18,7 +17,7 @@ export const passwordSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addMatcher(isUsersLoaded, (state, action) => initialState)
+            .addMatcher(isUsersLoaded, () => initialState)
     },
 });
 

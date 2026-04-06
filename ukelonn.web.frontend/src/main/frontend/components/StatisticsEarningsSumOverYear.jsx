@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
@@ -10,7 +9,7 @@ import { stringify } from 'qs';
 import Locale from './Locale';
 import Logout from './Logout';
 
-export default function StatisticsEarningsSumOverYear(props) {
+export default function StatisticsEarningsSumOverYear() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });

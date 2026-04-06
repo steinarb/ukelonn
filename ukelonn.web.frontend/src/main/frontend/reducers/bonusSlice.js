@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { api } from '../api';
 import { isClearBonusForm } from '../matchers';
 import { isUnselected } from '../common/reducers';
 
@@ -30,7 +29,8 @@ export const bonusSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addMatcher(isClearBonusForm, (state, action) => initialStateWithCurrentDate())
+            .addMatcher(isClearBonusForm, () => initialStateWithCurrentDate())
+
     },
 });
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetDefaultlocaleQuery, useGetAvailablelocalesQuery } from '../api';
 import { UPDATE_LOCALE } from '../actiontypes';

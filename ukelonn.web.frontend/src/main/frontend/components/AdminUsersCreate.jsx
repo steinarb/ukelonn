@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
@@ -28,8 +27,8 @@ export default function AdminUsersCreate() {
     const [ postUserChangeadminstatus ] = usePostUserChangeadminstatusMutation();
     const onCreateUserClicked = async () => {
         const { data: updatedUsers } = await postUserCreate(userAndPasswords);
-        const createdUser = updatedUsers.find(u => u.username = username) || {};
-        await postUserChangeadminstatus({ administrator, user: createdUser });
+        const createdUser = updatedUsers.find(u => u.username === user.username) || {};
+        await postUserChangeadminstatus({ administrator: userIsAdministrator, user: createdUser });
     };
 
     const usernameEmpty = !user.username;

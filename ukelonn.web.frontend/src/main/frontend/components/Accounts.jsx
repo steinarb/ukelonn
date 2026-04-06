@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetAccountsQuery } from '../api';
 import { selectAccount } from '../reducers/accountSlice';
