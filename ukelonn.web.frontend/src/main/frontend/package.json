@@ -10,7 +10,7 @@
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-redux": "^9.3.0",
-        "react-router": "^8.0.0",
+        "react-router": "^8.0.1",
         "react-swipeable": "^7.0.2",
         "validator": "^13.15.35"
     },
