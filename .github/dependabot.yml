@@ -11,11 +11,10 @@ updates:
     interval: "weekly"
   target-branch: "using-react"
   groups:
-    react-updates:
+    npm-all:
       applies-to: version-updates
       patterns:
-        - "react"
-        - "react-dom"
+        - "*"
 - package-ecosystem: maven
   directory: "/"
   schedule:
