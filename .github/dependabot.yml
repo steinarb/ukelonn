@@ -3,7 +3,7 @@ updates:
 - package-ecosystem: "npm"
   directory: "/ukelonn.web.frontend/src/main/frontend/"
   schedule:
-    interval: "weekly"
+    interval: monthly
   target-branch: "using-react"
   groups:
     npm-all:
