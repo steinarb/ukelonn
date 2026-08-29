@@ -7,7 +7,7 @@ const initialState = {
     firstname: '',
     lastname: '',
     fullname: '',
-    balance: 0.
+    balance: 0.0
 };
 
 function payloadOrInitialState(state, action) {
