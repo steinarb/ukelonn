@@ -14,7 +14,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up maven and Java version
-      uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056
+      uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5
       with:
         java-version: 21
         maven-version: 3.9.11
