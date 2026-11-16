@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +36,6 @@ import javax.ws.rs.InternalServerErrorException;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
@@ -75,10 +74,6 @@ class JobResourceTest extends ServletTestBase {
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
-
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
@@ -124,10 +119,6 @@ class JobResourceTest extends ServletTestBase {
         // Create the object to be tested
         var resource = new JobResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
@@ -167,10 +158,6 @@ class JobResourceTest extends ServletTestBase {
         // Create the object to be tested
         var resource = new JobResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         var accountWithUpdatedBalance = Account.with(account).balance(account.balance() + job.transactionAmount()).build();
@@ -208,10 +195,6 @@ class JobResourceTest extends ServletTestBase {
 
         var resource = new JobResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
@@ -244,10 +227,6 @@ class JobResourceTest extends ServletTestBase {
         // Create the object to be tested
         var resource = new JobResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
@@ -262,12 +241,10 @@ class JobResourceTest extends ServletTestBase {
 
     @Test
     void testUpdateJob() {
-        var ukelonn = mock(UkelonnService.class);
         var resource = new JobResource();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
+        var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         var account = getJadAccount();
@@ -317,8 +294,6 @@ class JobResourceTest extends ServletTestBase {
         // Create a resource and inject OSGi services
         var resource = new JobResource();
         resource.ukelonn = ukelonn;
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         var emptyTransaction = UpdatedTransaction.with().build();
         assertThrows(InternalServerErrorException.class, () -> resource.doUpdateJob(emptyTransaction));

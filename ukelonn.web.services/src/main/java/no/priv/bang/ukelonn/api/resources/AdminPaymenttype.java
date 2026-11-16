@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.authz.annotation.RequiresUser;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -39,16 +39,10 @@ import no.priv.bang.ukelonn.beans.TransactionType;
 @RequiresUser
 @RequiresRoles("ukelonnadmin")
 public class AdminPaymenttype {
+    private Logger logger = LoggerFactory.getLogger(AdminJobtype.class);
 
     @Inject
     UkelonnService ukelonn;
-
-    Logger logger;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(getClass());
-    }
 
     @Path("modify")
     @POST

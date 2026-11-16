@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import java.util.Optional;
 
@@ -22,16 +22,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.shiro.SecurityUtils;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResourceBase {
+    private Logger logger = LoggerFactory.getLogger(ResourceBase.class);
 
     public ResourceBase() {
         super();
     }
 
-    protected boolean isCurrentUserOrAdmin(String username, LogService logservice) {
-        var logger = logservice.getLogger(getClass());
+    protected boolean isCurrentUserOrAdmin(String username) {
         try {
             var subject = Optional.ofNullable(SecurityUtils.getSubject());
             var isCurrentUser = subject

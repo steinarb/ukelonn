@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api;
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api;
 
 import javax.servlet.Servlet;
 
@@ -24,7 +24,6 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
-import org.osgi.service.log.LogService;
 
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.servlet.jersey.JerseyServlet;
@@ -45,12 +44,6 @@ public class UkelonnRestApiServlet extends JerseyServlet {
     @Reference
     public void setUserManagement(UserManagementService useradmin) {
         addInjectedOsgiService(UserManagementService.class, useradmin);
-    }
-
-    @Reference
-    @Override
-    public void setLogService(LogService logservice) {
-        super.setLogService(logservice);
     }
 
 }
