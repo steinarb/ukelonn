@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,7 +26,6 @@ import java.util.MissingResourceException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.beans.LocaleBean;
 
@@ -73,8 +72,6 @@ class LocalizationResourceTest {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.displayTexts(any())).thenThrow(MissingResourceException.class);
         var resource = new LocalizationResource();
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         resource.ukelonn = ukelonn;
         var response = resource.displayTexts("en_UK");
         assertThat(response).hasFieldOrPropertyWithValue("status", 500);

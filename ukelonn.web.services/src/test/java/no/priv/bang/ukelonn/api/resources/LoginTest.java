@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2025 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
 import no.priv.bang.ukelonn.api.beans.LoginCredentials;
 import no.priv.bang.ukelonn.api.beans.LoginResult;
@@ -58,12 +57,8 @@ class LoginTest extends ServletTestBase {
         request.setBodyContent(mapper.writeValueAsString(credentials));
         var response = mock(HttpServletResponse.class);
 
-        // Create mock OSGi services to inject
-        var logservice = new MockLogService();
-
         // Create the resource and do the login
         var resource = new Login();
-        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         var result = resource.doLogin(credentials);
 
@@ -83,12 +78,8 @@ class LoginTest extends ServletTestBase {
         request.setBodyContent(mapper.writeValueAsString(credentials));
         var response = mock(HttpServletResponse.class);
 
-        // Create mock OSGi services to inject
-        var logservice = new MockLogService();
-
         // Create the servlet and do the login
         var resource = new Login();
-        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         var result = resource.doLogin(credentials);
 
@@ -108,12 +99,8 @@ class LoginTest extends ServletTestBase {
         request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
-
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         LoginResult result = resource.doLogin(credentials);
 
@@ -133,12 +120,8 @@ class LoginTest extends ServletTestBase {
         request.setBodyContent(mapper.writeValueAsString(credentials));
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
-
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.setLogservice(logservice);
         createSubjectAndBindItToThread(request, response);
         LoginResult result = resource.doLogin(credentials);
 
@@ -159,11 +142,8 @@ class LoginTest extends ServletTestBase {
             MockHttpServletRequest request = buildPostUrl("/login");
             request.setBodyContent(mapper.writeValueAsString(credentials));
             HttpServletResponse response = mock(HttpServletResponse.class);
-            // Create mock OSGi services to inject
-            MockLogService logservice = new MockLogService();
             // Create the servlet and do the login
             Login resource = new Login();
-            resource.setLogservice(logservice);
             createSubjectAndBindItToThread(request, response);
             LoginResult result = resource.doLogin(credentials);
             // Check the response
@@ -181,11 +161,8 @@ class LoginTest extends ServletTestBase {
             .username("jad")
             .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.setLogservice(logservice);
         LoginResult result = resource.doLogin(credentials);
         // Check the response
         assertThat(result.roles()).isEmpty();
@@ -199,11 +176,8 @@ class LoginTest extends ServletTestBase {
             .username("jad")
             .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.setLogservice(logservice);
         LoginResult result = resource.doLogin(credentials);
         // Check the response
         assertThat(result.roles()).isEmpty();
@@ -217,11 +191,8 @@ class LoginTest extends ServletTestBase {
             .username("jad")
             .password(Base64.getEncoder().encodeToString("wrong".getBytes()))
             .build();
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
         // Create the servlet and do the login
         Login resource = new Login();
-        resource.setLogservice(logservice);
         assertThrows(InternalServerErrorException.class, () -> resource.doLogin(credentials));
     }
 
@@ -241,9 +212,6 @@ class LoginTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
-
         // Set up Shiro to be in a logged-in state
         WebSubject subject = createSubjectAndBindItToThread(request, response);
         UsernamePasswordToken token = new UsernamePasswordToken("jad", "1ad".toCharArray(), true);
@@ -251,7 +219,6 @@ class LoginTest extends ServletTestBase {
 
         // Create the resource and check the login state with HTTP GET
         Login resource = new Login();
-        resource.setLogservice(logservice);
         LoginResult result = resource.loginStatus();
 
         // Check the response
@@ -275,16 +242,12 @@ class LoginTest extends ServletTestBase {
         when(request.getSession()).thenReturn(session);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        // Create mock OSGi services to inject
-        MockLogService logservice = new MockLogService();
-
         // Set up Shiro to be in a logged-in state
         WebSubject subject = createSubjectAndBindItToThread(request, response);
         subject.logout();
 
         // Create the resource and check the login state with HTTP GET
         Login resource = new Login();
-        resource.setLogservice(logservice);
         LoginResult result = resource.loginStatus();
 
         // Check the response
