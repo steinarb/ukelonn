@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +28,6 @@ import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.api.ServletTestBase;
@@ -52,10 +51,6 @@ class AccountResourceTest extends ServletTestBase {
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
-
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
@@ -90,18 +85,14 @@ class AccountResourceTest extends ServletTestBase {
         // Create the object to be tested
         var resource = new AccountResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test with a different username
         assertThrows(ForbiddenException.class, () -> {
-                resource.getAccount("jod");
-            });
+            resource.getAccount("jod");
+        });
     }
 
     /**
@@ -123,10 +114,6 @@ class AccountResourceTest extends ServletTestBase {
 
         // Create the object to be tested
         var resource = new AccountResource();
-
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
@@ -151,18 +138,14 @@ class AccountResourceTest extends ServletTestBase {
         // Create the object to be tested
         var resource = new AccountResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
 
         // Run the method under test
         assertThrows(BadRequestException.class, () -> {
-                resource.getAccount(null);
-            });
+            resource.getAccount(null);
+        });
     }
 
     @Test
@@ -179,10 +162,6 @@ class AccountResourceTest extends ServletTestBase {
         // Create the object to be tested
         var resource = new AccountResource();
 
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
-
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
@@ -190,8 +169,8 @@ class AccountResourceTest extends ServletTestBase {
 
         // Run the method under test
         assertThrows(InternalServerErrorException.class, () -> {
-                resource.getAccount("on");
-            });
+            resource.getAccount("on");
+        });
     }
 
     @Test
@@ -200,10 +179,6 @@ class AccountResourceTest extends ServletTestBase {
 
         // Create the object to be tested
         var resource = new AccountResource();
-
-        // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Inject fake OSGi service UkelonnService
         var ukelonn = mock(UkelonnService.class);

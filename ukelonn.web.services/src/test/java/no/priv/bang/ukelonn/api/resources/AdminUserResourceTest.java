@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,8 +56,6 @@ class AdminUserResourceTest {
         resource.useradmin = useradmin;
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Get first user and modify all properties except id
         var modifiedUsername = "gandalf";
@@ -94,7 +92,6 @@ class AdminUserResourceTest {
         var useradmin = new UserManagementServiceProvider();
         resource.useradmin = useradmin;
         var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a mock datasource that throws exceptions and inject the datasource
@@ -122,8 +119,6 @@ class AdminUserResourceTest {
         resource.useradmin = useradmin;
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Save the number of users before adding a user
         var originalUserCount = getUsers().size();
@@ -172,8 +167,6 @@ class AdminUserResourceTest {
         resource.useradmin = useradmin;
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Create a passwords object containing the user
         var passwords = UserAndPasswords.with()
@@ -360,7 +353,6 @@ class AdminUserResourceTest {
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a user object
@@ -411,7 +403,6 @@ class AdminUserResourceTest {
         // Inject OSGi services into the resource
         resource.ukelonn = ukelonn;
         resource.useradmin = useradmin;
-        resource.setLogservice(logservice);
 
         // Create a user object
         var newUsername = "aragorn";
@@ -451,7 +442,6 @@ class AdminUserResourceTest {
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a user object
@@ -484,8 +474,6 @@ class AdminUserResourceTest {
         resource.useradmin = useradmin;
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
 
         // Get first user and modify all properties except id
         var users = getUsersForUserManagement();
@@ -513,7 +501,6 @@ class AdminUserResourceTest {
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Create a passwords object containing the user and with
@@ -534,7 +521,6 @@ class AdminUserResourceTest {
         var ukelonn = mock(UkelonnService.class);
         resource.ukelonn = ukelonn;
         var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
         // Get first user to get a user with valid username
@@ -559,7 +545,6 @@ class AdminUserResourceTest {
         var ukelonn = new UkelonnServiceProvider();
         resource.ukelonn = ukelonn;
         var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         ukelonn.setLogservice(logservice);
         useradmin.setLogservice(logservice);
 
