@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api;
 /*
- * Copyright 2018-2025 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,14 +39,12 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.osgi.service.log.LogService;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
@@ -110,11 +108,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create shiro context but do not log in
         createSubjectAndBindItToThread(request, response);
@@ -145,11 +142,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create shiro context but do not log in
         createSubjectAndBindItToThread(request, response);
@@ -181,11 +177,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var ukelonn = mock(UkelonnService.class);
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -213,11 +208,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create shiro context but do not log in
         createSubjectAndBindItToThread(request, response);
@@ -244,11 +238,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Do the login
         servlet.service(request, response);
@@ -276,7 +269,6 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
@@ -285,7 +277,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray(), true);
         subject.login(token);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Check the login state with HTTP GET
         servlet.service(request, response);
@@ -317,7 +309,6 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
@@ -325,7 +316,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var subject = createSubjectAndBindItToThread(request, response);
         subject.logout();
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Check the login state with HTTP GET
         servlet.service(request, response);
@@ -348,11 +339,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -383,11 +373,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Set up Shiro to be in a not logged-in state
         var subject = createSubjectAndBindItToThread(request, response);
@@ -409,12 +398,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobTypes()).thenReturn(getJobtypes());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -439,12 +427,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccounts()).thenReturn(getDummyAccounts());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -469,12 +456,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -507,14 +493,13 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -538,12 +523,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenReturn(getJadAccount());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -570,11 +554,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
@@ -597,12 +580,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAccount(anyString())).thenThrow(UkelonnException.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log the admin user in to shiro
         loginUser(request, response, "admin", "admin");
@@ -637,12 +619,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -684,11 +665,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -730,12 +710,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         loginUser(request, response, "admin", "admin");
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPerformedJob(any())).thenReturn(account);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Run the method under test
         servlet.service(request, response);
@@ -768,11 +747,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log the user in to shiro
         loginUser(request, response, "jad", "1ad");
@@ -794,11 +772,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -820,12 +797,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getJobs(anyInt(), anyInt(), anyInt())).thenReturn(getJadJobs());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -856,11 +832,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -906,12 +881,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.updateJob(any())).thenReturn(Arrays.asList(convertUpdatedTransaction(editedJob)));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -940,12 +914,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPayments(anyInt(), anyInt(), anyInt())).thenReturn(getJadPayments());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -970,12 +943,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getPaymenttypes()).thenReturn(getPaymenttypes());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -1012,12 +984,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.registerPayment(any())).thenReturn(account);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -1053,12 +1024,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyJobtype(any())).thenReturn(Arrays.asList(jobtype));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1097,13 +1067,12 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         var updatedjobtypes = Stream.concat(originalJobtypes.stream(), Stream.of(jobtype)).toList();
         when(ukelonn.createJobtype(any())).thenReturn(updatedjobtypes);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1139,12 +1108,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyPaymenttype(any())).thenReturn(Arrays.asList(paymenttype));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1183,13 +1151,12 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         var updatedpaymenttypes = Stream.concat(originalPaymenttypes.stream(), Stream.of(paymenttype)).toList();
         when(ukelonn.createPaymenttype(any())).thenReturn(updatedpaymenttypes);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1215,12 +1182,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject and inject it
-        var logservice = new MockLogService();
         var ukelonn = mock(UkelonnService.class);
         var useradmin = mock(UserManagementService.class);
         when(useradmin.getUsers()).thenReturn(getUsersForUserManagement());
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in non-admin user
         loginUser(request, response, "jad", "1ad");
@@ -1262,12 +1228,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var ukelonn = mock(UkelonnService.class);
         var useradmin = mock(UserManagementService.class);
         when(useradmin.modifyUser(any())).thenReturn(Arrays.asList(user));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1318,13 +1283,12 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var ukelonn = mock(UkelonnService.class);
         var useradmin = mock(UserManagementService.class);
         var updatedusers = Stream.concat(getUsersForUserManagement().stream(), Stream.of(user)).toList();
         when(useradmin.addUser(any())).thenReturn(updatedusers);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1370,12 +1334,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var response = new MockHttpServletResponse();
 
         // Create mock OSGi services to inject
-        var logservice = new MockLogService();
         var ukelonn = mock(UkelonnService.class);
         var useradmin = mock(UserManagementService.class);
         when(useradmin.updatePassword(any())).thenReturn(users);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Log in admin user
         loginUser(request, response, "admin", "admin");
@@ -1396,7 +1359,6 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     @Test
     void testStatisticsEarningsSumOverYear() throws Exception {
         // Set up REST API servlet with mocked services
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = mock(UkelonnService.class);
         var earningsSumOverYear = Arrays.asList(
@@ -1406,7 +1368,7 @@ class UkelonnRestApiServletTest extends ServletTestBase {
             SumYear.with().sum(2450.0).year(2019).build());
         when(ukelonn.earningsSumOverYear("jad")).thenReturn(earningsSumOverYear);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/statistics/earnings/sumoveryear/jad");
@@ -1430,11 +1392,10 @@ class UkelonnRestApiServletTest extends ServletTestBase {
 
     @Test
     void testNotifications() throws Exception {
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var ukelonn = new UkelonnServiceProvider();
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // A request for notifications to a user
         var requestGetNotifications = buildGetUrl("/notificationsto/jad");
@@ -1482,10 +1443,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getActiveBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/activebonuses");
@@ -1510,10 +1470,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.getAllBonuses()).thenReturn(Collections.singletonList(Bonus.with().build()));
 
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        UkelonnRestApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/allbonuses");
@@ -1547,10 +1506,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.createBonus(bonus)).thenReturn(Collections.singletonList(bonus));
 
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildPostUrl("/admin/createbonus");
@@ -1586,10 +1544,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.modifyBonus(bonus)).thenReturn(Collections.singletonList(bonus));
 
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildPostUrl("/admin/modifybonus");
@@ -1625,10 +1582,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.deleteBonus(bonus)).thenReturn(Collections.singletonList(Bonus.with().build()));
 
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildPostUrl("/admin/deletebonus");
@@ -1655,12 +1611,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testPostAdminStatus() throws Exception {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create a user object
         var newUsername = "aragorn";
@@ -1699,12 +1654,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testPostChangeAdminStatus() throws Exception {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create a user object
         var newUsername = "aragorn";
@@ -1744,12 +1698,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testPostChangeAdminStatusNonAdminUser() throws Exception {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create a user object
         var newUsername = "aragorn";
@@ -1785,12 +1738,11 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     void testPostChangeAdminStatusNotLoggedIn() throws Exception {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var adminrole = Role.with().id(1).rolename(UKELONNADMIN_ROLE).description("ukelonn adminstrator").build();
         when(useradmin.getRolesForUser(anyString())).thenReturn(Collections.singletonList(adminrole));
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create a user object
         var newUsername = "aragorn";
@@ -1827,10 +1779,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.defaultLocale()).thenReturn(NB_NO);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/defaultlocale");
@@ -1851,10 +1802,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         // Set up REST API servlet with mocked services
         var ukelonn = mock(UkelonnService.class);
         when(ukelonn.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).toList());
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/availablelocales");
@@ -1877,10 +1827,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(ukelonn.displayTexts(NB_NO)).thenReturn(texts);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/displaytexts");
@@ -1904,10 +1853,9 @@ class UkelonnRestApiServletTest extends ServletTestBase {
         var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(ukelonn.displayTexts(EN_UK)).thenThrow(MissingResourceException.class);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ukelonn, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/displaytexts");
@@ -1930,9 +1878,8 @@ class UkelonnRestApiServletTest extends ServletTestBase {
     }
 
 
-    private UkelonnRestApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(UkelonnService ukelonn, LogService logservice, UserManagementService useradmin) throws Exception {
+    private UkelonnRestApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(UkelonnService ukelonn, UserManagementService useradmin) throws Exception {
         var servlet = new UkelonnRestApiServlet();
-        servlet.setLogService(logservice);
         servlet.setUkelonnService(ukelonn);
         servlet.setUserManagement(useradmin);
         var config = createServletConfigWithApplicationAndPackagenameForJerseyResources();

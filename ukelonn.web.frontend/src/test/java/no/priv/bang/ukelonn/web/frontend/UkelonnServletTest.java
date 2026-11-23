@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.web.frontend;
 /*
- * Copyright 2016-2025 Steinar Bang
+ * Copyright 2016-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.web.frontend;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -34,12 +33,10 @@ class UkelonnServletTest {
 
     @Test
     void testGet() throws Exception {
-        var logservice = new MockLogService();
         var servlet = new UkelonnServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/ukelonn/");
@@ -56,7 +53,6 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetAddTrailingSlash() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn"));
@@ -65,7 +61,6 @@ class UkelonnServletTest {
         var response = new MockHttpServletResponse();
 
         var servlet = new UkelonnServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 
@@ -74,7 +69,6 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetResponseThrowsIOException() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/"));
@@ -87,7 +81,6 @@ class UkelonnServletTest {
         when(response.getOutputStream()).thenReturn(streamThrowingIOException);
 
         var servlet = new UkelonnServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 
@@ -96,7 +89,6 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn"));
@@ -107,7 +99,6 @@ class UkelonnServletTest {
         when(response.getOutputStream()).thenThrow(IOException.class);
 
         var servlet = new UkelonnServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 
@@ -116,7 +107,6 @@ class UkelonnServletTest {
 
     @Test
     void testDoGetResourceNotFound() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/ukelonn/static/nosuchname.png"));
@@ -125,7 +115,6 @@ class UkelonnServletTest {
         var response = new MockHttpServletResponse();
 
         var servlet = new UkelonnServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 

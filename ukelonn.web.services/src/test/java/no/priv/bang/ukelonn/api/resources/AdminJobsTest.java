@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,10 +114,6 @@ class AdminJobsTest {
 
         // Create the jersey resource that is to be tested
         var resource = new AdminJobs();
-
-        // Inject fake OSGi services
-        resource.ukelonn = ukelonn;
-        resource.setLogservice(logservice);
 
         // trying to delete jobs here will throw a Jersey Internal Error exception
         var account = getJodAccount();

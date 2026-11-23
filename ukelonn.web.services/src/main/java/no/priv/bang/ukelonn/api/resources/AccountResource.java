@@ -1,5 +1,6 @@
+package no.priv.bang.ukelonn.api.resources;
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ukelonn.api.resources;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -26,8 +26,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authz.annotation.RequiresUser;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.UkelonnService;
@@ -37,20 +37,11 @@ import no.priv.bang.ukelonn.beans.Account;
 @Produces(MediaType.APPLICATION_JSON)
 @RequiresUser
 public class AccountResource extends ResourceBase {
+    private Logger logger = LoggerFactory.getLogger(AccountResource.class);
     static final String USERNAME_MISSING_ERROR = "REST endpoint /ukelonn/api/account requires a username argument, and the request was missing a username argument";
-
-    private LogService logservice;
-
-    Logger logger;
 
     @Inject
     UkelonnService ukelonn;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logservice = logservice;
-        this.logger = logservice.getLogger(getClass());
-    }
 
     @GET
     @Path("{username}")
@@ -60,7 +51,7 @@ public class AccountResource extends ResourceBase {
             throw new BadRequestException(USERNAME_MISSING_ERROR);
         }
 
-        if (!isCurrentUserOrAdmin(username, logservice)) {
+        if (!isCurrentUserOrAdmin(username)) {
             logger.warn(String.format("REST endpoint /ukelonn/api/account logged in user not allowed to fetch account for username %s", username));
             throw new ForbiddenException();
         }
